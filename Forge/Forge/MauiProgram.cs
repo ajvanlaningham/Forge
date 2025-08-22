@@ -13,6 +13,9 @@ namespace Forge
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("VT323-Regular.ttf", "PixelUI");     // readable retro UI
+                    fonts.AddFont("PressStart2P-Regular.ttf", "PixelH");// chunky heading
+                    fonts.AddFont("MedievalSharp-Regular.ttf", "FantasyH");//Fantasy heading
                 });
 
 #if DEBUG

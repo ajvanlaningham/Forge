@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Forge"
+    xmlns:views="clr-namespace:Forge.Views;assembly=Forge"
     Shell.FlyoutBehavior="Flyout"
     Title="Forge">
 
@@ -11,5 +12,30 @@
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+
+    <ShellContent
+            Title="Train"
+            ContentTemplate="{DataTemplate views:TrainPage}"
+            Route="train" />
+
+    <ShellContent
+            Title="Quests"
+            ContentTemplate="{DataTemplate views:Quests}"
+            Route="quests" />
+
+    <ShellContent
+            Title="Check-In"
+            ContentTemplate="{DataTemplate views:CheckIn}"
+            Route="checkin" />
+
+    <ShellContent
+            Title="Stats"
+            ContentTemplate="{DataTemplate views:Stats}"
+            Route="stats" />
+
+    <ShellContent
+            Title="Settings"
+            ContentTemplate="{DataTemplate views:Settings}"
+            Route="settings" />
 
 </Shell>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Forge.Views.Settings"
+             Title="Settings">
+    <VerticalStackLayout Padding="24" Spacing="12">
+        <Label Text="Settings" FontSize="28" FontAttributes="Bold" />
+        <Label Text="Units, goals, export/backup, and about will go here." />
+    </VerticalStackLayout>
+</ContentPage>
