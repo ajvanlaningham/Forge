@@ -1,15 +1,12 @@
+using Forge.ViewModels;
+
 namespace Forge.Views;
 
 public partial class HomePage : ContentPage
 {
-	public HomePage()
-	{
-		InitializeComponent();
-	}
-
-    private async void OnBeginTrainingClicked(object sender, EventArgs e)
+    public HomePage()
     {
-        // Switch to the Train tab
-        await Shell.Current.GoToAsync("//train");
+        InitializeComponent();
+        BindingContext = new HomeViewModel();
     }
 }

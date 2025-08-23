@@ -30,16 +30,15 @@
                 TextColor="{StaticResource OnBg}"/>
 
             <Button 
-                x:Name="BeginTraining"
                 Text="{x:Static res:AppResources.Home_MainCTA_Btn}"
-                Clicked="OnBeginTrainingClicked"
+                Command="{Binding OnBeginTrainingCommand}"
                 HorizontalOptions="Fill" />
 
             <controls:StatCard 
-                Title="{x:Static res:AppResources.Home_StatCard_Title}"
-                Strength="10"
-                Dexterity="10"
-                Constitution="10" />
+                Title="Quick Stats"
+                Strength="{Binding StrengthScore}"
+                Dexterity="{Binding DexterityScore}"
+                Constitution="{Binding ConstitutionScore}" />
 
         </VerticalStackLayout>
     </ScrollView>
