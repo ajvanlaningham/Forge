@@ -4,9 +4,20 @@ namespace Forge.Views;
 
 public partial class HomePage : ContentPage
 {
-    public HomePage()
+    private readonly HomeViewModel _vm;
+
+    public HomePage() : this(new HomeViewModel()) { }
+
+    public HomePage(HomeViewModel vm)
     {
         InitializeComponent();
-        BindingContext = new HomeViewModel();
+        _vm = vm;
+        BindingContext = _vm;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _vm.InitializeAsync();
     }
 }

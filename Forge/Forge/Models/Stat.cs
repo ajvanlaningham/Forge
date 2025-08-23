@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Forge.Models
+﻿namespace Forge.Models
 {
     public enum StatKind
     {
@@ -12,12 +6,16 @@ namespace Forge.Models
         Dexterity,  // DEX: mobility/control (deep squat hold time)
         Constitution // CON: endurance/resilience (10-min distance for now)
     }
+
+    // Domain model (not a DB table)
     public class Stat
     {
         public StatKind Kind { get; init; }
-        public double Baseline { get; init; } // B
-        public double Current { get; init; } // C
+        public double Baseline { get; init; } = 0;  // domain metric, optional
+        public double Current { get; init; } = 0;  // domain metric, optional
         public string Unit { get; init; } = "";
-        public int Score { get; init; } // 1..20, 10 = baseline
+
+        // Start users at 1 (not 10). Clamp logic lives in service.
+        public int Score { get; init; } = 1;
     }
 }

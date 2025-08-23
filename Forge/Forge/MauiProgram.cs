@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Forge.Services.Implementations;
+using Forge.Services.Interfaces;
+
+using Microsoft.Extensions.Logging;
 
 namespace Forge
 {
@@ -21,6 +24,9 @@ namespace Forge
 
 #if DEBUG
     		builder.Logging.AddDebug();
+
+            builder.Services.AddSingleton<IStatsStore,StatsStore>();
+            builder.Services.AddSingleton<IStatsService, StatsService>();
 #endif
 
             return builder.Build();
