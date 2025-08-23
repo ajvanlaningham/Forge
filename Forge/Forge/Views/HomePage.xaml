@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Forge.Views.HomePage"
+             xmlns:res="clr-namespace:Forge.Resources.Strings"
+             xmlns:controls="clr-namespace:Forge.Controls.Cards;assembly=Forge"
+             Title="{x:Static res:AppResources.Home_Title}">
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Image
+                Source="wizard_bot.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                HorizontalOptions="Center"
+                SemanticProperties.Description="Pixel wizard-bot mascot" />
+
+            <Label 
+               Text="{x:Static res:AppResources.Home_Header}"
+               HorizontalTextAlignment="Center"
+               FontFamily="PixelH"
+               FontSize="28"
+               TextColor="{StaticResource Accent}" />
+
+            <Label
+                Text="{x:Static res:AppResources.Home_Tagline}"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                TextColor="{StaticResource OnBg}"/>
+
+            <Button 
+                x:Name="BeginTraining"
+                Text="{x:Static res:AppResources.Home_MainCTA_Btn}"
+                Clicked="OnBeginTrainingClicked"
+                HorizontalOptions="Fill" />
+
+            <controls:StatCard 
+                Title="{x:Static res:AppResources.Home_StatCard_Title}"
+                Strength="10"
+                Dexterity="10"
+                Constitution="10" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

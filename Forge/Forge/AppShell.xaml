@@ -12,8 +12,8 @@
     <TabBar>
         <ShellContent
             Title="{x:Static res:AppResources.TabNavigation_Home}"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Route="HomePage"
             Icon="{StaticResource IconHome}"/>
 
         <ShellContent

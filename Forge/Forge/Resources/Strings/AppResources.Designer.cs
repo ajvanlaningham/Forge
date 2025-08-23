@@ -61,11 +61,29 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FITNESS FORGE.
+        /// </summary>
+        internal static string Home_Header {
+            get {
+                return ResourceManager.GetString("Home_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Begin Training.
         /// </summary>
-        internal static string Home_Main_CTA {
+        internal static string Home_MainCTA_Btn {
             get {
-                return ResourceManager.GetString("Home_Main_CTA", resourceCulture);
+                return ResourceManager.GetString("Home_MainCTA_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quick Stats.
+        /// </summary>
+        internal static string Home_StatCard_Title {
+            get {
+                return ResourceManager.GetString("Home_StatCard_Title", resourceCulture);
             }
         }
         
@@ -79,7 +97,7 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FITNESS FORGE.
+        ///   Looks up a localized string similar to Home.
         /// </summary>
         internal static string Home_Title {
             get {

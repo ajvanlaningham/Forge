@@ -1,64 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:Forge.Resources.Strings"
              x:Class="Forge.MainPage">
-
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Image
-                Source="wizard_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                HorizontalOptions="Center"
-                SemanticProperties.Description="Pixel wizard-bot mascot" />
-
-            <Label Text="FITNESS FORGE"
-               HorizontalTextAlignment="Center"
-               FontFamily="PixelH"
-               FontSize="28"
-               TextColor="{StaticResource Accent}" />
-
-            <Label
-                Text="Smith thy sinew"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                TextColor="{StaticResource OnBg}"/>
-
-            <Button x:Name="BeginTrainingBtn"
-                    Text="Begin Training"
-                    Clicked="OnBeginTrainingClicked"
-                    HorizontalOptions="Fill" />
-            
-            <Frame Padding="16">
-                <!-- uses your Frame style: Surface bg + gold border -->
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="Quick Stats"
-                       FontFamily="PixelH"
-                       FontSize="18"
-                       TextColor="{StaticResource Accent}" />   
-
-                    <Grid ColumnDefinitions="*,*,*">
-                        <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                            <Label Text="Strength" FontSize="12" TextColor="{StaticResource Muted}" />
-                            <Label Text="10" FontAttributes="Bold" FontSize="20" />
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
-                            <Label Text="Dexterity" FontSize="12" TextColor="{StaticResource Muted}" />
-                            <Label Text="10" FontAttributes="Bold" FontSize="20" />
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
-                            <Label Text="Constitution" FontSize="12" TextColor="{StaticResource Muted}" />
-                            <Label Text="10" FontAttributes="Bold" FontSize="20" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </VerticalStackLayout>
-            </Frame>
-
-        </VerticalStackLayout>
-    </ScrollView>
-
+    <VerticalStackLayout>
+    </VerticalStackLayout>
 </ContentPage>
