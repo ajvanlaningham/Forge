@@ -1,54 +1,66 @@
-﻿using Forge.Models;
+﻿using System.Linq;
+using Forge.Models;
 using Forge.Resources.Strings;
 using System.Windows.Input;
 using Forge.ViewModels.Controls.Cards;
-using Forge.Services.Implementations;
+using Forge.Services.Interfaces;
+using Forge.Contstants;
 
 namespace Forge.ViewModels
 {
     public class HomeViewModel : BaseViewModel
     {
-        private readonly StatsService _stats;
+        private readonly IStatsService _stats;
 
-        // Keeps your existing call sites working
-        public HomeViewModel() : this(new StatsService()) { }
-
-        public HomeViewModel(StatsService statsService)
+        public HomeViewModel(IStatsService statsService)
         {
             _stats = statsService;
 
             BeginTrainingCommand = new AsyncRelayCommand(async () =>
                 await Shell.Current.GoToAsync("//train"));
 
-            // create the card; values get filled after InitializeAsync runs
             StatsCard = new StatCardViewModel
             {
                 Title = AppResources.Home_StatCard_Title,
+                Level = 1,
+                Xp = 0,
                 Strength = 0,
                 Dexterity = 0,
                 Constitution = 0
             };
         }
 
-        /// <summary>
-        /// Call this from HomePage.OnAppearing().
-        /// Initializes the DB, then loads STR/DEX/CON from SQLite (seeded at 1).
-        /// </summary>
         public async Task InitializeAsync()
         {
             await _stats.InitAsync();
 
-            var stats = await _stats.GetCoreStatsAsyncFromDb();
+            var stats = await _stats.GetCoreStatsAsyncFromDb(); // ensure interface has this (see Fix 2)
+            var userStats = await _stats.GetUserStatsAsync();
 
-            StrengthScore = stats.First(s => s.Kind == StatKind.Strength).Score;
-            DexterityScore = stats.First(s => s.Kind == StatKind.Dexterity).Score;
-            ConstitutionScore = stats.First(s => s.Kind == StatKind.Constitution).Score;
+            UserLevel = userStats.Level;
+            UserXp = userStats.Xp;
 
-            // Reflect values into the card VM
+            StrengthScore = stats.FirstOrDefault(s => s.Kind == StatKind.Strength)?.Score ?? 1;
+            DexterityScore = stats.FirstOrDefault(s => s.Kind == StatKind.Dexterity)?.Score ?? 1;
+            ConstitutionScore = stats.FirstOrDefault(s => s.Kind == StatKind.Constitution)?.Score ?? 1;
+
+            // Reflect to card
+            StatsCard.Level = UserLevel;
+
+            const int xpPerLevel = 1000;
+            StatsCard.Xp = UserXp;
+            StatsCard.XpProgress = GameMath.LevelProgress(UserXp);
+
             StatsCard.Strength = StrengthScore;
             StatsCard.Dexterity = DexterityScore;
             StatsCard.Constitution = ConstitutionScore;
         }
+
+        private int _userLevel;
+        public int UserLevel { get => _userLevel; set => SetProperty(ref _userLevel, value); }
+
+        private int _userXp;
+        public int UserXp { get => _userXp; set => SetProperty(ref _userXp, value); }
 
         private int _strength;
         public int StrengthScore { get => _strength; set => SetProperty(ref _strength, value); }

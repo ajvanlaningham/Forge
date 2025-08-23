@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using Forge.Services.Interfaces;
 using Forge.Models;
+using Forge.Contstants;
 
 namespace Forge.Services.Implementations
 {
@@ -11,7 +12,7 @@ namespace Forge.Services.Implementations
         public StatsStore()
         {
             SQLitePCL.Batteries_V2.Init();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "forge.db3");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, GameConstants.Db.FileName);
             _db = new SQLiteAsyncConnection(dbPath);
         }
 

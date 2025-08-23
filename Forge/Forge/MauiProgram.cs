@@ -1,5 +1,7 @@
 ﻿using Forge.Services.Implementations;
 using Forge.Services.Interfaces;
+using Forge.ViewModels;
+using Forge.Views;
 
 using Microsoft.Extensions.Logging;
 
@@ -24,11 +26,12 @@ namespace Forge
 
 #if DEBUG
     		builder.Logging.AddDebug();
-
-            builder.Services.AddSingleton<IStatsStore,StatsStore>();
-            builder.Services.AddSingleton<IStatsService, StatsService>();
 #endif
+            builder.Services.AddSingleton<IStatsStore, StatsStore>();
+            builder.Services.AddSingleton<IStatsService, StatsService>();
 
+            builder.Services.AddTransient<HomeViewModel>();
+            builder.Services.AddTransient<HomePage>();
             return builder.Build();
         }
     }

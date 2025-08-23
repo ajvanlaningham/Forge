@@ -106,6 +106,24 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to LVL.
+        /// </summary>
+        internal static string StatCard_lvl {
+            get {
+                return ResourceManager.GetString("StatCard_lvl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progress.
+        /// </summary>
+        internal static string StatCard_XPLabel {
+            get {
+                return ResourceManager.GetString("StatCard_XPLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check-In.
         /// </summary>
         internal static string TabNavigation_CheckIn {

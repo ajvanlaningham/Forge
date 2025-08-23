@@ -137,6 +137,14 @@
     <value>Home</value>
     <comment>New</comment>
   </data>
+  <data name="StatCard_lvl" xml:space="preserve">
+    <value>LVL</value>
+    <comment>New</comment>
+  </data>
+  <data name="StatCard_XPLabel" xml:space="preserve">
+    <value>Progress</value>
+    <comment>New</comment>
+  </data>
   <data name="TabNavigation_CheckIn" xml:space="preserve">
     <value>Check-In</value>
     <comment>New</comment>
