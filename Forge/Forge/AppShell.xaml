@@ -8,34 +8,46 @@
     Shell.FlyoutBehavior="Flyout"
     Title="Forge">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage"
+            Icon="{StaticResource IconHome}"/>
 
-    <ShellContent
+        <ShellContent
             Title="Train"
             ContentTemplate="{DataTemplate views:TrainPage}"
-            Route="train" />
+            Route="train"
+            Icon="{StaticResource IconTrain}"/>
 
-    <ShellContent
+        <ShellContent
             Title="Quests"
             ContentTemplate="{DataTemplate views:Quests}"
-            Route="quests" />
+            Route="quests"
+            Icon="{StaticResource IconQuests}"/>
 
-    <ShellContent
+        <ShellContent
             Title="Check-In"
             ContentTemplate="{DataTemplate views:CheckIn}"
-            Route="checkin" />
-
-    <ShellContent
+            Route="checkin"
+            Icon="{StaticResource IconCheckIn}"/>
+        
+        <ShellContent
             Title="Stats"
             ContentTemplate="{DataTemplate views:Stats}"
-            Route="stats" />
+            Route="stats" 
+            Icon="{StaticResource IconStats}"/>
 
-    <ShellContent
+        <ShellContent Title="Guild"
+            Route="guild"
+            ContentTemplate="{DataTemplate views:GuildPage}"
+            Icon="{StaticResource IconGuild}"/>
+
+        <ShellContent
             Title="Settings"
             ContentTemplate="{DataTemplate views:Settings}"
-            Route="settings" />
-
+            Route="settings"
+            Icon="{StaticResource IconSettings}"/>
+    </TabBar>
 </Shell>

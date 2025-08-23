@@ -16,6 +16,7 @@ namespace Forge
                     fonts.AddFont("VT323-Regular.ttf", "PixelUI");     // readable retro UI
                     fonts.AddFont("PressStart2P-Regular.ttf", "PixelH");// chunky heading
                     fonts.AddFont("MedievalSharp-Regular.ttf", "FantasyH");//Fantasy heading
+                    fonts.AddFont("fa-solid-900.otf", "FA"); //Font Awesome
                 });
 
 #if DEBUG

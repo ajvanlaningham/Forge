@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Forge.Resources.Styles.Icons">
+    <!-- Font Awesome Free glyphs -->
+    <FontImageSource x:Key="IconHome"     FontFamily="FA" Glyph="&#xF015;" Color="{DynamicResource OnBg}" Size="24" />
+    <FontImageSource x:Key="IconTrain"    FontFamily="FA" Glyph="&#xF44B;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- dumbbell -->
+    <FontImageSource x:Key="IconQuests"   FontFamily="FA" Glyph="&#xF6D5;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- dragon -->
+    <FontImageSource x:Key="IconCheckIn"  FontFamily="FA" Glyph="&#xF24E;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- balanced scales -->
+    <FontImageSource x:Key="IconStats"    FontFamily="FA" Glyph="&#xF201;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- chart-line -->
+    <FontImageSource x:Key="IconSettings" FontFamily="FA" Glyph="&#xF70E;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- scroll -->
+    <FontImageSource x:Key="IconGuild"    FontFamily="FA" Glyph="&#xF0C0;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- users -->
+
+</ResourceDictionary>
