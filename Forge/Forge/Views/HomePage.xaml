@@ -5,6 +5,7 @@
              xmlns:res="clr-namespace:Forge.Resources.Strings"
              xmlns:controls="clr-namespace:Forge.Controls.Cards;assembly=Forge"
              Title="{x:Static res:AppResources.Home_Title}">
+    
     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
@@ -31,15 +32,12 @@
 
             <Button 
                 Text="{x:Static res:AppResources.Home_MainCTA_Btn}"
-                Command="{Binding OnBeginTrainingCommand}"
+                Command="{Binding BeginTrainingCommand}"
                 HorizontalOptions="Fill" />
 
-            <controls:StatCard 
-                Title="Quick Stats"
-                Strength="{Binding StrengthScore}"
-                Dexterity="{Binding DexterityScore}"
-                Constitution="{Binding ConstitutionScore}" />
+            <controls:StatCard BindingContext="{Binding StatsCard}" />
 
         </VerticalStackLayout>
     </ScrollView>
+
 </ContentPage>

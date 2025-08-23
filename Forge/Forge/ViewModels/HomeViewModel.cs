@@ -1,13 +1,13 @@
-﻿using System.ComponentModel;
-using Forge.Services;
+﻿using Forge.Services;
 using Forge.Models;
-using System.Runtime.CompilerServices;
+using Forge.Resources.Strings;
 using System.Windows.Input;
+using Forge.ViewModels.Controls.Cards;
 
 namespace Forge.ViewModels
 {
 
-    public class HomeViewModel : INotifyPropertyChanged
+    public class HomeViewModel : BaseViewModel
     {
         private readonly StatsService _stats;
 
@@ -25,27 +25,28 @@ namespace Forge.ViewModels
 
             BeginTrainingCommand = new AsyncRelayCommand(async () =>
                 await Shell.Current.GoToAsync("//train"));
+
+            StatsCard = new StatCardViewModel
+            {
+                Title = AppResources.Home_StatCard_Title,
+                Strength = StrengthScore,
+                Dexterity = DexterityScore,
+                Constitution = ConstitutionScore
+            };
         }
 
         private int _strength;
-        public int StrengthScore { get => _strength; set => Set(ref _strength, value); }
+        public int StrengthScore { get => _strength; set => SetProperty(ref _strength, value); }
 
         private int _dexterity;
-        public int DexterityScore { get => _dexterity; set => Set(ref _dexterity, value); }
+        public int DexterityScore { get => _dexterity; set => SetProperty(ref _dexterity, value); }
 
         private int _constitution;
-        public int ConstitutionScore { get => _constitution; set => Set(ref _constitution, value); }
+        public int ConstitutionScore { get => _constitution; set => SetProperty(ref _constitution, value); }
+
+        public StatCardViewModel StatsCard { get; }
 
         public ICommand BeginTrainingCommand { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected bool Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            return true;
-        }
     }
 
     public sealed class AsyncRelayCommand : ICommand

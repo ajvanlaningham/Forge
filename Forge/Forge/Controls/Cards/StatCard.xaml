@@ -2,32 +2,28 @@
 <ContentView
     x:Class="Forge.Controls.Cards.StatCard"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Name="Self">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Frame Padding="16">
         <VerticalStackLayout Spacing="8">
-            <Label Text="{Binding Title, Source={x:Reference Self}}"
+            <Label Text="{Binding Title}"
                    FontSize="18"
                    TextColor="{StaticResource Accent}" />
 
             <Grid ColumnDefinitions="*,*,*">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
                     <Label Text="Strength" FontSize="16" TextColor="{StaticResource Muted}" />
-                    <Label Text="{Binding Strength, Source={x:Reference Self}}"
-                           FontAttributes="Bold" FontSize="20" />
+                    <Label Text="{Binding Strength}" FontAttributes="Bold" FontSize="20" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <Label Text="Dexterity" FontSize="16" TextColor="{StaticResource Muted}" />
-                    <Label Text="{Binding Dexterity, Source={x:Reference Self}}"
-                           FontAttributes="Bold" FontSize="20" />
+                    <Label Text="{Binding Dexterity}" FontAttributes="Bold" FontSize="20" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
                     <Label Text="Constitution" FontSize="16" TextColor="{StaticResource Muted}" />
-                    <Label Text="{Binding Constitution, Source={x:Reference Self}}"
-                           FontAttributes="Bold" FontSize="20" />
+                    <Label Text="{Binding Constitution}" FontAttributes="Bold" FontSize="20" />
                 </VerticalStackLayout>
             </Grid>
         </VerticalStackLayout>
