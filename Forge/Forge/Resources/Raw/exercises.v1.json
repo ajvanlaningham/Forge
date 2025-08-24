@@ -1,7 +1,4 @@
 [
-  // ----------------------------
-  // STRETCHES / MOBILITY (10+)
-  // ----------------------------
   {
     "name": "Couch Stretch",
     "description": "Hip flexor/quadriceps stretch with rear foot elevated.",
@@ -125,10 +122,6 @@
     "action": "Hold",
     "defaultSeconds": 30
   },
-
-  // ----------------------------
-  // STRENGTH (10, 5+ bodyweight)
-  // ----------------------------
   {
     "name": "Push-up",
     "category": "Strength",
@@ -146,7 +139,7 @@
     "bodyZone": "Upper",
     "movement": "Pull",
     "modality": "Bodyweight",
-    "equipment": [ "PullupBar" ],
+    "equipment": [ "PullUpBar" ],
     "action": "Reps",
     "defaultReps": 8
   },
@@ -231,10 +224,6 @@
     "defaultReps": 5,
     "unilateral": true
   },
-
-  // ----------------------------
-  // CONDITIONING (3+)
-  // ----------------------------
   {
     "name": "Bike Easy",
     "category": "Conditioning",

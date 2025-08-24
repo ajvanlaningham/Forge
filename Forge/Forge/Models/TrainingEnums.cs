@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Forge.Models
+﻿namespace Forge.Models
 {
     public enum BodyZone
     {
@@ -25,7 +19,14 @@ namespace Forge.Models
         Rotation = 6,
         AntiRotation = 7,
         Gait = 8,
-        Other = 9
+        Other = 9,
+
+        SpinalWave = 10,
+        LateralFlexion = 11,
+        KneeFlexion = 12,
+        Flexion = 13,
+        Extension = 14
+
     }
 
     public enum Modality
@@ -42,10 +43,10 @@ namespace Forge.Models
     public enum ActionType
     {
         Reps = 0,
-        Time = 1, // seconds
-        Distance = 2, // meters/km
-        Hold = 3, // isometric hold (seconds)
-        Calories = 4  // erg machines
+        Time = 1,      // seconds
+        Distance = 2,  // meters/km
+        Hold = 3,      // isometric hold (seconds)
+        Calories = 4   // erg machines
     }
 
     public enum SkillLevel
@@ -67,7 +68,9 @@ namespace Forge.Models
         Bands = 1 << 5,
         Bike = 1 << 6,
         BoxStep = 1 << 7,
-        Mat = 1 << 8
+        Mat = 1 << 8,
+        Wall = 1 << 9,
+        JumpRope = 1 << 10
     }
 
     public enum ExerciseCategory
