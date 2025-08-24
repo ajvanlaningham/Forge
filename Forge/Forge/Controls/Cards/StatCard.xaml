@@ -14,13 +14,12 @@
 
             <Grid 
                 ColumnDefinitions="Auto,*"
-                RowDefinitions="Auto,Auto"
+                RowDefinitions="Auto"
                 Margin="0,8,0,12"
                 ColumnSpacing="12">
 
                 <!-- Level badge -->
                 <Frame 
-                    Grid.RowSpan="2"
                     Grid.Column="0"
                     WidthRequest="64"
                     HeightRequest="64"
@@ -38,28 +37,19 @@
                             FontAttributes="Bold"
                             TextColor="White"
                             HorizontalOptions="Center" />
-                                        <Label 
-                                            Text="{x:Static res:AppResources.StatCard_lvl}"
-                                            FontSize="10"
-                                            TextColor="White"
-                                            Opacity="0.85"
-                                            HorizontalOptions="Center" />
-                     </VerticalStackLayout>
+                        <Label 
+                            Text="{x:Static res:AppResources.StatCard_lvl}"
+                            FontSize="10"
+                            TextColor="White"
+                            Opacity="0.85"
+                            HorizontalOptions="Center" />
+                    </VerticalStackLayout>
                 </Frame>
-
-                <!-- Title / caption -->
-                <Label 
-                    Grid.Column="1" 
-                    Grid.Row="0"
-                    Text="{x:Static res:AppResources.StatCard_XPLabel}"
-                    FontSize="14"
-                    TextColor="{StaticResource Muted}"
-                    VerticalOptions="End" />
-
+                
                 <!-- XP pill -->
                 <Frame
                     Grid.Column="1"
-                    Grid.Row="1"
+                    Grid.Row="0"
                     Padding="12,10"
                     CornerRadius="12"
                     HasShadow="False"
