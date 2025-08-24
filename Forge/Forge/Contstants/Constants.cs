@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Forge.Contstants
 {
     public static class GameConstants
@@ -23,6 +18,14 @@ namespace Forge.Contstants
         public static class Db
         {
             public const string FileName = "forge.db3";
+        }
+
+        // Exercise library
+        public static class Exercises
+        {
+            public const string PrefixKey = "ExerciseLibraryVersion";
+            public const string LibraryFile = "exercises.v1.json";
+            public const string LibraryVersion = "v1";
         }
     }
 

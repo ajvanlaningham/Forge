@@ -7,5 +7,9 @@
     <VerticalStackLayout Padding="24" Spacing="12">
         <Label Text="Train" FontSize="28" FontAttributes="Bold" />
         <Label Text="This is a placeholder. We’ll wire sessions here." />
+        <Button Text="Open Exercise Library"
+            Clicked="OnOpenLibraryClicked"
+            HorizontalOptions="Fill"
+            Margin="16,8" />
     </VerticalStackLayout>
 </ContentPage>

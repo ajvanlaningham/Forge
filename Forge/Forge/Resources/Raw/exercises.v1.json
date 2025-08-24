@@ -1,0 +1,278 @@
+[
+  // ----------------------------
+  // STRETCHES / MOBILITY (10+)
+  // ----------------------------
+  {
+    "name": "Couch Stretch",
+    "description": "Hip flexor/quadriceps stretch with rear foot elevated.",
+    "category": "Mobility",
+    "technique": "StaticHold",
+    "bodyZone": "Lower",
+    "movement": "Lunge",
+    "modality": "Mobility",
+    "equipment": [ "Mat", "Bench" ],
+    "action": "Hold",
+    "defaultSeconds": 60,
+    "unilateral": true,
+    "skill": "Beginner",
+    "isActive": true
+  },
+  {
+    "name": "90/90 Hip Switch",
+    "description": "Dynamic hip internal/external rotation drill.",
+    "category": "Mobility",
+    "technique": "Dynamic",
+    "bodyZone": "Lower",
+    "movement": "Rotation",
+    "modality": "Mobility",
+    "equipment": [ "Mat" ],
+    "action": "Reps",
+    "defaultReps": 10,
+    "isActive": true
+  },
+  {
+    "name": "Child's Pose",
+    "description": "Spinal decompression and hip stretch.",
+    "category": "Mobility",
+    "technique": "StaticHold",
+    "bodyZone": "FullBody",
+    "movement": "Flexion",
+    "modality": "Mobility",
+    "equipment": [ "Mat" ],
+    "action": "Hold",
+    "defaultSeconds": 45
+  },
+  {
+    "name": "Cat-Cow",
+    "description": "Dynamic spinal flexion and extension.",
+    "category": "Mobility",
+    "technique": "Dynamic",
+    "bodyZone": "Core",
+    "movement": "SpinalWave",
+    "modality": "Mobility",
+    "equipment": [ "Mat" ],
+    "action": "Reps",
+    "defaultReps": 8
+  },
+  {
+    "name": "World's Greatest Stretch",
+    "description": "Full-body lunge with rotation.",
+    "category": "Mobility",
+    "technique": "Dynamic",
+    "bodyZone": "FullBody",
+    "movement": "Lunge",
+    "modality": "Mobility",
+    "equipment": [ "Mat" ],
+    "action": "Hold",
+    "defaultSeconds": 30,
+    "unilateral": true
+  },
+  {
+    "name": "Seated Forward Fold",
+    "category": "Mobility",
+    "technique": "StaticHold",
+    "bodyZone": "Lower",
+    "movement": "Flexion",
+    "modality": "Mobility",
+    "equipment": [ "Mat" ],
+    "action": "Hold",
+    "defaultSeconds": 45
+  },
+  {
+    "name": "Standing Quad Stretch",
+    "category": "Mobility",
+    "technique": "StaticHold",
+    "bodyZone": "Lower",
+    "movement": "KneeFlexion",
+    "modality": "Mobility",
+    "equipment": [],
+    "action": "Hold",
+    "defaultSeconds": 30,
+    "unilateral": true
+  },
+  {
+    "name": "Wall Pec Stretch",
+    "category": "Mobility",
+    "technique": "StaticHold",
+    "bodyZone": "Upper",
+    "movement": "Push",
+    "modality": "Mobility",
+    "equipment": [ "Wall" ],
+    "action": "Hold",
+    "defaultSeconds": 30,
+    "unilateral": true
+  },
+  {
+    "name": "Neck Lateral Stretch",
+    "category": "Mobility",
+    "technique": "StaticHold",
+    "bodyZone": "Upper",
+    "movement": "LateralFlexion",
+    "modality": "Mobility",
+    "equipment": [],
+    "action": "Hold",
+    "defaultSeconds": 20,
+    "unilateral": true
+  },
+  {
+    "name": "Downward Dog",
+    "category": "Mobility",
+    "technique": "StaticHold",
+    "bodyZone": "FullBody",
+    "movement": "Hinge",
+    "modality": "Mobility",
+    "equipment": [ "Mat" ],
+    "action": "Hold",
+    "defaultSeconds": 30
+  },
+
+  // ----------------------------
+  // STRENGTH (10, 5+ bodyweight)
+  // ----------------------------
+  {
+    "name": "Push-up",
+    "category": "Strength",
+    "bodyZone": "Upper",
+    "movement": "Push",
+    "modality": "Bodyweight",
+    "equipment": [],
+    "action": "Reps",
+    "defaultReps": 12,
+    "isActive": true
+  },
+  {
+    "name": "Pull-up",
+    "category": "Strength",
+    "bodyZone": "Upper",
+    "movement": "Pull",
+    "modality": "Bodyweight",
+    "equipment": [ "PullupBar" ],
+    "action": "Reps",
+    "defaultReps": 8
+  },
+  {
+    "name": "Air Squat",
+    "category": "Strength",
+    "bodyZone": "Lower",
+    "movement": "Squat",
+    "modality": "Bodyweight",
+    "equipment": [],
+    "action": "Reps",
+    "defaultReps": 15
+  },
+  {
+    "name": "Plank",
+    "category": "Strength",
+    "bodyZone": "Core",
+    "movement": "AntiRotation",
+    "modality": "Bodyweight",
+    "equipment": [ "Mat" ],
+    "action": "Hold",
+    "defaultSeconds": 45
+  },
+  {
+    "name": "Glute Bridge",
+    "category": "Strength",
+    "bodyZone": "Lower",
+    "movement": "Hinge",
+    "modality": "Bodyweight",
+    "equipment": [ "Mat" ],
+    "action": "Reps",
+    "defaultReps": 12
+  },
+  {
+    "name": "Goblet Squat",
+    "category": "Strength",
+    "bodyZone": "Lower",
+    "movement": "Squat",
+    "modality": "Kettlebell",
+    "equipment": [ "Kettlebell" ],
+    "action": "Reps",
+    "defaultReps": 10
+  },
+  {
+    "name": "Dumbbell Overhead Press",
+    "category": "Strength",
+    "bodyZone": "Upper",
+    "movement": "Push",
+    "modality": "Dumbbell",
+    "equipment": [ "Dumbbell" ],
+    "action": "Reps",
+    "defaultReps": 8
+  },
+  {
+    "name": "Bent-over Row",
+    "category": "Strength",
+    "bodyZone": "Upper",
+    "movement": "Pull",
+    "modality": "Dumbbell",
+    "equipment": [ "Dumbbell" ],
+    "action": "Reps",
+    "defaultReps": 10
+  },
+  {
+    "name": "Romanian Deadlift",
+    "category": "Strength",
+    "bodyZone": "Lower",
+    "movement": "Hinge",
+    "modality": "Dumbbell",
+    "equipment": [ "Dumbbell" ],
+    "action": "Reps",
+    "defaultReps": 8
+  },
+  {
+    "name": "Turkish Get-up",
+    "category": "Strength",
+    "bodyZone": "FullBody",
+    "movement": "Lunge",
+    "modality": "Kettlebell",
+    "equipment": [ "Kettlebell" ],
+    "action": "Reps",
+    "defaultReps": 5,
+    "unilateral": true
+  },
+
+  // ----------------------------
+  // CONDITIONING (3+)
+  // ----------------------------
+  {
+    "name": "Bike Easy",
+    "category": "Conditioning",
+    "bodyZone": "FullBody",
+    "movement": "Gait",
+    "modality": "MachineBike",
+    "equipment": [ "Bike" ],
+    "action": "Time",
+    "defaultSeconds": 900
+  },
+  {
+    "name": "Jump Rope",
+    "category": "Conditioning",
+    "bodyZone": "FullBody",
+    "movement": "Gait",
+    "modality": "Bodyweight",
+    "equipment": [ "JumpRope" ],
+    "action": "Time",
+    "defaultSeconds": 300
+  },
+  {
+    "name": "Burpee",
+    "category": "Conditioning",
+    "bodyZone": "FullBody",
+    "movement": "Squat",
+    "modality": "Bodyweight",
+    "equipment": [],
+    "action": "Reps",
+    "defaultReps": 15
+  },
+  {
+    "name": "KB Swing",
+    "category": "Conditioning",
+    "bodyZone": "FullBody",
+    "movement": "Hinge",
+    "modality": "Kettlebell",
+    "equipment": [ "Kettlebell" ],
+    "action": "Reps",
+    "defaultReps": 15
+  }
+]

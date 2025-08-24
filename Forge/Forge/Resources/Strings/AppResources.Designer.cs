@@ -61,6 +61,15 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exercise Library.
+        /// </summary>
+        internal static string ExerciseLibrary_Title {
+            get {
+                return ResourceManager.GetString("ExerciseLibrary_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FITNESS FORGE.
         /// </summary>
         internal static string Home_Header {

@@ -3,6 +3,7 @@ using Forge.Services.Implementations;
 using Forge.Services.Interfaces;
 using Forge.ViewModels;
 using Forge.Views;
+using Forge.Views.SubPages;
 
 using Microsoft.Extensions.Logging;
 
@@ -32,6 +33,12 @@ namespace Forge
             builder.Services.AddSingleton<IAppDatabase, AppDatabase>();
             builder.Services.AddSingleton(typeof(IRepository<>), typeof(SQLiteRepository<>));
 
+            //Importer
+            builder.Services.AddSingleton<IExerciseLibraryImporter, ExerciseLibraryImporter>();
+
+            //Exercise
+            builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
+
             // Stats
             builder.Services.AddSingleton<IStatsStore, StatsStore>();
             builder.Services.AddSingleton<IStatsService, StatsService>();
@@ -41,6 +48,8 @@ namespace Forge
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<StatsViewModel>();
             builder.Services.AddTransient<StatsPage>();
+            builder.Services.AddTransient<ViewModels.SubPages.ExerciseLibraryViewModel>();
+            builder.Services.AddTransient<ExerciseLibraryPage>();
 
 
             return builder.Build();

@@ -12,10 +12,12 @@ namespace Forge.ViewModels
     public class HomeViewModel : BaseViewModel
     {
         private readonly IStatsService _stats;
+        private readonly IExerciseLibraryImporter _importer;
 
-        public HomeViewModel(IStatsService statsService)
+        public HomeViewModel(IStatsService statsService, IExerciseLibraryImporter importer)
         {
             _stats = statsService;
+            _importer = importer;
 
             BeginTrainingCommand = new AsyncRelayCommand(async () =>
                 await Shell.Current.GoToAsync("//train"));
@@ -36,6 +38,10 @@ namespace Forge.ViewModels
 
         public async Task InitializeAsync()
         {
+            await _importer.EnsureSeededAsync(
+                GameConstants.Exercises.LibraryFile,
+                GameConstants.Exercises.LibraryVersion);
+
             await _stats.InitAsync();
 
             var stats = await _stats.GetCoreStatsAsyncFromDb(); // ensure interface has this (see Fix 2)

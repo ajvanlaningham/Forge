@@ -1,4 +1,4 @@
-﻿using Forge.Views;
+﻿using Forge.Views.SubPages;
 
 namespace Forge
 {
@@ -7,6 +7,7 @@ namespace Forge
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(ExerciseLibraryPage), typeof(ExerciseLibraryPage));
         }
     }
 }
