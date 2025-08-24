@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Forge.ViewModels.Controls.Cards;
 using Forge.Services.Interfaces;
 using Forge.Contstants;
+using Forge.Views;
 
 namespace Forge.ViewModels
 {
@@ -18,6 +19,9 @@ namespace Forge.ViewModels
 
             BeginTrainingCommand = new AsyncRelayCommand(async () =>
                 await Shell.Current.GoToAsync("//train"));
+
+            GoToStatsCommand = new AsyncRelayCommand(async () =>
+                await Shell.Current.GoToAsync("//stats"));
 
             StatsCard = new StatCardViewModel
             {
@@ -74,6 +78,8 @@ namespace Forge.ViewModels
         public StatCardViewModel StatsCard { get; }
 
         public ICommand BeginTrainingCommand { get; }
+        public ICommand GoToStatsCommand { get; }
+
     }
 
     public sealed class AsyncRelayCommand : ICommand

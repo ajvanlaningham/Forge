@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:res="clr-namespace:Forge.Resources.Strings"
+             xmlns:controls="clr-namespace:Forge.Controls.Cards;assembly=Forge"
              x:Class="Forge.Views.StatsPage"
-             Title="Stats">
-    <VerticalStackLayout Padding="24" Spacing="12">
-        <Label Text="Stats" FontSize="28" FontAttributes="Bold" />
-        <Label Text="Graphs and progress metrics will be here." />
-    </VerticalStackLayout>
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <controls:StatCard BindingContext="{Binding StatsCard}" />
+            <Button Text="Refresh" Command="{Binding RefreshCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

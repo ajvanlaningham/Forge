@@ -35,7 +35,15 @@
                 Command="{Binding BeginTrainingCommand}"
                 HorizontalOptions="Fill" />
 
-            <controls:StatCard BindingContext="{Binding StatsCard}" />
+            <Grid>
+                <controls:StatCard BindingContext="{Binding StatsCard}" />
+                <Grid BackgroundColor="Transparent">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer
+                        Command="{Binding BindingContext.GoToStatsCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Grid>
 
         </VerticalStackLayout>
     </ScrollView>

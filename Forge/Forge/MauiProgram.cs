@@ -39,6 +39,8 @@ namespace Forge
             // UI
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<StatsViewModel>();
+            builder.Services.AddTransient<StatsPage>();
 
 
             return builder.Build();

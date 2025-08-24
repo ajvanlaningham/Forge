@@ -124,6 +124,24 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Core Stats.
+        /// </summary>
+        internal static string StatsPage_StatsCard {
+            get {
+                return ResourceManager.GetString("StatsPage_StatsCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stats.
+        /// </summary>
+        internal static string StatsPage_Title {
+            get {
+                return ResourceManager.GetString("StatsPage_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check-In.
         /// </summary>
         internal static string TabNavigation_CheckIn {

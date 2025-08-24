@@ -1,4 +1,6 @@
-﻿namespace Forge
+﻿using Forge.Views;
+
+namespace Forge
 {
     public partial class AppShell : Shell
     {
