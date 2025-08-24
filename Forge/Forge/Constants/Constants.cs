@@ -29,6 +29,15 @@ namespace Forge.Constants
         }
     }
 
+    public static class UiConstants
+    {
+        /// <summary>Display order for equipment groups in the My Gear page.</summary>
+        public static readonly string[] EquipmentGroupOrder =
+        {
+            "Strength", "Conditioning", "Mobility", "Other"
+        };
+    }
+
     public static class GameMath
     {
         public static double LevelProgress(int xp, int xpPerLevel = GameConstants.XpPerLevel)

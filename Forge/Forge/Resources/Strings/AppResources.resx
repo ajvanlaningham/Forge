@@ -121,6 +121,10 @@
     <value>Exercise Library</value>
     <comment>New</comment>
   </data>
+  <data name="GearPage_Title" xml:space="preserve">
+    <value>Inventory</value>
+    <comment>New</comment>
+  </data>
   <data name="Home_Header" xml:space="preserve">
     <value>FITNESS FORGE</value>
     <comment>New</comment>

@@ -12,4 +12,9 @@ public partial class TrainPage : ContentPage
     {
         await Shell.Current.GoToAsync(nameof(ExerciseLibraryPage));
     }
+
+    private async void OnOpenInventoryClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(MyGearPage));
+    }
 }

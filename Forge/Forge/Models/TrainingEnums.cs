@@ -57,7 +57,7 @@
     }
 
     [System.Flags]
-    public enum Equipment
+    public enum Equipment : long
     {
         None = 0,
         Dumbbell = 1 << 0,
@@ -70,7 +70,48 @@
         BoxStep = 1 << 7,
         Mat = 1 << 8,
         Wall = 1 << 9,
-        JumpRope = 1 << 10
+        JumpRope = 1 << 10,
+        MedicineBall = 1 << 11,
+        Sandbag = 1 << 12,
+        Sled = 1 << 13,
+        BattleRope = 1 << 14,
+        DipStation = 1 << 15,
+        RowMachine = 1 << 16,
+        SkiErg = 1 << 17,
+        WeightVest = 1 << 18,
+        SuspensionTrainer = 1 << 19
+    }
+
+    public static class EquipmentGroups
+    {
+        private static readonly Dictionary<Equipment, string> _map = new()
+        {
+            { Equipment.Dumbbell, "Strength" },
+            { Equipment.Kettlebell, "Strength" },
+            { Equipment.Barbell, "Strength" },
+            { Equipment.Bench, "Strength" },
+            { Equipment.PullUpBar, "Strength" },
+            { Equipment.DipStation, "Strength" },
+            { Equipment.WeightVest, "Strength" },
+
+            { Equipment.Bike, "Conditioning" },
+            { Equipment.RowMachine, "Conditioning" },
+            { Equipment.SkiErg, "Conditioning" },
+            { Equipment.JumpRope, "Conditioning" },
+            { Equipment.BattleRope, "Conditioning" },
+            { Equipment.Sled, "Conditioning" },
+
+            { Equipment.Bands, "Mobility" },
+            { Equipment.Mat, "Mobility" },
+            { Equipment.Wall, "Mobility" },
+            { Equipment.SuspensionTrainer, "Mobility" },
+            { Equipment.BoxStep, "Mobility" },
+            { Equipment.MedicineBall, "Mobility" },
+            { Equipment.Sandbag, "Mobility" }
+        };
+
+        public static string GetGroup(Equipment e) =>
+            _map.TryGetValue(e, out var group) ? group : "Other";
     }
 
     public enum ExerciseCategory

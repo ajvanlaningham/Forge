@@ -11,5 +11,9 @@
             Clicked="OnOpenLibraryClicked"
             HorizontalOptions="Fill"
             Margin="16,8" />
+        <Button Text="Open Inventory"
+            Clicked="OnOpenInventoryClicked"
+            HorizontalOptions="Fill"
+            Margin="16,8" />
     </VerticalStackLayout>
 </ContentPage>
