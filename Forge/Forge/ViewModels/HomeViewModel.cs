@@ -1,11 +1,9 @@
-﻿using System.Linq;
-using Forge.Models;
+﻿using Forge.Models;
 using Forge.Resources.Strings;
 using System.Windows.Input;
 using Forge.ViewModels.Controls.Cards;
 using Forge.Services.Interfaces;
-using Forge.Contstants;
-using Forge.Views;
+using Forge.Constants;
 
 namespace Forge.ViewModels
 {

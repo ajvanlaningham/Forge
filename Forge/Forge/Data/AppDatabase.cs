@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Forge.Contstants;
+﻿using Forge.Constants;
 using Forge.Services.Interfaces;
 using SQLite;
 
-namespace Forge.Services.Implementations
+namespace Forge.Data
 {
     public sealed class AppDatabase : IAppDatabase
     {

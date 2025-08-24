@@ -54,11 +54,11 @@
                         <VerticalStackLayout Spacing="4">
                             <Label Text="{Binding Name}"
                                    FontAttributes="Bold"
-                                   FontSize="16" />
+                                   FontSize="20" />
                             <Label Text="{Binding Description}"
-                                   FontSize="12"
+                                   FontSize="16"
                                    LineBreakMode="TailTruncation" />
-                            <Label FontSize="12"
+                            <Label FontSize="16"
                                    Text="{Binding ., Converter={StaticResource ExerciseMetaConverter}}" />
                         </VerticalStackLayout>
                     </Frame>

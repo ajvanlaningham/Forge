@@ -1,7 +1,7 @@
 ﻿using SQLite;
 using Forge.Services.Interfaces;
 using Forge.Models;
-using Forge.Contstants;
+using Forge.Constants;
 using Forge.Data;
 
 namespace Forge.Services.Implementations

@@ -1,5 +1,5 @@
 ﻿
-namespace Forge.Contstants
+namespace Forge.Constants
 {
     public static class GameConstants
     {
