@@ -67,10 +67,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Data\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Compile Update="Resources\Strings\AppResources.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>

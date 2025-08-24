@@ -2,78 +2,88 @@
 using Forge.Services.Interfaces;
 using Forge.Models;
 using Forge.Contstants;
+using Forge.Data;
 
 namespace Forge.Services.Implementations
 {
     public sealed class StatsStore : IStatsStore
     {
-        private readonly SQLiteAsyncConnection _db;
+        private readonly IRepository<UserStats> _userRepo;
+        private readonly IRepository<StatRow> _statRepo;
 
-        public StatsStore()
+        public StatsStore(IRepository<UserStats> userRepo, IRepository<StatRow> statRepo)
         {
-            SQLitePCL.Batteries_V2.Init();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, GameConstants.Db.FileName);
-            _db = new SQLiteAsyncConnection(dbPath);
+            _userRepo = userRepo;
+            _statRepo = statRepo;
         }
 
         public async Task InitAsync()
         {
-            await _db.CreateTableAsync<UserStats>();
-            await _db.CreateTableAsync<StatRow>();
+            // Ensure tables exist (idempotent)
+            await _userRepo.EnsureTableAsync();
+            await _statRepo.EnsureTableAsync();
 
             // Seed single UserStats
-            var userStats = await _db.Table<UserStats>().FirstOrDefaultAsync();
+            var userStats = await _userRepo.FirstOrDefaultAsync(_ => true);
             if (userStats is null)
             {
                 userStats = new UserStats();
-                await _db.InsertAsync(userStats);
+                await _userRepo.InsertAsync(userStats);
             }
 
             // Seed STR/DEX/CON if empty — Score = 1
-            var anyStat = await _db.Table<StatRow>().FirstOrDefaultAsync();
+            var anyStat = await _statRepo.FirstOrDefaultAsync(_ => true);
             if (anyStat is null)
             {
                 var rows = new[]
                 {
-                    new StatRow { UserStatsId = userStats.Id, Kind = (int)StatKind.Strength,     Baseline = 0, Current = 0, Unit = "×BW",     Score = 1 },
-                    new StatRow { UserStatsId = userStats.Id, Kind = (int)StatKind.Dexterity,    Baseline = 0, Current = 0, Unit = "s",       Score = 1 },
-                    new StatRow { UserStatsId = userStats.Id, Kind = (int)StatKind.Constitution, Baseline = 0, Current = 0, Unit = "km/10min",Score = 1 },
+                    new StatRow { UserStatsId = userStats.Id, Kind = (int)StatKind.Strength,     Baseline = 0, Current = 0, Unit = "×BW",      Score = 1 },
+                    new StatRow { UserStatsId = userStats.Id, Kind = (int)StatKind.Dexterity,    Baseline = 0, Current = 0, Unit = "s",        Score = 1 },
+                    new StatRow { UserStatsId = userStats.Id, Kind = (int)StatKind.Constitution, Baseline = 0, Current = 0, Unit = "km/10min", Score = 1 },
                 };
-                await _db.InsertAllAsync(rows);
+                await _statRepo.InsertAllAsync(rows);
             }
         }
 
-        public Task<UserStats> GetUserStatsAsync()
-            => _db.Table<UserStats>().FirstAsync();
+        public async Task<UserStats> GetUserStatsAsync()
+        {
+            var user = await _userRepo.FirstOrDefaultAsync(_ => true);
+            if (user is null)
+            {
+                user = new UserStats();
+                await _userRepo.InsertAsync(user);
+            }
+            return user;
+        }
 
         public async Task UpsertUserStatsAsync(UserStats stats)
         {
             stats.UpdatedAtUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             stats.IsDirty = true;
-            await _db.InsertOrReplaceAsync(stats);
+            await _userRepo.InsertOrReplaceAsync(stats);
         }
 
         // ---- Stats ----
         public async Task<IReadOnlyList<Stat>> GetStatsAsync()
         {
-            var rows = await _db.Table<StatRow>().ToListAsync();
+            var rows = await _statRepo.GetAllAsync();
             return rows.Select(ToDomain).ToList();
         }
 
         public async Task<Stat?> GetStatAsync(StatKind kind)
         {
-            var row = await _db.Table<StatRow>().Where(r => r.Kind == (int)kind).FirstOrDefaultAsync();
+            var row = await _statRepo.FirstOrDefaultAsync(r => r.Kind == (int)kind);
             return row is null ? null : ToDomain(row);
         }
 
         public async Task UpsertStatAsync(Stat stat)
         {
             var user = await GetUserStatsAsync();
-            var existing = await _db.Table<StatRow>().Where(r => r.Kind == (int)stat.Kind).FirstOrDefaultAsync();
+            var existing = await _statRepo.FirstOrDefaultAsync(r => r.Kind == (int)stat.Kind);
 
             if (existing is null)
             {
-                await _db.InsertAsync(new StatRow
+                await _statRepo.InsertAsync(new StatRow
                 {
                     UserStatsId = user.Id,
                     Kind = (int)stat.Kind,
@@ -89,7 +99,7 @@ namespace Forge.Services.Implementations
                 existing.Current = stat.Current;
                 existing.Unit = stat.Unit;
                 existing.Score = stat.Score <= 0 ? 1 : stat.Score;
-                await _db.UpdateAsync(existing);
+                await _statRepo.UpdateAsync(existing);
             }
         }
 

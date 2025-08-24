@@ -1,4 +1,5 @@
-﻿using Forge.Services.Implementations;
+﻿using Forge.Data;
+using Forge.Services.Implementations;
 using Forge.Services.Interfaces;
 using Forge.ViewModels;
 using Forge.Views;
@@ -27,11 +28,19 @@ namespace Forge
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            // Data + repos
+            builder.Services.AddSingleton<IAppDatabase, AppDatabase>();
+            builder.Services.AddSingleton(typeof(IRepository<>), typeof(SQLiteRepository<>));
+
+            // Stats
             builder.Services.AddSingleton<IStatsStore, StatsStore>();
             builder.Services.AddSingleton<IStatsService, StatsService>();
 
+            // UI
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<HomePage>();
+
+
             return builder.Build();
         }
     }
