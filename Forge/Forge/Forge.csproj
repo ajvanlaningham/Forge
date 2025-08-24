@@ -121,6 +121,9 @@
 	  <MauiXaml Update="Views\SubPages\ExerciseLibraryPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\SubPages\MyGearPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\TrainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -10,11 +10,13 @@ namespace Forge.ViewModels.SubPages
     {
         private readonly IExerciseLibraryService _lib;
         private readonly IExerciseLibraryImporter _importer;
+        private readonly IInventoryService _inventory;
 
-        public ExerciseLibraryViewModel(IExerciseLibraryService lib, IExerciseLibraryImporter importer)
+        public ExerciseLibraryViewModel(IExerciseLibraryService lib, IExerciseLibraryImporter importer, IInventoryService inventoryService)
         {
             _lib = lib;
             _importer = importer;
+            _inventory = inventoryService;
 
             Title = AppResources.ExerciseLibrary_Title;
             Items = new ObservableCollection<Exercise>();
@@ -40,6 +42,31 @@ namespace Forge.ViewModels.SubPages
         public ICommand SearchCommand { get; }
         public ICommand ClearFiltersCommand { get; }
 
+        private static bool IsAllowedByInventory(Exercise e, Equipment owned)
+        {
+            // Always allow if no gear is required
+            if (e.Equipment == Equipment.None) return true;
+            // Require user to own ALL flags the exercise needs
+            return (e.Equipment & owned) == e.Equipment;
+        }
+
+        private async Task<Equipment?> GetOwnedFlagsOrNullAsync()
+        {
+            //If the user hasnt set any inventory yet, return null to avoid hiding all exercises
+            var rows = await _inventory.GetAllAsync();
+            if (rows.Count == 0) return null;
+            return await _inventory.GetOwnedFlagsAsync();
+        }
+
+        private async Task<List<Exercise>> ApplyInventoryFilterAsync(IEnumerable<Exercise> source)
+        {
+            var ownedFlags = await GetOwnedFlagsOrNullAsync();
+            if (!ownedFlags.HasValue)
+                return source.ToList(); // no inventory set yet → don't hide anything
+
+            return source.Where(e => IsAllowedByInventory(e, ownedFlags.Value)).ToList();
+        }
+
         public async Task LoadAsync()
         {
             if (IsBusy) return;
@@ -57,6 +84,9 @@ namespace Forge.ViewModels.SubPages
                     requiresAllEquipmentFlags: null,
                     maxSkill: null,
                     onlyActive: true);
+
+                //inventory aware filtering
+                list = await ApplyInventoryFilterAsync(list);
 
                 UpdateItems(list);
             }
@@ -77,6 +107,8 @@ namespace Forge.ViewModels.SubPages
                 (!Category.HasValue || e.Category == Category) &&
                 (!BodyZone.HasValue || e.BodyZone == BodyZone)
             ).ToList();
+
+            results = await ApplyInventoryFilterAsync(results);
 
             UpdateItems(results);
         }

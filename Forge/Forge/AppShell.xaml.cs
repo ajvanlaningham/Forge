@@ -8,6 +8,8 @@ namespace Forge
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(ExerciseLibraryPage), typeof(ExerciseLibraryPage));
+            Routing.RegisterRoute(nameof(MyGearPage), typeof(MyGearPage));
+
         }
     }
 }

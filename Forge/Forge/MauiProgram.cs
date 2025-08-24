@@ -43,13 +43,20 @@ namespace Forge
             builder.Services.AddSingleton<IStatsStore, StatsStore>();
             builder.Services.AddSingleton<IStatsService, StatsService>();
 
+            // Inventory
+            builder.Services.AddSingleton<IInventoryService, InventoryService>();
+
             // UI
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<StatsViewModel>();
             builder.Services.AddTransient<StatsPage>();
+
+
             builder.Services.AddTransient<ViewModels.SubPages.ExerciseLibraryViewModel>();
             builder.Services.AddTransient<ExerciseLibraryPage>();
+            builder.Services.AddTransient<ViewModels.SubPages.MyGearViewModel>();
+            builder.Services.AddTransient<MyGearPage>();
 
 
             return builder.Build();

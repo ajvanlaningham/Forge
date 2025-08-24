@@ -70,6 +70,15 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inventory.
+        /// </summary>
+        internal static string GearPage_Title {
+            get {
+                return ResourceManager.GetString("GearPage_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FITNESS FORGE.
         /// </summary>
         internal static string Home_Header {
