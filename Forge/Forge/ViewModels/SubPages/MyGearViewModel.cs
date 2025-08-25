@@ -17,6 +17,7 @@ namespace Forge.ViewModels.SubPages
         public ICommand ToggleOwnedCommand { get; }
         public ICommand RefreshCommand { get; }
 
+
         public MyGearViewModel(IInventoryService inventory)
         {
             _inventory = inventory;

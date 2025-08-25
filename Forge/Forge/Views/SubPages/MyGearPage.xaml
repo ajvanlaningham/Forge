@@ -49,11 +49,25 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Style="{StaticResource TileFrame}">
-                        <Grid RowDefinitions="*,Auto" RowSpacing="6">
-                            <Label Text="{Binding Name}"
-                                   FontSize="14"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center">
+                        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="6">
+
+                            <Image Grid.Row="0"
+                               WidthRequest="40" HeightRequest="40"
+                               Aspect="AspectFit"
+                               HorizontalOptions="Center"
+                               Source="{Binding SpriteSource}">
+                                <Image.Triggers>
+                                    <DataTrigger TargetType="Image" Binding="{Binding Owned}" Value="False">
+                                        <Setter Property="Opacity" Value="0.5" />
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+
+                            <Label Grid.Row="1"
+                               Text="{Binding Name}"
+                               FontSize="14"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center">
                                 <Label.Triggers>
                                     <!-- Dim when not owned -->
                                     <DataTrigger TargetType="Label" Binding="{Binding Owned}" Value="False">
@@ -61,9 +75,9 @@
                                     </DataTrigger>
                                 </Label.Triggers>
                             </Label>
-
+                            
                             <!-- Owned strip -->
-                            <BoxView Grid.Row="1" HeightRequest="4" Opacity="0.0">
+                            <BoxView Grid.Row="2" HeightRequest="4" Opacity="0.0">
                                 <BoxView.Triggers>
                                     <DataTrigger TargetType="BoxView" Binding="{Binding Owned}" Value="True">
                                         <Setter Property="Opacity" Value="1.0" />
