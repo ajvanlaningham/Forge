@@ -70,6 +70,60 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        internal static string ExerciseLibraryPage_Category {
+            get {
+                return ResourceManager.GetString("ExerciseLibraryPage_Category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No exercises match your filters.
+        /// </summary>
+        internal static string ExerciseLibraryPage_NoMatch {
+            get {
+                return ResourceManager.GetString("ExerciseLibraryPage_NoMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Exercises.
+        /// </summary>
+        internal static string ExerciseLibraryPage_Search {
+            get {
+                return ResourceManager.GetString("ExerciseLibraryPage_Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        internal static string ExerciseLibraryPage_SearchBtn {
+            get {
+                return ResourceManager.GetString("ExerciseLibraryPage_SearchBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Body Zone.
+        /// </summary>
+        internal static string ExerciseLibraryPage_Zone {
+            get {
+                return ResourceManager.GetString("ExerciseLibraryPage_Zone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap gear you own too toggle!.
+        /// </summary>
+        internal static string GearPage_TapToToggleCTA {
+            get {
+                return ResourceManager.GetString("GearPage_TapToToggleCTA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inventory.
         /// </summary>
         internal static string GearPage_Title {

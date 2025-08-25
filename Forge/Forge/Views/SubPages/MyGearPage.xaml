@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Forge.Views.SubPages.MyGearPage"
+             xmlns:res="clr-namespace:Forge.Resources.Strings"
              x:Name="Root"
              Title="{Binding Title}">
 
@@ -18,7 +19,7 @@
     </ContentPage.Resources>
 
     <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="12">
-        <Label Text="Tap gear you own to toggle."
+        <Label Text="{x:Static res:AppResources.GearPage_TapToToggleCTA}"
                FontSize="16"
                Margin="2,0,0,4" />
 

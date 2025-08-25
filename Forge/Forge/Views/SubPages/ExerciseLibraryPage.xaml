@@ -4,6 +4,7 @@
              x:Class="Forge.Views.SubPages.ExerciseLibraryPage"
              xmlns:vm="clr-namespace:Forge.ViewModels.SubPages"
              xmlns:vmEnums="clr-namespace:Forge.ViewModels.SubPages"
+             xmlns:res="clr-namespace:Forge.Resources.Strings"
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
@@ -16,7 +17,7 @@
 
         <!-- Search -->
         <SearchBar Grid.Row="0"
-                   Placeholder="Search exercises"
+                   Placeholder="{x:Static res:AppResources.ExerciseLibraryPage_Search}"
                    Text="{Binding SearchText}"
                    SearchCommand="{Binding SearchCommand}" />
 
@@ -25,15 +26,15 @@
               ColumnDefinitions="*,*,*"
               ColumnSpacing="12">
             <Picker Grid.Column="0"
-                    Title="Category"
+                    Title="{x:Static res:AppResources.ExerciseLibraryPage_Category}"
                     ItemsSource="{x:Static vmEnums:ExerciseCategoryValues.All}"
                     SelectedItem="{Binding Category}" />
             <Picker Grid.Column="1"
-                    Title="Body Zone"
+                    Title="{x:Static res:AppResources.ExerciseLibraryPage_Zone}"
                     ItemsSource="{x:Static vmEnums:BodyZoneValues.All}"
                     SelectedItem="{Binding BodyZone}" />
             <Button Grid.Column="2"
-                    Text="Search"
+                    Text="{x:Static res:AppResources.ExerciseLibraryPage_SearchBtn}"
                     Command="{Binding SearchCommand}" />
         </Grid>
 
@@ -42,7 +43,7 @@
                         ItemsSource="{Binding Items}"
                         VerticalOptions="FillAndExpand">
             <CollectionView.EmptyView>
-                <Label Text="No exercises match your filters."
+                <Label Text="{x:Static res:AppResources.ExerciseLibraryPage_NoMatch}"
                        HorizontalTextAlignment="Center"
                        Margin="0,24,0,0"/>
             </CollectionView.EmptyView>

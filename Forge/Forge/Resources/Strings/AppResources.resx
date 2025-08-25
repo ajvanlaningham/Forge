@@ -117,8 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExerciseLibraryPage_Category" xml:space="preserve">
+    <value>Category</value>
+    <comment>New</comment>
+  </data>
+  <data name="ExerciseLibraryPage_NoMatch" xml:space="preserve">
+    <value>No exercises match your filters</value>
+    <comment>New</comment>
+  </data>
+  <data name="ExerciseLibraryPage_Search" xml:space="preserve">
+    <value>Search Exercises</value>
+    <comment>New</comment>
+  </data>
+  <data name="ExerciseLibraryPage_SearchBtn" xml:space="preserve">
+    <value>Search</value>
+    <comment>New</comment>
+  </data>
+  <data name="ExerciseLibraryPage_Zone" xml:space="preserve">
+    <value>Body Zone</value>
+    <comment>New</comment>
+  </data>
   <data name="ExerciseLibrary_Title" xml:space="preserve">
     <value>Exercise Library</value>
+    <comment>New</comment>
+  </data>
+  <data name="GearPage_TapToToggleCTA" xml:space="preserve">
+    <value>Tap gear you own too toggle!</value>
     <comment>New</comment>
   </data>
   <data name="GearPage_Title" xml:space="preserve">
