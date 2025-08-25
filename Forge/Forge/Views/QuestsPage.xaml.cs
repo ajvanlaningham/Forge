@@ -15,7 +15,23 @@ namespace Forge.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            _vm.DailyXpAwarded -= OnDailyXpAwarded;
+            _vm.DailyXpAwarded += OnDailyXpAwarded;
+
             await _vm.InitializeAsync();
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _vm.DailyXpAwarded -= OnDailyXpAwarded;
+        }
+
+        private async void OnDailyXpAwarded(object? sender, int xp)
+        {
+            await DisplayAlert("Nice!", $"+{xp} XP earned", "OK");
+            await Shell.Current.GoToAsync("//HomePage");
         }
     }
 }

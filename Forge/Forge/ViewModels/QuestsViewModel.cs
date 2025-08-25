@@ -11,6 +11,8 @@ namespace Forge.ViewModels
 
         private DateOnly _todayDate;
 
+        public event EventHandler<int>? DailyXpAwarded;
+
         private DailyQuests? _today;
         public DailyQuests? Today
         {
@@ -60,6 +62,7 @@ namespace Forge.ViewModels
             private set => SetProperty(ref _xpAwardMessage, value);
         }
 
+
         public ICommand ToggleStrengthCommand { get; }
         public ICommand ToggleMobilityCommand { get; }
         public ICommand ToggleConditioningCommand { get; }
@@ -67,6 +70,7 @@ namespace Forge.ViewModels
         public QuestsViewModel(IQuestService quests)
         {
             _quests = quests;
+
             Title = AppResources.QuestPage_Title;
 
             ToggleStrengthCommand = new Command(async () => await ToggleQuestAsync(QuestKind.Strength));
@@ -96,6 +100,7 @@ namespace Forge.ViewModels
                 IsStrengthCompleted = await _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Strength, ct);
                 IsMobilityCompleted = await _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Mobility, ct);
                 IsConditioningCompleted = await _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Conditioning, ct);
+
             }
             finally
             {
@@ -109,25 +114,22 @@ namespace Forge.ViewModels
         private async Task ToggleQuestAsync(QuestKind kind)
         {
             var isDone = await _quests.IsQuestCompletedAsync(_todayDate, kind);
-            if (isDone)
-                await _quests.UncompleteQuestAsync(_todayDate, kind);
-            else
-                await _quests.CompleteQuestAsync(_todayDate, kind);
+            if (isDone) await _quests.UncompleteQuestAsync(_todayDate, kind);
+            else await _quests.CompleteQuestAsync(_todayDate, kind);
 
             switch (kind)
             {
-                case QuestKind.Strength:
-                    IsStrengthCompleted = !isDone; break;
-                case QuestKind.Mobility:
-                    IsMobilityCompleted = !isDone; break;
-                case QuestKind.Conditioning:
-                    IsConditioningCompleted = !isDone; break;
+                case QuestKind.Strength: IsStrengthCompleted = !isDone; break;
+                case QuestKind.Mobility: IsMobilityCompleted = !isDone; break;
+                case QuestKind.Conditioning: IsConditioningCompleted = !isDone; break;
             }
 
+            // If all three are now complete, award XP once
             var awarded = await _quests.TryAwardDailyCompletionXpAsync(_todayDate);
             if (awarded > 0)
             {
                 XpAwardMessage = $"+{awarded} XP earned for completing all quests!";
+                DailyXpAwarded?.Invoke(this, awarded); // notify page to redirect
             }
         }
 
@@ -139,6 +141,5 @@ namespace Forge.ViewModels
             BodyZone.FullBody => "Full body",
             _ => z.ToString()
         };
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using Forge.Data;
+﻿using Forge.Constants;
+using Forge.Data;
 using Forge.Models;
 using Forge.Resources.Strings;
 using Forge.Services.Interfaces;
@@ -13,8 +14,6 @@ namespace Forge.Services.Implementations
         private readonly Dictionary<DateOnly, DailyQuests> _cache = new();
         private readonly HashSet<(DateOnly date, QuestKind kind)> _completed = new();
 
-        private const int DailyCompletionXp = 50; // tweak later if you want
-        private const string XpTotalKey = "Forge.XP.Total";
         private static string AwardKey(DateOnly d) => $"Forge.XP.Awarded.{d:yyyy-MM-dd}";
 
         public QuestService(IRepository<ExerciseRow> exerciseRepo, IStatsStore stats)
@@ -100,25 +99,42 @@ namespace Forge.Services.Implementations
             if (Preferences.Get(flagKey, false))
                 return 0;
 
+            var dailyXp = GameMath.GameConstants.Quests.XpPerQuest * GameMath.GameConstants.Quests.QuestsPerDay;
+
             await _stats.InitAsync();
             var user = await _stats.GetUserStatsAsync();
-            user.Xp += DailyCompletionXp;
+            user.Xp += dailyXp;
             await _stats.UpsertUserStatsAsync(user);
 
-            // Mark awarded
+            // Mark this date as awarded
             Preferences.Set(flagKey, true);
-            return DailyCompletionXp;
+
+            return dailyXp;
         }
 
         private DailyQuests AssembleDailyQuests(DateOnly date, List<ExerciseRow> active)
         {
             var isRecovery = IsRecoveryDay(date);
-            var theme = GetBodyFocusForDate(date);
 
-            // Choose the pool: recovery-only on recovery days, otherwise all active
+            // Keep FullBody label on recovery; otherwise use your weekly mapping
+            var theme = isRecovery ? BodyZone.FullBody : GetBodyFocusForDate(date);
+
+            // Strict pool rules:
+            //  - Recovery day  => ONLY recovery-tagged
+            //  - Normal day    => EXCLUDE recovery-tagged
             var pool = isRecovery
-                ? active.Where(r => string.Equals(r.SourceTag, Constants.GameConstants.Exercises.ExSourceTag, StringComparison.OrdinalIgnoreCase)).ToList()
-                : active;
+                ? active.Where(r =>
+                      string.Equals(
+                          r.SourceTag,
+                          Constants.GameConstants.Exercises.ExSourceTag,   // should match importer tag, e.g. "recovery"
+                          StringComparison.OrdinalIgnoreCase))
+                    .ToList()
+                : active.Where(r =>
+                      !string.Equals(
+                          r.SourceTag,
+                          Constants.GameConstants.Exercises.ExSourceTag,
+                          StringComparison.OrdinalIgnoreCase))
+                    .ToList();
 
             var strength = BuildQuest(
                 QuestKind.Strength, theme,
@@ -165,13 +181,13 @@ namespace Forge.Services.Implementations
             date.DayOfWeek is DayOfWeek.Wednesday or DayOfWeek.Saturday or DayOfWeek.Sunday;
 
         private static IReadOnlyList<ExerciseRow> PickByCategoryAndFocus(
-        List<ExerciseRow> all,
+        List<ExerciseRow> pool,
         ExerciseCategory category,
         BodyZone focus,
         int max)
         {
-            // Primary pool: exact category + focus
-            var primary = all
+            // Primary: exact category + focus
+            var primary = pool
                 .Where(r => (ExerciseCategory)r.Category == category && (BodyZone)r.BodyZone == focus)
                 .OrderBy(r => r.Name)
                 .ThenBy(r => r.Id)
@@ -180,9 +196,9 @@ namespace Forge.Services.Implementations
 
             if (primary.Count >= max) return primary;
 
-            // Secondary pool: same category + FullBody (good fillers for any day)
+            // Secondary: same category + FullBody
             var need = max - primary.Count;
-            var secondary = all
+            var secondary = pool
                 .Where(r => (ExerciseCategory)r.Category == category && (BodyZone)r.BodyZone == BodyZone.FullBody)
                 .OrderBy(r => r.Name)
                 .ThenBy(r => r.Id)
@@ -192,16 +208,15 @@ namespace Forge.Services.Implementations
             primary.AddRange(secondary);
             if (primary.Count >= max) return primary;
 
-            // Tertiary pool: same category, any focus (as a last resort)
+            // Tertiary: same category, any focus (still within pool)
             need = max - primary.Count;
-            var tertiary = all
+            var tertiary = pool
                 .Where(r => (ExerciseCategory)r.Category == category)
                 .OrderBy(r => r.Name)
                 .ThenBy(r => r.Id)
                 .Take(need)
                 .ToList();
 
-            // Avoid duplicates if overlaps ever occur
             foreach (var row in tertiary)
                 if (!primary.Any(p => p.Id == row.Id))
                     primary.Add(row);
