@@ -52,6 +52,8 @@ namespace Forge.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
+        public string? SourceTag { get; set; }  // e.g., "recovery" for recovery-only entries
+
         [Indexed(Name = "IX_Exercise_Name", Unique = true)]
         public string Name { get; set; } = "";
 

@@ -37,12 +37,12 @@ namespace Forge.ViewModels
         public async Task InitializeAsync()
         {
             await _importer.EnsureSeededAsync(
-                GameConstants.Exercises.LibraryFile,
+                GameConstants.Exercises.LibraryFiles,
                 GameConstants.Exercises.LibraryVersion);
 
             await _stats.InitAsync();
 
-            var stats = await _stats.GetCoreStatsAsyncFromDb(); // ensure interface has this (see Fix 2)
+            var stats = await _stats.GetCoreStatsAsyncFromDb();
             var userStats = await _stats.GetUserStatsAsync();
 
             UserLevel = userStats.Level;

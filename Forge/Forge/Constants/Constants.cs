@@ -24,8 +24,15 @@ namespace Forge.Constants
         public static class Exercises
         {
             public const string PrefixKey = "ExerciseLibraryVersion";
-            public const string LibraryFile = "exercises.v1.json";
+            public static readonly string[] LibraryFiles =
+            {
+                "strength.v1.json",
+                "mobility.v1.json",
+                "conditioning.v1.json",
+                "recovery.v1.json"
+            };
             public const string LibraryVersion = "v1";
+            public const string ExSourceTag = "recovery";
         }
     }
 

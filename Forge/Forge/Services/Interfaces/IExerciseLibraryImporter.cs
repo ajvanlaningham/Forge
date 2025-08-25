@@ -4,6 +4,8 @@ namespace Forge.Services.Interfaces
 {
     public interface IExerciseLibraryImporter
     {
-        Task EnsureSeededAsync(string libraryFile = GameConstants.Exercises.LibraryFile, string version = GameConstants.Exercises.LibraryVersion);
+        Task EnsureSeededAsync(
+            IEnumerable<string>? libraryFiles = null,
+            string version = GameConstants.Exercises.LibraryVersion);
     }
 }

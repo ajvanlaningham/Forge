@@ -1,0 +1,86 @@
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:Forge.Converters"
+             xmlns:models="clr-namespace:Forge.Models"
+             xmlns:res="clr-namespace:Forge.Resources.Strings"
+             x:Class="Forge.Controls.Cards.QuestCard"
+             x:DataType="models:Quest"
+             x:Name="Root">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <conv:QuestExerciseFormatter x:Key="QuestExerciseFormatter" />
+            <conv:NullToBoolInverseConverter x:Key="NullToBoolInverseConverter" />
+            <Style TargetType="Label" x:Key="HeaderStyle">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="18" />
+            </Style>
+            <Style TargetType="Label" x:Key="ItemStyle">
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Border x:Name="Card"
+            StrokeThickness="1"
+            Stroke="{StaticResource Accent}"
+            StrokeShape="RoundRectangle 12"
+            Padding="12"
+            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+        <Border.Triggers>
+            <!-- When completed, tint the background with Leaf -->
+            <DataTrigger TargetType="Border"
+                         Binding="{Binding Source={x:Reference Root}, Path=IsCompleted}"
+                         Value="True">
+                <Setter Property="BackgroundColor" Value="{StaticResource Leaf}" />
+                <Setter Property="Stroke" Value="{StaticResource Leaf}" />
+            </DataTrigger>
+        </Border.Triggers>
+
+        <VerticalStackLayout Spacing="6">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                <Label Grid.Column="0" Text="{Binding Title}" Style="{StaticResource HeaderStyle}" />
+                <Border Grid.Column="1"
+                        Padding="8,2"
+                        BackgroundColor="#0F000000"
+                        Stroke="#D0D0D0"
+                        StrokeShape="RoundRectangle 8">
+                    <Label Text="{Binding BodyFocus}" FontSize="12" />
+                </Border>
+
+                <!-- Toggle button -->
+                <Button Grid.Column="2"
+                        Padding="10,4"
+                        Command="{Binding Source={x:Reference Root}, Path=ToggleCommand}"
+                        Text="{x:Static res:AppResources.QuestCard_CompleteBTN}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={x:Reference Root}, Path=IsCompleted}"
+                                     Value="True">
+                            <Setter Property="Text" Value="{x:Static res:AppResources.QuestCard_UndoComplete}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+
+            <!-- Exercises -->
+            <CollectionView ItemsSource="{Binding Exercises}" Margin="0,4,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:QuestExercise">
+                        <Grid Padding="0,4">
+                            <Label Style="{StaticResource ItemStyle}"
+                                   Text="{Binding ., Converter={StaticResource QuestExerciseFormatter}}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Notes -->
+            <Label Text="{Binding Notes}"
+                   FontSize="12"
+                   Opacity="0.8"
+                   IsVisible="{Binding Notes, Converter={StaticResource NullToBoolInverseConverter}}" />
+        </VerticalStackLayout>
+    </Border>
+</ContentView>
