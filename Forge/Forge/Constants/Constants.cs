@@ -3,17 +3,6 @@ namespace Forge.Constants
 {
     public static class GameConstants
     {
-        // Leveling
-        public const int XpPerLevel = 1000;
-
-        // Stat scoring
-        public static class Stats
-        {
-            public const int MinScore = 1;
-            public const int MaxScore = 20;
-            public const double ScoreStepRatio = 0.10; // ±10% ⇒ ±1 step
-        }
-
         // Storage
         public static class Db
         {
