@@ -9,23 +9,26 @@ namespace Forge.Services.Implementations
     public sealed class QuestService : IQuestService
     {
         private readonly IRepository<ExerciseRow> _exerciseRepo;
+        private readonly IRepository<QuestCompletionRow> _completionRepo;
         private readonly IStatsStore _stats;
         private bool _initialized;
+        private static string DateKey(DateOnly d) => d.ToString("yyyy-MM-dd");
         private readonly Dictionary<DateOnly, DailyQuests> _cache = new();
-        private readonly HashSet<(DateOnly date, QuestKind kind)> _completed = new();
 
-        private static string AwardKey(DateOnly d) => $"Forge.XP.Awarded.{d:yyyy-MM-dd}";
-
-        public QuestService(IRepository<ExerciseRow> exerciseRepo, IStatsStore stats)
+        public QuestService(IRepository<ExerciseRow> exerciseRepo,
+        IStatsStore stats,
+        IRepository<QuestCompletionRow> completionRepo)
         {
             _exerciseRepo = exerciseRepo;
             _stats = stats;
+            _completionRepo = completionRepo;
         }
 
         public async Task InitializeAsync()
         {
             if (_initialized) return;
             await _exerciseRepo.GetAllAsync();
+            await _completionRepo.GetAllAsync();
 
             _initialized = true;
         }
@@ -64,52 +67,76 @@ namespace Forge.Services.Implementations
         public async Task CompleteQuestAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
             await InitializeAsync();
-            _completed.Add((date, kind));
+            var row = await GetOrCreateRowAsync(date, kind);
+            if (!row.Completed)
+            {
+                row.Completed = true;
+                await _completionRepo.InsertOrReplaceAsync(row);
+            }
         }
 
         public async Task<bool> IsQuestCompletedAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
             await InitializeAsync();
-            return _completed.Contains((date, kind));
+            var row = await GetRowAsync(date, kind);
+            return row?.Completed ?? false;
         }
 
         public async Task UncompleteQuestAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
             await InitializeAsync();
-            _completed.Remove((date, kind));
+            var row = await GetRowAsync(date, kind);
+            if (row != null && row.Completed)
+            {
+                row.Completed = false;
+                await _completionRepo.UpdateAsync(row);
+            }
         }
 
         public async Task<bool> AreAllQuestsCompletedAsync(DateOnly date, CancellationToken ct = default)
         {
             await InitializeAsync();
-            return _completed.Contains((date, QuestKind.Strength))
-                && _completed.Contains((date, QuestKind.Mobility))
-                && _completed.Contains((date, QuestKind.Conditioning));
+            var s = await IsQuestCompletedAsync(date, QuestKind.Strength, ct);
+            var m = await IsQuestCompletedAsync(date, QuestKind.Mobility, ct);
+            var c = await IsQuestCompletedAsync(date, QuestKind.Conditioning, ct);
+            return s && m && c;
+
         }
 
         public async Task<int> TryAwardDailyCompletionXpAsync(DateOnly date, CancellationToken ct = default)
         {
             await InitializeAsync();
-
-            if (!await AreAllQuestsCompletedAsync(date, ct))
-                return 0;
-
-            // Prevent double-award per date
-            var flagKey = AwardKey(date);
-            if (Preferences.Get(flagKey, false))
-                return 0;
-
-            var dailyXp = GameMath.GameConstants.Quests.XpPerQuest * GameMath.GameConstants.Quests.QuestsPerDay;
-
+            var kinds = new[] { QuestKind.Strength, QuestKind.Mobility, QuestKind.Conditioning };
+            int netDelta = 0;
+            
             await _stats.InitAsync();
             var user = await _stats.GetUserStatsAsync();
-            user.Xp += dailyXp;
-            await _stats.UpsertUserStatsAsync(user);
-
-            // Mark this date as awarded
-            Preferences.Set(flagKey, true);
-
-            return dailyXp;
+            
+            foreach (var kind in kinds)
+            {
+                var row = await GetOrCreateRowAsync(date, kind);
+                // If user marked complete and hasn't been granted XP yet -> grant +50
+                if (row.Completed && !row.XpGranted)
+                {
+                    user.Xp += GameMath.GameConstants.Quests.XpPerQuest; // expected 50
+                    row.XpGranted = true;
+                    netDelta += GameMath.GameConstants.Quests.XpPerQuest;
+                    await _completionRepo.UpdateAsync(row);
+                }
+                // If user undid completion but XP was already granted -> remove -50
+                else if (!row.Completed && row.XpGranted)
+                {
+                    user.Xp = Math.Max(0, user.Xp - GameMath.GameConstants.Quests.XpPerQuest);
+                    row.XpGranted = false;
+                    netDelta -= GameMath.GameConstants.Quests.XpPerQuest;
+                    await _completionRepo.UpdateAsync(row);
+                }
+            }
+            
+            if (netDelta != 0)
+                await _stats.UpsertUserStatsAsync(user);
+            
+            return netDelta; // +50, -50, or 0
         }
 
         private DailyQuests AssembleDailyQuests(DateOnly date, List<ExerciseRow> active)
@@ -160,7 +187,29 @@ namespace Forge.Services.Implementations
 
         // --- helpers ---
 
-        private static BodyZone GetBodyFocusForDate(DateOnly date)
+        private async Task<QuestCompletionRow?> GetRowAsync(DateOnly date, QuestKind kind)
+        {
+            var dk = DateKey(date);
+            var all = await _completionRepo.WhereAsync(r => r.DateKey == dk && r.Kind == (int)kind);
+            return all.FirstOrDefault();
+        }
+
+        private async Task<QuestCompletionRow> GetOrCreateRowAsync(DateOnly date, QuestKind kind)
+        {
+            var existing = await GetRowAsync(date, kind);
+            if (existing != null) return existing;
+            var row = new QuestCompletionRow
+            {
+                DateKey = DateKey(date),
+                Kind = (int) kind,
+                Completed = false,
+                XpGranted = false
+            };
+            await _completionRepo.InsertAsync(row);
+            return row;
+        }
+
+private static BodyZone GetBodyFocusForDate(DateOnly date)
         {
             // Weekly cycle (Mon..Sun):
             // Mon=Lower, Tue=Upper, Wed=Recovery(FullBody), Thu=Core, Fri=FullBody, Sat=Recovery(FullBody), Sun=Recovery(FullBody)
