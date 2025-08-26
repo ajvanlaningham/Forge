@@ -169,6 +169,50 @@
     <value>Home</value>
     <comment>New</comment>
   </data>
+  <data name="QuestCard_CompleteBTN" xml:space="preserve">
+    <value>Complete Quest</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestCard_UndoComplete" xml:space="preserve">
+    <value>Undo</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestPage_DailyFocus" xml:space="preserve">
+    <value>Today's Focus</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestPage_EmptyQuests" xml:space="preserve">
+    <value>No quests yet..</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestPage_Header" xml:space="preserve">
+    <value>Daily Quests</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestPage_RecoveryBadge" xml:space="preserve">
+    <value>Recovery Day</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestPage_Title" xml:space="preserve">
+    <value>Quests</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestService_CategoryConditioning" xml:space="preserve">
+    <value>Conditioning Quest</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestService_CategoryDefault" xml:space="preserve">
+    <value>Quest</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestService_CategoryMobility" xml:space="preserve">
+    <value>Mobility Quest</value>
+    <comment>New</comment>
+  </data>
+  <data name="QuestService_CategoryStrength" xml:space="preserve">
+    <value>Strength Quest</value>
+    <comment>New</comment>
+  </data>
   <data name="StatCard_lvl" xml:space="preserve">
     <value>LVL</value>
     <comment>New</comment>

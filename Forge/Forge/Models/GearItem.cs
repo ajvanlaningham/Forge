@@ -31,7 +31,6 @@ namespace Forge.Models
                 // Put exact filenames here when they don't follow the rule
                 // { Equipment.Barbell, "barbell.png" },     // (rule already produces this)
                 // { Equipment.JumpRope, "jump-rope.png" },  // (rule already produces this)
-                { Equipment.Dumbbell, "dumbell.png" }
             };
 
         private static string GetSpriteFileName(Equipment eq)

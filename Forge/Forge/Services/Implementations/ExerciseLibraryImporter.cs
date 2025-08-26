@@ -15,51 +15,59 @@ namespace Forge.Services.Implementations
         public ExerciseLibraryImporter(IRepository<ExerciseRow> repo) => _repo = repo;
 
         public async Task EnsureSeededAsync(
-            string libraryFile = GameConstants.Exercises.LibraryFile, 
+            IEnumerable<string>? libraryFiles = null,
             string version = GameConstants.Exercises.LibraryVersion)
         {
-            // skip if already imported this version
             var existingVersion = Preferences.Get(PrefKey, null);
             if (existingVersion == version) return;
 
             await _repo.EnsureTableAsync();
 
-            using var stream = await FileSystem.OpenAppPackageFileAsync(libraryFile);
-            using var reader = new StreamReader(stream);
-            var json = await reader.ReadToEndAsync();
+            libraryFiles ??= GameConstants.Exercises.LibraryFiles;
 
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
-                Converters =
-                {
-                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-                }
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
             };
 
-            var items = JsonSerializer.Deserialize<List<ExerciseImportDto>>(json, options) ?? new();
-
-            //fun fact, the original version of this started every single row with ID=0 so I only ever displayed the last exercise in the seed data. lol 
-            foreach (var dto in items)
+            foreach (var libraryFile in libraryFiles)
             {
-                var exercise = dto.ToDomain();
+                using var stream = await FileSystem.OpenAppPackageFileAsync(libraryFile);
+                using var reader = new StreamReader(stream);
 
-                // 1) Try to find by unique Name
-                var existing = await _repo.FirstOrDefaultAsync(r => r.Name == exercise.Name);
+                // Tag any rows coming from the recovery file
+                bool isRecovery = libraryFile.Contains(GameConstants.Exercises.ExSourceTag, StringComparison.OrdinalIgnoreCase);
 
-                if (existing == null)
+                var json = await reader.ReadToEndAsync();
+                var items = JsonSerializer.Deserialize<List<ExerciseImportDto>>(json, options) ?? new();
+
+                foreach (var dto in items)
                 {
-                    // New row => let SQLite auto-assign Id
-                    var newRow = ExerciseRow.FromDomain(exercise);
-                    newRow.Id = 0;                 // sentinel for sqlite-net INSERT (auto-increment)
-                    await _repo.InsertAsync(newRow);
-                }
-                else
-                {
-                    // Existing row => keep the PK, update other fields
-                    var updated = ExerciseRow.FromDomain(exercise);
-                    updated.Id = existing.Id;      // preserve PK
-                    await _repo.UpdateAsync(updated);
+                    var exercise = dto.ToDomain();
+                    var existing = await _repo.FirstOrDefaultAsync(r => r.Name == exercise.Name);
+
+                    if (existing is null)
+                    {
+                        var newRow = ExerciseRow.FromDomain(exercise);
+                        newRow.Id = 0; // sqlite-net autoincrement sentinel
+
+                        if (isRecovery)
+                            newRow.SourceTag = GameConstants.Exercises.ExSourceTag;
+
+                        await _repo.InsertAsync(newRow);
+                    }
+                    else
+                    {
+                        var updated = ExerciseRow.FromDomain(exercise);
+                        updated.Id = existing.Id;
+
+                        updated.SourceTag = isRecovery
+                            ? GameConstants.Exercises.ExSourceTag
+                            : existing.SourceTag;
+
+                        await _repo.UpdateAsync(updated);
+                    }
                 }
             }
 

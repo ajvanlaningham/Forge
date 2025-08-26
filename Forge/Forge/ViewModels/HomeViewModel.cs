@@ -37,12 +37,12 @@ namespace Forge.ViewModels
         public async Task InitializeAsync()
         {
             await _importer.EnsureSeededAsync(
-                GameConstants.Exercises.LibraryFile,
+                GameConstants.Exercises.LibraryFiles,
                 GameConstants.Exercises.LibraryVersion);
 
             await _stats.InitAsync();
 
-            var stats = await _stats.GetCoreStatsAsyncFromDb(); // ensure interface has this (see Fix 2)
+            var stats = await _stats.GetCoreStatsAsyncFromDb();
             var userStats = await _stats.GetUserStatsAsync();
 
             UserLevel = userStats.Level;
@@ -57,7 +57,7 @@ namespace Forge.ViewModels
 
             const int xpPerLevel = 1000;
             StatsCard.Xp = UserXp;
-            StatsCard.XpProgress = GameMath.LevelProgress(UserXp);
+            StatsCard.XpProgress = GameMath.GameConstants.LevelProgress(UserXp);
 
             StatsCard.Strength = StrengthScore;
             StatsCard.Dexterity = DexterityScore;

@@ -178,6 +178,105 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Complete Quest.
+        /// </summary>
+        internal static string QuestCard_CompleteBTN {
+            get {
+                return ResourceManager.GetString("QuestCard_CompleteBTN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        internal static string QuestCard_UndoComplete {
+            get {
+                return ResourceManager.GetString("QuestCard_UndoComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Today&apos;s Focus.
+        /// </summary>
+        internal static string QuestPage_DailyFocus {
+            get {
+                return ResourceManager.GetString("QuestPage_DailyFocus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No quests yet...
+        /// </summary>
+        internal static string QuestPage_EmptyQuests {
+            get {
+                return ResourceManager.GetString("QuestPage_EmptyQuests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Daily Quests.
+        /// </summary>
+        internal static string QuestPage_Header {
+            get {
+                return ResourceManager.GetString("QuestPage_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recovery Day.
+        /// </summary>
+        internal static string QuestPage_RecoveryBadge {
+            get {
+                return ResourceManager.GetString("QuestPage_RecoveryBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quests.
+        /// </summary>
+        internal static string QuestPage_Title {
+            get {
+                return ResourceManager.GetString("QuestPage_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conditioning Quest.
+        /// </summary>
+        internal static string QuestService_CategoryConditioning {
+            get {
+                return ResourceManager.GetString("QuestService_CategoryConditioning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quest.
+        /// </summary>
+        internal static string QuestService_CategoryDefault {
+            get {
+                return ResourceManager.GetString("QuestService_CategoryDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobility Quest.
+        /// </summary>
+        internal static string QuestService_CategoryMobility {
+            get {
+                return ResourceManager.GetString("QuestService_CategoryMobility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strength Quest.
+        /// </summary>
+        internal static string QuestService_CategoryStrength {
+            get {
+                return ResourceManager.GetString("QuestService_CategoryStrength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to LVL.
         /// </summary>
         internal static string StatCard_lvl {

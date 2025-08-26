@@ -57,7 +57,7 @@
                     <!-- Overlay the label on top of the bar -->
                     <Grid>
                         <ProgressBar
-                            Progress="0.5"
+                            Progress="{Binding XpProgress}"
                             HeightRequest="10"
                             VerticalOptions="Center"
                             ProgressColor="{StaticResource Aether}"

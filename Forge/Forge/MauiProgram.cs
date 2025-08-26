@@ -38,6 +38,7 @@ namespace Forge
 
             //Exercise
             builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
+            builder.Services.AddSingleton<IQuestService, QuestService>();
 
             // Stats
             builder.Services.AddSingleton<IStatsStore, StatsStore>();
@@ -51,6 +52,8 @@ namespace Forge
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<StatsViewModel>();
             builder.Services.AddTransient<StatsPage>();
+            builder.Services.AddTransient<QuestsViewModel>();
+            builder.Services.AddTransient<QuestsPage>();
 
 
             builder.Services.AddTransient<ViewModels.SubPages.ExerciseLibraryViewModel>();
