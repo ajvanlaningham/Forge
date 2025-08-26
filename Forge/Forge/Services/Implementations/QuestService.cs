@@ -126,13 +126,13 @@ namespace Forge.Services.Implementations
                 ? active.Where(r =>
                       string.Equals(
                           r.SourceTag,
-                          Constants.GameConstants.Exercises.ExSourceTag,   // should match importer tag, e.g. "recovery"
+                          GameConstants.Exercises.ExSourceTag,
                           StringComparison.OrdinalIgnoreCase))
                     .ToList()
                 : active.Where(r =>
                       !string.Equals(
                           r.SourceTag,
-                          Constants.GameConstants.Exercises.ExSourceTag,
+                          GameConstants.Exercises.ExSourceTag,
                           StringComparison.OrdinalIgnoreCase))
                     .ToList();
 

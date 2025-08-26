@@ -86,7 +86,7 @@ namespace Forge.ViewModels
                 IsBusy = true;
 
                 await _quests.InitializeAsync();
-                _todayDate = DateOnly.FromDateTime(DateTime.Today);   // ✅ set once
+                _todayDate = DateOnly.FromDateTime(DateTime.Today);   // set once
 
                 Today = await _quests.GetDailyQuestsAsync(_todayDate, ct);
 

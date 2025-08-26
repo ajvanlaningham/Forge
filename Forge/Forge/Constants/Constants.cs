@@ -50,7 +50,7 @@ namespace Forge.Constants
 
         public static class GameConstants
         {
-            // 🔢 Progression
+            //  Progression
             public const int XpPerLevel = 1050; // 21 quests * 50 XP
 
             public static class Quests
@@ -67,16 +67,16 @@ namespace Forge.Constants
                 public const double ScoreStepRatio = 0.1; 
             }
 
-            public static double LevelProgress(int xp, int xpPerLevel = GameConstants.XpPerLevel)
+            public static double LevelProgress(int xp, int xpPerLevel = XpPerLevel)
             => Math.Clamp((double)xp / xpPerLevel, 0.0, 1.0);
 
-            public static int LevelFromXp(int xp, int xpPerLevel = GameConstants.XpPerLevel)
+            public static int LevelFromXp(int xp, int xpPerLevel = XpPerLevel)
             => (xp / xpPerLevel) + 1;
 
-            public static int XpIntoLevel(int xp, int xpPerLevel = GameConstants.XpPerLevel)
+            public static int XpIntoLevel(int xp, int xpPerLevel = XpPerLevel)
             => xp % xpPerLevel;
 
-            public static int XpToNextLevel(int xp, int xpPerLevel = GameConstants.XpPerLevel)
+            public static int XpToNextLevel(int xp, int xpPerLevel = XpPerLevel)
             {
                 var into = XpIntoLevel(xp, xpPerLevel);
                 return xpPerLevel - into;
@@ -84,13 +84,13 @@ namespace Forge.Constants
 
             public static int ScoreFrom(double baseline, double current, bool inverse = false)
             {
-                if (baseline <= 0 || current <= 0) return GameConstants.Stats.MinScore;
+                if (baseline <= 0 || current <= 0) return Stats.MinScore;
 
                 var ratio = inverse ? (baseline / current) : (current / baseline);
-                var steps = Math.Round((ratio - 1.0) / GameConstants.Stats.ScoreStepRatio);
-                var raw = GameConstants.Stats.MinScore + (int)steps;
+                var steps = Math.Round((ratio - 1.0) / Stats.ScoreStepRatio);
+                var raw = Stats.MinScore + (int)steps;
 
-                return Math.Clamp(raw, GameConstants.Stats.MinScore, GameConstants.Stats.MaxScore);
+                return Math.Clamp(raw, Stats.MinScore, Stats.MaxScore);
             }
         }
     }
