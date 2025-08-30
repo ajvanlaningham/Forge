@@ -87,12 +87,12 @@
                 Style="{StaticResource SectionHeader}" />
 
             <cards:QuestCard
-                BindingContext="{Binding Today.Strength}"
+                BindingContext="{Binding StrengthQuest}"
                 IsCompleted="{Binding Source={x:Reference Page}, Path=BindingContext.IsStrengthCompleted}"
                 ToggleCommand="{Binding Source={x:Reference Page}, Path=BindingContext.ToggleStrengthCommand}" />
 
             <cards:QuestCard
-                BindingContext="{Binding Today.Mobility}"
+                BindingContext="{Binding MobilityQuest}"
                 IsCompleted="{Binding Source={x:Reference Page}, Path=BindingContext.IsMobilityCompleted}"
                 ToggleCommand="{Binding Source={x:Reference Page}, Path=BindingContext.ToggleMobilityCommand}" />
 

@@ -208,6 +208,10 @@
     <value>Today's Focus</value>
     <comment>New</comment>
   </data>
+  <data name="QuestPage_DailyXpAward_Message_Format" xml:space="preserve">
+    <value>+{0} XP earned for completing all quests!</value>
+    <comment>New</comment>
+  </data>
   <data name="QuestPage_EmptyQuests" xml:space="preserve">
     <value>No quests yet..</value>
     <comment>New</comment>

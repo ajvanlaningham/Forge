@@ -23,6 +23,20 @@ namespace Forge.ViewModels
             private set => SetProperty(ref _today, value);
         }
 
+        private Quest? _strengthQuest;
+        public Quest? StrengthQuest
+        {
+            get => _strengthQuest;
+            private set => SetProperty(ref _strengthQuest, value);
+        }
+
+        private Quest? _mobilityQuest;
+        public Quest? MobilityQuest
+        {
+            get => _mobilityQuest;
+            private set => SetProperty(ref _mobilityQuest, value);
+        }
+
         private string _dayFocusDisplay = "—";
         public string DayFocusDisplay
         {
@@ -95,9 +109,7 @@ namespace Forge.ViewModels
             {
                 IsBusy = true;
 
-                Today = await _quests.GetDailyQuestsAsync(_todayDate, ct);
                 var sw = Stopwatch.StartNew();
-
                 _todayDate = DateOnly.FromDateTime(DateTime.Today);
 
                 //placeholderfor init
@@ -110,6 +122,9 @@ namespace Forge.ViewModels
                     Conditioning = new Quest { Kind = QuestKind.Conditioning, BodyFocus = BodyZone.FullBody, Title = AppResources.QuestPage_ConditioningQuest_Title }
                 };
 
+                StrengthQuest = Today.Strength;
+                MobilityQuest = Today.Mobility;
+
                 // Kick off all reads
                 var tDaily = _quests.GetDailyQuestsAsync(_todayDate, ct);
                 var tS = _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Strength, ct);
@@ -120,6 +135,8 @@ namespace Forge.ViewModels
                 await Task.WhenAll(tDaily, tS, tM, tC, tWeek);
                 
                 Today = tDaily.Result;
+                StrengthQuest = Today.Strength;
+                MobilityQuest = Today.Mobility;
 
                 // Recovery panel
                 IsRecoveryDay = IsRecovery(_todayDate);
@@ -178,9 +195,10 @@ namespace Forge.ViewModels
 
             // If all three are now complete, award XP once
             var awarded = await _quests.TryAwardDailyCompletionXpAsync(_todayDate);
+
             if (awarded > 0)
             {
-                XpAwardMessage = $"+{awarded} XP earned for completing all quests!";
+                XpAwardMessage = string.Format(AppResources.QuestPage_DailyXpAward_Message_Format, awarded);
                 DailyXpAwarded?.Invoke(this, awarded); // notify page to redirect
             }
         }

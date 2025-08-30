@@ -268,6 +268,15 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to +{0} XP earned for completing all quests!.
+        /// </summary>
+        internal static string QuestPage_DailyXpAward_Message_Format {
+            get {
+                return ResourceManager.GetString("QuestPage_DailyXpAward_Message_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No quests yet...
         /// </summary>
         internal static string QuestPage_EmptyQuests {
