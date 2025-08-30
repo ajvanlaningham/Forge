@@ -10,7 +10,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
     private readonly IStatsStore _stats;
     private bool _initialized;
 
-    private static int WeeklyXpReward => GameMath.GameConstants.Quests.XpPerQuest;
+    private static int WeeklyXpReward => (GameMath.GameConstants.Quests.XpPerQuest * 6);
 
     public ConditioningWeekService(IRepository<ConditioningWeekRow> repo, IStatsStore stats)
     {
