@@ -39,6 +39,7 @@ namespace Forge
             //Exercise
             builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
             builder.Services.AddSingleton<IQuestService, QuestService>();
+            builder.Services.AddSingleton<IConditioningWeekService, ConditioningWeekService>();
 
             // Stats
             builder.Services.AddSingleton<IStatsStore, StatsStore>();

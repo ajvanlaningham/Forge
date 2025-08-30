@@ -2,12 +2,15 @@
 using Forge.Resources.Strings;
 using Forge.Services.Interfaces;
 using System.Windows.Input;
+using System.Diagnostics;
+using Forge.ViewModels.Controls.Cards;
 
 namespace Forge.ViewModels
 {
     public class QuestsViewModel : BaseViewModel
     {
         private readonly IQuestService _quests;
+        private readonly IConditioningWeekService _conditioning;
 
         private DateOnly _todayDate;
 
@@ -62,14 +65,21 @@ namespace Forge.ViewModels
             private set => SetProperty(ref _xpAwardMessage, value);
         }
 
-
         public ICommand ToggleStrengthCommand { get; }
         public ICommand ToggleMobilityCommand { get; }
         public ICommand ToggleConditioningCommand { get; }
 
-        public QuestsViewModel(IQuestService quests)
+        private WeeklyConditioningCardViewModel _weeklyCard = new();
+        public WeeklyConditioningCardViewModel WeeklyCard
+        {
+            get => _weeklyCard;
+            private set => SetProperty(ref _weeklyCard, value);
+        }
+
+        public QuestsViewModel(IQuestService quests, IConditioningWeekService conditioning)
         {
             _quests = quests;
+            _conditioning = conditioning;
 
             Title = AppResources.QuestPage_Title;
 
@@ -85,22 +95,64 @@ namespace Forge.ViewModels
             {
                 IsBusy = true;
 
-                await _quests.InitializeAsync();
-                _todayDate = DateOnly.FromDateTime(DateTime.Today);   // set once
-
                 Today = await _quests.GetDailyQuestsAsync(_todayDate, ct);
+                var sw = Stopwatch.StartNew();
+
+                _todayDate = DateOnly.FromDateTime(DateTime.Today);
+
+                //placeholderfor init
+                Today = new DailyQuests
+                {
+                    Date = _todayDate,
+                    BodyFocus = BodyZone.FullBody,
+                    Strength = new Quest { Kind = QuestKind.Strength, BodyFocus = BodyZone.FullBody, Title = AppResources.QuestPage_StrengthQuest_Title },
+                    Mobility = new Quest { Kind = QuestKind.Mobility, BodyFocus = BodyZone.FullBody, Title = AppResources.QuestPage_MobilityQuest_Title },
+                    Conditioning = new Quest { Kind = QuestKind.Conditioning, BodyFocus = BodyZone.FullBody, Title = AppResources.QuestPage_ConditioningQuest_Title }
+                };
+
+                // Kick off all reads
+                var tDaily = _quests.GetDailyQuestsAsync(_todayDate, ct);
+                var tS = _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Strength, ct);
+                var tM = _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Mobility, ct);
+                var tC = _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Conditioning, ct);
+                var tWeek = _conditioning.GetWeekProgressAsync(_todayDate, ct);
+                
+                await Task.WhenAll(tDaily, tS, tM, tC, tWeek);
+                
+                Today = tDaily.Result;
 
                 // Recovery panel
                 IsRecoveryDay = IsRecovery(_todayDate);
+                var focusText = FocusToString(Today?.BodyFocus ?? BodyZone.FullBody);
                 DayFocusDisplay = IsRecoveryDay
-                    ? $"Recovery ({Today?.BodyFocus.ToString() ?? "FullBody"})"
+                    ? string.Format(AppResources.QuestPage_RecoveryHeader_Format, focusText) // "Recovery ({0})"
                     : FocusToString(Today?.BodyFocus ?? BodyZone.FullBody);
 
                 // Seed completion state
-                IsStrengthCompleted = await _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Strength, ct);
-                IsMobilityCompleted = await _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Mobility, ct);
-                IsConditioningCompleted = await _quests.IsQuestCompletedAsync(_todayDate, QuestKind.Conditioning, ct);
+                IsStrengthCompleted = tS.Result;
+                IsMobilityCompleted = tM.Result;
+                IsConditioningCompleted = tC.Result;
 
+                // --- Initialize Weekly Conditioning Card ---
+                var prog = tWeek.Result;
+                WeeklyCard.Title = AppResources.QuestPage_ConditioningQuest_Title;
+                WeeklyCard.Minutes = prog.Minutes;
+                WeeklyCard.GoalMinutes = prog.GoalMinutes;
+                WeeklyCard.WeekRangeText = $"{prog.WeekStart:MMM d} – {prog.WeekEnd:MMM d}";
+                WeeklyCard.HintText = AppResources.QuestPage_ConditioningQuest_Hint;
+                WeeklyCard.ShowHint = true;
+
+                WeeklyCard.AddMinutesCommand = new Command<object>(async p =>
+                {
+                    if (p is null) return;
+                    if (!int.TryParse(p.ToString(), out var m) || m <= 0) return;
+                    var updated = await _conditioning.AddConditioningMinutesAsync(_todayDate, m, ct);
+                    WeeklyCard.Minutes = updated.Minutes;
+                    WeeklyCard.GoalMinutes = updated.GoalMinutes;
+                    WeeklyCard.WeekRangeText = $"{updated.WeekStart:MMM d} – {updated.WeekEnd:MMM d}";
+                    //TODO: Add toast notification when completed
+                });
+                Debug.WriteLine($"QuestsViewModel.InitializeAsync completed in {sw.ElapsedMilliseconds} ms");
             }
             finally
             {
@@ -135,10 +187,10 @@ namespace Forge.ViewModels
 
         private static string FocusToString(BodyZone z) => z switch
         {
-            BodyZone.Lower => "Lower body",
-            BodyZone.Upper => "Upper body",
-            BodyZone.Core => "Core",
-            BodyZone.FullBody => "Full body",
+            BodyZone.Lower => AppResources.BodyZone_Lower,
+            BodyZone.Upper => AppResources.BodyZone_Upper,
+            BodyZone.Core => AppResources.BodyZone_Core,
+            BodyZone.FullBody => AppResources.BodyZone_FullBody,
             _ => z.ToString()
         };
     }
