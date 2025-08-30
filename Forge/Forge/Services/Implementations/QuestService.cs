@@ -98,15 +98,14 @@ namespace Forge.Services.Implementations
             await InitializeAsync();
             var s = await IsQuestCompletedAsync(date, QuestKind.Strength, ct);
             var m = await IsQuestCompletedAsync(date, QuestKind.Mobility, ct);
-            var c = await IsQuestCompletedAsync(date, QuestKind.Conditioning, ct);
-            return s && m && c;
+            return s && m;
 
         }
 
         public async Task<int> TryAwardDailyCompletionXpAsync(DateOnly date, CancellationToken ct = default)
         {
             await InitializeAsync();
-            var kinds = new[] { QuestKind.Strength, QuestKind.Mobility, QuestKind.Conditioning };
+            var kinds = new[] { QuestKind.Strength, QuestKind.Mobility };
             int netDelta = 0;
             
             await _stats.InitAsync();
@@ -171,9 +170,7 @@ namespace Forge.Services.Implementations
                 QuestKind.Mobility, theme,
                 PickByCategoryAndFocus(pool, ExerciseCategory.Mobility, theme, max: 3));
 
-            var conditioning = BuildQuest(
-                QuestKind.Conditioning, theme,
-                PickByCategoryAndFocus(pool, ExerciseCategory.Conditioning, theme, max: 3));
+            var conditioning = BuildWeeklyConditioningPlaceholder();
 
             return new DailyQuests
             {
@@ -284,10 +281,22 @@ private static BodyZone GetBodyFocusForDate(DateOnly date)
                 {
                     QuestKind.Strength => AppResources.QuestService_CategoryStrength,
                     QuestKind.Mobility => AppResources.QuestService_CategoryMobility,
+                    //conditioning handled by weekly builder
                     QuestKind.Conditioning => AppResources.QuestService_CategoryConditioning,
                     _ => AppResources.QuestService_CategoryDefault
                 },
                 Exercises = qex
+            };
+        }
+
+        private static Quest BuildWeeklyConditioningPlaceholder()
+        {
+            return new Quest
+            {
+                Kind = QuestKind.Conditioning,
+                BodyFocus = BodyZone.FullBody,
+                Title = $"{AppResources.QuestService_CategoryConditioning} (Weekly)",
+                Exercises = new List<QuestExercise>()
             };
         }
 

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Forge.Controls.Cards.WeeklyConditioningCard"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:Forge.ViewModels.Controls.Cards"
+    x:DataType="vm:WeeklyConditioningCardViewModel">
+
+    <Frame Padding="16" HasShadow="True" CornerRadius="16">
+        <VerticalStackLayout Spacing="10">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto">
+                <Label
+                    Text="{Binding Title}"
+                    FontSize="18"
+                    FontAttributes="Bold" />
+                <Label
+                    Grid.Column="1"
+                    Text="{Binding WeekRangeText}"
+                    FontSize="12"
+                    Opacity="0.7"
+                    VerticalTextAlignment="Center" />
+            </Grid>
+
+            <!-- Progress Bar + Readout -->
+            <VerticalStackLayout Spacing="6">
+                <ProgressBar
+                    Progress="{Binding Progress}"
+                    HeightRequest="8" />
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto">
+                    <Label
+                        Text="{Binding ProgressLabel}"
+                        FontSize="14" />
+                    <Label
+                        Grid.Column="1"
+                        Text="{Binding CompletedStatusText}"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        Opacity="0.8" />
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- Quick Add Buttons -->
+            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto" ColumnSpacing="8">
+                <Button Text="+5"
+                        Command="{Binding AddMinutesCommand}"
+                        CommandParameter="5" />
+                <Button Grid.Column="1" Text="+10"
+                        Command="{Binding AddMinutesCommand}"
+                        CommandParameter="10" />
+                <Button Grid.Column="2" Text="+20"
+                        Command="{Binding AddMinutesCommand}"
+                        CommandParameter="20" />
+                <Button Grid.Column="3" Text="+30"
+                        Command="{Binding AddMinutesCommand}"
+                        CommandParameter="30" />
+            </Grid>
+
+            <!-- Optional notes / hint -->
+            <Label
+                Text="{Binding HintText}"
+                FontSize="12"
+                Opacity="0.6"
+                IsVisible="{Binding ShowHint}" />
+        </VerticalStackLayout>
+    </Frame>
+</ContentView>

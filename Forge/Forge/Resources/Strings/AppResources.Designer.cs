@@ -61,6 +61,51 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Core.
+        /// </summary>
+        internal static string BodyZone_Core {
+            get {
+                return ResourceManager.GetString("BodyZone_Core", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Body.
+        /// </summary>
+        internal static string BodyZone_FullBody {
+            get {
+                return ResourceManager.GetString("BodyZone_FullBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lower Body.
+        /// </summary>
+        internal static string BodyZone_Lower {
+            get {
+                return ResourceManager.GetString("BodyZone_Lower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upper Body.
+        /// </summary>
+        internal static string BodyZone_Upper {
+            get {
+                return ResourceManager.GetString("BodyZone_Upper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string Common_OK {
+            get {
+                return ResourceManager.GetString("Common_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exercise Library.
         /// </summary>
         internal static string ExerciseLibrary_Title {
@@ -196,11 +241,38 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log any cardio: rides, runs, brisk walks, circuits..
+        /// </summary>
+        internal static string QuestPage_ConditioningQuest_Hint {
+            get {
+                return ResourceManager.GetString("QuestPage_ConditioningQuest_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conditioning.
+        /// </summary>
+        internal static string QuestPage_ConditioningQuest_Title {
+            get {
+                return ResourceManager.GetString("QuestPage_ConditioningQuest_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Today&apos;s Focus.
         /// </summary>
         internal static string QuestPage_DailyFocus {
             get {
                 return ResourceManager.GetString("QuestPage_DailyFocus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to +{0} XP earned for completing all quests!.
+        /// </summary>
+        internal static string QuestPage_DailyXpAward_Message_Format {
+            get {
+                return ResourceManager.GetString("QuestPage_DailyXpAward_Message_Format", resourceCulture);
             }
         }
         
@@ -214,11 +286,11 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Daily Quests.
+        ///   Looks up a localized string similar to Mobility.
         /// </summary>
-        internal static string QuestPage_Header {
+        internal static string QuestPage_MobilityQuest_Title {
             get {
-                return ResourceManager.GetString("QuestPage_Header", resourceCulture);
+                return ResourceManager.GetString("QuestPage_MobilityQuest_Title", resourceCulture);
             }
         }
         
@@ -232,11 +304,74 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recovery ({0}).
+        /// </summary>
+        internal static string QuestPage_RecoveryHeader_Format {
+            get {
+                return ResourceManager.GetString("QuestPage_RecoveryHeader_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strength.
+        /// </summary>
+        internal static string QuestPage_StrengthQuest_Title {
+            get {
+                return ResourceManager.GetString("QuestPage_StrengthQuest_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Daily Quests.
+        /// </summary>
+        internal static string QuestPage_SubHeader_Daily {
+            get {
+                return ResourceManager.GetString("QuestPage_SubHeader_Daily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Long is the road to Mordor....
+        /// </summary>
+        internal static string QuestPage_Subheader_SubHint {
+            get {
+                return ResourceManager.GetString("QuestPage_Subheader_SubHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weekly Quests.
+        /// </summary>
+        internal static string QuestPage_SubHeader_Weekly {
+            get {
+                return ResourceManager.GetString("QuestPage_SubHeader_Weekly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quests.
         /// </summary>
         internal static string QuestPage_Title {
             get {
                 return ResourceManager.GetString("QuestPage_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to +{0} XP earned.
+        /// </summary>
+        internal static string QuestPage_XpDialog_Message_Format {
+            get {
+                return ResourceManager.GetString("QuestPage_XpDialog_Message_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nice!.
+        /// </summary>
+        internal static string QuestPage_XpDialog_Title {
+            get {
+                return ResourceManager.GetString("QuestPage_XpDialog_Title", resourceCulture);
             }
         }
         
