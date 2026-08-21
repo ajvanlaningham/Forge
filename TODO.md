@@ -310,6 +310,28 @@ is where the real bugs will be — is actually covered.
 
 ---
 
+### PBI 2.7: Fix the mis-registered converter in App.xaml
+
+**User story:** As the developer, I want application-level resources to be what their key says
+they are, so a future binding does not silently get the wrong converter.
+
+**Acceptance criteria:**
+
+- `App.xaml:11` registers `NullToBoolInverseConverter` under the key `QuestExerciseFormatter`.
+  It should register `QuestExerciseFormatter`.
+- Currently latent, not live: `QuestCard.xaml` and `QuestsPage.xaml` each declare their own correct
+  converter locally and XAML resolves innermost-first, so every real usage already gets the right
+  one. The trap is a future binding that relies on the app-level key and silently receives a
+  null-to-bool converter instead.
+- While there: `NullToBoolInverseConverter` is registered under its own name too, so decide whether
+  the duplicate app-level entry is needed at all.
+
+**Tasks:**
+
+- [ ] Correct the converter type on the `QuestExerciseFormatter` key.
+- [ ] Decide whether the local declarations in `QuestCard.xaml` / `QuestsPage.xaml` are still needed
+      once the app-level one is right.
+
 ## Epic 3: Check-In and Weight Tracking
 
 The core of the app for its actual user, and currently a static stub.
@@ -788,11 +810,11 @@ data, so that six months of weigh-ins survive a version bump.
 **Tasks:**
 
 - [x] Choose and set the permanent `ApplicationId`.
-- [ ] Generate a release keystore and back it up off-machine. _Generated at `~/.forge-signing/`; the off-machine backup is still to do._
+- [x] Generate a release keystore and back it up off-machine. _Generated at `~/.forge-signing/`. Backup is deliberately local-only — an accepted risk recorded in `AGENTS.md`; GitHub secrets are write-only and cannot serve as a second copy. Revisit once Epic 10 lands and there is history worth keeping._
 - [x] Add `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and
       `ANDROID_KEY_PASSWORD` as repository secrets.
 - [x] Document the one-time uninstall in `AGENTS.md` and do it before Epic 3 ships.
-- [ ] Verify data survives an update between two release-signed builds. _Needs two published releases._
+- [x] Verify data survives an update between two release-signed builds. _Builds 2 -> 4 -> 5 all upgraded in place._
 
 ### PBI 9.2: Build and publish a release APK on merge to main
 
@@ -850,7 +872,7 @@ not require a laptop, a cable, or a rotating debug port.
 - [x] Add the `FileProvider`, `file_paths.xml`, and `REQUEST_INSTALL_PACKAGES` to the manifest.
 - [x] Guard install behind `#if ANDROID`.
 - [ ] Register the service in `MauiProgram.cs`.
-- [ ] Test the unhappy paths deliberately, including airplane mode. _Needs a device._
+- [ ] Test the unhappy paths deliberately, including airplane mode. _Happy path verified on build 5; no-network, no-release, and refused-install still untested._
 
 ### PBI 9.4: Surface updates in Settings
 
@@ -871,7 +893,7 @@ updating is a deliberate act rather than something that surprises me.
 - [x] Add `SettingsViewModel` with check and update commands plus progress state.
 - [x] Build the Settings UI over the existing stub page.
 - [x] Register the view model and page in `MauiProgram.cs`.
-- [ ] Verify on device against a real published release. _Needs the first release._
+- [x] Verify on device against a real published release. _Build 5 delivered via the button._
 
 ## Epic 10: Data Safety and Backup
 
@@ -1010,10 +1032,10 @@ do them first, so everything built afterwards reaches the phone without a cable.
 particular is time-sensitive: the one-time uninstall it requires destroys the local database, so it
 must happen before there is any weight history worth keeping.
 
-- [ ] PBI 9.1: Settle app identity and release signing — _remaining: back the keystore up off-machine_
+- [x] PBI 9.1: Settle app identity and release signing
 - [x] PBI 9.2: Build and publish a release APK on merge to main
-- [ ] PBI 9.3: Fetch and install updates from inside the app — _code complete; remaining: on-device verification of the unhappy paths_
-- [ ] PBI 9.4: Surface updates in Settings — _code complete; remaining: on-device verification against a real release_
+- [ ] PBI 9.3: Fetch and install updates from inside the app — _happy path verified end to end; remaining: unhappy-path testing_
+- [x] PBI 9.4: Surface updates in Settings
 - [ ] PBI 3.1: Log a daily weigh-in
 - [ ] PBI 3.2: Show the trend, not the number
 - [ ] PBI 3.3: Chart progress against the goal
@@ -1028,6 +1050,7 @@ must happen before there is any weight history worth keeping.
 - [ ] PBI 4.3: Finish the quest XP path
 - [ ] PBI 2.6: Fix or remove the equipment sprite path
 - [ ] PBI 10.3: Export a copy off the phone
+- [ ] PBI 2.7: Fix the mis-registered converter in App.xaml
 
 ### Sprint 4: baseline testing
 
