@@ -316,4 +316,56 @@
     <value>Train</value>
     <comment>New</comment>
   </data>
+  <data name="SettingsPage_Title" xml:space="preserve">
+    <value>Settings</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_AboutHeader" xml:space="preserve">
+    <value>About</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_UpdatesHeader" xml:space="preserve">
+    <value>Updates</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_InstalledVersion_Format" xml:space="preserve">
+    <value>Version {0} (build {1})</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_CheckForUpdates" xml:space="preserve">
+    <value>Check for updates</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_Checking" xml:space="preserve">
+    <value>Checking…</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_DownloadAndInstall" xml:space="preserve">
+    <value>Download and install</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_Downloading_Format" xml:space="preserve">
+    <value>Downloading… {0:P0}</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_UpdateNotes_Format" xml:space="preserve">
+    <value>Notes: {0}</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_BuiltAt_Format" xml:space="preserve">
+    <value>Built {0}</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_InstallFailed" xml:space="preserve">
+    <value>Download failed. Please try again.</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_InstallHint" xml:space="preserve">
+    <value>Android will ask for permission to install apps from Forge the first time.</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_Placeholder" xml:space="preserve">
+    <value>Units, goals, and export will go here.</value>
+    <comment>New</comment>
+  </data>
 </root>

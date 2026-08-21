@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FileProvider path map for the in-app updater. UpdateService writes the downloaded
+     APK to FileSystem.CacheDirectory (the app's internal cache dir), so expose that to
+     the package installer via a content:// URI. -->
+<paths>
+    <cache-path name="apk_cache" path="." />
+    <external-cache-path name="external_apk_cache" path="." />
+</paths>

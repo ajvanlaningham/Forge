@@ -24,8 +24,10 @@
 		<!-- Display name -->
 		<ApplicationTitle>Forge</ApplicationTitle>
 
-		<!-- App Identifier -->
-		<ApplicationId>com.companyname.forge</ApplicationId>
+		<!-- App Identifier.
+		     PERMANENT. Changing this is not an update, it is a different app: the old
+		     install's SQLite database becomes unreachable. Do not edit. -->
+		<ApplicationId>io.github.ajvanlaningham.forge</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>

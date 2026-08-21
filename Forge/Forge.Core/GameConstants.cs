@@ -37,6 +37,34 @@ namespace Forge.Constants
         }
 
         /// <summary>
+        /// In-app update delivery. Builds are published as GitHub Releases by CI; the app reads
+        /// them straight from the public Releases API.
+        /// </summary>
+        /// <remarks>
+        /// This works precisely because the repository is public — no credentials are involved.
+        /// If Forge is ever made private, do NOT solve it by embedding a token in the app; move
+        /// the manifest and APK behind something that can hold a secret instead.
+        /// </remarks>
+        public static class Updates
+        {
+            public const string GitHubOwner = "ajvanlaningham";
+            public const string GitHubRepo = "Forge";
+
+            /// <summary>Latest published release, unauthenticated. Rate limited to 60/hour per IP.</summary>
+            public const string LatestReleaseUrl =
+                "https://api.github.com/repos/" + GitHubOwner + "/" + GitHubRepo + "/releases/latest";
+
+            /// <summary>Release asset holding the build manifest.</summary>
+            public const string ManifestAssetName = "version.json";
+
+            /// <summary>The GitHub API rejects requests without a User-Agent.</summary>
+            public const string UserAgent = "Forge-Android-Updater";
+
+            /// <summary>Filename the downloaded APK is cached under.</summary>
+            public const string DownloadFileName = "forge-update.apk";
+        }
+
+        /// <summary>
         /// Starting values for user-tunable settings. These are defaults only; the live value
         /// is read from settings so the user can change it without a rebuild.
         /// </summary>

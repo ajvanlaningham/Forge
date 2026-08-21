@@ -332,7 +332,7 @@ that logging never becomes the reason I stop.
 - [ ] Add `IWeightService` / `WeightService` with upsert-by-date semantics.
 - [ ] Build the entry UI and wire the home-screen shortcut.
 - [ ] Grant logging XP through the existing XP path.
-- [ ] Register the service in `MauiProgram.cs`.
+- [x] Register the service in `MauiProgram.cs`.
 
 ### PBI 3.2: Show the trend, not the number
 
@@ -785,12 +785,12 @@ data, so that six months of weigh-ins survive a version bump.
 
 **Tasks:**
 
-- [ ] Choose and set the permanent `ApplicationId`.
-- [ ] Generate a release keystore and back it up off-machine.
+- [x] Choose and set the permanent `ApplicationId`.
+- [ ] Generate a release keystore and back it up off-machine. _Yours — `keytool` command is in `AGENTS.md`._
 - [ ] Add `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and
       `ANDROID_KEY_PASSWORD` as repository secrets.
-- [ ] Document the one-time uninstall in `AGENTS.md` and do it before Epic 3 ships.
-- [ ] Verify data survives an update between two release-signed builds.
+- [ ] Document the one-time uninstall in `AGENTS.md` and do it before Epic 3 ships. _Documented; the uninstall itself is still to do._
+- [ ] Verify data survives an update between two release-signed builds. _Needs two published releases._
 
 ### PBI 9.2: Build and publish a release APK on merge to main
 
@@ -812,11 +812,11 @@ finished work reaches my phone without me being at the build host.
 
 **Tasks:**
 
-- [ ] Add `.github/workflows/android-release.yml`.
-- [ ] Decode the keystore from the base64 secret at build time.
-- [ ] Publish with `-p:ApplicationVersion=${{ github.run_number }}` and the signing properties.
-- [ ] Generate `version.json` and attach it alongside the APK.
-- [ ] Verify a full run end to end, including the release actually appearing.
+- [x] Add `.github/workflows/android-release.yml`.
+- [x] Decode the keystore from the base64 secret at build time.
+- [x] Publish with `-p:ApplicationVersion=${{ github.run_number }}` and the signing properties.
+- [x] Generate `version.json` and attach it alongside the APK.
+- [ ] Verify a full run end to end, including the release actually appearing. _Needs the secrets in place._
 
 ### PBI 9.3: Fetch and install updates from inside the app
 
@@ -843,12 +843,12 @@ not require a laptop, a cable, or a rotating debug port.
 
 **Tasks:**
 
-- [ ] Add the manifest contract type matching `version.json`.
-- [ ] Implement `IUpdateService` / `UpdateService` with check, download, and install.
-- [ ] Add the `FileProvider`, `file_paths.xml`, and `REQUEST_INSTALL_PACKAGES` to the manifest.
-- [ ] Guard install behind `#if ANDROID`.
+- [x] Add the manifest contract type matching `version.json`.
+- [x] Implement `IUpdateService` / `UpdateService` with check, download, and install.
+- [x] Add the `FileProvider`, `file_paths.xml`, and `REQUEST_INSTALL_PACKAGES` to the manifest.
+- [x] Guard install behind `#if ANDROID`.
 - [ ] Register the service in `MauiProgram.cs`.
-- [ ] Test the unhappy paths deliberately, including airplane mode.
+- [ ] Test the unhappy paths deliberately, including airplane mode. _Needs a device._
 
 ### PBI 9.4: Surface updates in Settings
 
@@ -866,10 +866,10 @@ updating is a deliberate act rather than something that surprises me.
 
 **Tasks:**
 
-- [ ] Add `SettingsViewModel` with check and update commands plus progress state.
-- [ ] Build the Settings UI over the existing stub page.
-- [ ] Register the view model and page in `MauiProgram.cs`.
-- [ ] Verify on device against a real published release.
+- [x] Add `SettingsViewModel` with check and update commands plus progress state.
+- [x] Build the Settings UI over the existing stub page.
+- [x] Register the view model and page in `MauiProgram.cs`.
+- [ ] Verify on device against a real published release. _Needs the first release._
 
 ## Future Milestones
 
@@ -926,10 +926,10 @@ do them first, so everything built afterwards reaches the phone without a cable.
 particular is time-sensitive: the one-time uninstall it requires destroys the local database, so it
 must happen before there is any weight history worth keeping.
 
-- [ ] PBI 9.1: Settle app identity and release signing
-- [ ] PBI 9.2: Build and publish a release APK on merge to main
-- [ ] PBI 9.3: Fetch and install updates from inside the app
-- [ ] PBI 9.4: Surface updates in Settings
+- [ ] PBI 9.1: Settle app identity and release signing — _code complete; remaining: keystore + GitHub secrets (yours), then the one-time uninstall_
+- [ ] PBI 9.2: Build and publish a release APK on merge to main — _code complete; remaining: first end-to-end run, blocked on the secrets_
+- [ ] PBI 9.3: Fetch and install updates from inside the app — _code complete; remaining: on-device verification of the unhappy paths_
+- [ ] PBI 9.4: Surface updates in Settings — _code complete; remaining: on-device verification against a real release_
 - [ ] PBI 3.1: Log a daily weigh-in
 - [ ] PBI 3.2: Show the trend, not the number
 - [ ] PBI 3.3: Chart progress against the goal

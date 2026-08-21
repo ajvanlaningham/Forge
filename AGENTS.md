@@ -69,6 +69,55 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
   or adding a JSON file without bumping that version is a silent no-op on an existing install.
   `IExerciseLibraryImporter.ForceReseedAsync()` is the dev escape hatch.
 
+## Delivery — CI builds, in-app updates
+
+`deploy-android.sh` is the dev loop. **Delivery** is separate: merging to `main` runs
+`.github/workflows/android-release.yml`, which builds a release-signed APK and publishes it as a
+GitHub Release with a `version.json` manifest. The app's **Settings → Check for updates** button
+reads that release straight from the public GitHub API and hands the APK to the OS installer.
+
+This works only because the repo is **public** — no credentials are involved anywhere in the app.
+If Forge is ever made private, do **not** fix it by embedding a token in the client.
+
+### Two facts that will bite
+
+1. **A release-signed APK cannot install over a debug build.** The signatures differ and Android
+   refuses. Switching to release builds needs a one-time uninstall, and **that deletes the local
+   SQLite database**. Do it before there is data worth keeping.
+2. **`ApplicationId` is permanent.** It is `io.github.ajvanlaningham.forge`. Changing it is not an
+   update — it is a different app, and the previous install's database becomes unreachable.
+
+### One-time setup
+
+Generate a release keystore (keep the passwords; you will need them as secrets):
+
+```bash
+keytool -genkeypair -v \
+  -keystore forge-release.keystore \
+  -alias forge \
+  -keyalg RSA -keysize 2048 -validity 10000
+```
+
+**Back this file up somewhere off-machine.** If it is lost, no future build can install over an
+existing one — the only recovery is uninstall-and-lose-the-data, forever.
+
+Then add four repository secrets:
+
+| Secret | Value |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | `base64 -w0 forge-release.keystore` |
+| `ANDROID_KEYSTORE_PASSWORD` | store password from `keytool` |
+| `ANDROID_KEY_ALIAS` | `forge` |
+| `ANDROID_KEY_PASSWORD` | key password from `keytool` |
+
+The keystore itself must never be committed.
+
+### Version numbering
+
+`versionCode` comes from `github.run_number`, so it increases by one per CI run and the app's
+update check is a single integer comparison. Do not set `ApplicationVersion` by hand in the csproj
+for release builds — CI overrides it.
+
 ## Product rules
 
 These are product decisions, not implementation details. Breaking one silently damages data or

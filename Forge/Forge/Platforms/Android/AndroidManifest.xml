@@ -1,6 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true"></application>
+	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true">
+		<!-- Hands the downloaded APK to the OS package installer (a different app) via a
+		     content:// URI. Authority matches UpdateService.InstallApkAsync:
+		     ${applicationId}.fileprovider. Paths are declared in Resources/xml/file_paths.xml. -->
+		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
+			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+		</provider>
+	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- Lets the in-app Update button install the downloaded release APK. The OS still
+	     prompts the user to allow "install unknown apps" for Forge the first time. -->
+	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 </manifest>

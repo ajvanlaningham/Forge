@@ -2,10 +2,56 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:res="clr-namespace:Forge.Resources.Strings"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
+             x:DataType="vm:SettingsViewModel"
              x:Class="Forge.Views.SettingsPage"
-             Title="Settings">
-    <VerticalStackLayout Padding="24" Spacing="12">
-        <Label Text="Settings" FontSize="28" FontAttributes="Bold" />
-        <Label Text="Units, goals, export/backup, and about will go here." />
-    </VerticalStackLayout>
+             Title="{x:Static res:AppResources.SettingsPage_Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="14">
+
+            <Label Text="{x:Static res:AppResources.SettingsPage_UpdatesHeader}"
+                   FontSize="22"
+                   FontAttributes="Bold" />
+
+            <Label Text="{Binding InstalledVersion}" />
+
+            <!-- No IsEnabled binding: AsyncRelayCommand reports CanExecute=false while it runs. -->
+            <Button Text="{x:Static res:AppResources.SettingsPage_CheckForUpdates}"
+                    Command="{Binding CheckForUpdatesCommand}"
+                    HorizontalOptions="Fill" />
+
+            <ActivityIndicator IsRunning="{Binding IsChecking}"
+                               IsVisible="{Binding IsChecking}"
+                               HorizontalOptions="Start" />
+
+            <Label Text="{Binding StatusMessage}"
+                   IsVisible="{Binding HasStatus}" />
+
+            <Label Text="{Binding UpdateNotes}"
+                   IsVisible="{Binding HasNotes}"
+                   FontSize="13"
+                   Opacity="0.8" />
+
+            <Button Text="{x:Static res:AppResources.SettingsPage_DownloadAndInstall}"
+                    Command="{Binding DownloadAndInstallCommand}"
+                    IsVisible="{Binding UpdateAvailable}"
+                    HorizontalOptions="Fill" />
+
+            <ProgressBar Progress="{Binding DownloadProgress}"
+                         IsVisible="{Binding IsDownloading}" />
+
+            <Label Text="{x:Static res:AppResources.SettingsPage_InstallHint}"
+                   FontSize="12"
+                   Opacity="0.7" />
+
+            <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
+
+            <Label Text="{x:Static res:AppResources.SettingsPage_AboutHeader}"
+                   FontSize="22"
+                   FontAttributes="Bold" />
+
+            <Label Text="{x:Static res:AppResources.SettingsPage_Placeholder}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

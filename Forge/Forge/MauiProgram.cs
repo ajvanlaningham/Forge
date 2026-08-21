@@ -48,6 +48,9 @@ namespace Forge
             // Inventory
             builder.Services.AddSingleton<IInventoryService, InventoryService>();
 
+            // In-app updates (Android delivery path; see TODO.md Epic 9)
+            builder.Services.AddSingleton<IUpdateService, UpdateService>();
+
             // UI
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<HomePage>();
@@ -55,6 +58,8 @@ namespace Forge
             builder.Services.AddTransient<StatsPage>();
             builder.Services.AddTransient<QuestsViewModel>();
             builder.Services.AddTransient<QuestsPage>();
+            builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<SettingsPage>();
 
 
             builder.Services.AddTransient<ViewModels.SubPages.ExerciseLibraryViewModel>();

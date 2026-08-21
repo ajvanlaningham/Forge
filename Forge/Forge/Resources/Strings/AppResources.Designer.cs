@@ -509,5 +509,122 @@ namespace Forge.Resources.Strings {
                 return ResourceManager.GetString("TabNavigation_Train", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string SettingsPage_Title {
+            get {
+                return ResourceManager.GetString("SettingsPage_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        internal static string SettingsPage_AboutHeader {
+            get {
+                return ResourceManager.GetString("SettingsPage_AboutHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates.
+        /// </summary>
+        internal static string SettingsPage_UpdatesHeader {
+            get {
+                return ResourceManager.GetString("SettingsPage_UpdatesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0} (build {1}).
+        /// </summary>
+        internal static string SettingsPage_InstalledVersion_Format {
+            get {
+                return ResourceManager.GetString("SettingsPage_InstalledVersion_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for updates.
+        /// </summary>
+        internal static string SettingsPage_CheckForUpdates {
+            get {
+                return ResourceManager.GetString("SettingsPage_CheckForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking….
+        /// </summary>
+        internal static string SettingsPage_Checking {
+            get {
+                return ResourceManager.GetString("SettingsPage_Checking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download and install.
+        /// </summary>
+        internal static string SettingsPage_DownloadAndInstall {
+            get {
+                return ResourceManager.GetString("SettingsPage_DownloadAndInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading… {0:P0}.
+        /// </summary>
+        internal static string SettingsPage_Downloading_Format {
+            get {
+                return ResourceManager.GetString("SettingsPage_Downloading_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes: {0}.
+        /// </summary>
+        internal static string SettingsPage_UpdateNotes_Format {
+            get {
+                return ResourceManager.GetString("SettingsPage_UpdateNotes_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Built {0}.
+        /// </summary>
+        internal static string SettingsPage_BuiltAt_Format {
+            get {
+                return ResourceManager.GetString("SettingsPage_BuiltAt_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download failed. Please try again..
+        /// </summary>
+        internal static string SettingsPage_InstallFailed {
+            get {
+                return ResourceManager.GetString("SettingsPage_InstallFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Android will ask for permission to install apps from Forge the first time..
+        /// </summary>
+        internal static string SettingsPage_InstallHint {
+            get {
+                return ResourceManager.GetString("SettingsPage_InstallHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Units, goals, and export will go here..
+        /// </summary>
+        internal static string SettingsPage_Placeholder {
+            get {
+                return ResourceManager.GetString("SettingsPage_Placeholder", resourceCulture);
+            }
+        }
     }
 }
