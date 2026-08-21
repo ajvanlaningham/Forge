@@ -55,9 +55,8 @@ namespace Forge.ViewModels
             // Reflect to card
             StatsCard.Level = UserLevel;
 
-            const int xpPerLevel = 1000;
             StatsCard.Xp = UserXp;
-            StatsCard.XpProgress = GameMath.GameConstants.LevelProgress(UserXp);
+            StatsCard.XpProgress = GameMath.LevelProgress(UserXp);
 
             StatsCard.Strength = StrengthScore;
             StatsCard.Dexterity = DexterityScore;

@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 namespace Forge.Services.Interfaces
 {
     /// <summary>
-    /// Orchestrates generation and retrieval of daily quests (STR / DEX / CON).
-    /// This first pass intentionally avoids returning a concrete DailyQuest model
-    /// so we can add that in the next step without breaking the build.
+    /// Orchestrates generation, retrieval, and completion of daily quests.
     /// </summary>
+    /// <remarks>
+    /// Strength and Mobility are daily. Conditioning is tracked weekly by
+    /// <see cref="IConditioningWeekService"/>, so it is deliberately absent from the
+    /// daily completion checks here.
+    /// </remarks>
     public interface IQuestService
     {
         /// <summary>One-time setup (e.g., ensure repositories/tables are ready).</summary>
@@ -32,9 +35,19 @@ namespace Forge.Services.Interfaces
 
         Task UncompleteQuestAsync(DateOnly date, Forge.Models.QuestKind kind, CancellationToken ct = default);
 
-        Task<bool> AreAllQuestsCompletedAsync(DateOnly date, CancellationToken ct = default);
+        /// <summary>
+        /// True when both daily quests (Strength and Mobility) are complete for the date.
+        /// Conditioning is weekly and is not considered here.
+        /// </summary>
+        /// <remarks>Currently has no callers; retained as the natural hook for a daily-streak bonus.</remarks>
+        Task<bool> AreCoreQuestsCompletedAsync(DateOnly date, CancellationToken ct = default);
 
-        Task<int> TryAwardDailyCompletionXpAsync(DateOnly date, CancellationToken ct = default);
+        /// <summary>
+        /// Reconciles XP against completion state for each daily quest, granting XP for newly
+        /// completed quests and reclaiming it for ones that were un-completed.
+        /// </summary>
+        /// <returns>Net XP delta: a multiple of the per-quest award, positive, negative, or zero.</returns>
+        Task<int> TryAwardQuestXpAsync(DateOnly date, CancellationToken ct = default);
 
     }
 }

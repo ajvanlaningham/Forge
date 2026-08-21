@@ -14,6 +14,14 @@ namespace Forge.Services.Implementations
 
         public ExerciseLibraryImporter(IRepository<ExerciseRow> repo) => _repo = repo;
 
+        public Task ForceReseedAsync(
+            IEnumerable<string>? libraryFiles = null,
+            string version = GameConstants.Exercises.LibraryVersion)
+        {
+            Preferences.Remove(PrefKey);
+            return EnsureSeededAsync(libraryFiles, version);
+        }
+
         public async Task EnsureSeededAsync(
             IEnumerable<string>? libraryFiles = null,
             string version = GameConstants.Exercises.LibraryVersion)

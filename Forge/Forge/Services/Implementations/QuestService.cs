@@ -1,4 +1,5 @@
-﻿using Forge.Constants;
+﻿using Forge.Common;
+using Forge.Constants;
 using Forge.Data;
 using Forge.Models;
 using Forge.Resources.Strings;
@@ -12,7 +13,10 @@ namespace Forge.Services.Implementations
         private readonly IRepository<QuestCompletionRow> _completionRepo;
         private readonly IStatsStore _stats;
         private bool _initialized;
-        private static string DateKey(DateOnly d) => d.ToString("yyyy-MM-dd");
+
+        /// <summary>Days of assembled quests kept in memory either side of the requested date.</summary>
+        private const int CacheRetentionDays = 7;
+
         private readonly Dictionary<DateOnly, DailyQuests> _cache = new();
 
         public QuestService(IRepository<ExerciseRow> exerciseRepo,
@@ -47,6 +51,7 @@ namespace Forge.Services.Implementations
             var active = allRows.Where(r => r.IsActive).ToList();
 
             _cache[date] = AssembleDailyQuests(date, active);
+            PruneCache(date);
         }
 
         public async Task<DailyQuests> GetDailyQuestsAsync(DateOnly date, CancellationToken ct = default)
@@ -61,6 +66,7 @@ namespace Forge.Services.Implementations
 
             var day = AssembleDailyQuests(date, active);
             _cache[date] = day;
+            PruneCache(date);
             return day;
         }
 
@@ -93,7 +99,7 @@ namespace Forge.Services.Implementations
             }
         }
 
-        public async Task<bool> AreAllQuestsCompletedAsync(DateOnly date, CancellationToken ct = default)
+        public async Task<bool> AreCoreQuestsCompletedAsync(DateOnly date, CancellationToken ct = default)
         {
             await InitializeAsync();
             var s = await IsQuestCompletedAsync(date, QuestKind.Strength, ct);
@@ -102,7 +108,7 @@ namespace Forge.Services.Implementations
 
         }
 
-        public async Task<int> TryAwardDailyCompletionXpAsync(DateOnly date, CancellationToken ct = default)
+        public async Task<int> TryAwardQuestXpAsync(DateOnly date, CancellationToken ct = default)
         {
             await InitializeAsync();
             var kinds = new[] { QuestKind.Strength, QuestKind.Mobility };
@@ -117,17 +123,17 @@ namespace Forge.Services.Implementations
                 // If user marked complete and hasn't been granted XP yet -> grant +50
                 if (row.Completed && !row.XpGranted)
                 {
-                    user.Xp += GameMath.GameConstants.Quests.XpPerQuest; // expected 50
+                    user.Xp += GameMath.Quests.XpPerQuest; // expected 50
                     row.XpGranted = true;
-                    netDelta += GameMath.GameConstants.Quests.XpPerQuest;
+                    netDelta += GameMath.Quests.XpPerQuest;
                     await _completionRepo.UpdateAsync(row);
                 }
                 // If user undid completion but XP was already granted -> remove -50
                 else if (!row.Completed && row.XpGranted)
                 {
-                    user.Xp = Math.Max(0, user.Xp - GameMath.GameConstants.Quests.XpPerQuest);
+                    user.Xp = Math.Max(0, user.Xp - GameMath.Quests.XpPerQuest);
                     row.XpGranted = false;
-                    netDelta -= GameMath.GameConstants.Quests.XpPerQuest;
+                    netDelta -= GameMath.Quests.XpPerQuest;
                     await _completionRepo.UpdateAsync(row);
                 }
             }
@@ -184,9 +190,25 @@ namespace Forge.Services.Implementations
 
         // --- helpers ---
 
+        /// <summary>
+        /// Drops cached days far from the one in use. The cache is only an assembly shortcut —
+        /// quests are deterministic for a given date, so evicting costs a rebuild and nothing more.
+        /// </summary>
+        private void PruneCache(DateOnly around)
+        {
+            if (_cache.Count <= (CacheRetentionDays * 2) + 1) return;
+
+            var stale = _cache.Keys
+                .Where(d => Math.Abs(d.DayNumber - around.DayNumber) > CacheRetentionDays)
+                .ToList();
+
+            foreach (var d in stale)
+                _cache.Remove(d);
+        }
+
         private async Task<QuestCompletionRow?> GetRowAsync(DateOnly date, QuestKind kind)
         {
-            var dk = DateKey(date);
+            var dk = WeekMath.DateKey(date);
             var all = await _completionRepo.WhereAsync(r => r.DateKey == dk && r.Kind == (int)kind);
             return all.FirstOrDefault();
         }
@@ -197,7 +219,7 @@ namespace Forge.Services.Implementations
             if (existing != null) return existing;
             var row = new QuestCompletionRow
             {
-                DateKey = DateKey(date),
+                DateKey = WeekMath.DateKey(date),
                 Kind = (int) kind,
                 Completed = false,
                 XpGranted = false

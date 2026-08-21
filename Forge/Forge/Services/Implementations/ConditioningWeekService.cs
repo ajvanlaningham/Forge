@@ -1,4 +1,5 @@
-﻿using Forge.Constants;
+﻿using Forge.Common;
+using Forge.Constants;
 using Forge.Data;
 using Forge.Models;
 using Forge.Services.Interfaces;
@@ -10,7 +11,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
     private readonly IStatsStore _stats;
     private bool _initialized;
 
-    private static int WeeklyXpReward => (GameMath.GameConstants.Quests.XpPerQuest * 6);
+    private static int WeeklyXpReward => (GameMath.Quests.XpPerQuest * 6);
 
     public ConditioningWeekService(IRepository<ConditioningWeekRow> repo, IStatsStore stats)
     {
@@ -28,7 +29,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
     public async Task<WeeklyConditioningProgress> GetWeekProgressAsync(DateOnly date, CancellationToken ct = default)
     {
         await InitializeAsync(ct);
-        var weekStart = GetMonday(date);
+        var weekStart = WeekMath.MondayOf(date);
         var row = await GetOrCreateRowAsync(weekStart, ct);
         return ToProgress(row);
     }
@@ -38,7 +39,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
         await InitializeAsync(ct);
         if (minutes <= 0) return await GetWeekProgressAsync(date, ct);
 
-        var weekStart = GetMonday(date);
+        var weekStart = WeekMath.MondayOf(date);
         var row = await GetOrCreateRowAsync(weekStart, ct);
 
         checked
@@ -59,7 +60,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
     public async Task<WeeklyConditioningProgress> SetWeeklyGoalAsync(DateOnly date, int goalMinutes, CancellationToken ct = default)
     {
         await InitializeAsync(ct);
-        var weekStart = GetMonday(date);
+        var weekStart = WeekMath.MondayOf(date);
         var row = await GetOrCreateRowAsync(weekStart, ct);
 
         row.GoalMinutes = Math.Max(0, goalMinutes);
@@ -75,7 +76,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
     public async Task<WeeklyConditioningProgress> ResetWeekAsync(DateOnly date, CancellationToken ct = default)
     {
         await InitializeAsync(ct);
-        var weekStart = GetMonday(date);
+        var weekStart = WeekMath.MondayOf(date);
         var row = await GetOrCreateRowAsync(weekStart, ct);
 
         row.Minutes = 0;
@@ -88,21 +89,9 @@ public sealed class ConditioningWeekService : IConditioningWeekService
 
     // --- helpers ---
 
-    private static DateOnly GetMonday(DateOnly anyDay)
-    {
-        // DayOfWeek: Sunday=0, Monday=1, ..., Saturday=6
-        // diff = 0 for Monday, 6 for Sunday, etc.
-        int diff = ((int)anyDay.DayOfWeek + 6) % 7;
-        return anyDay.AddDays(-diff);
-    }
-
-    private static DateOnly GetSunday(DateOnly monday) => monday.AddDays(6);
-    private static string Key(DateOnly monday) => monday.ToString("yyyy-MM-dd");
-
-
     private async Task<ConditioningWeekRow> GetOrCreateRowAsync(DateOnly weekStartMonday, CancellationToken ct)
     {
-        var key = Key(weekStartMonday);
+        var key = WeekMath.DateKey(weekStartMonday);
         var existing = (await _repo.WhereAsync(r => r.WeekStartKey == key)).FirstOrDefault();
         if (existing != null) return existing;
 
@@ -110,7 +99,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
         {
             WeekStartKey = key,
             Minutes = 0,
-            GoalMinutes = 180, // default 3h
+            GoalMinutes = UserSettings.WeeklyConditioningGoalMinutes,
             XpGranted = false,
             CreatedUtcTicks = DateTime.UtcNow.Ticks,
             UpdatedUtcTicks = DateTime.UtcNow.Ticks
@@ -125,7 +114,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
         return new WeeklyConditioningProgress
         {
             WeekStart = monday,
-            WeekEnd = GetSunday(monday),
+            WeekEnd = WeekMath.SundayOf(monday),
             Minutes = row.Minutes,
             GoalMinutes = row.GoalMinutes
         };

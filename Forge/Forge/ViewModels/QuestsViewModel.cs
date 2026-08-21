@@ -193,8 +193,9 @@ namespace Forge.ViewModels
                 case QuestKind.Conditioning: IsConditioningCompleted = !isDone; break;
             }
 
-            // If all three are now complete, award XP once
-            var awarded = await _quests.TryAwardDailyCompletionXpAsync(_todayDate);
+            // Reconcile XP against completion state. Awards per quest, not per day: toggling a
+            // single quest grants or reclaims exactly that quest's XP.
+            var awarded = await _quests.TryAwardQuestXpAsync(_todayDate);
 
             if (awarded > 0)
             {

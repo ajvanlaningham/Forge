@@ -61,6 +61,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Pure game logic and constants, shared with the unit test project. -->
+		<ProjectReference Include="..\Forge.Core\Forge.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />

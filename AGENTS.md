@@ -3,7 +3,16 @@
 Guidance for AI agents working on this repo. Read this before building or deploying.
 
 ## What Forge is
-A **.NET MAUI** fitness/RPG app, **Android-first** (`net9.0-android`). MVVM, local **SQLite** (`sqlite-net-pcl`), DI configured in `MauiProgram.cs`. Single project: `Forge/Forge/Forge.csproj` (solution `Forge/Forge.sln`).
+A **.NET MAUI** fitness/RPG app, **Android-first** (`net9.0-android`). MVVM, local **SQLite** (`sqlite-net-pcl`), DI configured in `MauiProgram.cs`. Solution `Forge/Forge.sln` holds three projects:
+
+| Project | Target | Purpose |
+|---|---|---|
+| `Forge/Forge/Forge.csproj` | `net9.0-android` | the app |
+| `Forge/Forge.Core/Forge.Core.csproj` | `net9.0` | pure game logic + constants, **no MAUI types** |
+| `Forge/Forge.Tests/Forge.Tests.csproj` | `net9.0` | xUnit tests over `Forge.Core` |
+
+`Forge.Core` is plain `net9.0` on purpose: it makes progression and date math testable on this
+headless Linux host with no emulator. Do not add a MAUI dependency to it — that breaks the tests.
 
 iOS/maccatalyst target frameworks are conditionally enabled **only when building on macOS** (see the `Condition="$([MSBuild]::IsOSPlatform('osx'))"` line in `Forge.csproj`) — this is deliberate so the project builds on the Linux build host without an Apple toolchain. Don't "fix" it by removing the condition.
 
@@ -14,8 +23,14 @@ The build host (asgard, Linux) already has: the `maui-android` dotnet workload, 
 ```bash
 dotnet restore Forge/Forge/Forge.csproj
 dotnet build   Forge/Forge/Forge.csproj -f net9.0-android
+dotnet test    Forge/Forge.Tests/Forge.Tests.csproj
 ```
-There is **no test project** yet. If you add testable logic, add a test project rather than asserting "tests pass."
+Tests cover **pure logic only** — progression math, scoring, date/week helpers. They need no
+emulator and no Android SDK, so run them. Put new pure logic in `Forge.Core` and test it;
+"tests pass" is only a meaningful claim if `dotnet test` was actually run.
+
+Note the host SDK is .NET 10 (10.0.111) building a `net9.0-android` target via the
+`maui-android` workload. That is expected and works.
 
 ## Deploy — use the script, not the README
 **Deploy with `./deploy-android.sh` only.** The deploy targets a physical Pixel over Tailscale via wireless `adb`.
@@ -38,10 +53,35 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
   adb -s 100.125.64.95:<port> shell dumpsys package com.companyname.forge | grep lastUpdateTime
   ```
 
-> ⚠️ The `README.md` "Deployment" section ("build from Visual Studio, hit Run", references .NET 8) is **stale/wrong** for this headless-Linux setup. Ignore it. This file is the source of truth for build/deploy.
+> `README.md` used to carry a stale Visual Studio / .NET 8 deployment section. It was corrected
+> and now points here. This file remains the source of truth for build and deploy; if the two ever
+> disagree again, this one wins — and fix the README.
 
 ## Conventions
 - **MVVM**: Views bind to ViewModels; ViewModels depend only on service interfaces (`Services/Interfaces`).
 - **DI**: register services in `MauiProgram.cs`.
 - **Persistence**: models that persist have a corresponding `Row` class for SQLite; seeding is idempotent.
-- Layout: `Constants/ Converters/ Data/ Models/ Services/ ViewModels/ Views/ Controls/ Resources/ Platforms/`.
+- Layout (app project): `Converters/ Data/ Models/ Services/ ViewModels/ Views/ Controls/ Resources/ Platforms/`.
+- **Constants live in `Forge.Core`**, not the app project. Game rules are constants; anything the
+  user can change is a setting in `Forge/Forge/Services/UserSettings.cs` backed by `Preferences`.
+  Never make a personal target (goal weight, weekly goal) a compile-time constant.
+- Exercise library seeding is gated on `GameConstants.Exercises.LibraryVersion` **alone**. Editing
+  or adding a JSON file without bumping that version is a silent no-op on an existing install.
+  `IExerciseLibraryImporter.ForceReseedAsync()` is the dev escape hatch.
+
+## Product rules
+
+These are product decisions, not implementation details. Breaking one silently damages data or
+the user's experience in ways a build will not catch. Full rationale in [`TODO.md`](TODO.md).
+
+- **Weight never earns XP.** XP is granted for *logging* a weigh-in, never for the value logged.
+  Daily weight is noisy; penalising a reading penalises something the user does not control.
+- **Weight is not the hero element.** The 7-day average is what gets displayed; the raw daily
+  number lives behind a tap. The goal is to feel better, and weight can become an obsession.
+- **Baseline test protocols are frozen.** Once a protocol is set, its movements, reps, order, and
+  loads never change. "Improving" a test destroys comparability with every prior result. Version a
+  new protocol instead of editing one. See [`docs/baseline-tests.md`](docs/baseline-tests.md).
+- **Manual entry ships before every integration.** Health Connect, wearables, and nutrition sync
+  are all additive. The app must stay fully usable with every permission denied.
+- **Three independent progress systems.** Levels measure consistency, stat scores measure
+  capability, weight is its own track. They answer different questions — do not collapse them.

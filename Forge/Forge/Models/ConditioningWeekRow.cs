@@ -1,4 +1,6 @@
-﻿using SQLite;
+﻿using Forge.Constants;
+
+using SQLite;
 
 namespace Forge.Models;
 
@@ -18,10 +20,11 @@ public sealed class ConditioningWeekRow
     public int Minutes { get; set; }
 
     /// <summary>
-    /// Goal in minutes for the week (default 180 = 3 hours).
-    /// Can be adjusted later if you want dynamic goals.
+    /// Goal in minutes for the week. Seeded from the user's configured weekly goal when the
+    /// row is created; this default only applies to rows built without going through the
+    /// service.
     /// </summary>
-    public int GoalMinutes { get; set; } = 180;
+    public int GoalMinutes { get; set; } = GameConstants.Defaults.WeeklyConditioningGoalMinutes;
 
     /// <summary>
     /// Whether weekly XP for completing the goal has been granted.

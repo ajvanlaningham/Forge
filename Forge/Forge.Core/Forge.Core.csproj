@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Pure game logic and constants, deliberately free of MAUI types.
+		Targets plain net9.0 so it can be referenced by the Android app AND unit-tested
+		on the Linux build host without an emulator. Do not add a MAUI dependency here.
+	-->
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<RootNamespace>Forge</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+</Project>
