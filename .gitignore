@@ -482,3 +482,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Android release signing — keys must never be committed.
+# The real keystore lives outside the repo in ~/.forge-signing/ (see AGENTS.md).
+*.keystore
+*.jks
+keystore.base64

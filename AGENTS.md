@@ -101,6 +101,20 @@ keytool -genkeypair -v \
 **Back this file up somewhere off-machine.** If it is lost, no future build can install over an
 existing one — the only recovery is uninstall-and-lose-the-data, forever.
 
+The keystore for this project already exists at `~/.forge-signing/` (mode 700), mirroring the
+`~/.huginn-signing/` layout:
+
+| File | Contents |
+|---|---|
+| `forge-release.keystore` | the key itself, alias `forge`, valid to 2054 |
+| `keystore.base64` | the same file base64-encoded, for `ANDROID_KEYSTORE_BASE64` |
+| `credentials.txt` | alias and both passwords, ready to paste into the secrets |
+
+Certificate SHA-256: `FF:47:DB:C7:89:20:01:AA:A0:91:E1:6A:1A:D5:07:2E:ED:8F:D3:22:7F:8D:33:F6:3B:52:42:A4:12:01:73:9C`
+
+The certificate's subject is deliberately `CN=Forge, O=Forge, C=US` with no personal details —
+it is embedded in every APK, and those APKs are published on a public repo.
+
 Then add four repository secrets:
 
 | Secret | Value |
