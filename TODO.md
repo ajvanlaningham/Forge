@@ -37,6 +37,7 @@ By the end of v1:
 - Basic training session logging that feeds quest completion.
 - Repo cleanup, drift control, and a unit test project.
 - CI-built release APKs published to GitHub Releases, installed via an in-app update button.
+- Automatic daily local backup, restore, and export of the SQLite database.
 
 ### Deferred
 
@@ -124,6 +125,7 @@ v1 is done when:
 - Protein and calories appear on the check-in screen from at least one source.
 - Resting heart rate is visible in the app, whether synced or hand-entered.
 - `dotnet build Forge/Forge/Forge.csproj -f net9.0-android` is clean and the test project passes.
+- Data is backed up daily without user action, and a restore has actually been performed once.
 - A merge to `main` produces a signed build the phone can install from the Settings screen,
   without the developer being at the build host.
 - `README.md` exists once, is accurate, and does not contradict `AGENTS.md`.
@@ -871,6 +873,88 @@ updating is a deliberate act rather than something that surprises me.
 - [x] Register the view model and page in `MauiProgram.cs`.
 - [ ] Verify on device against a real published release. _Needs the first release._
 
+## Epic 10: Data Safety and Backup
+
+The app holds data that exists nowhere else and cannot be reconstructed: a weigh-in you did not
+record is gone. There is no backend, so "the server has it" is never the answer.
+
+This also caps the cost of two other risks. Losing the signing keystore, or having to uninstall for
+any reason, currently means losing everything logged. With backups in place it means a reinstall
+and a restore.
+
+**Backups must survive uninstall.** Anything written to `FileSystem.AppDataDirectory` is deleted
+with the app, which makes it worthless for exactly the scenario that matters. The backup has to
+land somewhere the OS does not clean up with the package.
+
+### PBI 10.1: Back up automatically, every day
+
+**User story:** As the user, I want my data copied somewhere safe without thinking about it, so a
+lost phone or a forced reinstall costs me a reinstall rather than my history.
+
+**Acceptance criteria:**
+
+- A complete, consistent copy of the SQLite database is written on a daily cadence.
+- The copy is made with `VACUUM INTO`, not a file copy of a live database — a byte copy of an open
+  SQLite file can capture a torn write and restore as corruption.
+- Backups are written outside app-private storage so they survive uninstall.
+- The trigger is app foreground, not a background worker: if a day has passed since the last
+  backup, write one. The user opens the app daily by design — that is the whole point of the quest
+  loop — so a scheduler earns its complexity only if that assumption breaks.
+- Backups are timestamped and a bounded number are retained (last ~14), so this cannot grow without
+  limit on a phone.
+- A failed backup never blocks app startup and never shows a modal. It logs and retries tomorrow.
+- The most recent backup's date is visible in Settings, so silent failure is detectable.
+
+**Tasks:**
+
+- [ ] Decide where backups land (SAF folder chosen once, or MediaStore) and confirm it survives an
+      actual uninstall/reinstall on the device.
+- [ ] Implement `IBackupService` using `VACUUM INTO`.
+- [ ] Trigger on foreground when the last backup is older than a day.
+- [ ] Add retention pruning.
+- [ ] Show "last backed up" in Settings.
+- [ ] Verify by uninstalling and confirming the file is still there.
+
+### PBI 10.2: Restore from a backup
+
+**User story:** As the user, I want to restore after a reinstall, because a backup I cannot restore
+is not a backup.
+
+**Acceptance criteria:**
+
+- Settings offers restore-from-backup, listing what it finds with dates.
+- Restoring replaces the live database and the app reloads into the restored state.
+- The user confirms first, and is told plainly that current data will be replaced.
+- A backup from an older schema either migrates or is rejected with a clear reason — never a
+  half-restore.
+- **This path is tested by actually doing it**, not by inspection. An untested restore should be
+  assumed broken.
+
+**Tasks:**
+
+- [ ] Enumerate available backups with dates and sizes.
+- [ ] Implement restore with a confirmation step.
+- [ ] Stamp a schema version into each backup and check it on restore.
+- [ ] Test a real uninstall → reinstall → restore cycle on the device.
+
+### PBI 10.3: Export a copy off the phone
+
+**User story:** As the user, I want to send a backup somewhere else, so my history does not live on
+exactly one device.
+
+**Acceptance criteria:**
+
+- Settings can share the latest backup through the Android share sheet.
+- A JSON export is available alongside the raw database — readable, diffable, and not dependent on
+  this app existing in order to mean something in five years.
+- Neither export blocks the UI on a large database.
+
+**Tasks:**
+
+- [ ] Share the latest backup file via the share sheet.
+- [ ] Add a schema-versioned JSON export of weigh-ins, check-ins, quest history, and stat tests.
+- [ ] Run both off the UI thread.
+
 ## Future Milestones
 
 ### Guild
@@ -934,6 +1018,8 @@ must happen before there is any weight history worth keeping.
 - [ ] PBI 3.2: Show the trend, not the number
 - [ ] PBI 3.3: Chart progress against the goal
 - [ ] PBI 3.4: Log the rest of the daily check-in
+- [ ] PBI 10.1: Back up automatically, every day
+- [ ] PBI 10.2: Restore from a backup
 
 ### Sprint 3: the progression loop
 
@@ -941,6 +1027,7 @@ must happen before there is any weight history worth keeping.
 - [ ] PBI 4.2: Make leveling up feel like something
 - [ ] PBI 4.3: Finish the quest XP path
 - [ ] PBI 2.6: Fix or remove the equipment sprite path
+- [ ] PBI 10.3: Export a copy off the phone
 
 ### Sprint 4: baseline testing
 
