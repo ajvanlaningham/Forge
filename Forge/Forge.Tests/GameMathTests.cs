@@ -59,4 +59,71 @@ public class GameMathTests
         Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(lifetimeXp)), 3);
         Assert.Equal(1.0, GameMath.LevelProgress(lifetimeXp), 3); // the pinned-bar behaviour
     }
+
+    /// <summary>
+    /// The design contract: 21 quests a week at 50 XP is exactly one level per week of full
+    /// adherence, which is what makes "retest every 4 levels" land at roughly monthly.
+    /// </summary>
+    [Theory]
+    [InlineData(1, 2)]   // after one perfect week
+    [InlineData(2, 3)]
+    [InlineData(3, 4)]
+    [InlineData(4, 5)]   // a test window opens here
+    [InlineData(8, 9)]
+    [InlineData(52, 53)] // a year of perfect adherence
+    public void AWeekOfPerfectAdherence_IsExactlyOneLevel(int weeks, int expectedLevel)
+    {
+        var xp = weeks * GameMath.Quests.QuestsPerWeek * GameMath.Quests.XpPerQuest;
+        Assert.Equal(expectedLevel, GameMath.LevelFromXp(xp));
+        Assert.Equal(0, GameMath.XpIntoLevel(xp));
+    }
+
+    [Fact]
+    public void EveryFourthLevel_OpensATestWindow()
+    {
+        // Walk a year one quest at a time and collect the XP totals where the level first
+        // becomes a multiple of 4. These are the retest points.
+        var windows = new List<int>();
+        var lastLevel = 1;
+        for (var quest = 1; quest <= GameMath.Quests.QuestsPerWeek * 52; quest++)
+        {
+            var xp = quest * GameMath.Quests.XpPerQuest;
+            var level = GameMath.LevelFromXp(xp);
+            if (level != lastLevel && level % 4 == 0) windows.Add(level);
+            lastLevel = level;
+        }
+
+        Assert.Equal(new[] { 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52 }, windows);
+    }
+
+    /// <summary>
+    /// XP into the level and XP remaining must always account for exactly one level between
+    /// them. If they drift apart the progress bar and the "next level" figure disagree.
+    /// </summary>
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(1049)]
+    [InlineData(1050)]
+    [InlineData(5_432)]
+    [InlineData(1_000_000)]
+    public void XpIntoLevel_AndXpToNextLevel_AlwaysSumToOneLevel(int xp)
+        => Assert.Equal(GameMath.XpPerLevel, GameMath.XpIntoLevel(xp) + GameMath.XpToNextLevel(xp));
+
+    /// <summary>
+    /// The regression this PBI existed to fix: the bar must sweep 0..1 within every level,
+    /// not saturate after the first one.
+    /// </summary>
+    [Fact]
+    public void ProgressBar_SweepsWithinEveryLevel_NotJustTheFirst()
+    {
+        foreach (var level in new[] { 0, 1, 2, 7 })
+        {
+            var levelStart = level * GameMath.XpPerLevel;
+
+            Assert.Equal(0.0, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart)), 3);
+            Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 525)), 3);
+            Assert.True(GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 1049)) > 0.99);
+        }
+    }
 }

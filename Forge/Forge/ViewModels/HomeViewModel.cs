@@ -45,18 +45,16 @@ namespace Forge.ViewModels
             var stats = await _stats.GetCoreStatsAsyncFromDb();
             var userStats = await _stats.GetUserStatsAsync();
 
-            UserLevel = userStats.Level;
             UserXp = userStats.Xp;
+            // XP is the source of truth; the stored Level column is only a cached copy.
+            UserLevel = GameMath.LevelFromXp(UserXp);
 
             StrengthScore = stats.FirstOrDefault(s => s.Kind == StatKind.Strength)?.Score ?? 1;
             DexterityScore = stats.FirstOrDefault(s => s.Kind == StatKind.Dexterity)?.Score ?? 1;
             ConstitutionScore = stats.FirstOrDefault(s => s.Kind == StatKind.Constitution)?.Score ?? 1;
 
             // Reflect to card
-            StatsCard.Level = UserLevel;
-
-            StatsCard.Xp = UserXp;
-            StatsCard.XpProgress = GameMath.LevelProgress(UserXp);
+            StatsCard.ApplyXp(UserXp);
 
             StatsCard.Strength = StrengthScore;
             StatsCard.Dexterity = DexterityScore;

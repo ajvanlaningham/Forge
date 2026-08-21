@@ -58,6 +58,9 @@ namespace Forge.Services.Implementations
 
         public async Task UpsertUserStatsAsync(UserStats stats)
         {
+            // Level is derived from XP. Recomputing here means a row saved before levelling
+            // worked corrects itself the next time XP changes.
+            stats.Level = GameMath.LevelFromXp(stats.Xp);
             stats.UpdatedAtUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             stats.IsDirty = true;
             await _userRepo.InsertOrReplaceAsync(stats);

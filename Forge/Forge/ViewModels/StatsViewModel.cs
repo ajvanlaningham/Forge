@@ -42,16 +42,14 @@ namespace Forge.ViewModels
                 var coreStats = await _stats.GetCoreStatsAsyncFromDb();
                 var userStats = await _stats.GetUserStatsAsync();
 
-                UserLevel = userStats.Level;
                 UserXp = userStats.Xp;
+                UserLevel = GameMath.LevelFromXp(UserXp);
 
                 StrengthScore = coreStats.FirstOrDefault(s => s.Kind == StatKind.Strength)?.Score ?? 1;
                 DexterityScore = coreStats.FirstOrDefault(s => s.Kind == StatKind.Dexterity)?.Score ?? 1;
                 ConstitutionScore = coreStats.FirstOrDefault(s => s.Kind == StatKind.Constitution)?.Score ?? 1;
 
-                StatsCard.Level = UserLevel;
-                StatsCard.Xp = UserXp;
-                StatsCard.XpProgress = GameMath.LevelProgress(UserXp);
+                StatsCard.ApplyXp(UserXp);
                 StatsCard.Strength = StrengthScore;
                 StatsCard.Dexterity = DexterityScore;
                 StatsCard.Constitution = ConstitutionScore;

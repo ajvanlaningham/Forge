@@ -65,7 +65,7 @@
                         <!--Progress="{Binding XpProgress}" Insert above!-->
 
                         <Label
-                            Text="{Binding Xp, StringFormat='{}{0} XP'}"
+                            Text="{Binding XpLabel}"
                             FontSize="14"
                             TextColor="{StaticResource Accent}"
                             FontAttributes="Bold"

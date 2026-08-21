@@ -417,10 +417,10 @@ the entire reward for consistency.
 
 **Tasks:**
 
-- [ ] Derive level from XP wherever it is displayed.
-- [ ] Wire `XpToNextLevel` into the stat card progress bar.
-- [ ] Verify against a seeded XP value that spans several levels.
-- [ ] Add unit tests for the level math boundaries (0, 1049, 1050, 1051).
+- [x] Derive level from XP wherever it is displayed.
+- [x] Wire `XpToNextLevel` into the stat card progress bar.
+- [x] Verify against a seeded XP value that spans several levels.
+- [x] Add unit tests for the level math boundaries (0, 1049, 1050, 1051).
 
 ### PBI 4.2: Make leveling up feel like something
 
@@ -1023,7 +1023,7 @@ must happen before there is any weight history worth keeping.
 
 ### Sprint 3: the progression loop
 
-- [ ] PBI 4.1: Make levels advance
+- [x] PBI 4.1: Make levels advance
 - [ ] PBI 4.2: Make leveling up feel like something
 - [ ] PBI 4.3: Finish the quest XP path
 - [ ] PBI 2.6: Fix or remove the equipment sprite path
