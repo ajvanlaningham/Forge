@@ -113,6 +113,14 @@ namespace Forge.ViewModels
             }
         }
 
+        /// <summary>
+        /// Re-evaluate <see cref="CanExecute"/>. Call this whenever state the canExecute
+        /// predicate reads has changed — the command cannot observe that on its own, and a
+        /// bound Button caches the last value it was told, so it stays stale (and disabled)
+        /// until something raises this.
+        /// </summary>
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
         public event EventHandler? CanExecuteChanged;
     }
 }

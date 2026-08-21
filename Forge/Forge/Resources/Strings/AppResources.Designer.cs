@@ -626,5 +626,14 @@ namespace Forge.Resources.Strings {
                 return ResourceManager.GetString("SettingsPage_Placeholder", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forge needs permission to install apps. Opening that setting now — enable it, then tap Download and install again..
+        /// </summary>
+        internal static string SettingsPage_NeedsInstallPermission {
+            get {
+                return ResourceManager.GetString("SettingsPage_NeedsInstallPermission", resourceCulture);
+            }
+        }
     }
 }

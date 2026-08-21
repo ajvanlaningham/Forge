@@ -25,11 +25,15 @@ namespace Forge.ViewModels
                 _updates.InstalledVersionName,
                 _updates.InstalledVersionCode);
 
-            // AsyncRelayCommand disables itself while running, so the buttons need no
-            // IsEnabled binding of their own.
-            CheckForUpdatesCommand = new AsyncRelayCommand(CheckAsync, () => !IsDownloading);
-            DownloadAndInstallCommand = new AsyncRelayCommand(DownloadAsync, () => UpdateAvailable);
+            // These predicates read mutable state, so every property they touch must call
+            // RefreshCommands() when it changes — a bound Button caches the last CanExecute
+            // it was told and will sit there disabled otherwise.
+            _checkCommand = new AsyncRelayCommand(CheckAsync, () => !IsDownloading);
+            _downloadCommand = new AsyncRelayCommand(DownloadAsync, () => UpdateAvailable);
         }
+
+        private readonly AsyncRelayCommand _checkCommand;
+        private readonly AsyncRelayCommand _downloadCommand;
 
         public string InstalledVersion { get; }
 
@@ -54,19 +58,33 @@ namespace Forge.ViewModels
         public bool HasNotes { get => _hasNotes; private set => SetProperty(ref _hasNotes, value); }
 
         private bool _updateAvailable;
-        public bool UpdateAvailable { get => _updateAvailable; private set => SetProperty(ref _updateAvailable, value); }
+        public bool UpdateAvailable
+        {
+            get => _updateAvailable;
+            private set { if (SetProperty(ref _updateAvailable, value)) RefreshCommands(); }
+        }
 
         private bool _isChecking;
         public bool IsChecking { get => _isChecking; private set => SetProperty(ref _isChecking, value); }
 
         private bool _isDownloading;
-        public bool IsDownloading { get => _isDownloading; private set => SetProperty(ref _isDownloading, value); }
+        public bool IsDownloading
+        {
+            get => _isDownloading;
+            private set { if (SetProperty(ref _isDownloading, value)) RefreshCommands(); }
+        }
 
         private double _downloadProgress;
         public double DownloadProgress { get => _downloadProgress; private set => SetProperty(ref _downloadProgress, value); }
 
-        public ICommand CheckForUpdatesCommand { get; }
-        public ICommand DownloadAndInstallCommand { get; }
+        public ICommand CheckForUpdatesCommand => _checkCommand;
+        public ICommand DownloadAndInstallCommand => _downloadCommand;
+
+        private void RefreshCommands()
+        {
+            _checkCommand.RaiseCanExecuteChanged();
+            _downloadCommand.RaiseCanExecuteChanged();
+        }
 
         private async Task CheckAsync()
         {
@@ -94,6 +112,14 @@ namespace Forge.ViewModels
         private async Task DownloadAsync()
         {
             if (IsDownloading) return;
+
+            if (!_updates.CanInstallPackages)
+            {
+                StatusMessage = AppResources.SettingsPage_NeedsInstallPermission;
+                _updates.RequestInstallPermission();
+                return;
+            }
+
             try
             {
                 IsDownloading = true;

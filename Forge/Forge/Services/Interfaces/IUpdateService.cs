@@ -33,6 +33,16 @@ namespace Forge.Services.Interfaces
         Task<UpdateCheckResult> CheckAsync(CancellationToken ct = default);
 
         /// <summary>
+        /// Whether the OS will let this app install packages. On API 26+ the user must grant
+        /// "install unknown apps" for Forge specifically; without it the install intent is
+        /// refused after the download has already happened.
+        /// </summary>
+        bool CanInstallPackages { get; }
+
+        /// <summary>Send the user to the system screen where that permission is granted.</summary>
+        void RequestInstallPermission();
+
+        /// <summary>
         /// Download the latest APK to the app cache and launch the OS package installer.
         /// Android-only.
         /// </summary>

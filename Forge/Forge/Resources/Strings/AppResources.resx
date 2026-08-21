@@ -368,4 +368,8 @@
     <value>Units, goals, and export will go here.</value>
     <comment>New</comment>
   </data>
+  <data name="SettingsPage_NeedsInstallPermission" xml:space="preserve">
+    <value>Forge needs permission to install apps. Opening that setting now — enable it, then tap Download and install again.</value>
+    <comment>New</comment>
+  </data>
 </root>

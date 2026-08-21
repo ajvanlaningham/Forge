@@ -57,6 +57,32 @@ namespace Forge.Services.Implementations
             }
         }
 
+#if ANDROID
+        public bool CanInstallPackages
+        {
+            get
+            {
+                if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.O) return true;
+                return Android.App.Application.Context.PackageManager?.CanRequestPackageInstalls() ?? false;
+            }
+        }
+
+        public void RequestInstallPermission()
+        {
+            var context = Android.App.Application.Context;
+            var intent = new Android.Content.Intent(
+                Android.Provider.Settings.ActionManageUnknownAppSources,
+                Android.Net.Uri.Parse("package:" + context.PackageName));
+            intent.AddFlags(Android.Content.ActivityFlags.NewTask);
+            context.StartActivity(intent);
+        }
+#else
+        public bool CanInstallPackages => false;
+
+        public void RequestInstallPermission() =>
+            throw new PlatformNotSupportedException("In-app APK install is Android-only.");
+#endif
+
         public async Task<UpdateCheckResult> CheckAsync(CancellationToken ct = default)
         {
             var installed = InstalledVersionCode;
