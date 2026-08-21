@@ -10,6 +10,13 @@ name: Android build & release
 on:
   push:
     branches: [main]
+    # Documentation-only commits must not produce a build. Every run publishes a
+    # release the phone will offer as an update, and "update available: fixed a
+    # typo in TODO.md" is noise the user has to dismiss on their phone.
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".gitignore"
   workflow_dispatch:
 
 # Each build is its own release. Serialise so concurrent merges cannot race the

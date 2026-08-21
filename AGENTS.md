@@ -108,8 +108,17 @@ password?`.
 
 Do not redirect `keytool`'s stderr when generating. That warning is the only hint you get.
 
-**Back this file up somewhere off-machine.** If it is lost, no future build can install over an
-existing one — the only recovery is uninstall-and-lose-the-data, forever.
+**Backup status: local only, deliberately.** The keystore lives at `~/.forge-signing/` on asgard
+and nowhere else. This is an accepted risk, not an oversight.
+
+Note that **GitHub Actions secrets are write-only** — `ANDROID_KEYSTORE_BASE64` cannot be read back
+out, so the secrets are not a second copy. If asgard's disk dies, the signing key is gone.
+
+The consequence is bounded, which is why local-only is a reasonable call for a sideloaded personal
+app: you would uninstall, install a fresh build signed with a new key, and lose whatever was in the
+app's database. Annoying after months of check-ins, harmless before then. It does not end the
+project. Revisit this once there is weight history worth keeping — the whole directory is under
+7 KB and fits in a password manager note.
 
 The keystore for this project already exists at `~/.forge-signing/` (mode 700), mirroring the
 `~/.huginn-signing/` layout:
