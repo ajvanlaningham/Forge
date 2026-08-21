@@ -98,6 +98,16 @@ keytool -genkeypair -v \
   -keyalg RSA -keysize 2048 -validity 10000
 ```
 
+**Use the same password for the store and the key.** `keytool` defaults to PKCS12 since JDK 9, and
+PKCS12 has no separate key password — given a different `-keypass` it prints *"Different store and
+key passwords not supported for PKCS12 KeyStores"* and silently ignores it, leaving the key
+protected by the store password. If `ANDROID_KEY_PASSWORD` is then set to that imaginary second
+password, the build fails at signing with a bare `error MSB6006: "java" exited with code 2` —
+MSBuild swallows apksigner's real message, `Failed to obtain key with alias "forge". Wrong
+password?`.
+
+Do not redirect `keytool`'s stderr when generating. That warning is the only hint you get.
+
 **Back this file up somewhere off-machine.** If it is lost, no future build can install over an
 existing one — the only recovery is uninstall-and-lose-the-data, forever.
 
