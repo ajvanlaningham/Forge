@@ -786,10 +786,10 @@ data, so that six months of weigh-ins survive a version bump.
 **Tasks:**
 
 - [x] Choose and set the permanent `ApplicationId`.
-- [ ] Generate a release keystore and back it up off-machine. _Yours — `keytool` command is in `AGENTS.md`._
-- [ ] Add `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and
+- [ ] Generate a release keystore and back it up off-machine. _Generated at `~/.forge-signing/`; the off-machine backup is still to do._
+- [x] Add `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and
       `ANDROID_KEY_PASSWORD` as repository secrets.
-- [ ] Document the one-time uninstall in `AGENTS.md` and do it before Epic 3 ships. _Documented; the uninstall itself is still to do._
+- [x] Document the one-time uninstall in `AGENTS.md` and do it before Epic 3 ships.
 - [ ] Verify data survives an update between two release-signed builds. _Needs two published releases._
 
 ### PBI 9.2: Build and publish a release APK on merge to main
@@ -816,7 +816,7 @@ finished work reaches my phone without me being at the build host.
 - [x] Decode the keystore from the base64 secret at build time.
 - [x] Publish with `-p:ApplicationVersion=${{ github.run_number }}` and the signing properties.
 - [x] Generate `version.json` and attach it alongside the APK.
-- [ ] Verify a full run end to end, including the release actually appearing. _Needs the secrets in place._
+- [x] Verify a full run end to end, including the release actually appearing. _`android-build-2` published; APK signature matches the keystore._
 
 ### PBI 9.3: Fetch and install updates from inside the app
 
@@ -926,8 +926,8 @@ do them first, so everything built afterwards reaches the phone without a cable.
 particular is time-sensitive: the one-time uninstall it requires destroys the local database, so it
 must happen before there is any weight history worth keeping.
 
-- [ ] PBI 9.1: Settle app identity and release signing — _code complete; remaining: keystore + GitHub secrets (yours), then the one-time uninstall_
-- [ ] PBI 9.2: Build and publish a release APK on merge to main — _code complete; remaining: first end-to-end run, blocked on the secrets_
+- [ ] PBI 9.1: Settle app identity and release signing — _remaining: back the keystore up off-machine_
+- [x] PBI 9.2: Build and publish a release APK on merge to main
 - [ ] PBI 9.3: Fetch and install updates from inside the app — _code complete; remaining: on-device verification of the unhappy paths_
 - [ ] PBI 9.4: Surface updates in Settings — _code complete; remaining: on-device verification against a real release_
 - [ ] PBI 3.1: Log a daily weigh-in
