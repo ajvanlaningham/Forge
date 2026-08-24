@@ -2,10 +2,42 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:res="clr-namespace:Forge.Resources.Strings"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
+             x:DataType="vm:CheckInViewModel"
              x:Class="Forge.Views.CheckInPage"
-             Title="Check-In">
-    <VerticalStackLayout Padding="24" Spacing="12">
-        <Label Text="Check-In" FontSize="28" FontAttributes="Bold" />
-        <Label Text="Weight, sleep, steps, and protein log will go here." />
-    </VerticalStackLayout>
+             Title="{x:Static res:AppResources.CheckInPage_Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="14">
+
+            <Label Text="{x:Static res:AppResources.CheckInPage_WeightHeader}"
+                   FontSize="22"
+                   FontAttributes="Bold" />
+
+            <Label Text="{x:Static res:AppResources.CheckInPage_DateLabel}" />
+            <DatePicker Date="{Binding EntryDate}"
+                        MaximumDate="{Binding MaximumEntryDate}" />
+
+            <Label Text="{Binding WeightHint}" />
+            <Entry Text="{Binding WeightText}"
+                   Keyboard="Numeric"
+                   Placeholder="0.0" />
+
+            <Label Text="{x:Static res:AppResources.CheckInPage_NoteLabel}" />
+            <Entry Text="{Binding Note}" />
+
+            <Button Text="{x:Static res:AppResources.CheckInPage_SaveBtn}"
+                    Command="{Binding SaveCommand}"
+                    HorizontalOptions="Fill" />
+
+            <Label Text="{Binding StatusMessage}"
+                   IsVisible="{Binding HasStatus}" />
+
+            <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
+
+            <Label Text="{Binding PlaceholderText}"
+                   FontSize="12"
+                   Opacity="0.7" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

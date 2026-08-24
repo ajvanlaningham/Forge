@@ -45,6 +45,28 @@
                 </Grid>
             </Grid>
 
+            <Frame Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{x:Static res:AppResources.Home_Weight_Header}"
+                           FontSize="16"
+                           TextColor="{StaticResource Accent}" />
+                    <!-- WeightAverageText is either the formatted average or the "no
+                         entries yet" hint; HasWeightAverage picks the display style. -->
+                    <Label Text="{Binding WeightAverageText}"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           IsVisible="{Binding HasWeightAverage}" />
+                    <Label Text="{Binding WeightAverageText}"
+                           FontSize="14"
+                           Opacity="0.8"
+                           IsVisible="{Binding NoWeightData}" />
+                    <Button Text="{x:Static res:AppResources.Home_Weight_Reminder}"
+                            Command="{Binding GoToCheckInCommand}"
+                            IsVisible="{Binding NeedsWeightLog}"
+                            HorizontalOptions="Fill" />
+                </VerticalStackLayout>
+            </Frame>
+
         </VerticalStackLayout>
     </ScrollView>
 

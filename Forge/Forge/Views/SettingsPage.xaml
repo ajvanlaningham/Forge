@@ -46,6 +46,29 @@
 
             <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
 
+            <Label Text="{x:Static res:AppResources.SettingsPage_UnitsHeader}"
+                   FontSize="22"
+                   FontAttributes="Bold" />
+
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+                  ColumnSpacing="8"
+                  VerticalOptions="Center">
+                <Label Grid.Column="0"
+                       Text="{x:Static res:AppResources.SettingsPage_WeightUnitLabel}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="{x:Static res:AppResources.SettingsPage_WeightUnit_Pounds}"
+                       VerticalOptions="Center" />
+                <Switch Grid.Column="2"
+                        IsToggled="{Binding UseKilograms}"
+                        VerticalOptions="Center" />
+                <Label Grid.Column="3"
+                       Text="{x:Static res:AppResources.SettingsPage_WeightUnit_Kilograms}"
+                       VerticalOptions="Center" />
+            </Grid>
+
+            <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
+
             <Label Text="{x:Static res:AppResources.SettingsPage_AboutHeader}"
                    FontSize="22"
                    FontAttributes="Bold" />
