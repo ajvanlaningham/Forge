@@ -37,18 +37,11 @@ namespace Forge.Services.Implementations
 
             await _repo.InsertOrReplaceAsync(row);
 
-            // XP is per day, not per save — overwriting an existing entry must not grant a
-            // second helping. Consistent with the "one entry per DateKey" primary key.
-            int xpAwarded = 0;
-            if (existing is null)
-            {
-                var user = await _stats.GetUserStatsAsync();
-                user.Xp += WeightMath.XpPerWeightLog;
-                await _stats.UpsertUserStatsAsync(user);
-                xpAwarded = WeightMath.XpPerWeightLog;
-            }
+            var user = await _stats.GetUserStatsAsync();
+            user.Xp += WeightMath.XpPerWeightLog;
+            await _stats.UpsertUserStatsAsync(user);
 
-            return new WeightLogResult(ToDomain(row), xpAwarded);
+            return new WeightLogResult(ToDomain(row), WeightMath.XpPerWeightLog);
         }
 
         public async Task<WeightEntry?> GetLatestAsync()

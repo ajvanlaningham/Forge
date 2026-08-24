@@ -158,14 +158,10 @@ namespace Forge.ViewModels
             var display = WeightMath.ToDisplay((double)result.Entry.Pounds, _displayUnit);
             var unitLabel = WeightMath.UnitLabel(_displayUnit);
 
-            StatusMessage = result.XpAwarded > 0
-                ? string.Format(AppResources.CheckInPage_Saved_WithXp_Format,
-                    display.ToString("0.0", CultureInfo.CurrentCulture),
-                    unitLabel,
-                    result.XpAwarded)
-                : string.Format(AppResources.CheckInPage_Saved_NoXp_Format,
-                    display.ToString("0.0", CultureInfo.CurrentCulture),
-                    unitLabel);
+            StatusMessage = string.Format(AppResources.CheckInPage_Saved_WithXp_Format,
+                display.ToString("0.0", CultureInfo.CurrentCulture),
+                unitLabel,
+                result.XpAwarded);
         }
     }
 }

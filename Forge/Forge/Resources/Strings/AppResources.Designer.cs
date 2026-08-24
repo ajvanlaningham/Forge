@@ -668,10 +668,6 @@ namespace Forge.Resources.Strings {
             get { return ResourceManager.GetString("CheckInPage_Saved_WithXp_Format", resourceCulture); }
         }
 
-        internal static string CheckInPage_Saved_NoXp_Format {
-            get { return ResourceManager.GetString("CheckInPage_Saved_NoXp_Format", resourceCulture); }
-        }
-
         internal static string CheckInPage_InvalidWeight {
             get { return ResourceManager.GetString("CheckInPage_InvalidWeight", resourceCulture); }
         }

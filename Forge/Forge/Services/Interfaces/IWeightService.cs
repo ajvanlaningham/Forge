@@ -13,9 +13,10 @@ namespace Forge.Services.Interfaces
         Task InitAsync();
 
         /// <summary>
-        /// Insert-or-replace the entry for <paramref name="date"/> and grant the weight-log XP
-        /// on the first log for that day. Re-logging the same day updates the row but does
-        /// NOT grant XP again — XP is per day, not per save.
+        /// Insert-or-replace the entry for <paramref name="date"/> and grant the weight-log XP.
+        /// Every successful save awards <see cref="Forge.Constants.WeightMath.XpPerWeightLog"/> XP,
+        /// including corrections to a day that was already logged — the reward is per save, not
+        /// per day.
         /// </summary>
         Task<WeightLogResult> LogAsync(DateOnly date, decimal weightPounds, string? note = null);
 

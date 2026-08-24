@@ -404,10 +404,6 @@
     <value>Saved {0} {1}. +{2} XP</value>
     <comment>New</comment>
   </data>
-  <data name="CheckInPage_Saved_NoXp_Format" xml:space="preserve">
-    <value>Updated {0} {1}.</value>
-    <comment>New</comment>
-  </data>
   <data name="CheckInPage_InvalidWeight" xml:space="preserve">
     <value>Enter a weight greater than zero.</value>
     <comment>New</comment>
