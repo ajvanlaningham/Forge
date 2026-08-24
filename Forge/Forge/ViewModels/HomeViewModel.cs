@@ -80,11 +80,10 @@ namespace Forge.ViewModels
             var unit = UserSettings.WeightUnit;
 
             var recent = await _weights.GetRecentAsync(today, WeightMath.MovingAverageWindowDays);
-            var loggedToday = recent.Any(r => r.DateKey == WeekMath.DateKey(today));
+            var loggedToday = recent.Any(e => e.Date == today);
 
             var avgPounds = WeightMath.MovingAverage(
-                recent.Select(r => (Date: DateOnly.ParseExact(r.DateKey, "yyyy-MM-dd"),
-                                    WeightPounds: r.WeightPounds)),
+                recent.Select(e => (e.Date, WeightPounds: (double)e.Pounds)),
                 today);
 
             if (avgPounds is null)

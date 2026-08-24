@@ -23,7 +23,7 @@ namespace Forge.Services.Implementations
             await _stats.InitAsync();
         }
 
-        public async Task<WeightLogResult> LogAsync(DateOnly date, double weightPounds, string? note = null)
+        public async Task<WeightLogResult> LogAsync(DateOnly date, decimal weightPounds, string? note = null)
         {
             await InitAsync();
 
@@ -48,28 +48,30 @@ namespace Forge.Services.Implementations
                 xpAwarded = WeightMath.XpPerWeightLog;
             }
 
-            return new WeightLogResult(row, xpAwarded);
+            return new WeightLogResult(ToDomain(row), xpAwarded);
         }
 
-        public async Task<WeightEntryRow?> GetLatestAsync()
+        public async Task<WeightEntry?> GetLatestAsync()
         {
             await InitAsync();
             var all = await _repo.GetAllAsync();
             // DateKey is yyyy-MM-dd, so ordinal descending sort == newest first.
-            return all
+            var latest = all
                 .OrderByDescending(r => r.DateKey, StringComparer.Ordinal)
                 .ThenByDescending(r => r.LoggedAtUnix)
                 .FirstOrDefault();
+            return latest is null ? null : ToDomain(latest);
         }
 
-        public async Task<WeightEntryRow?> GetForDateAsync(DateOnly date)
+        public async Task<WeightEntry?> GetForDateAsync(DateOnly date)
         {
             await InitAsync();
             var key = WeekMath.DateKey(date);
-            return await _repo.FirstOrDefaultAsync(r => r.DateKey == key);
+            var row = await _repo.FirstOrDefaultAsync(r => r.DateKey == key);
+            return row is null ? null : ToDomain(row);
         }
 
-        public async Task<IReadOnlyList<WeightEntryRow>> GetRecentAsync(DateOnly today, int days)
+        public async Task<IReadOnlyList<WeightEntry>> GetRecentAsync(DateOnly today, int days)
         {
             await InitAsync();
             // sqlite-net-pcl's expression-tree translator doesn't cover string.Compare, and
@@ -80,7 +82,16 @@ namespace Forge.Services.Implementations
                 .Where(r => DateOnly.TryParseExact(r.DateKey, "yyyy-MM-dd", out var d)
                             && d >= oldest && d <= today)
                 .OrderBy(r => r.DateKey, StringComparer.Ordinal)
+                .Select(ToDomain)
                 .ToList();
         }
+
+        private static WeightEntry ToDomain(WeightEntryRow row) => new()
+        {
+            Date = DateOnly.ParseExact(row.DateKey, "yyyy-MM-dd"),
+            Pounds = row.WeightPounds,
+            Note = row.Note,
+            LoggedAt = DateTimeOffset.FromUnixTimeSeconds(row.LoggedAtUnix),
+        };
     }
 }

@@ -88,14 +88,30 @@ namespace Forge.ViewModels
         public ICommand SaveCommand => _saveCommand;
 
         /// <summary>
-        /// Called from <c>OnAppearing</c>: the unit toggle may have flipped in Settings while the
-        /// tab was elsewhere, and the last-weight prefill should reflect current UI units.
+        /// Called from <c>OnAppearing</c>: the unit toggle may have flipped in Settings while
+        /// this page was elsewhere. If the user already typed a value, reconvert it into the
+        /// new unit so the number on screen keeps meaning what the label says — otherwise a
+        /// pounds entry would silently be saved as kilograms after another conversion. If the
+        /// field is blank, refill from the latest logged entry in the new unit.
         /// </summary>
         public async Task RefreshAsync()
         {
             await _weights.InitAsync();
 
-            _displayUnit = UserSettings.WeightUnit;
+            var previousUnit = _displayUnit;
+            var newUnit = UserSettings.WeightUnit;
+
+            if (newUnit != previousUnit
+                && !string.IsNullOrWhiteSpace(_weightText)
+                && TryParseWeight(out var currentDisplay))
+            {
+                var pounds = WeightMath.ToStoredPounds(currentDisplay, previousUnit);
+                var converted = WeightMath.ToDisplay(pounds, newUnit);
+                _weightText = converted.ToString("0.0", CultureInfo.CurrentCulture);
+                OnPropertyChanged(nameof(WeightText));
+            }
+
+            _displayUnit = newUnit;
             OnPropertyChanged(nameof(WeightHint));
 
             if (string.IsNullOrWhiteSpace(_weightText))
@@ -103,7 +119,7 @@ namespace Forge.ViewModels
                 var latest = await _weights.GetLatestAsync();
                 if (latest is not null)
                 {
-                    var displayValue = WeightMath.ToDisplay(latest.WeightPounds, _displayUnit);
+                    var displayValue = WeightMath.ToDisplay((double)latest.Pounds, _displayUnit);
                     WeightText = displayValue.ToString("0.0", CultureInfo.CurrentCulture);
                 }
             }
@@ -134,12 +150,12 @@ namespace Forge.ViewModels
                 return;
             }
 
-            var pounds = WeightMath.ToStoredPounds(displayValue, _displayUnit);
+            var pounds = (decimal)WeightMath.ToStoredPounds(displayValue, _displayUnit);
             var date = DateOnly.FromDateTime(EntryDate);
 
             var result = await _weights.LogAsync(date, pounds, Note);
 
-            var display = WeightMath.ToDisplay(result.Row.WeightPounds, _displayUnit);
+            var display = WeightMath.ToDisplay((double)result.Entry.Pounds, _displayUnit);
             var unitLabel = WeightMath.UnitLabel(_displayUnit);
 
             StatusMessage = result.XpAwarded > 0
