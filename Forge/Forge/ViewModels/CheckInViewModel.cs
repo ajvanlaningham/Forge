@@ -5,6 +5,7 @@ using Forge.Constants;
 using Forge.Resources.Strings;
 using Forge.Services;
 using Forge.Services.Interfaces;
+using Forge.ViewModels.Controls.Cards;
 
 namespace Forge.ViewModels
 {
@@ -19,9 +20,10 @@ namespace Forge.ViewModels
         private WeightUnit _displayUnit;
         private readonly AsyncRelayCommand _saveCommand;
 
-        public CheckInViewModel(IWeightService weights)
+        public CheckInViewModel(IWeightService weights, WeightTrendCardViewModel weightTrendCard)
         {
             _weights = weights;
+            WeightTrendCard = weightTrendCard;
 
             Title = AppResources.CheckInPage_Title;
 
@@ -30,6 +32,8 @@ namespace Forge.ViewModels
 
             _saveCommand = new AsyncRelayCommand(SaveAsync, CanSave);
         }
+
+        public WeightTrendCardViewModel WeightTrendCard { get; }
 
         public string WeightHint =>
             string.Format(AppResources.CheckInPage_WeightHint_Format, WeightMath.UnitLabel(_displayUnit));
@@ -125,6 +129,10 @@ namespace Forge.ViewModels
             }
 
             _saveCommand.RaiseCanExecuteChanged();
+
+            // Refresh the trend card so the average and sparkline reflect any log made
+            // elsewhere while this page was off-screen.
+            await WeightTrendCard.RefreshAsync();
         }
 
         private bool CanSave() => TryParseWeight(out _);
@@ -162,6 +170,10 @@ namespace Forge.ViewModels
                 display.ToString("0.0", CultureInfo.CurrentCulture),
                 unitLabel,
                 result.XpAwarded);
+
+            // Reflect the just-saved entry in the on-page trend card without waiting for
+            // the next OnAppearing.
+            await WeightTrendCard.RefreshAsync();
         }
     }
 }
