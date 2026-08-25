@@ -635,5 +635,77 @@ namespace Forge.Resources.Strings {
                 return ResourceManager.GetString("SettingsPage_NeedsInstallPermission", resourceCulture);
             }
         }
+
+        internal static string CheckInPage_Title {
+            get { return ResourceManager.GetString("CheckInPage_Title", resourceCulture); }
+        }
+
+        internal static string CheckInPage_WeightHeader {
+            get { return ResourceManager.GetString("CheckInPage_WeightHeader", resourceCulture); }
+        }
+
+        internal static string CheckInPage_WeightHint_Format {
+            get { return ResourceManager.GetString("CheckInPage_WeightHint_Format", resourceCulture); }
+        }
+
+        internal static string CheckInPage_DateLabel {
+            get { return ResourceManager.GetString("CheckInPage_DateLabel", resourceCulture); }
+        }
+
+        internal static string CheckInPage_NoteLabel {
+            get { return ResourceManager.GetString("CheckInPage_NoteLabel", resourceCulture); }
+        }
+
+        internal static string CheckInPage_SaveBtn {
+            get { return ResourceManager.GetString("CheckInPage_SaveBtn", resourceCulture); }
+        }
+
+        internal static string CheckInPage_SavedDialog_Title {
+            get { return ResourceManager.GetString("CheckInPage_SavedDialog_Title", resourceCulture); }
+        }
+
+        internal static string CheckInPage_Saved_WithXp_Format {
+            get { return ResourceManager.GetString("CheckInPage_Saved_WithXp_Format", resourceCulture); }
+        }
+
+        internal static string CheckInPage_InvalidWeight {
+            get { return ResourceManager.GetString("CheckInPage_InvalidWeight", resourceCulture); }
+        }
+
+        internal static string CheckInPage_Placeholder {
+            get { return ResourceManager.GetString("CheckInPage_Placeholder", resourceCulture); }
+        }
+
+        internal static string SettingsPage_UnitsHeader {
+            get { return ResourceManager.GetString("SettingsPage_UnitsHeader", resourceCulture); }
+        }
+
+        internal static string SettingsPage_WeightUnitLabel {
+            get { return ResourceManager.GetString("SettingsPage_WeightUnitLabel", resourceCulture); }
+        }
+
+        internal static string SettingsPage_WeightUnit_Pounds {
+            get { return ResourceManager.GetString("SettingsPage_WeightUnit_Pounds", resourceCulture); }
+        }
+
+        internal static string SettingsPage_WeightUnit_Kilograms {
+            get { return ResourceManager.GetString("SettingsPage_WeightUnit_Kilograms", resourceCulture); }
+        }
+
+        internal static string Home_Weight_Reminder {
+            get { return ResourceManager.GetString("Home_Weight_Reminder", resourceCulture); }
+        }
+
+        internal static string Home_Weight_Header {
+            get { return ResourceManager.GetString("Home_Weight_Header", resourceCulture); }
+        }
+
+        internal static string Home_Weight_None {
+            get { return ResourceManager.GetString("Home_Weight_None", resourceCulture); }
+        }
+
+        internal static string Home_Weight_Value_Format {
+            get { return ResourceManager.GetString("Home_Weight_Value_Format", resourceCulture); }
+        }
     }
 }

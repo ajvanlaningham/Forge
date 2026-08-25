@@ -1,7 +1,9 @@
 using System.Windows.Input;
 
+using Forge.Constants;
 using Forge.Models;
 using Forge.Resources.Strings;
+using Forge.Services;
 using Forge.Services.Interfaces;
 
 namespace Forge.ViewModels
@@ -30,6 +32,24 @@ namespace Forge.ViewModels
             // it was told and will sit there disabled otherwise.
             _checkCommand = new AsyncRelayCommand(CheckAsync, () => !IsDownloading);
             _downloadCommand = new AsyncRelayCommand(DownloadAsync, () => UpdateAvailable);
+
+            _useKilograms = UserSettings.WeightUnit == WeightUnit.Kilograms;
+        }
+
+        private bool _useKilograms;
+        /// <summary>
+        /// The toggle switches between pounds (off) and kilograms (on). Storage stays in
+        /// pounds — see <see cref="Forge.Constants.WeightMath"/> — so flipping this never
+        /// touches persisted values, only what the UI shows.
+        /// </summary>
+        public bool UseKilograms
+        {
+            get => _useKilograms;
+            set
+            {
+                if (SetProperty(ref _useKilograms, value))
+                    UserSettings.WeightUnit = value ? WeightUnit.Kilograms : WeightUnit.Pounds;
+            }
         }
 
         private readonly AsyncRelayCommand _checkCommand;

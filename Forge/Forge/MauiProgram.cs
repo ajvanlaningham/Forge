@@ -45,6 +45,9 @@ namespace Forge
             builder.Services.AddSingleton<IStatsStore, StatsStore>();
             builder.Services.AddSingleton<IStatsService, StatsService>();
 
+            // Weight logging
+            builder.Services.AddSingleton<IWeightService, WeightService>();
+
             // Inventory
             builder.Services.AddSingleton<IInventoryService, InventoryService>();
 
@@ -60,6 +63,8 @@ namespace Forge
             builder.Services.AddTransient<QuestsPage>();
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<CheckInViewModel>();
+            builder.Services.AddTransient<CheckInPage>();
 
 
             builder.Services.AddTransient<ViewModels.SubPages.ExerciseLibraryViewModel>();

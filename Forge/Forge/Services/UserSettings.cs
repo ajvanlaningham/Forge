@@ -14,6 +14,7 @@ namespace Forge.Services
     public static class UserSettings
     {
         private const string WeeklyConditioningGoalKey = "Settings.WeeklyConditioningGoalMinutes";
+        private const string WeightUnitKey = "Settings.WeightUnit";
 
         /// <summary>Weekly cardio goal in minutes. Defaults to 3 hours.</summary>
         public static int WeeklyConditioningGoalMinutes
@@ -22,6 +23,17 @@ namespace Forge.Services
                 WeeklyConditioningGoalKey,
                 GameConstants.Defaults.WeeklyConditioningGoalMinutes);
             set => Preferences.Set(WeeklyConditioningGoalKey, Math.Max(0, value));
+        }
+
+        /// <summary>
+        /// Display unit for weights. Storage is always pounds — this only decides what
+        /// number is shown and what unit the entry form accepts. Flipping this does not
+        /// migrate stored values.
+        /// </summary>
+        public static WeightUnit WeightUnit
+        {
+            get => (WeightUnit)Preferences.Get(WeightUnitKey, (int)WeightUnit.Pounds);
+            set => Preferences.Set(WeightUnitKey, (int)value);
         }
     }
 }

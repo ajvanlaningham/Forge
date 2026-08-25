@@ -372,4 +372,76 @@
     <value>Forge needs permission to install apps. Opening that setting now — enable it, then tap Download and install again.</value>
     <comment>New</comment>
   </data>
+  <data name="CheckInPage_Title" xml:space="preserve">
+    <value>Check-In</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_WeightHeader" xml:space="preserve">
+    <value>Log Weight</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_WeightHint_Format" xml:space="preserve">
+    <value>Weight ({0})</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_DateLabel" xml:space="preserve">
+    <value>Date</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_NoteLabel" xml:space="preserve">
+    <value>Note (optional)</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_SaveBtn" xml:space="preserve">
+    <value>Save weight</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_SavedDialog_Title" xml:space="preserve">
+    <value>Logged</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_Saved_WithXp_Format" xml:space="preserve">
+    <value>Saved {0} {1}. +{2} XP</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_InvalidWeight" xml:space="preserve">
+    <value>Enter a weight greater than zero.</value>
+    <comment>New</comment>
+  </data>
+  <data name="CheckInPage_Placeholder" xml:space="preserve">
+    <value>Sleep, steps, and protein log will go here.</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_UnitsHeader" xml:space="preserve">
+    <value>Units</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_WeightUnitLabel" xml:space="preserve">
+    <value>Weight unit</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_WeightUnit_Pounds" xml:space="preserve">
+    <value>lb</value>
+    <comment>New</comment>
+  </data>
+  <data name="SettingsPage_WeightUnit_Kilograms" xml:space="preserve">
+    <value>kg</value>
+    <comment>New</comment>
+  </data>
+  <data name="Home_Weight_Reminder" xml:space="preserve">
+    <value>Log today's weight</value>
+    <comment>New</comment>
+  </data>
+  <data name="Home_Weight_Header" xml:space="preserve">
+    <value>Bodyweight (7-day avg)</value>
+    <comment>New</comment>
+  </data>
+  <data name="Home_Weight_None" xml:space="preserve">
+    <value>No entries yet — log your first weight.</value>
+    <comment>New</comment>
+  </data>
+  <data name="Home_Weight_Value_Format" xml:space="preserve">
+    <value>{0:0.0} {1}</value>
+    <comment>New</comment>
+  </data>
 </root>

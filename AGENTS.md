@@ -65,6 +65,9 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
 - **Constants live in `Forge.Core`**, not the app project. Game rules are constants; anything the
   user can change is a setting in `Forge/Forge/Services/UserSettings.cs` backed by `Preferences`.
   Never make a personal target (goal weight, weekly goal) a compile-time constant.
+- **Weights are stored in pounds always.** The lb/kg toggle in `UserSettings.WeightUnit` only
+  affects display — convert at the view/ViewModel boundary via `WeightMath.ToDisplay` /
+  `WeightMath.ToStoredPounds`. Never persist the currently-selected display unit.
 - Exercise library seeding is gated on `GameConstants.Exercises.LibraryVersion` **alone**. Editing
   or adding a JSON file without bumping that version is a silent no-op on an existing install.
   `IExerciseLibraryImporter.ForceReseedAsync()` is the dev escape hatch.
