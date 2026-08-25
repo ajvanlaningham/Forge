@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Forge.Controls.Cards.WeightTrendCard"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:Forge.ViewModels.Controls.Cards"
+    xmlns:res="clr-namespace:Forge.Resources.Strings"
+    xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+    x:DataType="vm:WeightTrendCardViewModel">
+
+    <Frame Padding="16"
+           HasShadow="False"
+           CornerRadius="12"
+           BackgroundColor="{StaticResource Surface}"
+           BorderColor="{StaticResource Accent}">
+
+        <Frame.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding ToggleExpandedCommand}" />
+        </Frame.GestureRecognizers>
+
+        <VerticalStackLayout Spacing="10">
+
+            <!-- Header row: title on the left, tap-hint chevron on the right -->
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Text="{Binding Title}"
+                    FontSize="16"
+                    TextColor="{StaticResource Accent}" />
+                <Label
+                    Grid.Column="1"
+                    Text="▾"
+                    FontFamily="PixelUI"
+                    FontSize="16"
+                    TextColor="{StaticResource Muted}"
+                    Rotation="0">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding IsExpanded}"
+                                     Value="True">
+                            <Setter Property="Rotation" Value="180" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </Grid>
+
+            <!-- Big average number + N-day label -->
+            <VerticalStackLayout Spacing="2">
+                <Label
+                    Text="{Binding AverageDisplay}"
+                    FontFamily="PixelH"
+                    FontSize="26"
+                    TextColor="{StaticResource OnBg}" />
+                <Label
+                    Text="{Binding AverageLabelText}"
+                    FontFamily="PixelUI"
+                    FontSize="12"
+                    TextColor="{StaticResource Muted}"
+                    IsVisible="{Binding HasData}" />
+            </VerticalStackLayout>
+
+            <!-- Sparkline: skips missing days (no zero-fill) -->
+            <charts:ChartView
+                HeightRequest="72"
+                Chart="{Binding SparklineChart}"
+                BackgroundColor="{StaticResource Surface}"
+                IsVisible="{Binding HasData}" />
+
+            <!-- Expanded raw-value detail (tap to toggle) -->
+            <VerticalStackLayout Spacing="6"
+                                 IsVisible="{Binding IsExpanded}">
+                <BoxView HeightRequest="1"
+                         BackgroundColor="{StaticResource Muted}"
+                         Opacity="0.3" />
+                <Label
+                    Text="{Binding RawDisplay}"
+                    FontFamily="PixelUI"
+                    FontSize="14"
+                    TextColor="{StaticResource OnBg}" />
+                <Label
+                    Text="{x:Static res:AppResources.WeightTrendCard_GoLogCta}"
+                    FontFamily="PixelUI"
+                    FontSize="14"
+                    TextColor="{StaticResource Accent}"
+                    TextDecorations="Underline"
+                    IsVisible="{Binding NeedsLogToday}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToCheckInCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
+</ContentView>

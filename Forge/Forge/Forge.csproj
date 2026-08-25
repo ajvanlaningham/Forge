@@ -21,6 +21,12 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
+		<!-- XA0141: SkiaSharp.NativeAssets.Android 2.88.9's libSkiaSharp.so isn't built with
+		     16 KB page sizes, which Android 16 will require. Silenced until Microcharts.Maui
+		     ships a build against SkiaSharp 3.x — that upgrade needs .NET 10 and this repo
+		     is still on net9.0-android. -->
+		<NoWarn>$(NoWarn);XA0141</NoWarn>
+
 		<!-- Display name -->
 		<ApplicationTitle>Forge</ApplicationTitle>
 
@@ -72,6 +78,12 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
+		<!-- Bodyweight sparkline on WeightTrendCard. Microcharts.Maui 2.x targets
+		     .NET 8/9 MAUI and brings SkiaSharp.Views.Maui.Controls in transitively;
+		     we still list the SkiaSharp package explicitly so an upgrade to
+		     Microcharts cannot silently drop it. -->
+		<PackageReference Include="Microcharts.Maui" Version="1.0.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -109,6 +121,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Controls\Cards\WeeklyConditioningCard.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Controls\Cards\WeightTrendCard.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Resources\Styles\Icons.xaml">
