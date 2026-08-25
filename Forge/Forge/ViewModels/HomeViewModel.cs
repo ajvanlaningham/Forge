@@ -1,10 +1,8 @@
 ﻿using Forge.Models;
 using Forge.Resources.Strings;
-using System.Globalization;
 using System.Windows.Input;
 using Forge.Common;
 using Forge.ViewModels.Controls.Cards;
-using Forge.Services;
 using Forge.Services.Interfaces;
 using Forge.Constants;
 
@@ -14,16 +12,15 @@ namespace Forge.ViewModels
     {
         private readonly IStatsService _stats;
         private readonly IExerciseLibraryImporter _importer;
-        private readonly IWeightService _weights;
 
         public HomeViewModel(
             IStatsService statsService,
             IExerciseLibraryImporter importer,
-            IWeightService weights)
+            WeightTrendCardViewModel weightTrendCard)
         {
             _stats = statsService;
             _importer = importer;
-            _weights = weights;
+            WeightTrendCard = weightTrendCard;
 
             BeginTrainingCommand = new AsyncRelayCommand(async () =>
                 await Shell.Current.GoToAsync("//train"));
@@ -71,70 +68,7 @@ namespace Forge.ViewModels
             StatsCard.Dexterity = DexterityScore;
             StatsCard.Constitution = ConstitutionScore;
 
-            await RefreshWeightCardAsync();
-        }
-
-        private async Task RefreshWeightCardAsync()
-        {
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            var unit = UserSettings.WeightUnit;
-
-            var recent = await _weights.GetRecentAsync(today, WeightMath.MovingAverageWindowDays);
-            var loggedToday = recent.Any(e => e.Date == today);
-
-            var avgPounds = WeightMath.MovingAverage(
-                recent.Select(e => (e.Date, WeightPounds: (double)e.Pounds)),
-                today);
-
-            if (avgPounds is null)
-            {
-                WeightAverageText = AppResources.Home_Weight_None;
-                HasWeightAverage = false;
-            }
-            else
-            {
-                var display = WeightMath.ToDisplay(avgPounds.Value, unit);
-                WeightAverageText = string.Format(
-                    CultureInfo.CurrentCulture,
-                    AppResources.Home_Weight_Value_Format,
-                    display,
-                    WeightMath.UnitLabel(unit));
-                HasWeightAverage = true;
-            }
-
-            NeedsWeightLog = !loggedToday;
-        }
-
-        private string _weightAverageText = string.Empty;
-        public string WeightAverageText
-        {
-            get => _weightAverageText;
-            private set => SetProperty(ref _weightAverageText, value);
-        }
-
-        private bool _hasWeightAverage;
-        public bool HasWeightAverage
-        {
-            get => _hasWeightAverage;
-            private set
-            {
-                if (SetProperty(ref _hasWeightAverage, value))
-                    OnPropertyChanged(nameof(NoWeightData));
-            }
-        }
-
-        /// <summary>Convenience for the "no entries yet" caption on Home.</summary>
-        public bool NoWeightData => !HasWeightAverage;
-
-        private bool _needsWeightLog;
-        /// <summary>
-        /// True when the user has not logged today. Home hides the reminder button once
-        /// they log — the average keeps showing regardless.
-        /// </summary>
-        public bool NeedsWeightLog
-        {
-            get => _needsWeightLog;
-            private set => SetProperty(ref _needsWeightLog, value);
+            await WeightTrendCard.RefreshAsync();
         }
 
         private int _userLevel;
@@ -153,6 +87,7 @@ namespace Forge.ViewModels
         public int ConstitutionScore { get => _constitution; set => SetProperty(ref _constitution, value); }
 
         public StatCardViewModel StatsCard { get; }
+        public WeightTrendCardViewModel WeightTrendCard { get; }
 
         public ICommand BeginTrainingCommand { get; }
         public ICommand GoToStatsCommand { get; }

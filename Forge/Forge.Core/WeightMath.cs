@@ -51,6 +51,16 @@ namespace Forge.Constants
         public static double? MovingAverage(
             IEnumerable<(DateOnly Date, double WeightPounds)> entries,
             DateOnly today)
+            => MovingAverageWithSample(entries, today) is { } r ? r.Average : null;
+
+        /// <summary>
+        /// Same window contract as <see cref="MovingAverage"/> but also reports how many days
+        /// contributed. The card UI shows the count in the label ("3-day avg", "1-day avg") so
+        /// a brand-new user does not see "7-day avg" over a single log.
+        /// </summary>
+        public static MovingAverageSample? MovingAverageWithSample(
+            IEnumerable<(DateOnly Date, double WeightPounds)> entries,
+            DateOnly today)
         {
             var oldest = today.AddDays(-(MovingAverageWindowDays - 1));
 
@@ -63,7 +73,13 @@ namespace Forge.Constants
                 count++;
             }
 
-            return count == 0 ? null : sum / count;
+            return count == 0 ? null : new MovingAverageSample(sum / count, count);
         }
     }
+
+    /// <summary>
+    /// Result of <see cref="WeightMath.MovingAverageWithSample"/> — the mean weight (pounds)
+    /// and the number of distinct-day logs that contributed to it.
+    /// </summary>
+    public readonly record struct MovingAverageSample(double Average, int SampleDays);
 }

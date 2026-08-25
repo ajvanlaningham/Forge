@@ -444,4 +444,28 @@
     <value>{0:0.0} {1}</value>
     <comment>New</comment>
   </data>
+  <data name="WeightTrendCard_Title" xml:space="preserve">
+    <value>Bodyweight</value>
+    <comment>New</comment>
+  </data>
+  <data name="WeightTrendCard_AverageLabel_Format" xml:space="preserve">
+    <value>{0}-day avg</value>
+    <comment>New</comment>
+  </data>
+  <data name="WeightTrendCard_Empty" xml:space="preserve">
+    <value>--</value>
+    <comment>New</comment>
+  </data>
+  <data name="WeightTrendCard_Today_Format" xml:space="preserve">
+    <value>Today: {0:0.0} {1}</value>
+    <comment>New</comment>
+  </data>
+  <data name="WeightTrendCard_NotLoggedToday" xml:space="preserve">
+    <value>Not logged today.</value>
+    <comment>New</comment>
+  </data>
+  <data name="WeightTrendCard_GoLogCta" xml:space="preserve">
+    <value>Log today's weight</value>
+    <comment>New</comment>
+  </data>
 </root>

@@ -32,6 +32,23 @@ emulator and no Android SDK, so run them. Put new pure logic in `Forge.Core` and
 Note the host SDK is .NET 10 (10.0.111) building a `net9.0-android` target via the
 `maui-android` workload. That is expected and works.
 
+### Building in the throwaway `/tmp/coder/repo` container
+
+The remote coder container is not asgard. It ships the .NET 10 SDK at
+`/usr/local/dotnet` **without** the `maui-android` workload, Android SDK, JDK, or `adb`,
+and `/usr/local/dotnet` is root-owned so `dotnet workload install` fails with
+"Inadequate permissions." The tests still run there — Forge.Tests targets net9.0 and the
+container only has a .NET 10 runtime, so pass `DOTNET_ROLL_FORWARD=Major` when invoking
+`dotnet test`, otherwise it aborts with "You must install or update .NET".
+
+If a container-side Android build is actually needed (e.g. to satisfy a spec that says
+"`dotnet build ... -f net9.0-android` succeeds"), the workaround is:
+`cp -r /usr/local/dotnet /tmp/user-dotnet`, install `maui-android` into that copy,
+download Microsoft OpenJDK 21 + Android cmdline-tools into `/tmp`, accept the licenses,
+`sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"`, then build with
+`DOTNET_ROOT=/tmp/user-dotnet`, `JAVA_HOME`, and `ANDROID_HOME` pointing at the copies.
+Roughly a 1 GB download; don't do it unless the task requires validating the Android target.
+
 ## Deploy — use the script, not the README
 **Deploy with `./deploy-android.sh` only.** The deploy targets a physical Pixel over Tailscale via wireless `adb`.
 
@@ -71,6 +88,15 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
 - Exercise library seeding is gated on `GameConstants.Exercises.LibraryVersion` **alone**. Editing
   or adding a JSON file without bumping that version is a silent no-op on an existing install.
   `IExerciseLibraryImporter.ForceReseedAsync()` is the dev escape hatch.
+- **Charts**: Microcharts.Maui 1.0.1 is pinned to SkiaSharp 2.88.9 because 2.x of Microcharts
+  targets `net10.0` only. That SkiaSharp version raises `XA0141` about a missing 16 KB page
+  size in `libSkiaSharp.so`; the project silences `XA0141` in a `<NoWarn>` with an
+  explanatory comment. Revisit both when this repo moves to `net10.0-android`.
+- **DI on the card VMs**: reusable card view models (see `WeightTrendCardViewModel`) are
+  registered `AddTransient` and injected into the page view models that host them. Each
+  page holds its own instance so per-page UI state (expansion, animation) does not leak
+  across tabs. Refresh the card in the page view model's Initialize/Refresh, not in the
+  card VM's constructor.
 
 ## Delivery — CI builds, in-app updates
 

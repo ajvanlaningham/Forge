@@ -3,11 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:res="clr-namespace:Forge.Resources.Strings"
              xmlns:vm="clr-namespace:Forge.ViewModels"
+             xmlns:controls="clr-namespace:Forge.Controls.Cards;assembly=Forge"
              x:DataType="vm:CheckInViewModel"
              x:Class="Forge.Views.CheckInPage"
              Title="{x:Static res:AppResources.CheckInPage_Title}">
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="14">
+
+            <!-- Trend context sits above the form so the average moves in real time as
+                 the user saves. -->
+            <controls:WeightTrendCard BindingContext="{Binding WeightTrendCard}" />
 
             <Label Text="{x:Static res:AppResources.CheckInPage_WeightHeader}"
                    FontSize="22"
