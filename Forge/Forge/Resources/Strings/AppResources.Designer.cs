@@ -707,5 +707,29 @@ namespace Forge.Resources.Strings {
         internal static string Home_Weight_Value_Format {
             get { return ResourceManager.GetString("Home_Weight_Value_Format", resourceCulture); }
         }
+
+        internal static string WeightTrendCard_Title {
+            get { return ResourceManager.GetString("WeightTrendCard_Title", resourceCulture); }
+        }
+
+        internal static string WeightTrendCard_AverageLabel_Format {
+            get { return ResourceManager.GetString("WeightTrendCard_AverageLabel_Format", resourceCulture); }
+        }
+
+        internal static string WeightTrendCard_Empty {
+            get { return ResourceManager.GetString("WeightTrendCard_Empty", resourceCulture); }
+        }
+
+        internal static string WeightTrendCard_Today_Format {
+            get { return ResourceManager.GetString("WeightTrendCard_Today_Format", resourceCulture); }
+        }
+
+        internal static string WeightTrendCard_NotLoggedToday {
+            get { return ResourceManager.GetString("WeightTrendCard_NotLoggedToday", resourceCulture); }
+        }
+
+        internal static string WeightTrendCard_GoLogCta {
+            get { return ResourceManager.GetString("WeightTrendCard_GoLogCta", resourceCulture); }
+        }
     }
 }

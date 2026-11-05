@@ -2,10 +2,15 @@
 using Forge.Services.Implementations;
 using Forge.Services.Interfaces;
 using Forge.ViewModels;
+using Forge.ViewModels.Controls.Cards;
 using Forge.Views;
 using Forge.Views.SubPages;
 
+using Microcharts.Maui;
+
 using Microsoft.Extensions.Logging;
+
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace Forge
 {
@@ -16,6 +21,10 @@ namespace Forge
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                // Microcharts' ChartView is a SkiaSharp SKCanvasView; both handler
+                // registrations are required or the sparkline on WeightTrendCard renders blank.
+                .UseSkiaSharp()
+                .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -65,6 +74,10 @@ namespace Forge
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<CheckInViewModel>();
             builder.Services.AddTransient<CheckInPage>();
+
+            // Reusable card VMs. Transient because Home and Check-in each hold their own
+            // instance — they refresh on OnAppearing and must not share expansion state.
+            builder.Services.AddTransient<WeightTrendCardViewModel>();
 
 
             builder.Services.AddTransient<ViewModels.SubPages.ExerciseLibraryViewModel>();

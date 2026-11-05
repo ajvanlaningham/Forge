@@ -103,4 +103,38 @@ public class WeightMathTests
     [Fact]
     public void XpPerWeightLog_IsTwentyFive()
         => Assert.Equal(25, WeightMath.XpPerWeightLog);
+
+    [Fact]
+    public void MovingAverageWithSample_ReturnsNullOnEmpty()
+        => Assert.Null(WeightMath.MovingAverageWithSample(
+            Array.Empty<(DateOnly, double)>(), Today));
+
+    [Fact]
+    public void MovingAverageWithSample_SingleEntryReportsOneDay()
+    {
+        // The card label reads "1-day avg" off SampleDays for a brand-new user.
+        var entries = new[] { (Today, 195.0) };
+        var result = WeightMath.MovingAverageWithSample(entries, Today);
+        Assert.NotNull(result);
+        Assert.Equal(195.0, result!.Value.Average, 6);
+        Assert.Equal(1, result.Value.SampleDays);
+    }
+
+    [Fact]
+    public void MovingAverageWithSample_CountsOnlyEntriesInsideWindow()
+    {
+        // The "days sampled" count uses the same window rules as MovingAverage — otherwise
+        // the label would claim more history than the average actually saw.
+        var entries = new[]
+        {
+            (Today.AddDays(-30), 100.0),
+            (Today.AddDays(-6),  200.0),
+            (Today.AddDays(-3),  210.0),
+            (Today,              190.0),
+        };
+        var result = WeightMath.MovingAverageWithSample(entries, Today);
+        Assert.NotNull(result);
+        Assert.Equal(200.0, result!.Value.Average, 6);
+        Assert.Equal(3, result.Value.SampleDays);
+    }
 }
