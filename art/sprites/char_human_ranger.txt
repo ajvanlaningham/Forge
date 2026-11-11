@@ -2,68 +2,67 @@
 #! 0 #1A1A20
 #! 1 #332C24
 #! 2 #344A26
-#! 3 #4A2E1A
-#! 4 #4A3222
-#! 5 #4E4438
-#! 6 #56733C
-#! 7 #6A5E50
-#! 8 #7D5839
-#! 9 #7E9E58
-#! a #9A6A42
-#! b #A47450
-#! c #A8714F
-#! d #B07E52
-#! e #C25A48
-#! f #D9A27A
-#! g #D9C9A3
-#! h #F2C29B
-#! i #F2EEDF
+#! 3 #4A3222
+#! 4 #4E4438
+#! 5 #56733C
+#! 6 #6A5E50
+#! 7 #7D5839
+#! 8 #7E9E58
+#! 9 #A47450
+#! a #A8714F
+#! b #B07E52
+#! c #C25A48
+#! d #D9A27A
+#! e #D9C9A3
+#! f #E0C045
+#! g #F2C29B
+#! h #F2EEDF
 ................................
 ................................
 ................................
 ................................
 ................................
-..................AAA...........
-.................AAAAA..........
-.................AAeAAA.........
-.............AAAAAAeeAAA........
-............AAAAAAAAeeAA........
-...........AAA9999AAAeAA........
-..........AAA966669AAAAA........
-.....AAA.AAA92222229AAAAAA......
-....AAeAAAAaAAAAAAAAAAAAAAA.....
-....AeieAAAa3AAaAAaaAAAAdAAA....
-...AAeieAAAaAffAffAAaAAAAdAAA...
-...AAbbbAAAAhffffffcAAAAAAdAAA..
-...AAb84AAAAhf0ff0fcAAA.AAdAgA..
-...AAb84AAAAhf0ff0fcAAA.AAdAgA..
-...AAb84AAAAhffffffcAAAAAAdAgA..
-...AAb84AAAAhffccffcAAAAAAdAgA..
-...AAb84AAAAAhcccccAAAAAAAdAgA..
-...AAb8AbbbA9AAAAAA9AbbbAAdAgA..
-...AAb8Ab84A46666666Ab84AAdAgA..
-...AAb8Ab84A64666666Ab84AAdAgA..
-...AAb8Ab84A66466666Ab84AAdAgA..
-...AAb4Ab84A66646666Ab84AAAAgA..
-...AAAAAb84A66664666Ab8AbbbAgA..
-....AAAAb84A66666466Ab8Ab84AgA..
-......AAb84A66666646Ab8Ab44AgA..
-......AAb84A66666664Ab84AAAAgA..
-......AAAAAbbbbbbbbbbAAAAAdAgA..
-......AAhhhA66666666AbbbAAdAgA..
-......AAhfcA22222222Ab84AAdAgA..
-......AAhccAAAAAAAAAAb44AAdAgA..
-......AAAAAA751AA751AAAAAAdAgA..
-.......AA96A751AA751A62AAAdAgA..
-.......AA96A751AA751A62AAAdAgA..
-.......AA92A751AA751A22AAAdAgA..
-.......AAAAA751AA751AAAAAAdAgA..
-........AAAA751AA751AAAAAAdAgA..
-..........AA751AA751AA..AAdAgA..
-..........AA751AA751AA.AAAdAgA..
-.........AAAAAAAAAAAAAAAAdAAAA..
-.........AAbbbbAAbbbbAAAdAAA....
-.........AAb444AAb444AAAAAA.....
+................................
+................................
+............AAAAAAAA............
+...........AAAAAAAAAA...........
+..........AAA888888AAA..........
+.........AAA85555558AAA.........
+.........AA8555555558AA.........
+.....AAA.AA8522222252AAAAA......
+....AAcAAAA82AAAAAA82AAAAAA.....
+....AchcAAA8AddddddA8AAAbAAAAA..
+...AAchcAAA8AddddddA8AAAAbAAeA..
+...AA999AAA8AddddddA8AAAAAbAeA..
+...AA973AAA8Ad0dd0dA8AA.AAbAeA..
+...AA973AAAAgd0dd0daAAA.AAbAeA..
+...AA973AAAAgaddddaaAAAAAAbAeA..
+...AA973AAAAgdaaaadaAAAAAAbAeA..
+...AA973AAAAAgaaaaaAAAAAAAbAeA..
+...AA97A999A8AAAAAA8A999AAbAeA..
+...AA97A973A35555555A973AAbAeA..
+...AA97A973A53555555A973AAbAeA..
+...AA97A973A55355555A973AAbAeA..
+...AA93A973A55535555A973AAAAeA..
+...AAAAA973A55553555A97A999AeA..
+....AAAAAAAA55555355AAAA973AeA..
+......AA999A55555535A99A933AeA..
+......AA973A55555553A973AAAAeA..
+......AAAAAA999ff999AAAAAAbAeA..
+......AAgggA55555555AgggAAbAeA..
+......AAgdaA22222222AgdaAAbAeA..
+......AAgaaAAAAAAAAAAgaaAAbAeA..
+......AAAAAA641AA641AAAAAAbAeA..
+.......AA85A641AA641A52AAAbAeA..
+.......AA85A641AA641A52AAAbAeA..
+.......AA85A641AA641A52AAAbAeA..
+.......AA85A641AA641A52AAAbAeA..
+.......AA82A641AA641A22AAAbAeA..
+.......AAAAA641AA641AAAAAAbAeA..
+........AAAA641AA641AAAAAAbAeA..
+.........AAAAAAAAAAAAAAAAbAAeA..
+.........AA9999AA9999AAAbAAAAA..
+.........AA9333AA9333AAAAAA.....
 .........AAAAAAAAAAAAAAAAA......
 ........EEAAAAAAAAAAAAEEE.......
 ..........EEEEEEEEEEEEE.........

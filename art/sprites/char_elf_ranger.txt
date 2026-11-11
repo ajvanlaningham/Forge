@@ -1,69 +1,74 @@
 # frozen 2026-11-11: approved. Edit this file by hand; gen_characters.py skips it.
 #! 0 #1A1A20
 #! 1 #332C24
-#! 2 #344A26
+#! 2 #36542A
 #! 3 #4A3222
 #! 4 #4E4438
-#! 5 #56733C
+#! 5 #56803C
 #! 6 #6A5E50
 #! 7 #7D5839
-#! 8 #7E9E58
-#! 9 #A47450
-#! a #A8853E
-#! b #B07E52
+#! 8 #7EA858
+#! 9 #8A94A4
+#! a #A47450
+#! b #A8853E
 #! c #B89276
 #! d #C25A48
-#! e #D9C9A3
-#! f #E6C3A6
-#! g #F2EEDF
-#! h #F4E2A0
-#! i #F7E0CC
+#! e #CBD3DE
+#! f #D8B86A
+#! g #D9C9A3
+#! h #E0C045
+#! i #E6C3A6
+#! j #F2EEDF
+#! k #F4E2A0
+#! l #F4ECD6
+#! m #F4F6FA
+#! n #F7E0CC
 ................................
 ................................
 ................................
 ................................
 ................................
-..................AAA...........
-.................AAAAA..........
-.................AAdAAA.........
-.............AAAAAAddAAA........
-...........AAAAAAAAAddAA........
-..........AAAA8888AAAdAA........
-.........AAAA855558AAAAA........
-.....AAA.AAA82222228AAAAAA......
-....AAdAAAAhAAAAAAAAaAAAAAA.....
-....AdgdAAAhAffffffAhAAAbAAA....
-...AAdgAiiAhAffffffAhAiiAbAAA...
-...AA99AifAhAffffffAhAfcAAbAAA..
-...AA973AiAhAf0ff0fAhAcAAAbAeA..
-...AA973AAAhAf0ff0fAhAAAAAbAeA..
-...AA973AAAhhAffffAhaAAAAAbAeA..
-...AA973AAAAAffccffAAAAAAAbAeA..
-...AA973AAAAAicccccAAAAAAAbAeA..
-...AA97A999A8AAAAAA8A999AAbAeA..
-...AA97A973A35555555A973AAbAeA..
-...AA97A973A53555555A973AAbAeA..
-...AA97A973A55355555A973AAbAeA..
-...AA93A973A55535555A973AAAAeA..
-...AAAAA973A55553555A97A999AeA..
-....AAAA973A55555355A97A973AeA..
-......AA973A55555535A97A933AeA..
-......AA973A55555553A973AAAAeA..
-......AAAAA9999999999AAAAAbAeA..
-......AAiiiA55555555A999AAbAeA..
-......AAifcA22222222A973AAbAeA..
-......AAiccAAAAAAAAAA933AAbAeA..
-......AAAAAA641AA641AAAAAAbAeA..
-.......AA85A641AA641A52AAAbAeA..
-.......AA85A641AA641A52AAAbAeA..
-.......AA82A641AA641A22AAAbAeA..
-.......AAAAA641AA641AAAAAAbAeA..
-........AAAA641AA641AAAAAAbAeA..
-..........AA641AA641AA..AAbAeA..
-..........AA641AA641AA.AAAbAeA..
-.........AAAAAAAAAAAAAAAAbAAAA..
-.........AA9999AA9999AAAbAAA....
-.........AA9333AA9333AAAAAA.....
+................................
+................................
+................................
+................................
+...........AAAAAAAAAA...........
+..........AAAAAAAAAAAA..........
+.........AAAkkkkkkkkAAA.........
+.....AAA.AAkfbbbbbbfkAAAAA......
+....AAdAAAAkbAAAAAAkbAAAAAA.....
+....AdjdAAAkAiiiiiiAkAAAlAAAAA..
+...AAdjAnnAkAiiiiiiAkAnnAlAAgA..
+...AAaaAniAkAiiiiiiAkAicAAlAgA..
+...AAa73AnAkAi0ii0iAkAcAAAlAgA..
+...AAa73AAAkAi0ii0iAkAAAAAlAgA..
+...AAa73AAAkkAiiiiAkbAAAAAlAgA..
+...AAa73AAAAAiicciiAAAAAAAlAgA..
+...AAa73AAAAAncccccAAAAAAAlAgA..
+...AAa7AmmmA8AAAAAA8AmmmAAlAgA..
+...AAa7Ame9A35555555Ame9AAlAgA..
+...AAa7Ame9A53555555Ame9AAlAgA..
+...AAa7Ame9A55355555Ame9AAlAgA..
+...AAa3Ame9A55535555Ame9AAAAgA..
+...AAAAAme9A55553555AmeAaaaAgA..
+....AAAAme9A55555355AmeAa73AgA..
+......AAme9A55555535AmeAa33AgA..
+......AAme9A55555553Ame9AAAAgA..
+......AAAAAaaaahhaaaaAAAAAlAgA..
+......AAnnnA88888888AnnnAAlAgA..
+......AAnicA55555555AnicAAlAgA..
+......AAnccA55555555AnccAAlAgA..
+......AAAAA8222222222AAAAAlAgA..
+.......AAAAAAAAAAAAAAAAAAAlAgA..
+..........AA641AA641AA..AAlAgA..
+..........AA641AA641AA..AAlAgA..
+..........AA641AA641AA..AAlAgA..
+..........AA641AA641AA..AAlAgA..
+..........AA641AA641AA..AAlAgA..
+..........AA641AA641AA.AAAlAgA..
+.........AAAAAAAAAAAAAAAAlAAgA..
+.........AAaaaaAAaaaaAAAlAAAAA..
+.........AAa333AAa333AAAAAA.....
 .........AAAAAAAAAAAAAAAAA......
 ........EEAAAAAAAAAAAAEEE.......
 ..........EEEEEEEEEEEEE.........
