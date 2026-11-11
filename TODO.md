@@ -141,9 +141,15 @@ Defaults taken without asking (veto-able):
 - Each exercise shows last time's numbers and the 8.5 suggestion; one tap confirms a pre-filled
   set; reorder/skip/swap mid-session.
 - In-progress session survives backgrounding and process death.
-- [ ] Session/exercise/set rows + domain; `ITrainingService` registered in `MauiProgram.cs`
-- [ ] Active-session UI over `TrainPage` (currently a placeholder)
-- [ ] Last-time numbers; persist and resume in-progress state
+- [x] Session/exercise/set rows; `ITrainingService` / `TrainingService` registered
+- [x] Active-session page (`ActiveSessionPage`), started/resumed from the Train tab; tap a number
+      to type it; screen kept awake during a session
+- [x] Last-time numbers (most recent finished session with working sets) and pre-fill
+- [x] In-progress state persisted per set; verified resume across an app update on device
+- [x] Locations: Home = owned Inventory, Gym = `UserSettings.GymEquipment` (default all).
+      Swaps at session start never duplicate an exercise already in the session; empty Home
+      gear prompts to set it up. Bodyweight moves log *added* load.
+- [ ] Gym equipment editor (default "everything" is fine for now)
 
 ### 8.5 Progressive overload
 - Default **double progression**: when every working set hits the top of the rep range, next
@@ -162,7 +168,11 @@ Defaults taken without asking (veto-able):
 ### 8.2 Sessions complete quests
 - Finishing a session completes its quest via the existing XP path. Manual checkbox still
   works. No double award.
-- [ ] Match session → quest; route through one XP path; test the double-award guard
+- [x] Finishing a program session completes its program day via `ProgramService.CompleteDayAsync`
+      — the same path as the checkbox, which no-ops if the day is already done today, so XP can't
+      be double-awarded. Requires ≥1 working set and the session's day still being on offer.
+- [ ] Unit test the double-award guard (needs the service logic pulled into Forge.Core or a
+      repository fake — not yet)
 
 ### 8.6 Progress you can see
 - Session history (date, program day, duration, volume); per-exercise history with best-e1RM

@@ -15,6 +15,9 @@ namespace Forge.Services
     {
         private const string WeeklyConditioningGoalKey = "Settings.WeeklyConditioningGoalMinutes";
         private const string WeightUnitKey = "Settings.WeightUnit";
+        private const string GymEquipmentKey = "Settings.GymEquipment";
+        private const string LastLocationKey = "Settings.LastTrainingLocation";
+        private const string DefaultRestKey = "Settings.DefaultRestSeconds";
 
         /// <summary>Weekly cardio goal in minutes. Defaults to 3 hours.</summary>
         public static int WeeklyConditioningGoalMinutes
@@ -35,5 +38,39 @@ namespace Forge.Services
             get => (WeightUnit)Preferences.Get(WeightUnitKey, (int)WeightUnit.Pounds);
             set => Preferences.Set(WeightUnitKey, (int)value);
         }
+    
+        /// <summary>
+        /// Equipment available at the Gym location. Defaults to everything; Home uses the owned
+        /// Inventory instead.
+        /// </summary>
+        public static Forge.Models.Equipment GymEquipment
+        {
+            get => (Forge.Models.Equipment)Preferences.Get(GymEquipmentKey, (long)AllEquipment);
+            set => Preferences.Set(GymEquipmentKey, (long)value);
+        }
+
+        /// <summary>Where the last session was done — the default for the next one.</summary>
+        public static TrainingLocation LastLocation
+        {
+            get => (TrainingLocation)Preferences.Get(LastLocationKey, (int)TrainingLocation.Gym);
+            set => Preferences.Set(LastLocationKey, (int)value);
+        }
+
+        /// <summary>Rest between sets when a program slot doesn't specify one.</summary>
+        public static int DefaultRestSeconds
+        {
+            get => Preferences.Get(DefaultRestKey, 90);
+            set => Preferences.Set(DefaultRestKey, Math.Clamp(value, 0, 600));
+        }
+
+        private static Forge.Models.Equipment AllEquipment =>
+            Enum.GetValues<Forge.Models.Equipment>().Aggregate(Forge.Models.Equipment.None, (a, e) => a | e);
+    }
+
+    /// <summary>Where a session is done. Decides which equipment is available, and so which swaps apply.</summary>
+    public enum TrainingLocation
+    {
+        Home = 0,
+        Gym = 1
     }
 }

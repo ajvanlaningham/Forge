@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
+             x:Class="Forge.Views.SessionSummaryPage"
+             x:DataType="vm:SessionSummaryViewModel"
+             Title="Session complete">
+    <ScrollView>
+        <VerticalStackLayout Padding="20,16" Spacing="12">
+            <Label Text="SESSION COMPLETE" FontFamily="PixelH" FontSize="18" TextColor="{StaticResource Accent}" />
+            <Label Text="{Binding Heading}" FontFamily="PixelUI" FontSize="30" TextColor="{StaticResource OnBg}" />
+            <Label Text="{Binding Stats}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" />
+
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}" Spacing="8" Margin="0,8,0,0">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SummaryLine">
+                        <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}"
+                                StrokeShape="RoundRectangle 8" Padding="12,8">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}" />
+                                <Label Text="{Binding Detail}" FontFamily="OpenSansSemibold" FontSize="16" TextColor="{StaticResource Muted}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <Button Text="Done" Clicked="OnDone" HeightRequest="56" Margin="0,12,0,20" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

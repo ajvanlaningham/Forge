@@ -22,8 +22,9 @@ namespace Forge.Views
             _vm.DailyXpAwarded -= OnDailyXpAwarded;
             _vm.DailyXpAwarded += OnDailyXpAwarded;
 
-            // prevent re-entrant init on repeated navigations
-            if (_initialized || _vm.IsBusy) return;
+            // Refresh on every appearance: finishing a training session elsewhere completes the
+            // Strength quest, and a page that loaded once would keep showing it as open.
+            if (_vm.IsBusy) return;
 
             try
             {

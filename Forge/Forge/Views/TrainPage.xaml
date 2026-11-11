@@ -8,6 +8,15 @@
     <ScrollView>
         <VerticalStackLayout Padding="20,16" Spacing="14">
 
+            <!-- Session -->
+            <Button Text="{Binding ResumeText}" Command="{Binding ResumeCommand}" IsVisible="{Binding HasInProgress}"
+                    HeightRequest="64" FontFamily="PixelUI" FontSize="24"
+                    BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
+            <Button Text="{Binding StartText}" Command="{Binding StartProgramCommand}" IsVisible="{Binding CanStartProgram}"
+                    HeightRequest="64" FontFamily="PixelUI" FontSize="24"
+                    BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
+            <Button Text="Start an open session" Command="{Binding StartEmptyCommand}" IsVisible="{Binding NoInProgress}" />
+
             <!-- Active program -->
             <Border Stroke="{StaticResource Accent}" StrokeThickness="2"
                     BackgroundColor="{StaticResource Surface}"

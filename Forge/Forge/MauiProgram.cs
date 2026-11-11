@@ -49,6 +49,7 @@ namespace Forge
             builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
             builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<IQuestService, QuestService>();
+            builder.Services.AddSingleton<ITrainingService, TrainingService>();
             builder.Services.AddSingleton<IConditioningWeekService, ConditioningWeekService>();
 
             // Stats
@@ -69,6 +70,10 @@ namespace Forge
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<TrainViewModel>();
             builder.Services.AddTransient<TrainPage>();
+            builder.Services.AddTransient<ActiveSessionViewModel>();
+            builder.Services.AddTransient<ActiveSessionPage>();
+            builder.Services.AddTransient<SessionSummaryViewModel>();
+            builder.Services.AddTransient<SessionSummaryPage>();
             builder.Services.AddTransient<StatsViewModel>();
             builder.Services.AddTransient<StatsPage>();
             builder.Services.AddTransient<QuestsViewModel>();

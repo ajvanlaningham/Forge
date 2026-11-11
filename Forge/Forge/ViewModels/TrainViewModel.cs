@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Forge.Services;
 using Forge.Services.Interfaces;
 using Forge.Training;
+using Forge.Views;
 using Forge.Views.SubPages;
 
 namespace Forge.ViewModels
@@ -22,6 +24,8 @@ namespace Forge.ViewModels
     public sealed class TrainViewModel : BaseViewModel
     {
         private readonly IProgramService _programs;
+        private readonly ITrainingService _training;
+        private int? _inProgressId;
 
         public ObservableCollection<ProgramDayItem> Days { get; } = new();
 
@@ -43,13 +47,33 @@ namespace Forge.ViewModels
         private string _blockText = "";
         public string BlockText { get => _blockText; private set => SetProperty(ref _blockText, value); }
 
+        private string _startText = "";
+        public string StartText { get => _startText; private set => SetProperty(ref _startText, value); }
+
+        private bool _canStartProgram;
+        public bool CanStartProgram { get => _canStartProgram; private set => SetProperty(ref _canStartProgram, value); }
+
+        private bool _hasInProgress;
+        public bool HasInProgress { get => _hasInProgress; private set { if (SetProperty(ref _hasInProgress, value)) OnPropertyChanged(nameof(NoInProgress)); } }
+        public bool NoInProgress => !HasInProgress;
+
+        private string _resumeText = "";
+        public string ResumeText { get => _resumeText; private set => SetProperty(ref _resumeText, value); }
+
+        public ICommand StartProgramCommand { get; }
+        public ICommand StartEmptyCommand { get; }
+        public ICommand ResumeCommand { get; }
         public ICommand ChangeProgramCommand { get; }
         public ICommand OpenLibraryCommand { get; }
         public ICommand OpenGearCommand { get; }
 
-        public TrainViewModel(IProgramService programs)
+        public TrainViewModel(IProgramService programs, ITrainingService training)
         {
             _programs = programs;
+            _training = training;
+            StartProgramCommand = new Command(async () => await StartAsync(fromProgram: true));
+            StartEmptyCommand = new Command(async () => await StartAsync(fromProgram: false));
+            ResumeCommand = new Command(async () => await OpenSessionAsync(_inProgressId));
             Title = "Train";
             ChangeProgramCommand = new Command(async () => await ChangeProgramAsync());
             OpenLibraryCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(ExerciseLibraryPage)));
@@ -64,6 +88,13 @@ namespace Forge.ViewModels
             {
                 var today = DateOnly.FromDateTime(DateTime.Today);
                 var view = await _programs.GetDayForDateAsync(today);
+
+                var open = await _training.GetInProgressAsync();
+                _inProgressId = open?.Session.Id;
+                HasInProgress = open is not null;
+                ResumeText = open is null ? "" : $"Resume: {open.Session.Title}";
+                CanStartProgram = view is { CompletedOnDate: false } && open is null;
+                StartText = view is null ? "" : $"Start Day {view.DayNumber} · {view.Day.Name}";
 
                 Days.Clear();
                 HasProgram = view is not null;
@@ -110,6 +141,41 @@ namespace Forge.ViewModels
             var per = s.IsTimed ? $"{s.Seconds}s"
                 : s.RepsMin == s.RepsMax ? $"{s.RepsMin}" : $"{s.RepsMin}–{s.RepsMax}";
             return $"{s.Exercise}  {s.Sets} × {per}";
+        }
+
+        private async Task StartAsync(bool fromProgram)
+        {
+            // Location decides equipment, and so which swaps happen. Last-used location first.
+            var last = UserSettings.LastLocation;
+            var first = last == TrainingLocation.Gym ? "Gym" : "Home";
+            var second = last == TrainingLocation.Gym ? "Home" : "Gym";
+            var pick = await Shell.Current.DisplayActionSheet("Where are you training?", "Cancel", null, first, second);
+            if (pick is not ("Gym" or "Home")) return;
+            var location = pick == "Gym" ? TrainingLocation.Gym : TrainingLocation.Home;
+
+            if (location == TrainingLocation.Home && await _training.GetEquipmentAsync(location) == Forge.Models.Equipment.None)
+            {
+                var setUp = await Shell.Current.DisplayAlert("No home gear set up",
+                    "Forge doesn't know what equipment you have at home, so every lift will swap to a bodyweight move. Set up your gear first?",
+                    "Set up gear", "Start anyway");
+                if (setUp)
+                {
+                    await Shell.Current.GoToAsync(nameof(MyGearPage));
+                    return;
+                }
+            }
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var snap = fromProgram
+                ? await _training.StartFromProgramAsync(today, location)
+                : await _training.StartEmptyAsync(today, location);
+            await OpenSessionAsync(snap.Session.Id);
+        }
+
+        private static async Task OpenSessionAsync(int? sessionId)
+        {
+            if (sessionId is null) return;
+            await Shell.Current.GoToAsync($"{nameof(ActiveSessionPage)}?sessionId={sessionId}");
         }
 
         private async Task ChangeProgramAsync()

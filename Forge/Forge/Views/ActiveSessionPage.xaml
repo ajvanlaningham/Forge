@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    In-gym logging. Legibility first: numbers are large plain numerals (OpenSans Semibold) and
+    every tap target is at least ~56dp. The theme carries through colors and the pixel headers.
+    The numeral font is a candidate for the "legible but gamified" font the user asked for.
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
+             x:Class="Forge.Views.ActiveSessionPage"
+             x:DataType="vm:ActiveSessionViewModel"
+             x:Name="Page"
+             Shell.NavBarIsVisible="False"
+             Title="Session">
+    <ContentPage.Resources>
+        <Style x:Key="Num" TargetType="Label">
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="FontSize" Value="34" />
+            <Setter Property="LineBreakMode" Value="NoWrap" />
+            <Setter Property="TextColor" Value="{StaticResource OnBg}" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="VerticalTextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="Step" TargetType="Button">
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="WidthRequest" Value="58" />
+            <Setter Property="HeightRequest" Value="58" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="10" />
+        </Style>
+        <Style x:Key="Caption" TargetType="Label">
+            <Setter Property="FontFamily" Value="PixelUI" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="TextColor" Value="{StaticResource Muted}" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <Border Grid.Row="0" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="18,14,18,10">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <Label Text="{Binding SessionTitle}" FontFamily="PixelUI" FontSize="28"
+                       TextColor="{StaticResource Accent}" LineBreakMode="TailTruncation" />
+                <Label Grid.Column="1" Text="{Binding ElapsedText}" FontFamily="OpenSansSemibold" FontSize="28"
+                       TextColor="{StaticResource OnBg}" />
+                <HorizontalStackLayout Grid.Row="1" Spacing="10">
+                    <Border Padding="8,1" Stroke="{StaticResource Accent}" StrokeShape="RoundRectangle 6">
+                        <Label Text="{Binding LocationText}" FontFamily="PixelUI" FontSize="16" TextColor="{StaticResource Accent}" />
+                    </Border>
+                    <Label Text="{Binding ProgressText}" FontFamily="PixelUI" FontSize="18"
+                           TextColor="{StaticResource Muted}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="12,12,12,28" Spacing="12">
+
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Exercises}" Spacing="12">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ExerciseCardViewModel">
+                            <Border BackgroundColor="{StaticResource Surface}" StrokeShape="RoundRectangle 12"
+                                    Stroke="{StaticResource Muted}" StrokeThickness="1" Padding="14,12">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsCurrent}" Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource Accent}" />
+                                        <Setter Property="StrokeThickness" Value="2" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSkipped}" Value="True">
+                                        <Setter Property="Opacity" Value="0.45" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsComplete}" Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource Leaf}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <!-- Title row -->
+                                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                        <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="26"
+                                               TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding SetCountText}" FontFamily="OpenSansSemibold"
+                                               FontSize="20" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
+                                        <Button Grid.Column="2" Text="⋯" Command="{Binding MenuCommand}"
+                                                FontSize="24" WidthRequest="52" HeightRequest="44" Padding="0" />
+                                    </Grid>
+                                    <Label Text="{Binding SwappedFromText}" IsVisible="{Binding HasSwap}"
+                                           FontSize="13" FontAttributes="Italic" TextColor="{StaticResource Muted}" />
+                                    <Label Text="{Binding PrescriptionText}" FontFamily="PixelUI" FontSize="18"
+                                           TextColor="{StaticResource Muted}" />
+                                    <Label Text="{Binding LastText}" IsVisible="{Binding HasLast}"
+                                           FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Leaf}" />
+
+                                    <!-- Logged sets -->
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Sets}" Spacing="2">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:SetLineViewModel">
+                                                <Grid ColumnDefinitions="36,*,Auto,44" ColumnSpacing="8" HeightRequest="40">
+                                                    <Label Text="{Binding NumberText}" FontFamily="OpenSansSemibold" FontSize="18"
+                                                           TextColor="{StaticResource Muted}" VerticalOptions="Center" />
+                                                    <Label Grid.Column="1" Text="{Binding LoadText}" FontFamily="OpenSansSemibold"
+                                                           FontSize="22" TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
+                                                    <Label Grid.Column="2" Text="{Binding WorkText}" FontFamily="OpenSansSemibold"
+                                                           FontSize="22" TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
+                                                    <Button Grid.Column="3" Text="✕" FontSize="14" Padding="0"
+                                                            BackgroundColor="Transparent" BorderWidth="0"
+                                                            TextColor="{StaticResource Muted}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ExerciseCardViewModel}}, Path=DeleteSetCommand}"
+                                                            CommandParameter="{Binding Id}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+
+                                    <!-- Inputs -->
+                                    <VerticalStackLayout IsVisible="{Binding ShowInputs}" Spacing="10" Margin="0,6,0,0">
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                            <!-- Load -->
+                                            <VerticalStackLayout>
+                                                <Label Style="{StaticResource Caption}" Text="{Binding LoadCaption}" />
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <Button Style="{StaticResource Step}" Text="−" Command="{Binding LoadDownCommand}" />
+                                                    <Label Grid.Column="1" Style="{StaticResource Num}" Text="{Binding LoadText}">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding EditLoadCommand}" />
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+                                                    <Button Grid.Column="2" Style="{StaticResource Step}" Text="+" Command="{Binding LoadUpCommand}" />
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                            <!-- Reps -->
+                                            <VerticalStackLayout Grid.Column="1" IsVisible="{Binding IsRepBased}">
+                                                <Label Style="{StaticResource Caption}" Text="REPS" />
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <Button Style="{StaticResource Step}" Text="−" Command="{Binding RepsDownCommand}" />
+                                                    <Label Grid.Column="1" Style="{StaticResource Num}" Text="{Binding Reps}">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding EditRepsCommand}" />
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+                                                    <Button Grid.Column="2" Style="{StaticResource Step}" Text="+" Command="{Binding RepsUpCommand}" />
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                            <!-- Seconds -->
+                                            <VerticalStackLayout Grid.Column="1" IsVisible="{Binding IsTimed}">
+                                                <Label Style="{StaticResource Caption}" Text="SECONDS" />
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <Button Style="{StaticResource Step}" Text="−" Command="{Binding SecondsDownCommand}" />
+                                                    <Label Grid.Column="1" Style="{StaticResource Num}" Text="{Binding Seconds}">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding EditSecondsCommand}" />
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+                                                    <Button Grid.Column="2" Style="{StaticResource Step}" Text="+" Command="{Binding SecondsUpCommand}" />
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                            <Button Text="WARM-UP" Command="{Binding ToggleWarmupCommand}" HeightRequest="60"
+                                                    FontFamily="PixelUI" FontSize="18" Padding="14,0">
+                                                <Button.Triggers>
+                                                    <DataTrigger TargetType="Button" Binding="{Binding IsWarmup}" Value="True">
+                                                        <Setter Property="BackgroundColor" Value="{StaticResource Aether}" />
+                                                        <Setter Property="TextColor" Value="{StaticResource Bg}" />
+                                                    </DataTrigger>
+                                                </Button.Triggers>
+                                            </Button>
+                                            <Button Grid.Column="1" Text="{Binding LogButtonText}" Command="{Binding LogCommand}"
+                                                    HeightRequest="60" FontFamily="PixelUI" FontSize="24"
+                                                    BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Button Text="+ Add exercise" Command="{Binding AddExerciseCommand}" HeightRequest="52" />
+                <Button Text="FINISH SESSION" Command="{Binding FinishCommand}" HeightRequest="64"
+                        FontFamily="PixelUI" FontSize="26"
+                        BackgroundColor="{StaticResource Leaf}" TextColor="{StaticResource Bg}" Margin="0,8,0,0" />
+                <Button Text="Discard session" Command="{Binding DiscardCommand}"
+                        BackgroundColor="Transparent" BorderWidth="0" TextColor="{StaticResource Danger}" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

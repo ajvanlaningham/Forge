@@ -1,0 +1,59 @@
+using System.Collections.ObjectModel;
+using System.Globalization;
+using Forge.Constants;
+using Forge.Services;
+using Forge.Services.Interfaces;
+
+namespace Forge.ViewModels
+{
+    public sealed class SummaryLine
+    {
+        public required string Name { get; init; }
+        public required string Detail { get; init; }
+    }
+
+    /// <summary>End-of-session summary (PBI 8.1 basics; PRs and next-time suggestions arrive with 8.5/8.6).</summary>
+    public sealed class SessionSummaryViewModel : BaseViewModel
+    {
+        private readonly ITrainingService _training;
+
+        public ObservableCollection<SummaryLine> Lines { get; } = new();
+
+        private string _heading = "";
+        public string Heading { get => _heading; private set => SetProperty(ref _heading, value); }
+
+        private string _stats = "";
+        public string Stats { get => _stats; private set => SetProperty(ref _stats, value); }
+
+        public SessionSummaryViewModel(ITrainingService training) => _training = training;
+
+        public async Task LoadAsync(int sessionId)
+        {
+            var snap = await _training.GetSessionAsync(sessionId);
+            var unit = UserSettings.WeightUnit;
+            var u = WeightMath.UnitLabel(unit);
+
+            var started = new DateTime(snap.Session.StartedAtUtc, DateTimeKind.Utc);
+            var ended = snap.Session.EndedAtUtc is long e ? new DateTime(e, DateTimeKind.Utc) : DateTime.UtcNow;
+            var minutes = (int)Math.Round((ended - started).TotalMinutes);
+
+            var working = snap.Exercises.SelectMany(x => x.Sets).Where(s => !s.IsWarmup).ToList();
+            var volume = working.Sum(s => WeightMath.ToDisplay(s.LoadLb, unit) * (s.Reps ?? 0));
+
+            Heading = snap.Session.Title ?? "Session";
+            Stats = $"{minutes} min · {working.Count} working sets · {volume.ToString("N0", CultureInfo.CurrentCulture)} {u} volume";
+
+            Lines.Clear();
+            foreach (var ex in snap.Exercises)
+            {
+                var sets = ex.Sets.Where(s => !s.IsWarmup).ToList();
+                var detail = sets.Count == 0
+                    ? (ex.Row.Skipped ? "skipped" : "no working sets")
+                    : string.Join(", ", sets.Select(s =>
+                        (s.LoadLb > 0 ? WeightMath.ToDisplay(s.LoadLb, unit).ToString("0.#", CultureInfo.CurrentCulture) + "×" : "")
+                        + (s.Seconds is int sec ? $"{sec}s" : $"{s.Reps}")));
+                Lines.Add(new SummaryLine { Name = ex.Row.ExerciseName, Detail = detail });
+            }
+        }
+    }
+}

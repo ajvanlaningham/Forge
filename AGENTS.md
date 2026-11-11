@@ -75,6 +75,15 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
   passed via `env:`, never on a command line) and stamps `versionCode` with the latest CI build
   number from `gh release list`. An equal versionCode reinstalls in place; the next CI build is +1
   and still arrives as an in-app update. Without the keystore it falls back to debug signing.
+- **`AndroidPreserveUserData=true` is load-bearing.** Fast deployment silently falls back to a
+  full reinstall whenever the build configuration changes — including a new versionCode, which
+  happens after every CI release. Without the flag that reinstall is uninstall + install and wipes
+  the phone's database (observed: `firstInstallTime` reset mid-session). The script passes it;
+  never deploy with a bare `dotnet build -t:Run`. Check with
+  `dumpsys package … | grep firstInstallTime` — it must not move on a deploy.
+- **Inspecting the phone's database:** local builds are debuggable, so
+  `adb shell run-as io.github.ajvanlaningham.forge cat files/forge.db3 > forge.db3` pulls it
+  (journal mode is `delete`, so the single file is complete); `sqlite3` is in platform-tools.
 - Local builds are still **Debug**, so Android shows a "not 16 KB compatible" dialog on launch
   (debuggable apps only; libSkiaSharp is the pinned 2.88.9 — see Charts below). Tap
   *Don't Show Again*. CI release builds don't show it.

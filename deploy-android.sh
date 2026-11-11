@@ -56,7 +56,8 @@ if [[ -f "$SIGNING_DIR/forge-release.keystore" && -f "$SIGNING_DIR/credentials.t
   FORGE_SIGN_PASS="$(awk '$1 == "ANDROID_KEYSTORE_PASSWORD" { print $2 }' "$SIGNING_DIR/credentials.txt")"
   export FORGE_SIGN_PASS
   [[ -n "$FORGE_SIGN_PASS" ]] || { echo "!! could not read the keystore password from $SIGNING_DIR/credentials.txt" >&2; exit 1; }
-  VERSION_CODE="$(gh release list --repo ajvanlaningham/Forge --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null | sed 's/^android-build-//')"
+  VERSION_CODE="${FORGE_VERSION_CODE:-}"
+  [[ -n "$VERSION_CODE" ]] || VERSION_CODE="$(gh release list --repo ajvanlaningham/Forge --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null | sed 's/^android-build-//')"
   [[ "$VERSION_CODE" =~ ^[0-9]+$ ]] || { echo "!! could not read the latest CI build number (gh release list)" >&2; exit 1; }
   echo ">> release-signing with $SIGNING_DIR, versionCode $VERSION_CODE (latest CI build)"
   SIGN_ARGS=(
@@ -71,6 +72,10 @@ else
   echo ">> no release keystore at $SIGNING_DIR — debug-signed build (won't install over a CI build)"
 fi
 
+# AndroidPreserveUserData: fast deployment falls back to a full reinstall whenever the build
+# configuration changes — including a new versionCode, i.e. after every CI release. Without this
+# that reinstall is uninstall + install, and silently deletes the SQLite database on the phone.
 echo ">> build + install + launch (net9.0-android) on $PHONE_IP:$PORT"
-dotnet build "$CSPROJ" -f net9.0-android -t:Run -p:AdbTarget="-s $PHONE_IP:$PORT" "${SIGN_ARGS[@]}"
+dotnet build "$CSPROJ" -f net9.0-android -t:Run -p:AdbTarget="-s $PHONE_IP:$PORT" \
+  -p:AndroidPreserveUserData=true "${SIGN_ARGS[@]}"
 echo ">> done. App should be running on the device."

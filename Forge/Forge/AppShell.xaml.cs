@@ -1,4 +1,5 @@
-﻿using Forge.Views.SubPages;
+using Forge.Views;
+using Forge.Views.SubPages;
 
 namespace Forge
 {
@@ -9,6 +10,8 @@ namespace Forge
             InitializeComponent();
             Routing.RegisterRoute(nameof(ExerciseLibraryPage), typeof(ExerciseLibraryPage));
             Routing.RegisterRoute(nameof(MyGearPage), typeof(MyGearPage));
+            Routing.RegisterRoute(nameof(ActiveSessionPage), typeof(ActiveSessionPage));
+            Routing.RegisterRoute(nameof(SessionSummaryPage), typeof(SessionSummaryPage));
 
         }
     }
