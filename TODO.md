@@ -70,6 +70,44 @@ real 4-day split is written once it works, as data.
 
 Order: 8.4 → 8.1 → 8.5 → 8.3 → 8.2 → 8.6 → 10.1, then 4.2/4.3 as stretch.
 
+### Decisions for this push (2026-11-11)
+
+Answered by the user before the autonomous run. "Big" = changes something already decided:
+pause and ask. Medium or smaller: decide, log it here or in the commit, keep going — UI is
+cheap to change later.
+
+- **Program library, one active at a time.** Programs are user-chosen from a library that will
+  grow (a kettlebell suite, a barbell gym program, free-weight splits…). Running one is a block;
+  switching starts a new block. Each program declares the equipment it expects.
+- **First program: Push / Pull / Legs / Full.** Placeholder content to prove the machinery.
+- **Locations + swaps.** Home and Gym, each with its own equipment list (Home seeds from the
+  existing Inventory). Pick a location when starting a session; a slot whose gear is missing
+  offers a swap with the same movement pattern (barbell bench → DB press). The rotation never
+  breaks. Progress history is per exercise, so it carries across programs and swaps.
+- **Warm-ups:** optional one-tap flag per set; warm-ups excluded from progression, volume, PRs.
+- **PRs:** detected and shown neutrally in history. **No PR XP, no hype** — parked over
+  injury/over-lifting risk; revisit deliberately.
+- **XP:** a program day earns more than a mobility quest (proposed 150 vs 50). XP-per-level is
+  re-derived so a fully adherent week ≈ one level (4 × 150 + 7 × 50 = 950 from quests alone);
+  weigh-ins and the conditioning bonus are slack. Final numbers live in `GameMath` with tests.
+- **Phone data is disposable.** Schema changes may reset tables; no migrations this push.
+- **Gym UI:** in-workout screens must be readable mid-set at arm's length. Look for a third
+  font that is legible but still gamified (alongside VT323 / Press Start 2P / MedievalSharp);
+  show the user candidates before adopting one. Fall back to large plain numerals.
+- **Device QA:** the user provides a wireless-adb port at the start; deploy with
+  `deploy-android.sh` and check screens via `adb exec-out screencap`.
+- **Push cadence:** push to `main` once per finished feature (builds, tests pass, verified).
+
+Defaults taken without asking (veto-able):
+
+- Program JSON references exercises by **name** (the unique key) — `ExerciseRow.Id` is
+  autoincrement and not stable across reseeds.
+- Loads follow the lb/kg toggle, stored in lb. Dumbbell load = one handle; kettlebell = one bell.
+- Bodyweight and timed exercises progress reps/seconds, not load.
+- Rest-timer alert = vibration + local notification; if notification permission is denied,
+  in-app alert only.
+- Gym location's equipment defaults to "everything", editable.
+
 ### 8.4 Training programs (the 4-day split)
 - Program → days → slots (exercise, sets, rep range, rest). Seeded from versioned JSON in
   `Resources/Raw`, gated by a version constant like the exercise library.
