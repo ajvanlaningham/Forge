@@ -224,3 +224,82 @@ s.block(11, 19, 18, 21, body='B', top='F', rim='D')
 s.rivet(14, 9)                                               # horn top
 s.fill(14, 10, 15, 11, 'F')
 s.finish('sled')
+
+
+# ================= Batch 3: mobility gear =================
+
+# --- bands: two loop bands, wax red and tan ---
+s = Sprite()
+def ring(cx, cy, rx, ry, lit, body, shade, thick=2.2):
+    for y in range(N):
+        for x in range(N):
+            d = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2
+            if 1 - thick / min(rx, ry) <= d <= 1:
+                s.put(x, y, lit if (x - cx) + (y - cy) < -2 else body if (x - cx) + (y - cy) < 4 else shade)
+ring(12, 13, 9, 7, 't', 'r', 's')
+ring(18, 17, 8, 6, 'z', 'y', 'x')
+s.finish('bands')
+
+# --- mat: half-rolled yoga mat ---
+s = Sprite()
+s.block(2, 18, 19, 21, body='D', top='F', rim='F', shade='v')   # unrolled part
+s.wheel(22, 16, 6, rim='F', body='D', hub='v')                   # the roll
+for t in range(0, 300, 20):                                      # spiral line on the roll's end
+    import math
+    a = math.radians(t); r = 1 + t / 100
+    s.put(round(22 + r * math.cos(a)), round(16 + r * math.sin(a)), 'v')
+s.finish('mat')
+
+# --- wall: a section of brick wall ---
+s = Sprite()
+s.fill(3, 4, 26, 25, 'w')                                         # mortar
+for row, y in enumerate(range(4, 25, 3)):
+    off = 0 if row % 2 == 0 else 3
+    for x0 in range(3 - off, 27, 6):
+        a, b = max(3, x0), min(26, x0 + 4)
+        if b > a:
+            s.fill(a, y, b, y + 1, 'y')
+            for x in range(a, b + 1): s.put(x, y, 'z')            # lit top of each brick
+s.finish('wall')
+
+# --- box step: the padded hip-thrust box ---
+s = Sprite()
+s.block(4, 13, 25, 24, body='y', top='z', rim='z', shade='x')    # wooden box
+s.block(3, 9, 26, 13, body='B', top='G', rim='F')                 # padded top
+s.fill(5, 12, 24, 12, 'C')                                        # pad seam
+s.rivet(14, 18)
+s.finish('box_step')
+
+# --- medicine ball: seams and a lit upper-left ---
+s = Sprite()
+s.wheel(15, 15, 10, rim='F', body='B', hub='B')
+for x in range(6, 25): s.put(x, 15, 'C')                          # seams
+for y in range(6, 25): s.put(15, y, 'C')
+s.put(10, 10, 'G'); s.put(11, 10, 'G'); s.put(10, 11, 'G')       # shine
+s.rivet(19, 19)
+s.finish('medicine_ball')
+
+# --- sandbag: rounded khaki canvas duffel, two handles, a strap ---
+s = Sprite()
+cx, cy, rx, ry = 14.5, 17, 12, 6
+for y in range(N):
+    for x in range(N):
+        d = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2
+        if d <= 1:
+            s.put(x, y, 'p' if y < cy - 3 else 'q' if y < cy + 3 else 'D')   # lit top, canvas, shaded belly
+s.block(8, 7, 11, 12, body='D', top='F', rim='F', shade='C')     # handles
+s.block(18, 7, 21, 12, body='D', top='F', rim='F', shade='C')
+s.fill(9, 9, 10, 11, '.'); s.fill(19, 9, 20, 11, '.')             # handle loops
+for y in range(12, 23): s.put(14, y, 'D'); s.put(15, y, 'D')      # strap
+s.rivet(14, 16)
+s.finish('sandbag')
+
+# --- suspension trainer: anchor, two straps, handles ---
+s = Sprite()
+s.block(11, 1, 18, 4, body='B', top='G', rim='D')                 # anchor
+for y in range(5, 18):                                            # straps (tan webbing, drawn bare)
+    s.put(13 - (y - 5) // 3, y, 'u'); s.put(16 + (y - 5) // 3, y, 'u')
+s.block(6, 18, 11, 20, body='D', top='F', rim='F', shade='C')     # handles
+s.block(18, 18, 23, 20, body='D', top='F', rim='F', shade='C')
+s.rivet(14, 2)
+s.finish('suspension_trainer')

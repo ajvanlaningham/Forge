@@ -15,3 +15,9 @@ squat_rack 4
 weight_vest 4
 cable_machine 4
 machine 4
+bike 4
+row_machine 4
+ski_erg 4
+jump_rope 4
+battle_rope 4
+sled 4
