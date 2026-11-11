@@ -207,7 +207,7 @@ Rework the program format before writing real content:
 - [x] Main lifts fixed, accessories rotate weekly (`ProgramDay.Main` / `Accessories`; a main can't
       also be an accessory — validated)
 - [x] Week 4: same weights, one set fewer; stat tests assigned to its days (STR / mobility / CON)
-- [ ] The stat test sessions themselves (Epic 5) — week 4 only labels them for now
+- [x] The stat test sessions themselves (Epic 5, protocol v2) — built 2026-11-11
 - [x] Active rest replaces the mobility quest while a program is active
 - [x] Families (3-day / 4-day share mains — tested); XP normalised (800 + 300 = 1100 / level)
 - [x] Perfect-week streak + ×1.2 multiplier (exact XP recorded, exact reclaim); Train + Home show it
@@ -339,7 +339,7 @@ Rework the program format before writing real content:
 - [x] Weekly conditioning goal notifies when reached (the old `QuestsViewModel` TODO)
 - [ ] Consolidate XP awards behind one service (quests, program days, weigh-ins, conditioning
       each still grant their own) and unit-test undo symmetry
-- [ ] Test-window announcement is a placeholder line until Epic 5 exists
+- [x] ~~Test-window announcement~~ — superseded: tests appear on Today on their slotted days
 
 ## Later
 
@@ -393,24 +393,23 @@ Rework the program format before writing real content:
 - ~~**Forging**~~ — done 2026-11-11: a block is judged once when its four weeks are up
   (`ForgeService`, `ForgeResultRow`), the forging moment plays on Today, the Armoury rack shows
   the open tier's three pieces for the current hero, and tiers open in order (`Armoury` in Core).
-- **Forging & the armoury** (Decisions 17–18). On block completion, check the 75% rule and
-  forge the item; show it on the Character page; tier unlocks after 3 forged items. Items are
-  sprites from `art/` in the house palette (a metal palette per tier: copper, bronze, iron…).
 - ~~**Character look**~~ — done 2026-11-11: 6 races (Human, Elf, Dwarf, Orc, Halfling, Construct) ×
   6 classes (Wizard, Warrior, Rogue, Ranger, Cleric, Monk), one sprite per combination on a shared
   32×50 frame (`art/gen_characters.py`) so forged gear can be layered on any of them later. Picked
-  on the Hero tab (tap the sprite); Construct Wizard is the original robot. Forgeable items:
-  Helm/Hammer/Boots × 7 metals (`art/gen_items.py`), shown on the Armoury rack. Splash and
-  loading screen: the anvil and hammer (`art/gen_forge.py`).
-- **Wear forged gear** on the hero sprite: draw helm/boots/weapon overlays per metal on the frame.
-- **Character page.** A home for "you" in the RPG layer, reached from Home (tap the sprite):
-  - **Injuries & limitations** are entered and tracked here (see below) — framed as the
-    character's condition, with active ones shown as status effects until they clear.
-  - **Sprite skins:** pick or unlock looks for the character sprite (the wizard-bot today).
-    Unlocks could follow consistency milestones (levels, perfect-week streaks, completed blocks)
-    — never PRs or weight, per the design decisions. Art via the `art/` sprite pipeline in the
-    house palette.
-  - A natural place for level, stat cards, streaks, and completed blocks to live together.
+  on the Hero tab (tap the sprite); Construct Wizard is the original robot; all 36 frozen and drawn
+  to their tropes. Forgeable items: 108 hero-specific pieces × 7 metals (`art/gen_gear.py`,
+  Decision 22). Splash and loading screen: the anvil and hammer (`art/gen_forge.py`).
+- **Wear forged gear** on the hero sprite (Decision 22): mark each frozen sprite's slot pixels
+  (weapon, defensive piece, light gear) and recolour them in the forged metal.
+- **Gear art polish:** vary the six halfling anklets and six construct leg plates; thicken the
+  circlets; the jade bracers read as books.
+- **Hero tab (the character page), remaining:** injuries and limitations as status effects (see
+  below); unlockable looks from consistency milestones (never PRs or weight).
+- **Onboarding** (Decision 20 journey): first-run choice of start fresh / restore, units, a quick
+  gear tap, days per week → a suggested quest version. Before a second user installs.
+- **Polish:** status bar is still the template purple; app icon is still the .NET template (the
+  anvil would do); Today's plan preview shows prescribed names, not home swaps; the logbook and
+  history still convert kilo bells to pounds (the briefing and guided session already say "16 kg").
 - **Injuries and limitations** (entered on the Character page). Tag exercises with the
   joints/areas they load (knee, lower back, shoulder, wrist, elbow, hip). A limitation is
   permanent ("bad knee") or temporary with an end date ("tweaked shoulder, 2 weeks"); it filters
