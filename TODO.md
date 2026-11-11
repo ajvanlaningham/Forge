@@ -141,14 +141,16 @@ Defaults taken without asking (veto-able):
       suggestions jump to the next owned weight, call out big jumps, and switch to reps at the heaviest
 
 Rework the program format before writing real content:
-- [ ] Block → weeks → days; day kinds: training / active rest / test. Calendar week advancement.
-- [ ] Slots tagged main vs accessory; accessories may differ per week, mains may not (validated).
-- [ ] Week 4 "light" modifier (e.g. fewer sets, held loads — exact rule to decide with content)
-      and the closing stat test session (ties into Epic 5).
-- [ ] Active-rest days replace the separate daily mobility quest while a program is active.
-- [ ] Program families; 3-day and 4-day variants; XP normalised per program.
-- [ ] Perfect-week streak + ×1.2 multiplier; Home shows streak and next week's multiplier.
-- [ ] Then: write the real Block 1 (3-day and 4-day), dumbbell/home-first, gym via swaps.
+- [x] Block → weeks → training days + active rest; calendar week advancement; flexible days
+      within a week (`BlockSchedule`). Verified on device.
+- [x] Main lifts fixed, accessories rotate weekly (`ProgramDay.Main` / `Accessories`; a main can't
+      also be an accessory — validated)
+- [x] Week 4: same weights, one set fewer; stat tests assigned to its days (STR / mobility / CON)
+- [ ] The stat test sessions themselves (Epic 5) — week 4 only labels them for now
+- [x] Active rest replaces the mobility quest while a program is active
+- [x] Families (3-day / 4-day share mains — tested); XP normalised (800 + 300 = 1100 / level)
+- [x] Perfect-week streak + ×1.2 multiplier (exact XP recorded, exact reclaim); Train + Home show it
+- [ ] Write the real Block 1 (3-day and 4-day) with the user — current content is placeholder
 
 ### 8.4 Training programs (the 4-day split)
 - Program → days → slots (exercise, sets, rep range, rest). Seeded from versioned JSON in
