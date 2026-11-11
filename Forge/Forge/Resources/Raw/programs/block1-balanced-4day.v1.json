@@ -1,16 +1,13 @@
 {
-  "id": "block1-4day",
-  "name": "Block 1 — 4-day",
-  "description": "Upper / lower, twice a week. Dumbbell-first; gym days swap up.",
-  "family": "block1",
+  "id": "block1-balanced-4day",
+  "name": "Block 1 · Balanced — 4-day",
+  "description": "Upper / lower twice a week, 30–40 min. A days go heavier (6–10 reps), B days lighter (10–15). Dumbbells and a box; the gym swaps in bench and barbell.",
+  "family": "block1-balanced",
   "version": 1,
-  "placeholder": true,
   "equipment": [
     "dumbbell",
-    "bench",
-    "mat",
     "boxStep",
-    "wall"
+    "mat"
   ],
   "activeRest": {
     "name": "Active rest",
@@ -49,7 +46,7 @@
   },
   "days": [
     {
-      "name": "Upper A",
+      "name": "Upper A — heavy",
       "main": [
         {
           "exercise": "Dumbbell Bench Press",
@@ -61,42 +58,42 @@
         {
           "exercise": "One-arm Row",
           "sets": 3,
-          "repsMin": 8,
-          "repsMax": 12,
+          "repsMin": 6,
+          "repsMax": 10,
           "restSeconds": 90
         }
       ],
       "accessories": [
         [
           {
-            "exercise": "Dumbbell Overhead Press",
+            "exercise": "Lateral Raise",
             "sets": 2,
-            "repsMin": 10,
-            "repsMax": 12,
-            "restSeconds": 75
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 45
           },
           {
             "exercise": "Dumbbell Curl",
             "sets": 2,
             "repsMin": 10,
             "repsMax": 15,
-            "restSeconds": 60
+            "restSeconds": 45
           }
         ],
         [
           {
-            "exercise": "Incline Dumbbell Press",
+            "exercise": "Dumbbell Pullover",
             "sets": 2,
             "repsMin": 10,
             "repsMax": 12,
-            "restSeconds": 75
+            "restSeconds": 60
           },
           {
             "exercise": "Dumbbell Triceps Extension",
             "sets": 2,
             "repsMin": 10,
             "repsMax": 15,
-            "restSeconds": 60
+            "restSeconds": 45
           }
         ],
         [
@@ -112,84 +109,53 @@
             "sets": 2,
             "repsMin": 10,
             "repsMax": 15,
-            "restSeconds": 60
+            "restSeconds": 45
           }
         ],
         [
           {
-            "exercise": "Dumbbell Floor Press",
+            "exercise": "Lateral Raise",
             "sets": 2,
-            "repsMin": 10,
-            "repsMax": 12,
-            "restSeconds": 75
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 45
           },
           {
             "exercise": "Dumbbell Triceps Extension",
             "sets": 2,
             "repsMin": 10,
             "repsMax": 15,
-            "restSeconds": 60
+            "restSeconds": 45
           }
         ]
       ]
     },
     {
-      "name": "Lower A",
+      "name": "Lower A — heavy",
       "main": [
         {
-          "exercise": "Goblet Squat",
+          "exercise": "Bulgarian Split Squat",
           "sets": 3,
-          "repsMin": 8,
-          "repsMax": 12,
-          "restSeconds": 120
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 90
         },
         {
           "exercise": "Romanian Deadlift",
           "sets": 3,
-          "repsMin": 8,
-          "repsMax": 12,
+          "repsMin": 6,
+          "repsMax": 10,
           "restSeconds": 120
         }
       ],
       "accessories": [
         [
           {
-            "exercise": "Split Squat",
-            "sets": 2,
-            "repsMin": 8,
-            "repsMax": 12,
-            "restSeconds": 75
-          },
-          {
             "exercise": "Dumbbell Calf Raise",
             "sets": 2,
             "repsMin": 12,
             "repsMax": 20,
             "restSeconds": 45
-          }
-        ],
-        [
-          {
-            "exercise": "Box Step-up",
-            "sets": 2,
-            "repsMin": 8,
-            "repsMax": 12,
-            "restSeconds": 75
-          },
-          {
-            "exercise": "Plank",
-            "sets": 2,
-            "seconds": 45,
-            "restSeconds": 45
-          }
-        ],
-        [
-          {
-            "exercise": "Split Squat",
-            "sets": 2,
-            "repsMin": 8,
-            "repsMax": 12,
-            "restSeconds": 75
           },
           {
             "exercise": "Dead Bug",
@@ -201,133 +167,26 @@
         ],
         [
           {
+            "exercise": "Walking Lunge",
+            "sets": 2,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 60
+          },
+          {
+            "exercise": "Plank",
+            "sets": 2,
+            "seconds": 45,
+            "restSeconds": 45
+          }
+        ],
+        [
+          {
             "exercise": "Box Step-up",
             "sets": 2,
             "repsMin": 8,
             "repsMax": 12,
-            "restSeconds": 75
-          },
-          {
-            "exercise": "Dumbbell Calf Raise",
-            "sets": 2,
-            "repsMin": 12,
-            "repsMax": 20,
-            "restSeconds": 45
-          }
-        ]
-      ]
-    },
-    {
-      "name": "Upper B",
-      "main": [
-        {
-          "exercise": "Dumbbell Overhead Press",
-          "sets": 3,
-          "repsMin": 6,
-          "repsMax": 10,
-          "restSeconds": 120
-        },
-        {
-          "exercise": "Bent-over Row",
-          "sets": 3,
-          "repsMin": 8,
-          "repsMax": 12,
-          "restSeconds": 90
-        }
-      ],
-      "accessories": [
-        [
-          {
-            "exercise": "Incline Dumbbell Press",
-            "sets": 2,
-            "repsMin": 10,
-            "repsMax": 12,
-            "restSeconds": 75
-          },
-          {
-            "exercise": "Dumbbell Triceps Extension",
-            "sets": 2,
-            "repsMin": 10,
-            "repsMax": 15,
             "restSeconds": 60
-          }
-        ],
-        [
-          {
-            "exercise": "Push-up",
-            "sets": 2,
-            "repsMin": 8,
-            "repsMax": 15,
-            "restSeconds": 60
-          },
-          {
-            "exercise": "Dumbbell Curl",
-            "sets": 2,
-            "repsMin": 10,
-            "repsMax": 15,
-            "restSeconds": 60
-          }
-        ],
-        [
-          {
-            "exercise": "Dumbbell Floor Press",
-            "sets": 2,
-            "repsMin": 10,
-            "repsMax": 12,
-            "restSeconds": 75
-          },
-          {
-            "exercise": "Dumbbell Curl",
-            "sets": 2,
-            "repsMin": 10,
-            "repsMax": 15,
-            "restSeconds": 60
-          }
-        ],
-        [
-          {
-            "exercise": "Incline Dumbbell Press",
-            "sets": 2,
-            "repsMin": 10,
-            "repsMax": 12,
-            "restSeconds": 75
-          },
-          {
-            "exercise": "Dumbbell Triceps Extension",
-            "sets": 2,
-            "repsMin": 10,
-            "repsMax": 15,
-            "restSeconds": 60
-          }
-        ]
-      ]
-    },
-    {
-      "name": "Lower B",
-      "main": [
-        {
-          "exercise": "Split Squat",
-          "sets": 3,
-          "repsMin": 8,
-          "repsMax": 12,
-          "restSeconds": 120
-        },
-        {
-          "exercise": "Glute Bridge",
-          "sets": 3,
-          "repsMin": 10,
-          "repsMax": 15,
-          "restSeconds": 90
-        }
-      ],
-      "accessories": [
-        [
-          {
-            "exercise": "Goblet Squat",
-            "sets": 2,
-            "repsMin": 12,
-            "repsMax": 15,
-            "restSeconds": 75
           },
           {
             "exercise": "Hollow Hold",
@@ -338,11 +197,148 @@
         ],
         [
           {
-            "exercise": "Romanian Deadlift",
+            "exercise": "Dumbbell Calf Raise",
+            "sets": 2,
+            "repsMin": 12,
+            "repsMax": 20,
+            "restSeconds": 45
+          },
+          {
+            "exercise": "Dead Bug",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 12,
+            "restSeconds": 45
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Upper B — volume",
+      "main": [
+        {
+          "exercise": "Dumbbell Overhead Press",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 90
+        },
+        {
+          "exercise": "Bent-over Row",
+          "sets": 3,
+          "repsMin": 10,
+          "repsMax": 12,
+          "restSeconds": 75
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Dumbbell Floor Press",
+            "sets": 2,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 60
+          },
+          {
+            "exercise": "Lateral Raise",
+            "sets": 2,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 45
+          }
+        ],
+        [
+          {
+            "exercise": "Push-up",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 15,
+            "restSeconds": 60
+          },
+          {
+            "exercise": "Dumbbell Curl",
+            "sets": 2,
+            "repsMin": 10,
+            "repsMax": 15,
+            "restSeconds": 45
+          }
+        ],
+        [
+          {
+            "exercise": "Dumbbell Pullover",
             "sets": 2,
             "repsMin": 10,
             "repsMax": 12,
-            "restSeconds": 75
+            "restSeconds": 60
+          },
+          {
+            "exercise": "Dumbbell Triceps Extension",
+            "sets": 2,
+            "repsMin": 10,
+            "repsMax": 15,
+            "restSeconds": 45
+          }
+        ],
+        [
+          {
+            "exercise": "Dumbbell Floor Press",
+            "sets": 2,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 60
+          },
+          {
+            "exercise": "Dumbbell Curl",
+            "sets": 2,
+            "repsMin": 10,
+            "repsMax": 15,
+            "restSeconds": 45
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower B — volume",
+      "main": [
+        {
+          "exercise": "Goblet Squat",
+          "sets": 3,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 90
+        },
+        {
+          "exercise": "Hip Thrust",
+          "sets": 3,
+          "repsMin": 10,
+          "repsMax": 15,
+          "restSeconds": 90
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Walking Lunge",
+            "sets": 2,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 60
+          },
+          {
+            "exercise": "Plank",
+            "sets": 2,
+            "seconds": 45,
+            "restSeconds": 45
+          }
+        ],
+        [
+          {
+            "exercise": "Box Step-up",
+            "sets": 2,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 60
           },
           {
             "exercise": "Dumbbell Calf Raise",
@@ -354,32 +350,32 @@
         ],
         [
           {
-            "exercise": "Box Step-up",
+            "exercise": "Split Squat",
             "sets": 2,
-            "repsMin": 8,
+            "repsMin": 10,
             "repsMax": 12,
-            "restSeconds": 75
-          },
-          {
-            "exercise": "Plank",
-            "sets": 2,
-            "seconds": 45,
-            "restSeconds": 45
-          }
-        ],
-        [
-          {
-            "exercise": "Goblet Squat",
-            "sets": 2,
-            "repsMin": 12,
-            "repsMax": 15,
-            "restSeconds": 75
+            "restSeconds": 60
           },
           {
             "exercise": "Dead Bug",
             "sets": 2,
             "repsMin": 8,
             "repsMax": 12,
+            "restSeconds": 45
+          }
+        ],
+        [
+          {
+            "exercise": "Dumbbell Calf Raise",
+            "sets": 2,
+            "repsMin": 12,
+            "repsMax": 20,
+            "restSeconds": 45
+          },
+          {
+            "exercise": "Plank",
+            "sets": 2,
+            "seconds": 45,
             "restSeconds": 45
           }
         ]

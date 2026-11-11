@@ -500,5 +500,85 @@
     "defaultReps": 12,
     "skill": "beginner",
     "isActive": true
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "description": "Rear foot up on a box or bench, dumbbells at your sides; drop the back knee straight down.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "lunge",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell",
+      "boxStep"
+    ],
+    "action": "reps",
+    "defaultReps": 8,
+    "skill": "intermediate",
+    "isActive": true,
+    "unilateral": true
+  },
+  {
+    "name": "Hip Thrust",
+    "description": "Upper back on a box or bench, dumbbell across the hips; drive the hips up and squeeze at the top.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "hinge",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell",
+      "boxStep"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Walking Lunge",
+    "description": "Dumbbells at your sides; step forward into a lunge and alternate legs as you travel.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "lunge",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true,
+    "unilateral": true
+  },
+  {
+    "name": "Dumbbell Pullover",
+    "description": "Lying across a box or on the floor, lower one dumbbell overhead with soft elbows and pull it back over the chest.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell",
+      "mat"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Lateral Raise",
+    "description": "Raise dumbbells out to the sides to shoulder height, slight bend in the elbows.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "other",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
   }
 ]

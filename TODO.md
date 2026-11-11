@@ -150,7 +150,11 @@ Rework the program format before writing real content:
 - [x] Active rest replaces the mobility quest while a program is active
 - [x] Families (3-day / 4-day share mains — tested); XP normalised (800 + 300 = 1100 / level)
 - [x] Perfect-week streak + ×1.2 multiplier (exact XP recorded, exact reclaim); Train + Home show it
-- [ ] Write the real Block 1 (3-day and 4-day) with the user — current content is placeholder
+- [x] Real Block 1 · Balanced (3-day and 4-day), 2026-11-11: researched against common
+      dumbbell upper/lower and full-body templates. 30–40 min (10–11 working sets/day). 4-day: A days
+      heavy (6–10), B days volume (10–15); 3-day: heavy / medium / light. Home = dumbbells + a hip
+      thrust box ("Box step"), no pull-up bar; bench press swaps to floor press at home.
+- [ ] Goal variants as sibling families: Block 1 · Strength, Block 1 · Conditioning
 
 ### 8.4 Training programs (the 4-day split)
 - Program → days → slots (exercise, sets, rep range, rest). Seeded from versioned JSON in
@@ -316,6 +320,12 @@ Rework the program format before writing real content:
   key. Latent (local declarations win), but fix it and drop redundant local copies.
 
 ### Future milestones
+
+- **Injuries and limitations.** Tag exercises with the joints/areas they load (knee, lower back,
+  shoulder, wrist, elbow, hip). A profile of limitations — permanent ("bad knee") or temporary
+  with an end date ("tweaked shoulder, 2 weeks") — filters exercises and drives the existing
+  swap system to substitute around them, with a "how did that feel?" check after flagged
+  exercises. Never medical advice: pain that persists → see a professional.
 
 - **Off-device backup, web view, device migration.** Staged plan (2026-11-11 discussion):
   1. *User-chosen backup folder* (SAF on Android, Files on iOS). Picking a Google Drive /
