@@ -28,10 +28,12 @@ class Sprite:
     def finish(self, name):
         g = self.g
         filled = {(x, y) for y in range(N) for x in range(N) if g[y][x] != '.'}
+        # Thin steel cable (W) is drawn bare: outlining a 1px line would bury it in black.
+        solid = {(x, y) for (x, y) in filled if g[y][x] != 'W'}
         for y in range(N):
             for x in range(N):
                 if (x, y) in filled: continue
-                if any((x + dx, y + dy) in filled for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy):
+                if any((x + dx, y + dy) in solid for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy):
                     g[y][x] = 'A'
         outline = {(x, y) for y in range(N) for x in range(N) if g[y][x] == 'A'}
         for (x, y) in sorted(outline):
@@ -103,18 +105,22 @@ s.fill(14, 12, 15, 21, 'D')                                 # centre strap
 s.rivet(14, 18); s.put(15, 18, 'H'); s.put(15, 19, 'I')    # buckle
 s.finish('weight_vest')
 
-# --- cable machine: frame, top pulley, cable, D-handle, stack ---
+# --- cable machine: frame, stack bottom-left, steel cable over two top pulleys to a handle ---
 s = Sprite()
-s.block(4, 2, 6, 25, body='B', top='G', rim='D')
-s.block(23, 2, 25, 25, body='B', top='G', rim='D')
-s.block(4, 2, 25, 4, body='B', top='G', rim='D')            # top beam
-s.block(13, 5, 16, 8, body='F', top='G', rim='F', shade='C'); s.put(14, 6, 'C'); s.put(15, 6, 'C')  # pulley
-for y in range(9, 15): s.put(14, y, 'F')                    # cable
-s.block(11, 15, 17, 17, body='D', top='F', rim='F', shade='C')     # handle
-s.rivet(13, 15)
-for i, y in enumerate(range(19, 25, 2)):
-    s.block(10, y, 19, y + 1, body='B', top='G' if i == 0 else 'F', rim='D')   # stack
-s.put(19, 21, 'H'); s.put(20, 21, 'I')                      # selector pin
+s.block(2, 2, 4, 25, body='B', top='G', rim='D')            # left upright
+s.block(25, 2, 27, 25, body='B', top='G', rim='D')          # right upright
+s.block(2, 2, 27, 3, body='B', top='G', rim='D')            # top beam
+s.block(2, 24, 27, 25, body='B', top='F', rim='D')          # base
+for i, y in enumerate(range(15, 23, 3)):
+    s.block(6, y, 12, y + 1, body='B', top='G' if i == 0 else 'F', rim='D')   # weight stack
+s.put(12, 18, 'H'); s.put(13, 18, 'I')                      # selector pin
+s.block(8, 5, 10, 7, body='F', top='G', rim='F', shade='C')     # left pulley
+s.block(19, 5, 21, 7, body='F', top='G', rim='F', shade='C')    # right pulley
+for y in range(8, 15): s.put(9, y, 'W')                     # cable: stack up to the left pulley
+for x in range(10, 20): s.put(x, 5, 'W')                    # across the top
+for y in range(8, 16): s.put(20, y, 'W')                    # down from the right pulley
+s.block(17, 16, 23, 18, body='D', top='F', rim='F', shade='C')  # D-handle
+s.rivet(19, 16)
 s.finish('cable_machine')
 
 # --- machine: chunky selectorized stack on the left, seat and pad on the right ---
