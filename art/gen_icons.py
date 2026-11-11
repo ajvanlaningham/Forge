@@ -123,16 +123,17 @@ s.block(17, 16, 23, 18, body='D', top='F', rim='F', shade='C')  # D-handle
 s.rivet(19, 16)
 s.finish('cable_machine')
 
-# --- machine: chunky selectorized stack on the left, seat and pad on the right ---
+# --- machine: a 45-degree leg press — reclined seat, angled rails, loaded sled ---
 s = Sprite()
-s.block(2, 2, 15, 4, body='B', top='G', rim='D')            # top frame over the stack
-s.block(2, 24, 27, 25, body='B', top='F', rim='D')          # base rail
-s.fill(3, 5, 3, 23, 'F'); s.fill(14, 5, 14, 23, 'F')        # guide rods
-for i, y in enumerate(range(9, 23, 4)):
-    s.block(4, y, 13, y + 2, body='B', top='G' if i == 0 else 'F', rim='D')   # plates: 3 rows each
-s.fill(8, 5, 8, 8, 'D')                                     # lift rod
-s.put(13, 14, 'H'); s.put(13, 15, 'I')                      # selector pin
-s.block(17, 9, 20, 18, body='B', top='G', rim='F')          # backrest pad
-s.block(17, 17, 26, 19, body='B', top='G', rim='F')         # seat
-s.block(23, 20, 24, 23, body='B', top='B', rim='D')         # seat post
+s.block(2, 24, 27, 25, body='B', top='F', rim='D')          # base
+for i in range(17):                                          # twin rails rising to the right
+    x, y = 9 + i, 22 - i
+    s.put(x, y, 'F'); s.put(x + 1, y, 'C')
+    s.put(x + 2, y + 2, 'F'); s.put(x + 3, y + 2, 'C')
+s.block(3, 19, 10, 21, body='B', top='G', rim='F')          # seat
+s.block(2, 12, 4, 20, body='B', top='G', rim='F')           # backrest, reclined
+s.block(15, 10, 21, 15, body='B', top='G', rim='D')         # sled / footplate
+s.block(21, 6, 23, 12, body='B', top='G', rim='D')          # plates on the horn
+s.block(24, 7, 25, 11, body='B', top='G', rim='D')
+s.rivet(17, 12)
 s.finish('machine')

@@ -12,8 +12,10 @@ namespace Forge.Models
         public required string Name { get; init; }
 
         /// <summary>"PullUpBar" → "Pull up bar"; "BoxStep" → "Box step".</summary>
-        public string DisplayName => string.Concat(Equipment.ToString().Select((c, i) =>
-            i > 0 && char.IsUpper(c) ? " " + char.ToLowerInvariant(c) : c.ToString()));
+        public string DisplayName => Equipment == Equipment.Machine
+            ? "Leg press / machine"   // selectorized / plate-loaded machines; leg press is the archetype
+            : string.Concat(Equipment.ToString().Select((c, i) =>
+                i > 0 && char.IsUpper(c) ? " " + char.ToLowerInvariant(c) : c.ToString()));
 
         /// <summary>Dumbbells, kettlebells and the barbell open a weights editor instead of toggling.</summary>
         public bool IsWeighted => Forge.Training.GearLoads.IsWeighted(Equipment);

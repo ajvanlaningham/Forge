@@ -4,3 +4,12 @@
 board_wood 12
 nail 8
 wax_seal 8
+# Equipment icons (My Gear tiles): 30x30 x4 -> 120px, shown at ~40dp. File names = snake_case
+# of the Equipment enum (GearItem.SpriteSource). Approved by the user before install.
+kettlebell 4
+barbell 4
+bench 4
+pull_up_bar 4
+dip_station 4
+squat_rack 4
+weight_vest 4

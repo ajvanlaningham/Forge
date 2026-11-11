@@ -49,6 +49,7 @@ public sealed class GymEquipmentPage : ContentPage
     /// <summary>"SquatRack" → "Squat rack".</summary>
     private static string Humanize(Equipment e)
     {
+        if (e == Equipment.Machine) return "Leg press / machine";
         var s = e.ToString();
         var spaced = string.Concat(s.Select((c, i) => i > 0 && char.IsUpper(c) ? " " + char.ToLowerInvariant(c) : c.ToString()));
         return spaced;
