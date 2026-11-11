@@ -1,6 +1,6 @@
 # Stat tests: proposal (2026-11-11)
 
-**Status: proposed, not approved.** Revises the unimplemented protocol v1 in
+**Status: approved in part (2026-11-11); question 1 open.** Revises the unimplemented protocol v1 in
 [`baseline-tests.md`](baseline-tests.md) now that tests live inside the quest. Nothing has been
 recorded under v1, so v1 can be replaced without breaking any baseline.
 
@@ -86,13 +86,14 @@ stat input, because its ceiling makes it useless for a log scale.
 - Never medical advice: the app reports your own trend, not health risk. No norms on the main
   screens; an optional "how this compares" line can come later.
 
-## Open questions for the user
+## Decisions (2026-11-11)
 
-1. Approve replacing protocol v1 with this (nothing recorded under v1 yet)?
-2. STR: count push-ups toward the score, or show them only?
-3. CON: is a pulse count by hand acceptable until a heart-rate strap, or should the scored test be
-   the 10-minute bike instead (needs a bike that shows distance)?
-4. Calibration in week 1 of the first quest: worth the extra 15 minutes?
+1. Replace protocol v1, and **self vs. norms**: open (see the discussion of percentiles).
+2. **Push-ups count toward STR**, alongside the three lifts.
+3. **CON is the step test with a hand-counted pulse** until there's a heart-rate strap. A known
+   resting heart rate may be typed in by hand (it gives the recovery result context and feeds
+   the future RHR trend card).
+4. **Calibration run in week 1 of the first quest: yes.**
 
 ## Sources
 
