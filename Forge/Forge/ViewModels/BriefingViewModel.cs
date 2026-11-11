@@ -41,9 +41,12 @@ namespace Forge.ViewModels
 
         public string LoadText => _owner.Gear.LoadLabel(Plan.PlannedLoadLb, UserSettings.WeightUnit);
 
-        public bool Warmup => GuidedSupport.WantsWarmup(Plan.IsMain, Plan.Info, IsTimed, Plan.PlannedLoadLb, Loads);
+        internal IReadOnlyList<WarmupSet> Warmups => GuidedSupport.Warmups(Plan.IsMain, Plan.Info, IsTimed, Plan.PlannedLoadLb, Loads);
+        public bool Warmup => Warmups.Count > 0;
+        /// <summary>"Warm-up: 20 lb × 8 (50%) → 30 lb × 4 (75%)".</summary>
         public string? WarmupText => Warmup
-            ? $"Warm-up first: {_owner.Gear.LoadLabel(GuidedPlan.WarmupLoad(Plan.PlannedLoadLb, Loads), UserSettings.WeightUnit)} × {GuidedPlan.WarmupReps}"
+            ? "Warm-up: " + string.Join(" → ", Warmups.Select(w =>
+                $"{_owner.Gear.LoadLabel(w.LoadLb, UserSettings.WeightUnit)} × {w.Reps} ({w.Percent}%)"))
             : null;
 
         public ICommand LoadUpCommand { get; }
@@ -167,7 +170,7 @@ namespace Forge.ViewModels
                 if (mod is Modality.Dumbbell or Modality.Kettlebell && p.PlannedLoadLb > 0)
                 {
                     Need(mod, p.PlannedLoadLb, count);
-                    if (item.Warmup) Need(mod, GuidedPlan.WarmupLoad(p.PlannedLoadLb, item.Loads), count);
+                    foreach (var w in item.Warmups) Need(mod, w.LoadLb, count);
                 }
                 other |= (p.Info?.Equipment ?? Equipment.None) & ~(Equipment.Dumbbell | Equipment.Kettlebell);
             }
@@ -192,7 +195,7 @@ namespace Forge.ViewModels
 
         private IReadOnlyList<GuidedStep> Steps()
             => GuidedPlan.Build(Items.Select((it, i) => new GuidedExercise(i, it.Plan.Slot.Superset, it.Plan.Slot.Sets,
-                it.Plan.Slot.RestSeconds, it.Warmup)).ToList(), UserSettings.DefaultRestSeconds);
+                it.Plan.Slot.RestSeconds, it.Warmups.Count)).ToList(), UserSettings.DefaultRestSeconds);
 
         private async Task BeginAsync()
         {

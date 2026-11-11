@@ -93,8 +93,9 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     Yes / −1 / −2 / −3; unanswered means yes. Rest ends with
     "Get ready!" and a 3-2-1 buzz; the next set appears on its own. **Programs decide supersets**
     (v3: main lifts pair as A, accessories as B; A1/A2 alternate with a 30 s transition and the
-    full rest after each round). Main loaded lifts get a **built-in warm-up** (about half the
-    working weight × 8) when a lighter weight is owned. The list view stays as the logbook.
+    full rest after each round). Main loaded lifts get **built-in warm-ups**, shown with their
+    percentage: about 50% × 8, and for heavier lifts a ramp set at about 75% × 4 when that lands
+    on its own owned weight (none when nothing lighter than the working weight is owned). The list view stays as the logbook.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per

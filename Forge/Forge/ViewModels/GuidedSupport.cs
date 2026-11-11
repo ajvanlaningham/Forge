@@ -10,9 +10,12 @@ namespace Forge.ViewModels
         public static bool IsLoaded(ExerciseInfo? info)
             => info?.Modality is Modality.Dumbbell or Modality.Kettlebell or Modality.Barbell or Modality.Cable or Modality.Machine;
 
-        /// <summary>Main loaded lifts warm up, when there's a lighter weight to warm up with.</summary>
-        public static bool WantsWarmup(bool isMain, ExerciseInfo? info, bool timed, double loadLb, LoadSet loads)
-            => isMain && !timed && IsLoaded(info) && loadLb > 0 && GuidedPlan.WarmupLoad(loadLb, loads) < loadLb;
+        /// <summary>
+        /// Main loaded lifts warm up (about 50% × 8, plus about 75% × 4 for heavier ones) when
+        /// there's a lighter weight to warm up with.
+        /// </summary>
+        public static IReadOnlyList<WarmupSet> Warmups(bool isMain, ExerciseInfo? info, bool timed, double loadLb, LoadSet loads)
+            => isMain && !timed && IsLoaded(info) ? GuidedPlan.Warmups(loadLb, loads) : Array.Empty<WarmupSet>();
 
         /// <summary>Total minutes: every set at the guided pace plus every rest.</summary>
         public static int EstimateMinutes(IReadOnlyList<GuidedStep> steps, Func<int, (int? Reps, int? Seconds)> target)
@@ -20,7 +23,8 @@ namespace Forge.ViewModels
             var seconds = steps.Sum(s =>
             {
                 var (reps, secs) = target(s.ExerciseIndex);
-                return (s.IsWarmup ? GuidedPlan.SetSeconds(GuidedPlan.WarmupReps, null) : GuidedPlan.SetSeconds(reps, secs)) + s.RestAfterSeconds;
+                var warmupReps = s.SetNumber == 1 ? GuidedPlan.WarmupReps : GuidedPlan.RampReps;
+                return (s.IsWarmup ? GuidedPlan.SetSeconds(warmupReps, null) : GuidedPlan.SetSeconds(reps, secs)) + s.RestAfterSeconds;
             });
             return (int)Math.Round(seconds / 60.0);
         }

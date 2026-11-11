@@ -5,11 +5,14 @@ namespace Forge.Training
     /// <param name="Superset">Group key; consecutive exercises sharing one alternate sets.</param>
     /// <param name="Sets">Working sets.</param>
     /// <param name="RestSeconds">Rest after a working set (after a whole round, in a superset).</param>
-    /// <param name="Warmup">Gets one built-in warm-up set before its first working set.</param>
-    public sealed record GuidedExercise(int Index, string? Superset, int Sets, int? RestSeconds, bool Warmup);
+    /// <param name="Warmups">Built-in warm-up sets before the first working set (0, 1 or 2).</param>
+    public sealed record GuidedExercise(int Index, string? Superset, int Sets, int? RestSeconds, int Warmups);
+
+    /// <summary>One warm-up set: load, reps, and its share of the working load (for display).</summary>
+    public sealed record WarmupSet(double LoadLb, int Reps, int Percent);
 
     /// <summary>One set in the guided order, and the rest that follows it.</summary>
-    /// <param name="SetNumber">1-based working set number; 0 for the warm-up.</param>
+    /// <param name="SetNumber">1-based working set number, or 1-based warm-up number for a warm-up.</param>
     public sealed record GuidedStep(int ExerciseIndex, bool IsWarmup, int SetNumber, int SetsTotal, int RestAfterSeconds);
 
     /// <summary>
@@ -25,6 +28,9 @@ namespace Forge.Training
         public const int WarmupReps = 8;
         /// <summary>Warm-up load as a fraction of the working load.</summary>
         public const double WarmupFraction = 0.5;
+        /// <summary>The ramp set for heavier lifts: about three quarters, fewer reps.</summary>
+        public const double RampFraction = 0.75;
+        public const int RampReps = 4;
 
         /// <summary>Estimated time per rep, for timed sets (the user chose hands-free sets).</summary>
         public const int SecondsPerRep = 3;
@@ -45,8 +51,9 @@ namespace Forge.Training
                 i += block.Count;
 
                 var roundRest = block.Max(e => e.RestSeconds ?? defaultRestSeconds);
-                foreach (var e in block.Where(e => e.Warmup))
-                    steps.Add((new GuidedStep(e.Index, true, 0, e.Sets, WarmupRestSeconds), true, WarmupRestSeconds));
+                foreach (var e in block)
+                    for (var w = 1; w <= e.Warmups; w++)
+                        steps.Add((new GuidedStep(e.Index, true, w, e.Sets, WarmupRestSeconds), true, WarmupRestSeconds));
 
                 var rounds = block.Max(e => e.Sets);
                 for (var r = 1; r <= rounds; r++)
@@ -104,6 +111,26 @@ namespace Forge.Training
         /// <summary>How long a set takes: a hold's own time, or reps at a steady pace plus setup.</summary>
         public static int SetSeconds(int? reps, int? seconds)
             => seconds is int s ? s + SetupSeconds : (reps ?? 8) * SecondsPerRep + SetupSeconds;
+
+        /// <summary>
+        /// The warm-ups for a working load: about 50% × 8, then — when it lands on a weight of its
+        /// own, strictly between the first warm-up and the working load — about 75% × 4. Light lifts
+        /// get one warm-up; none at all when nothing lighter than the working load is owned.
+        /// </summary>
+        public static IReadOnlyList<WarmupSet> Warmups(double workingLb, LoadSet loads)
+        {
+            var sets = new List<WarmupSet>();
+            if (workingLb <= 0) return sets;
+            var first = WarmupLoad(workingLb, loads);
+            if (first >= workingLb) return sets;
+            sets.Add(new WarmupSet(first, WarmupReps, Percent(first, workingLb)));
+            var ramp = loads.Snap(workingLb * RampFraction);
+            if (ramp > first && ramp < workingLb)
+                sets.Add(new WarmupSet(ramp, RampReps, Percent(ramp, workingLb)));
+            return sets;
+        }
+
+        private static int Percent(double lb, double workingLb) => (int)Math.Round(100 * lb / workingLb);
 
         /// <summary>
         /// The warm-up load: about half the working load, snapped to a weight you own and always

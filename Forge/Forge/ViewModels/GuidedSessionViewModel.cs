@@ -188,7 +188,7 @@ namespace Forge.ViewModels
             Title = _snap.Session.Title ?? "Session";
             _exercises = _snap.Exercises.Where(e => !e.Row.Skipped).OrderBy(e => e.Row.Position).ToList();
             _steps = GuidedPlan.Build(_exercises.Select((e, i) => new GuidedExercise(i, e.Row.Superset, e.Row.TargetSets ?? 3,
-                e.Row.RestSeconds, GuidedSupport.WantsWarmup(e.Row.IsMain, e.Info, e.IsTimed, PlannedLoad(e), LoadsFor(e)))).ToList(),
+                e.Row.RestSeconds, WarmupsFor(e).Count)).ToList(),
                 UserSettings.DefaultRestSeconds);
             _pos = GuidedPlan.Position(_steps, i => (_exercises[i].Sets.Count(s => s.IsWarmup), _exercises[i].Sets.Count(s => !s.IsWarmup)));
             StepText = $"Set {Math.Min(_pos + 1, _steps.Count)} of {_steps.Count}";
@@ -201,6 +201,9 @@ namespace Forge.ViewModels
             => e.Row.PlannedLoadLb ?? _historyLoad.GetValueOrDefault(e.Row.ExerciseName);
         private readonly Dictionary<string, double> _historyLoad = new();
 
+        private IReadOnlyList<WarmupSet> WarmupsFor(SessionExerciseSnapshot e)
+            => GuidedSupport.Warmups(e.Row.IsMain, e.Info, e.IsTimed, PlannedLoad(e), LoadsFor(e));
+
         private LoadSet LoadsFor(SessionExerciseSnapshot e)
             => _gear.For(e.Info?.Modality ?? Modality.Bodyweight, UserSettings.WeightUnit, e.Info?.NeedsPair ?? false);
 
@@ -209,7 +212,11 @@ namespace Forge.ViewModels
         {
             var e = _exercises[step.ExerciseIndex];
             var working = e.Sets.Where(s => !s.IsWarmup).Select(s => (double?)s.LoadLb).LastOrDefault() ?? PlannedLoad(e);
-            if (step.IsWarmup) return (GuidedPlan.WarmupLoad(PlannedLoad(e), LoadsFor(e)), GuidedPlan.WarmupReps, null);
+            if (step.IsWarmup)
+            {
+                var w = WarmupsFor(e).ElementAtOrDefault(step.SetNumber - 1);
+                return (w?.LoadLb ?? PlannedLoad(e), w?.Reps ?? GuidedPlan.WarmupReps, null);
+            }
             return e.IsTimed
                 ? (working, null, e.Row.PlannedSeconds ?? e.Row.TargetSeconds ?? 30)
                 : (working, e.Row.PlannedReps ?? e.Row.RepsMin ?? 8, null);
@@ -222,9 +229,17 @@ namespace Forge.ViewModels
         {
             var e = _exercises[step.ExerciseIndex];
             var (lb, reps, secs) = Target(step);
-            var set = step.IsWarmup ? "warm-up" : $"set {step.SetNumber} of {step.SetsTotal}";
+            var set = step.IsWarmup ? $"warm-up {WarmupCaption(step).ToLowerInvariant()}" : $"set {step.SetNumber} of {step.SetsTotal}";
             var work = secs is int s ? $"{s}s" : $"× {reps}";
             return $"{e.Row.ExerciseName} · {set}\n{Label(lb, e)} {work}";
+        }
+
+        /// <summary>"1 OF 2 · 50%", or just "· 50%" for a single warm-up.</summary>
+        private string WarmupCaption(GuidedStep step)
+        {
+            var all = WarmupsFor(_exercises[step.ExerciseIndex]);
+            var pct = all.ElementAtOrDefault(step.SetNumber - 1) is { } w ? $"· {w.Percent}%" : "";
+            return all.Count > 1 ? $"{step.SetNumber} OF {all.Count} {pct}" : pct;
         }
 
         private void ShowStep(GuidedStep step)
@@ -233,7 +248,7 @@ namespace Forge.ViewModels
             var (lb, reps, secs) = Target(step);
             var group = GuidedSupport.GroupLabel(_exercises.Select(x => x.Row.Superset).ToList(), step.ExerciseIndex);
             ExerciseName = group is null ? e.Row.ExerciseName : $"{group} · {e.Row.ExerciseName}";
-            Caption = step.IsWarmup ? "WARM-UP" : $"SET {step.SetNumber} OF {step.SetsTotal}";
+            Caption = step.IsWarmup ? $"WARM-UP {WarmupCaption(step)}" : $"SET {step.SetNumber} OF {step.SetsTotal}";
             LoadText = Label(lb, e);
             WorkText = secs is int s ? $"{s} s" : $"× {reps}";
             StepText = $"Set {_pos + 1} of {_steps.Count}";
