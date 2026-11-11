@@ -488,3 +488,4 @@ $RECYCLE.BIN/
 *.keystore
 *.jks
 keystore.base64
+art/out/

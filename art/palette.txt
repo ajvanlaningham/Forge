@@ -1,0 +1,10 @@
+# Extracted from the hand-drawn dumbbell.png — the house style.
+A #000000 outline
+B #3F3F3F iron body
+C #161B22 shade (the app's Surface navy)
+D #786C5C warm rim
+E #2E3B47 cast shadow (outside the outline)
+F #8A8472 warm light
+G #E6E1CF top-lit edge (cream)
+H #E0C045 gold accent
+I #E09145 orange accent
