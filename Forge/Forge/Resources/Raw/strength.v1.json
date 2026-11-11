@@ -113,7 +113,8 @@
     "action": "reps",
     "defaultReps": 8,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Bent-over Row",
@@ -128,7 +129,8 @@
     "action": "reps",
     "defaultReps": 10,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Romanian Deadlift",
@@ -143,7 +145,8 @@
     "action": "reps",
     "defaultReps": 8,
     "skill": "intermediate",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Turkish Get-up",
@@ -205,7 +208,8 @@
     "action": "distance",
     "defaultDistance": 60,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Hollow Hold",
@@ -268,7 +272,8 @@
     "action": "reps",
     "defaultReps": 10,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "One-arm Row",
@@ -317,7 +322,8 @@
     "action": "reps",
     "defaultReps": 10,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Incline Dumbbell Press",
@@ -333,7 +339,8 @@
     "action": "reps",
     "defaultReps": 10,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Cable Triceps Pushdown",
@@ -408,7 +415,8 @@
     "action": "reps",
     "defaultReps": 12,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Cable Curl",
@@ -484,7 +492,8 @@
     "action": "reps",
     "defaultReps": 15,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Lying Leg Curl",
@@ -516,7 +525,8 @@
     "defaultReps": 8,
     "skill": "intermediate",
     "isActive": true,
-    "unilateral": true
+    "unilateral": true,
+    "pair": true
   },
   {
     "name": "Hip Thrust",
@@ -548,7 +558,8 @@
     "defaultReps": 10,
     "skill": "beginner",
     "isActive": true,
-    "unilateral": true
+    "unilateral": true,
+    "pair": true
   },
   {
     "name": "Dumbbell Pullover",
@@ -579,7 +590,8 @@
     "action": "reps",
     "defaultReps": 12,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   },
   {
     "name": "Kettlebell Swing",

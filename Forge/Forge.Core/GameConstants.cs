@@ -32,7 +32,7 @@ namespace Forge.Constants
                 "recovery.v1.json"
             };
 
-            public const string LibraryVersion = "v4"; // v4: kettlebell versions of Copper Helm
+            public const string LibraryVersion = "v5"; // v5: pair flags (two-implement exercises)
             public const string ExSourceTag = "recovery";
         }
 

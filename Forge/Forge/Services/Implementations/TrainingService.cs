@@ -49,7 +49,7 @@ namespace Forge.Services.Implementations
             return _libraryCache = rows
                 .Select(r => r.ToDomain())
                 .ToDictionary(e => e.Name, e => new ExerciseInfo(
-                    e.Name, e.Category, e.BodyZone, e.Movement, e.Modality, e.Equipment, e.Action));
+                    e.Name, e.Category, e.BodyZone, e.Movement, e.Modality, e.Equipment, e.Action, e.NeedsPair));
         }
 
         public async Task<IReadOnlyList<ExerciseInfo>> GetLibraryAsync(ExerciseCategory? category = null)

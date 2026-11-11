@@ -367,7 +367,7 @@ namespace Forge.ViewModels
             ? $"ADDED ({UnitLabel})"
             : $"LOAD ({UnitLabel})";
         /// <summary>The loads this exercise can actually use here: owned dumbbells, bells, bar range.</summary>
-        private LoadSet Loads => _owner.Gear.For(_snap.Info?.Modality ?? Modality.Dumbbell, Unit);
+        private LoadSet Loads => _owner.Gear.For(_snap.Info?.Modality ?? Modality.Dumbbell, Unit, _snap.Info?.NeedsPair ?? false);
         private double LoadLb => WeightMath.ToStoredPounds(Load, Unit);
         private void SetLoadLb(double lb) => Load = Math.Round(WeightMath.ToDisplay(lb, Unit), 2);
 

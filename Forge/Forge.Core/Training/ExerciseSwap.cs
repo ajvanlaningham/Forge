@@ -10,7 +10,8 @@ namespace Forge.Training
         MovementPattern Movement,
         Modality Modality,
         Equipment Equipment,
-        ActionType Action);
+        ActionType Action,
+        bool NeedsPair = false);
 
     /// <summary>
     /// Finds substitutes when a program slot's exercise needs gear the current location doesn't

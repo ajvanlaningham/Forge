@@ -116,4 +116,23 @@ public class LoadSetTests
         Assert.Equal("5–52.5 lb adjustable",
             new GearLoads { Dumbbells = new DumbbellGear { Adjustable = true, Min = 5, Max = 52.5 } }.Summary(Equipment.Dumbbell));
     }
+
+    [Fact]
+    public void Pairs_TwoHandedExercisesOnlyUseWeightsYouHaveTwoOf()
+    {
+        var gear = new GearLoads { Dumbbells = new DumbbellGear { Weights = [15, 15, 25, 35, 35] } };
+        var twoHanded = gear.For(Modality.Dumbbell, WeightUnit.Pounds, needsPair: true);
+        var oneHanded = gear.For(Modality.Dumbbell, WeightUnit.Pounds);
+        Assert.Equal(35, twoHanded.Next(15));   // skips the single 25
+        Assert.Equal(25, oneHanded.Next(15));   // a goblet squat can use it
+        Assert.Equal("15×2 · 25 · 35×2 lb", gear.Summary(Equipment.Dumbbell));
+    }
+
+    [Fact]
+    public void Pairs_NoPairOwnedAtAll_FallsBackToEverySingle()
+    {
+        var gear = new GearLoads { Kettlebells = new KettlebellGear { Unit = WeightUnit.Kilograms, Weights = [16, 20] } };
+        Assert.NotNull(gear.For(Modality.Kettlebell, WeightUnit.Kilograms, needsPair: true).Next(0));
+        Assert.Equal(1, GearLoads.CountOf([16, 20], 16));
+    }
 }

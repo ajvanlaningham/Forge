@@ -6,7 +6,9 @@
     "bodyZone": "fullBody",
     "movement": "gait",
     "modality": "machineBike",
-    "equipment": [ "bike" ],
+    "equipment": [
+      "bike"
+    ],
     "action": "time",
     "defaultSeconds": 900,
     "skill": "beginner",
@@ -19,7 +21,9 @@
     "bodyZone": "fullBody",
     "movement": "gait",
     "modality": "machineBike",
-    "equipment": [ "bike" ],
+    "equipment": [
+      "bike"
+    ],
     "action": "time",
     "defaultSeconds": 1800,
     "skill": "beginner",
@@ -32,7 +36,9 @@
     "bodyZone": "fullBody",
     "movement": "gait",
     "modality": "machineBike",
-    "equipment": [ "bike" ],
+    "equipment": [
+      "bike"
+    ],
     "action": "time",
     "defaultSeconds": 1200,
     "skill": "intermediate",
@@ -45,7 +51,9 @@
     "bodyZone": "fullBody",
     "movement": "gait",
     "modality": "bodyweight",
-    "equipment": [ "jumpRope" ],
+    "equipment": [
+      "jumpRope"
+    ],
     "action": "time",
     "defaultSeconds": 300,
     "skill": "beginner",
@@ -71,7 +79,9 @@
     "bodyZone": "fullBody",
     "movement": "hinge",
     "modality": "kettlebell",
-    "equipment": [ "kettlebell" ],
+    "equipment": [
+      "kettlebell"
+    ],
     "action": "reps",
     "defaultReps": 15,
     "skill": "beginner",
@@ -84,7 +94,9 @@
     "bodyZone": "core",
     "movement": "other",
     "modality": "bodyweight",
-    "equipment": [ "mat" ],
+    "equipment": [
+      "mat"
+    ],
     "action": "time",
     "defaultSeconds": 45,
     "skill": "beginner",
@@ -136,7 +148,9 @@
     "bodyZone": "fullBody",
     "movement": "gait",
     "modality": "bodyweight",
-    "equipment": [ "mat" ],
+    "equipment": [
+      "mat"
+    ],
     "action": "distance",
     "defaultDistance": 20,
     "skill": "intermediate",
@@ -175,7 +189,9 @@
     "bodyZone": "lower",
     "movement": "lunge",
     "modality": "bodyweight",
-    "equipment": [ "boxStep" ],
+    "equipment": [
+      "boxStep"
+    ],
     "action": "reps",
     "defaultReps": 20,
     "unilateral": true,
@@ -189,10 +205,13 @@
     "bodyZone": "fullBody",
     "movement": "carry",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell" ],
+    "equipment": [
+      "dumbbell"
+    ],
     "action": "time",
     "defaultSeconds": 60,
     "skill": "beginner",
-    "isActive": true
+    "isActive": true,
+    "pair": true
   }
 ]

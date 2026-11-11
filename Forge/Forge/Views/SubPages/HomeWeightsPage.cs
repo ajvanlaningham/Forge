@@ -73,11 +73,11 @@ public sealed class HomeWeightsPage : ContentPage
 
         var (title, intro, section) = Implement switch
         {
-            Equipment.Kettlebell => ("Kettlebells", "Tap every bell you own. Single bells are fine — programs use one at a time.",
+            Equipment.Kettlebell => ("Kettlebells", "Tap once for one bell, twice for a pair, again to clear. Programs use one bell at a time.",
                 Section("Kettlebells", _hasKb, v => { _hasKb = v; RenderKb(); }, _kbBody)),
             Equipment.Barbell => ("Barbell", "Your bar, the heaviest you can load, and your smallest plate pair.",
                 Section("Barbell", _hasBb, v => { _hasBb = v; RenderBb(); }, _bbBody)),
-            _ => ("Dumbbells", "Fixed pairs or one adjustable set. Suggestions and the +/− buttons only land on these.",
+            _ => ("Dumbbells", "Fixed weights or one adjustable set. Two-handed exercises only use weights you have a pair of.",
                 Section("Dumbbells", _hasDb, v => { _hasDb = v; RenderDb(); }, _dbBody))
         };
         Title = $"My Gear · {title}";
@@ -118,7 +118,7 @@ public sealed class HomeWeightsPage : ContentPage
         _dbBody.IsVisible = _hasDb;
         if (!_hasDb) return;
 
-        _dbBody.Add(Segmented(new[] { "Fixed pairs", "Adjustable" }, _db.Adjustable ? 1 : 0, i => { _db.Adjustable = i == 1; RenderDb(); }));
+        _dbBody.Add(Segmented(new[] { "Fixed weights", "Adjustable" }, _db.Adjustable ? 1 : 0, i => { _db.Adjustable = i == 1; RenderDb(); }));
         _dbBody.Add(UnitToggle(_db.Unit, u =>
         {
             if (u == _db.Unit) return;
@@ -137,7 +137,7 @@ public sealed class HomeWeightsPage : ContentPage
         else
         {
             var std = _db.Unit == WeightUnit.Kilograms ? GearLoads.StandardDumbbellsKg : GearLoads.StandardDumbbellsLb;
-            _dbBody.Add(new Label { Text = "Tap every pair you own.", FontSize = 14, TextColor = _muted });
+            _dbBody.Add(new Label { Text = "Tap once for one dumbbell, twice for a pair, again to clear.", FontSize = 14, TextColor = _muted });
             _dbBody.Add(Chips(std, _db.Weights, WeightMath.UnitLabel(_db.Unit)));
         }
     }
@@ -187,16 +187,20 @@ public sealed class HomeWeightsPage : ContentPage
         foreach (var w in options)
         {
             var b = new Button { Text = $"{Fmt(w)}", FontFamily = "GymNum", FontSize = 22, Margin = 3, Padding = new Thickness(10, 2), MinimumWidthRequest = 62, HeightRequest = 46 };
+            // Tap once: one of this weight. Twice: a pair (×2). Three times: cleared.
             void Paint()
             {
-                var on = selected.Any(s => Math.Abs(s - w) < 0.001);
-                b.BackgroundColor = on ? _accent : _bg;
-                b.TextColor = on ? Colors.Black : _onBg;
+                var count = GearLoads.CountOf(selected, w);
+                b.Text = count >= 2 ? $"{Fmt(w)}×2" : Fmt(w);
+                b.BackgroundColor = count switch { 0 => _bg, 1 => _accent.WithLuminosity(0.38f), _ => _accent };
+                b.TextColor = count == 0 ? _onBg : Colors.Black;
+                b.BorderWidth = count >= 2 ? 3 : 1;
             }
             b.Clicked += (_, _) =>
             {
-                var hit = selected.FindIndex(s => Math.Abs(s - w) < 0.001);
-                if (hit >= 0) selected.RemoveAt(hit); else selected.Add(w);
+                var count = GearLoads.CountOf(selected, w);
+                if (count >= 2) selected.RemoveAll(s => Math.Abs(s - w) < 0.001);
+                else selected.Add(w);
                 Paint();
             };
             Paint();
@@ -252,7 +256,7 @@ public sealed class HomeWeightsPage : ContentPage
         var has = Implement switch { Equipment.Kettlebell => _hasKb, Equipment.Barbell => _hasBb, _ => _hasDb };
         if (has && Implement == Equipment.Dumbbell && !_db.Adjustable && _db.Weights.Count == 0)
         {
-            await DisplayAlert("Dumbbells", "Tap the pairs you own, or switch \"I have these\" off.", "OK");
+            await DisplayAlert("Dumbbells", "Tap the dumbbells you own, or switch \"I have these\" off.", "OK");
             return;
         }
         if (has && Implement == Equipment.Dumbbell && _db.Adjustable && _db.Max <= _db.Min)

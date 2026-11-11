@@ -285,7 +285,8 @@ public class ShippedProgramContentTests
         var p = Load(file);
         if (p.Implement != "Kettlebell") return;
         var doubles = AllSlots(p).Select(sl => sl.Exercise).Distinct()
-            .Where(n => Library.Value[n].TryGetProperty("doubleBell", out var d) && d.GetBoolean()).ToList();
+            .Where(n => Library.Value[n].GetProperty("modality").GetString() == "kettlebell"
+                        && Library.Value[n].TryGetProperty("pair", out var d) && d.GetBoolean()).ToList();
         Assert.True(doubles.Count == 0, $"{file} uses double-bell exercises: {string.Join(", ", doubles)}");
     }
 

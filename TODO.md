@@ -170,7 +170,7 @@ Rework the program format before writing real content:
 - [x] Real Block 1 · Balanced (3-day and 4-day), 2026-11-11: researched against common
       dumbbell upper/lower and full-body templates. 30–40 min (10–11 working sets/day). 4-day: A days
       heavy (6–10), B days volume (10–15); 3-day: heavy / medium / light. Home = dumbbells + a hip
-      thrust box ("Box step"), no pull-up bar; bench press swaps to floor press at home.
+      thrust box ("Box step") and a pull-up bar; bench press swaps to floor press at home.
 - [x] Renamed to the quest scheme: Copper Helm · Hearth, in Dumbbell and Kettlebell versions
       (3-day and 4-day each); 10 kettlebell lifts added (library v4)
 - [ ] Copper Hammer · Anvil (strength) and Copper Boots · Bellows (conditioning) — rumours on the board

@@ -104,6 +104,7 @@ namespace Forge.Services.Implementations
             public int? DefaultBreaths { get; set; }
 
             public bool Unilateral { get; set; }
+            public bool Pair { get; set; }
             public SkillLevel Skill { get; set; } = SkillLevel.Beginner;
             public bool IsActive { get; set; } = true;
 
@@ -126,6 +127,7 @@ namespace Forge.Services.Implementations
                     DefaultDistance = DefaultDistance,
                     DefaultBreaths = DefaultBreaths,
                     Unilateral = Unilateral,
+                    NeedsPair = Pair,
                     Skill = Skill,
                     IsActive = IsActive
                 };

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +30,8 @@ namespace Forge.Models
         public double? DefaultDistance { get; set; } // meters or km (we can add a unit later)
 
         public bool Unilateral { get; set; }
+        /// <summary>Uses two dumbbells/kettlebells at once (bench press, curls): needs a pair.</summary>
+        public bool NeedsPair { get; set; }
         public SkillLevel Skill { get; set; } = SkillLevel.Beginner;
 
         public bool IsActive { get; set; } = true;
@@ -71,6 +73,7 @@ namespace Forge.Models
         public double? DefaultDistance { get; set; }
 
         public bool Unilateral { get; set; }
+        public bool NeedsPair { get; set; }
         public int Skill { get; set; }
 
         public bool IsActive { get; set; } = true;
@@ -94,6 +97,7 @@ namespace Forge.Models
             DefaultSeconds = DefaultSeconds,
             DefaultDistance = DefaultDistance,
             Unilateral = Unilateral,
+            NeedsPair = NeedsPair,
             Skill = (SkillLevel)Skill,
             IsActive = IsActive,
 
@@ -116,6 +120,7 @@ namespace Forge.Models
             DefaultSeconds = e.DefaultSeconds,
             DefaultDistance = e.DefaultDistance,
             Unilateral = e.Unilateral,
+            NeedsPair = e.NeedsPair,
             Skill = (int)e.Skill,
             IsActive = e.IsActive,
 

@@ -10,7 +10,10 @@ namespace Forge.Training
     {
         public bool Adjustable { get; set; }
         public WeightUnit Unit { get; set; } = WeightUnit.Pounds;
-        /// <summary>Fixed pairs (one handle's weight each).</summary>
+        /// <summary>
+        /// Dumbbells owned, one entry per dumbbell (one handle's weight): a weight listed twice is a
+        /// pair. Two-handed exercises only use weights you have a pair of.
+        /// </summary>
         public List<double> Weights { get; set; } = new();
         /// <summary>Adjustable range.</summary>
         public double Min { get; set; } = 5;
@@ -18,7 +21,7 @@ namespace Forge.Training
         public double Step { get; set; } = 2.5;
     }
 
-    /// <summary>Kettlebells you own, in <see cref="Unit"/>.</summary>
+    /// <summary>Kettlebells you own, in <see cref="Unit"/>; one entry per bell (listed twice = a pair).</summary>
     public sealed class KettlebellGear
     {
         public WeightUnit Unit { get; set; } = WeightUnit.Kilograms;
@@ -64,30 +67,39 @@ namespace Forge.Training
                 Equipment.Dumbbell when Dumbbells is { Adjustable: true } d
                     => $"{F(d.Min)}–{F(d.Max)} {WeightMath.UnitLabel(d.Unit)} adjustable",
                 Equipment.Dumbbell when Dumbbells is { Weights.Count: > 0 } d
-                    => $"{string.Join(" · ", d.Weights.OrderBy(w => w).Select(F))} {WeightMath.UnitLabel(d.Unit)}",
+                    => $"{Counted(d.Weights)} {WeightMath.UnitLabel(d.Unit)}",
                 Equipment.Kettlebell when Kettlebells is { Weights.Count: > 0 } k
-                    => $"{string.Join(" · ", k.Weights.OrderBy(w => w).Select(F))} {WeightMath.UnitLabel(k.Unit)}",
+                    => $"{Counted(k.Weights)} {WeightMath.UnitLabel(k.Unit)}",
                 Equipment.Barbell when Barbell is { } b
                     => $"bar {F(b.Bar)} · up to {F(b.Max)} {WeightMath.UnitLabel(b.Unit)}",
                 _ => null
             };
         }
 
+        /// <summary>"16 · 20×2": each weight once, with the count when more than one is owned.</summary>
+        private static string Counted(List<double> weights)
+            => string.Join(" · ", weights.GroupBy(w => w).OrderBy(g => g.Key).Select(g =>
+                g.Key.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture) + (g.Count() > 1 ? $"×{g.Count()}" : "")));
+
         /// <summary>Implements whose weights matter: tapping them opens a weights editor.</summary>
         public static bool IsWeighted(Equipment e) => e is Equipment.Dumbbell or Equipment.Kettlebell or Equipment.Barbell;
 
         /// <summary>The loads an exercise's modality can use here.</summary>
-        public LoadSet For(Modality modality, WeightUnit displayUnit) => modality switch
+        /// <param name="needsPair">The exercise uses two implements (DB bench press, curls): only
+        /// weights owned as a pair qualify. One-implement exercises (goblet squat, one-arm row) can
+        /// use any. If no pair is owned at all, every owned weight is offered rather than nothing.</param>
+        public LoadSet For(Modality modality, WeightUnit displayUnit, bool needsPair = false) => modality switch
         {
             Modality.Dumbbell => Dumbbells switch
             {
                 null => Steps(displayUnit, min: 0),
+                // An adjustable set is a pair of handles.
                 { Adjustable: true } d => new LoadSet.Range(Lb(d.Min, d.Unit), Lb(d.Max, d.Unit), d.Step, d.Unit),
                 { Weights.Count: 0 } => Steps(displayUnit, min: 0),
-                var d => new LoadSet.Discrete(d.Weights.Select(w => Lb(w, d.Unit)))
+                var d => new LoadSet.Discrete(Usable(d.Weights, needsPair).Select(w => Lb(w, d.Unit)))
             },
             Modality.Kettlebell => Kettlebells is { Weights.Count: > 0 } k
-                ? new LoadSet.Discrete(k.Weights.Select(w => Lb(w, k.Unit)))
+                ? new LoadSet.Discrete(Usable(k.Weights, needsPair).Select(w => Lb(w, k.Unit)))
                 : Steps(displayUnit, min: 0),
             Modality.Barbell => Barbell is { } b
                 ? new LoadSet.Range(Lb(b.Bar, b.Unit), Lb(b.Max, b.Unit), b.Step, b.Unit)
@@ -109,6 +121,16 @@ namespace Forge.Training
             {
                 Kettlebells = new KettlebellGear { Unit = WeightUnit.Pounds, Weights = StandardKettlebellsLb.ToList() }
             };
+
+        private static IEnumerable<double> Usable(List<double> owned, bool needsPair)
+        {
+            if (!needsPair) return owned.Distinct();
+            var pairs = owned.GroupBy(w => w).Where(g => g.Count() >= 2).Select(g => g.Key).ToList();
+            return pairs.Count > 0 ? pairs : owned.Distinct();
+        }
+
+        /// <summary>How many of a weight are owned (0, 1, 2…).</summary>
+        public static int CountOf(List<double> owned, double weight) => owned.Count(w => Math.Abs(w - weight) < 0.001);
 
         private static LoadSet Steps(WeightUnit unit, double min)
             => new LoadSet.Range(min, null, unit == WeightUnit.Kilograms ? 2.5 : 5, unit);
