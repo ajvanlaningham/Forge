@@ -81,4 +81,17 @@ public class GuidedPlanTests
         Assert.Equal(WeightMath.ToStoredPounds(16, WeightUnit.Kilograms), GuidedPlan.WarmupLoad(WeightMath.ToStoredPounds(20, WeightUnit.Kilograms), bells), 6);
         Assert.Equal(0, GuidedPlan.WarmupLoad(0, dumbbells));
     }
+
+    [Fact]
+    public void HardSets_AreTheLastSetOrTheTopOfTheRange()
+    {
+        var mid = new GuidedStep(0, false, 2, 3, 90);
+        var last = new GuidedStep(0, false, 3, 3, 90);
+        var warm = new GuidedStep(0, true, 0, 3, 45);
+        Assert.False(GuidedPlan.IsHardSet(mid, 8, 10));
+        Assert.True(GuidedPlan.IsHardSet(last, 8, 10));
+        Assert.True(GuidedPlan.IsHardSet(mid, 10, 10));
+        Assert.False(GuidedPlan.IsHardSet(warm, 8, 10));
+        Assert.False(GuidedPlan.IsHardSet(last, null, null)); // holds aren't asked
+    }
 }

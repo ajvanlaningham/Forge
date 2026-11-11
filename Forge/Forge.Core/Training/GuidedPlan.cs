@@ -92,6 +92,15 @@ namespace Forge.Training
             return steps.Count;
         }
 
+        /// <summary>
+        /// Sets where a miss is likely, so the rest screen asks "Got all 8?" instead of assuming:
+        /// the last working set of an exercise, or a target at the top of the rep range. Warm-ups and
+        /// holds are never asked. Unanswered means yes.
+        /// </summary>
+        public static bool IsHardSet(GuidedStep step, int? targetReps, int? repsMax)
+            => !step.IsWarmup && targetReps is int reps
+               && (step.SetNumber == step.SetsTotal || (repsMax is int hi && reps >= hi));
+
         /// <summary>How long a set takes: a hold's own time, or reps at a steady pace plus setup.</summary>
         public static int SetSeconds(int? reps, int? seconds)
             => seconds is int s ? s + SetupSeconds : (reps ?? 8) * SecondsPerRep + SetupSeconds;

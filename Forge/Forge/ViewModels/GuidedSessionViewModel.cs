@@ -104,6 +104,15 @@ namespace Forge.ViewModels
         public string LoggedText { get => _loggedText; private set => SetProperty(ref _loggedText, value); }
         public bool HasLogged => _lastSet is not null;
 
+        // --- "Got all 8?" after a hard set (unanswered = yes) ---
+        private bool _isAsking;
+        public bool IsAsking { get => _isAsking; private set { if (SetProperty(ref _isAsking, value)) OnPropertyChanged(nameof(ShowLogged)); } }
+        public bool ShowLogged => HasLogged && !IsAsking;
+        private string _askText = "";
+        public string AskText { get => _askText; private set => SetProperty(ref _askText, value); }
+        public ICommand AnswerYesCommand { get; }
+        public ICommand AnswerShortCommand { get; }
+
         private string _readyText = "";
         public string ReadyText { get => _readyText; private set => SetProperty(ref _readyText, value); }
 
@@ -136,6 +145,12 @@ namespace Forge.ViewModels
             LoggedRepsDownCommand = new Command(async () => await EditLoggedAsync(reps: -1));
             LoggedLoadUpCommand = new Command(async () => await EditLoggedAsync(load: +1));
             LoggedLoadDownCommand = new Command(async () => await EditLoggedAsync(load: -1));
+            AnswerYesCommand = new Command(() => IsAsking = false);
+            AnswerShortCommand = new Command<string>(async n =>
+            {
+                IsAsking = false;
+                if (int.TryParse(n, out var by)) await EditLoggedAsync(reps: -by);
+            });
             OverviewCommand = new Command(async () =>
                 await Shell.Current.GoToAsync($"{nameof(ActiveSessionPage)}?sessionId={SessionId}"));
             FinishCommand = new Command(async () => await FinishAsync());
@@ -243,6 +258,7 @@ namespace Forge.ViewModels
             _restEndsUtc = null;
             _restPausedSeconds = null;
             IsGetReady = false;
+            IsAsking = false;
 
             var step = _steps[_pos];
             ShowStep(step);
@@ -269,6 +285,9 @@ namespace Forge.ViewModels
                 var e = _exercises[step.ExerciseIndex];
                 var (lb, reps, secs) = Target(step);
                 _lastSet = await _training.LogSetAsync(e.Row.Id, lb, reps, secs, step.IsWarmup);
+                // Hard sets ask instead of assuming (unanswered = got them all).
+                IsAsking = GuidedPlan.IsHardSet(step, reps, e.Row.RepsMax);
+                AskText = $"Got all {reps}?";
                 await ReloadAsync();
                 _lastSetExercise = _exercises.FirstOrDefault(x => x.Row.Id == e.Row.Id);
                 RefreshLogged();
@@ -425,6 +444,7 @@ namespace Forge.ViewModels
         {
             if (_lastSet is null || _lastSetExercise is null) { LoggedText = ""; OnPropertyChanged(nameof(HasLogged)); return; }
             var work = _lastSet.Seconds is int s ? $"{s}s" : $"× {_lastSet.Reps}";
+            OnPropertyChanged(nameof(ShowLogged));
             LoggedText = $"Logged {_lastSetExercise.Row.ExerciseName}{(_lastSet.IsWarmup ? " warm-up" : "")}: {Label(_lastSet.LoadLb, _lastSetExercise)} {work}";
             OnPropertyChanged(nameof(HasLogged));
         }

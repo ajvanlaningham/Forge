@@ -77,8 +77,23 @@
                 </Label>
             </VerticalStackLayout>
 
+            <!-- After a hard set: did you get them all? -->
+            <Border Grid.Row="1" IsVisible="{Binding IsAsking}" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}"
+                    StrokeThickness="2" StrokeShape="RoundRectangle 8" Padding="10,8">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{Binding AskText}" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                    <Grid ColumnDefinitions="2*,*,*,*" ColumnSpacing="6">
+                        <Button Text="Yes" Command="{Binding AnswerYesCommand}" HeightRequest="56" FontFamily="PixelUI" FontSize="22"
+                                BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
+                        <Button Grid.Column="1" Text="−1" Command="{Binding AnswerShortCommand}" CommandParameter="1" HeightRequest="56" FontSize="18" Padding="0" />
+                        <Button Grid.Column="2" Text="−2" Command="{Binding AnswerShortCommand}" CommandParameter="2" HeightRequest="56" FontSize="18" Padding="0" />
+                        <Button Grid.Column="3" Text="−3" Command="{Binding AnswerShortCommand}" CommandParameter="3" HeightRequest="56" FontSize="18" Padding="0" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Fix the set just logged -->
-            <Border Grid.Row="1" IsVisible="{Binding HasLogged}" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}"
+            <Border Grid.Row="1" IsVisible="{Binding ShowLogged}" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}"
                     StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10,8">
                 <VerticalStackLayout Spacing="6">
                     <Label Text="{Binding LoggedText}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource OnBg}" LineBreakMode="WordWrap" />

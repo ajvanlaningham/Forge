@@ -88,7 +88,9 @@ Settled. Changing one means revisiting the PBIs that depend on it.
 21. **Guided sessions** (agreed with the user 2026-11-11). Start → a **briefing** (Home/Gym, the
     plan with swaps, weights to settle, a gather list, an estimate) → BEGIN. Then one set at a
     time, **hands-free**: a set runs on a timer (3 s/rep + 5 s setup, or the hold's time), logs its
-    target when it ends, and rest starts; misses are corrected on the rest screen. Rest ends with
+    target when it ends, and rest starts; misses are corrected on the rest screen. **Hard sets
+    ask** (the last set of an exercise, or a target at the top of the range): "Got all 8?" with
+    Yes / −1 / −2 / −3; unanswered means yes. Rest ends with
     "Get ready!" and a 3-2-1 buzz; the next set appears on its own. **Programs decide supersets**
     (v3: main lifts pair as A, accessories as B; A1/A2 alternate with a 30 s transition and the
     full rest after each round). Main loaded lifts get a **built-in warm-up** (about half the
