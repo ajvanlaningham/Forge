@@ -49,6 +49,18 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     rest). Each consecutive perfect week keeps a ×1.2 multiplier on the following week's XP; a
     miss resets it to ×1.0, nothing is taken away. Possible later: a once-per-block "sick week"
     freeze so the bonus never tempts training while ill.
+17. **Quests: metal × item × discipline** (2026-11-11). A quest is the identity — e.g.
+    **Copper Helm · Hearth** — and forges that item. Metal = tier (Copper → Bronze → Iron → Steel
+    → Damascus → Mithril → Starmetal). Discipline = goal: Hearth (balanced, forges defence),
+    Anvil (strength, forges weapons), Bellows (conditioning, forges light gear). Weeks are named
+    for the process: Kindling, Tempering, Quenching, Honing (the light/test week). Quests come in
+    **versions** — implement (Kettlebell / Dumbbell / Gym) × schedule (3 or 4 days); the board
+    shows one notice per quest and asks for the version, sorted by what's in My Gear.
+18. **Forging** (defaults, adjustable): a block forges its item when ≥ 75% of its training days
+    were completed (perfect weeks are a bonus, not a requirement). Every version forges the same
+    item. A tier unlocks after forging 3 items from the one before; until then it shows as
+    rumours. Forged items unlock cosmetics on the Character page — rewarding consistency, never
+    PRs or weight.
 16. **Owned weights** (2026-11-11). Equipment carries the loads you can actually use, and
     suggestions/steppers only land on them. Dumbbells: fixed pairs (checklist) or adjustable
     (range + step). Kettlebells: checklist of standard bells (lb or kg sets). Barbell: bar weight
@@ -154,7 +166,9 @@ Rework the program format before writing real content:
       dumbbell upper/lower and full-body templates. 30–40 min (10–11 working sets/day). 4-day: A days
       heavy (6–10), B days volume (10–15); 3-day: heavy / medium / light. Home = dumbbells + a hip
       thrust box ("Box step"), no pull-up bar; bench press swaps to floor press at home.
-- [ ] Goal variants as sibling families: Block 1 · Strength, Block 1 · Conditioning
+- [x] Renamed to the quest scheme: Copper Helm · Hearth, in Dumbbell and Kettlebell versions
+      (3-day and 4-day each); 10 kettlebell lifts added (library v4)
+- [ ] Copper Hammer · Anvil (strength) and Copper Boots · Bellows (conditioning) — rumours on the board
 
 ### 8.4 Training programs (the 4-day split)
 - Program → days → slots (exercise, sets, rep range, rest). Seeded from versioned JSON in
@@ -321,6 +335,9 @@ Rework the program format before writing real content:
 
 ### Future milestones
 
+- **Forging & the armoury** (Decisions 17–18). On block completion, check the 75% rule and
+  forge the item; show it on the Character page; tier unlocks after 3 forged items. Items are
+  sprites from `art/` in the house palette (a metal palette per tier: copper, bronze, iron…).
 - **Character page.** A home for "you" in the RPG layer, reached from Home (tap the sprite):
   - **Injuries & limitations** are entered and tracked here (see below) — framed as the
     character's condition, with active ones shown as status effects until they clear.

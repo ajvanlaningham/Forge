@@ -580,5 +580,163 @@
     "defaultReps": 12,
     "skill": "beginner",
     "isActive": true
+  },
+  {
+    "name": "Kettlebell Swing",
+    "description": "Hinge and snap the hips to float the bell to chest height; the arms just guide it.",
+    "category": "strength",
+    "bodyZone": "fullBody",
+    "movement": "hinge",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 15
+  },
+  {
+    "name": "Kettlebell Deadlift",
+    "description": "Bell between the feet, hinge and stand tall; the foundation of the swing.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "hinge",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 10
+  },
+  {
+    "name": "Kettlebell Front Squat",
+    "description": "Bell held in the rack position, squat to depth with a tall chest.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "squat",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 8,
+    "unilateral": true
+  },
+  {
+    "name": "Kettlebell Press",
+    "description": "From the rack, press the bell overhead and lock out; ribs down.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "push",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 6,
+    "unilateral": true
+  },
+  {
+    "name": "Kettlebell Floor Press",
+    "description": "Lying on the floor, press the bell up from the elbow-down position.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "push",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell",
+      "mat"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 10,
+    "unilateral": true
+  },
+  {
+    "name": "Kettlebell Row",
+    "description": "Hinged over, row the bell to the hip; free hand braced on a knee or box.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 10,
+    "unilateral": true
+  },
+  {
+    "name": "Kettlebell Clean",
+    "description": "Swing the bell back and pull it into the rack in one move, softly, without banging the forearm.",
+    "category": "strength",
+    "bodyZone": "fullBody",
+    "movement": "hinge",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "intermediate",
+    "isActive": true,
+    "defaultReps": 6,
+    "unilateral": true
+  },
+  {
+    "name": "Kettlebell Snatch",
+    "description": "One explosive hinge from between the legs to overhead lockout.",
+    "category": "strength",
+    "bodyZone": "fullBody",
+    "movement": "hinge",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "advanced",
+    "isActive": true,
+    "defaultReps": 8,
+    "unilateral": true
+  },
+  {
+    "name": "Racked Reverse Lunge",
+    "description": "Bell in the rack, step back into a lunge and drive up through the front foot.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "lunge",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 8,
+    "unilateral": true
+  },
+  {
+    "name": "Kettlebell Halo",
+    "description": "Circle the bell around the head, elbows close; shoulders and core.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "rotation",
+    "modality": "kettlebell",
+    "equipment": [
+      "kettlebell"
+    ],
+    "action": "reps",
+    "skill": "beginner",
+    "isActive": true,
+    "defaultReps": 8
   }
 ]

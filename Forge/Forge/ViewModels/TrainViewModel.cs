@@ -130,15 +130,16 @@ namespace Forge.ViewModels
                 }
 
                 var def = view.Program.Definition;
-                ProgramName = def.Name;
+                ProgramName = $"{def.QuestName} · {def.Discipline}";
                 ProgramDescription = def.Description;
                 IsPlaceholder = def.Placeholder;
                 IsBlockComplete = view.BlockComplete;
                 var (wStart, wEnd) = BlockSchedule.WeekRange(view.Program.StartedOn, view.Week);
-                WeekText = view.BlockComplete ? "Block complete" : $"Week {view.Week} of {ProgramDefinition.WeeksPerBlock}";
-                BlockText = $"{def.TrainingDaysPerWeek} training days + active rest · this week {wStart:MMM d}–{wEnd:MMM d}";
+                WeekText = view.BlockComplete ? $"The {def.QuestName} is ready to forge"
+                    : $"Week {view.Week} of {ProgramDefinition.WeeksPerBlock} · {ProgramDefinition.WeekName(view.Week)}";
+                BlockText = $"{def.VersionName} · this week {wStart:MMM d}–{wEnd:MMM d}";
                 WeekNote = view.Week == ProgramDefinition.LightWeek && !view.BlockComplete
-                    ? "Light week: same weights, one set fewer. The stat tests happen this week."
+                    ? "Honing week: same weights, one set fewer. The stat tests happen this week."
                     : null;
                 StreakText = view.PerfectWeekStreak > 0
                     ? $"Perfect weeks in a row: {view.PerfectWeekStreak} · ×{view.Multiplier:0.0} XP this week"

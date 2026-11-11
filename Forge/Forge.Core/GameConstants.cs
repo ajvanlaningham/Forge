@@ -32,7 +32,7 @@ namespace Forge.Constants
                 "recovery.v1.json"
             };
 
-            public const string LibraryVersion = "v3"; // v3: Block 1 lifts (Bulgarian split squat, hip thrust, lunge, pullover, lateral raise)
+            public const string LibraryVersion = "v4"; // v4: kettlebell versions of Copper Helm
             public const string ExSourceTag = "recovery";
         }
 
@@ -46,12 +46,14 @@ namespace Forge.Constants
         {
             public static readonly string[] Files =
             {
-                "programs/block1-balanced-4day.v1.json",
-                "programs/block1-balanced-3day.v1.json"
+                "programs/copper-helm-db-4day.v1.json",
+                "programs/copper-helm-db-3day.v1.json",
+                "programs/copper-helm-kb-4day.v1.json",
+                "programs/copper-helm-kb-3day.v1.json"
             };
 
             /// <summary>Program offered when none has been chosen yet.</summary>
-            public const string DefaultProgramId = "block1-balanced-4day";
+            public const string DefaultProgramId = "copper-helm-db-4day";
         }
 
         /// <summary>

@@ -123,7 +123,7 @@ namespace Forge.Services.Implementations
             session.ProgramVersion = view.Program.Definition.Version;
             session.BlockId = view.Program.BlockId;
             session.DayIndex = day.DayIndex;
-            session.Title = $"Wk {view.Week} · {day.Name}" + (day.IsLight ? " (light)" : "");
+            session.Title = $"{ProgramDefinition.WeekName(view.Week)} · {day.Name}" + (day.IsLight ? " (light)" : "");
             await _sessions.InsertAsync(session);
 
             // This week's slots: mains + this week's accessories; week 4 already has a set fewer.

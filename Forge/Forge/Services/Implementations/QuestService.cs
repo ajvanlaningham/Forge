@@ -4,6 +4,7 @@ using Forge.Data;
 using Forge.Models;
 using Forge.Resources.Strings;
 using Forge.Services.Interfaces;
+using Forge.Training;
 
 namespace Forge.Services.Implementations
 {
@@ -94,12 +95,12 @@ namespace Forge.Services.Implementations
                 {
                     Kind = QuestKind.Strength, BodyFocus = BodyZone.FullBody, IsProgramDay = true,
                     Title = "Training done this week",
-                    Tag = $"Wk {view.Week}/4",
+                    Tag = ProgramDefinition.WeekName(view.Week),
                     Notes = "Every training day this week is done. The rest of the week is active rest."
                 };
 
-            var notes = view.Program.Definition.Name;
-            if (day.IsLight) notes += " · light week: same weights, fewer sets";
+            var notes = $"{view.Program.Definition.QuestName} · {view.Program.Definition.VersionName}";
+            if (day.IsLight) notes += " · Honing: same weights, fewer sets";
             if (day.Test is { } test) notes += $" · ends with the {test.ToString().ToLowerInvariant()} test";
             return new Quest
             {
@@ -107,7 +108,7 @@ namespace Forge.Services.Implementations
                 BodyFocus = BodyZone.FullBody,
                 IsProgramDay = true,
                 Title = day.Name,
-                Tag = $"Wk {view.Week} · {day.DayNumber}/{view.DayCount}",
+                Tag = $"{ProgramDefinition.WeekName(view.Week)} · {day.DayNumber}/{view.DayCount}",
                 Notes = notes,
                 Exercises = day.Slots.Select(r => new QuestExercise
                 {

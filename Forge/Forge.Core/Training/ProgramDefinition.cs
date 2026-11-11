@@ -29,6 +29,30 @@ namespace Forge.Training
         /// <summary>Programs sharing main lifts with different schedules (e.g. a 3-day and a 4-day).</summary>
         public string? Family { get; init; }
 
+        // --- The quest this program is a version of (naming scheme, 2026-11-11) ---------------
+        // A quest is the identity — "Copper Helm · Hearth" — and forges one item. It comes in
+        // versions: implement (kettlebell / dumbbell / gym) × schedule (3 or 4 days).
+
+        /// <summary>Quest id shared by all its versions, e.g. <c>copper-helm</c>.</summary>
+        public string Quest { get; init; } = "";
+        /// <summary>The tier, as a metal: Copper, Bronze, Iron, Steel, Damascus, Mithril, Starmetal.</summary>
+        public string Metal { get; init; } = "Copper";
+        /// <summary>What finishing the block forges: Helm, Hammer, Boots…</summary>
+        public string Item { get; init; } = "";
+        /// <summary>Hearth (balanced), Anvil (strength), Bellows (conditioning).</summary>
+        public string Discipline { get; init; } = "Hearth";
+        /// <summary>Kettlebell, Dumbbell, or Gym.</summary>
+        public string Implement { get; init; } = "Dumbbell";
+
+        /// <summary>"Copper Helm".</summary>
+        public string QuestName => $"{Metal} {Item}";
+        /// <summary>"Kettlebell · 4-day".</summary>
+        public string VersionName => $"{Implement} · {TrainingDaysPerWeek}-day";
+
+        /// <summary>The four weeks of every block, named for the forging process.</summary>
+        public static readonly string[] WeekNames = { "Kindling", "Tempering", "Quenching", "Honing" };
+        public static string WeekName(int week) => WeekNames[Math.Clamp(week, 1, WeeksPerBlock) - 1];
+
         public string? Description { get; init; }
 
         /// <summary>What the block is for: "Balanced", "Strength", "Conditioning".</summary>
@@ -161,6 +185,10 @@ namespace Forge.Training
             if (string.IsNullOrWhiteSpace(p.Name)) errors.Add("missing name");
             if (p.Version < 1) errors.Add("version must be >= 1");
             if (p.Days.Count is < 3 or > 4) errors.Add("a block has 3 or 4 training days");
+            if (string.IsNullOrWhiteSpace(p.Quest)) errors.Add("missing quest");
+            if (string.IsNullOrWhiteSpace(p.Item)) errors.Add("missing item");
+            if (p.Discipline is not ("Hearth" or "Anvil" or "Bellows")) errors.Add($"unknown discipline '{p.Discipline}'");
+            if (p.Implement is not ("Kettlebell" or "Dumbbell" or "Gym")) errors.Add($"unknown implement '{p.Implement}'");
 
             for (var d = 0; d < p.Days.Count; d++)
             {

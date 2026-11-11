@@ -35,7 +35,7 @@
                     <VerticalStackLayout Spacing="2">
                         <Label Text="Quest Board" FontFamily="FantasyH" FontSize="34" TextColor="#E6E1CF"
                                HorizontalTextAlignment="Center" />
-                        <Label Text="Accept a block. Four weeks of training, then return for the next."
+                        <Label Text="Accept a quest. Four weeks at the forge, and the item is yours."
                                FontFamily="PixelUI" FontSize="17" TextColor="#B8A37A" HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Border>
@@ -61,14 +61,17 @@
                                                FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}" />
                                         <Label Text="{Binding Title}" FontFamily="FantasyH" FontSize="24"
                                                TextColor="{StaticResource Ink}" Margin="0,0,56,0" LineBreakMode="WordWrap" />
+                                        <Label Text="{Binding Discipline}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Wax}" />
                                         <Label Text="{Binding Meta}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource InkSoft}" />
                                         <BoxView HeightRequest="2" Color="{StaticResource ParchmentShade}" Margin="0,2" />
                                         <Label Text="{Binding Description}" IsVisible="{Binding HasDescription}"
                                                FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Ink}" />
-                                        <Label Text="{Binding Gear}" IsVisible="{Binding HasGear}"
+                                        <Label Text="{Binding Versions}" IsVisible="{Binding HasVersions}"
                                                FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource InkSoft}" />
+                                        <Label Text="{Binding Needs}" IsVisible="{Binding HasNeeds}"
+                                               FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource Wax}" />
                                         <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0">
-                                            <Label Text="{Binding Rank}" FontFamily="PixelUI" FontSize="17"
+                                            <Label Text="{Binding Tier}" FontFamily="PixelUI" FontSize="17" LineBreakMode="WordWrap"
                                                    TextColor="{StaticResource InkSoft}" VerticalOptions="Center" />
                                             <Button Grid.Column="1" Text="{Binding ButtonText}" IsVisible="{Binding IsRumour, Converter={StaticResource InvertBool}}"
                                                     IsEnabled="{Binding CanAccept}"

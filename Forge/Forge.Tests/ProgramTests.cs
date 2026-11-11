@@ -130,7 +130,7 @@ public class BlockScheduleTests
 public class ProgramDefinitionTests
 {
     private const string Minimal = """
-        { "id": "x", "name": "X",
+        { "id": "x", "name": "X", "quest": "copper-helm", "item": "Helm",
           "days": [
             { "name": "A", "main": [ { "exercise": "Goblet Squat", "sets": 3, "repsMin": 8, "repsMax": 12 } ],
               "accessories": [ [ { "exercise": "Plank", "sets": 2, "seconds": 30 } ],
@@ -180,11 +180,26 @@ public class ProgramDefinitionTests
     }
 
     [Theory]
-    [InlineData("""{ "id": "x", "name": "X", "days": [] }""")]                                        // no days
+    [InlineData("""{ "id": "x", "name": "X", "quest": "q", "item": "Helm", "days": [] }""")]          // no days
     [InlineData("""{ "id": "x", "name": "X", "days": [ {"name":"A","main":[]}, {"name":"B","main":[]}, {"name":"C","main":[]} ] }""")] // no mains
     [InlineData("{ not json")]
     public void RejectsBadPrograms(string json)
         => Assert.Throws<FormatException>(() => ProgramParser.Parse(json));
+
+    [Fact]
+    public void NamesComeFromTheQuest()
+    {
+        var p = ProgramParser.Parse(Minimal);
+        Assert.Equal("Copper Helm", p.QuestName);
+        Assert.Equal("Dumbbell · 3-day", p.VersionName);
+        Assert.Equal(new[] { "Kindling", "Tempering", "Quenching", "Honing" }, Enumerable.Range(1, 4).Select(ProgramDefinition.WeekName));
+    }
+
+    [Theory]
+    [InlineData("\"discipline\": \"Fire\"")]
+    [InlineData("\"implement\": \"Sandbag\"")]
+    public void RejectsUnknownDisciplinesAndImplements(string field)
+        => Assert.Throws<FormatException>(() => ProgramParser.Parse(Minimal.Replace("\"quest\": \"copper-helm\"", $"\"quest\": \"copper-helm\", {field}")));
 
     [Fact]
     public void AMainLift_CannotAlsoRotateAsAnAccessory()
@@ -261,6 +276,18 @@ public class ShippedProgramContentTests
         for (var day = 0; day < p.Days.Count; day++)
             for (var week = 1; week <= ProgramDefinition.WeeksPerBlock; week++)
                 Assert.NotEmpty(p.Resolve(day, week).Slots);
+    }
+
+    [Fact]
+    public void VersionsOfAQuest_AgreeOnItsIdentity()
+    {
+        foreach (var quest in GameConstants.Programs.Files.Select(Load).GroupBy(p => p.Quest))
+        {
+            var ids = quest.Select(p => (p.Metal, p.Item, p.Discipline)).Distinct().ToList();
+            Assert.True(ids.Count == 1, $"quest '{quest.Key}' versions disagree on metal/item/discipline");
+            var versions = quest.Select(p => p.VersionName).ToList();
+            Assert.True(versions.Count == versions.Distinct().Count(), $"quest '{quest.Key}' has duplicate versions");
+        }
     }
 
     [Fact]
