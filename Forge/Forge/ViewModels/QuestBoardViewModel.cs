@@ -33,7 +33,7 @@ namespace Forge.ViewModels
     }
 
     /// <summary>
-    /// The guild's quest board. Each quest (e.g. Copper Helm · Hearth) is one notice; accepting it
+    /// The quest board, on the Quest tab below the quest underway. Each quest (e.g. Copper Helm · Hearth) is one notice; accepting it
     /// asks which version — implement × schedule — pre-sorted by what's in My Gear.
     /// </summary>
     public sealed class QuestBoardViewModel : BaseViewModel
@@ -47,6 +47,7 @@ namespace Forge.ViewModels
 
         public ObservableCollection<QuestNotice> Notices { get; } = new();
         public ICommand AcceptCommand { get; }
+        public event EventHandler? QuestAccepted;
 
         public QuestBoardViewModel(IProgramService programs, ITrainingService training)
         {
@@ -150,7 +151,7 @@ namespace Forge.ViewModels
 
             await _programs.StartProgramAsync(chosen.Id, DateOnly.FromDateTime(DateTime.Today));
             await LoadAsync();
-            await Shell.Current.GoToAsync("//train");
+            QuestAccepted?.Invoke(this, EventArgs.Empty);
         }
     }
 }

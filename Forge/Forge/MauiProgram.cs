@@ -51,7 +51,7 @@ namespace Forge
             //Exercise
             builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
             builder.Services.AddSingleton<IProgramService, ProgramService>();
-            builder.Services.AddSingleton<IQuestService, QuestService>();
+            builder.Services.AddSingleton<IActiveRestService, ActiveRestService>();
             builder.Services.AddSingleton<ITrainingService, TrainingService>();
 #if ANDROID
             builder.Services.AddSingleton<IRestAlarm, Forge.Platforms.Android.RestAlarm>();
@@ -80,30 +80,29 @@ namespace Forge
             builder.Services.AddSingleton<IUpdateService, UpdateService>();
 
             // UI
-            builder.Services.AddTransient<HomeViewModel>();
-            builder.Services.AddTransient<HomePage>();
+            // The four tabs (Decision 20)
+            builder.Services.AddTransient<TodayViewModel>();
+            builder.Services.AddTransient<TodayPage>();
             builder.Services.AddTransient<QuestBoardViewModel>();
-            builder.Services.AddTransient<GuildPage>();
-            builder.Services.AddTransient<TrainViewModel>();
-            builder.Services.AddTransient<TrainPage>();
+            builder.Services.AddTransient<CurrentQuestViewModel>();
+            builder.Services.AddTransient<QuestPage>();
+            builder.Services.AddTransient<HeroViewModel>();
+            builder.Services.AddTransient<HeroPage>();
+            builder.Services.AddTransient<ChronicleViewModel>();
+            builder.Services.AddTransient<ChroniclePage>();
             builder.Services.AddTransient<ActiveSessionViewModel>();
             builder.Services.AddTransient<ActiveSessionPage>();
             builder.Services.AddTransient<SessionSummaryViewModel>();
             builder.Services.AddTransient<SessionSummaryPage>();
             builder.Services.AddTransient<SessionHistoryViewModel>();
-            builder.Services.AddTransient<SessionHistoryPage>();
             builder.Services.AddTransient<ExerciseHistoryViewModel>();
             builder.Services.AddTransient<ExerciseHistoryPage>();
-            builder.Services.AddTransient<StatsViewModel>();
-            builder.Services.AddTransient<StatsPage>();
-            builder.Services.AddTransient<QuestsViewModel>();
-            builder.Services.AddTransient<QuestsPage>();
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<CheckInViewModel>();
             builder.Services.AddTransient<CheckInPage>();
 
-            // Reusable card VMs. Transient because Home and Check-in each hold their own
+            // Reusable card VMs. Transient because Chronicle and Check-in each hold their own
             // instance — they refresh on OnAppearing and must not share expansion state.
             builder.Services.AddTransient<WeightTrendCardViewModel>();
 

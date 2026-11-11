@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The Chronicle tab (Decision 20): weigh-ins and finished sessions. -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
+             xmlns:cards="clr-namespace:Forge.Controls.Cards;assembly=Forge"
+             x:Class="Forge.Views.ChroniclePage"
+             x:DataType="vm:ChronicleViewModel"
+             Title="Chronicle">
+    <ScrollView>
+        <VerticalStackLayout Padding="16,12,16,28" Spacing="12">
+            <cards:WeightTrendCard x:Name="Trend" />
+            <Button Text="Weigh in" Command="{Binding WeighInCommand}" />
+
+            <Label Text="Sessions" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" Margin="0,8,0,0" />
+            <VerticalStackLayout x:Name="Sessions" x:DataType="vm:SessionHistoryViewModel" Spacing="10">
+                <Label Text="No finished sessions yet." IsVisible="{Binding IsEmpty}"
+                       FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Muted}" />
+                <VerticalStackLayout x:Name="SessionList" BindableLayout.ItemsSource="{Binding Sessions}" Spacing="10">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SessionHistoryItem">
+                            <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}"
+                                    StrokeShape="RoundRectangle 8" Padding="14,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSessionTapped" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="2">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="{Binding Title}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}" />
+                                        <Label Grid.Column="1" Text="{Binding DateText}" FontFamily="PixelUI" FontSize="18"
+                                               TextColor="{StaticResource Accent}" VerticalOptions="Center" />
+                                    </Grid>
+                                    <Label Text="{Binding Detail}" FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource Muted}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

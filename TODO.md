@@ -72,6 +72,19 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     (45/35 lb, 20/15 kg) + max + smallest jump (default 5 lb / 2.5 kg). Home = what's entered in
     My Gear; **Gym = everything** (no max, 5 lb / 2.5 kg steps). Machines/cables: 5 lb steps
     anywhere. At the heaviest owned weight, progression switches to reps and says so.
+    Pound and kilo weights can be owned side by side (5/10/15 lb bells plus 16/20 kg ones).
+20. **Four tabs: Today · Quest · Hero · Chronicle** (agreed with the user 2026-11-11). A program
+    *is* a quest; completing quests earns XP, levels and forged gear. The old daily
+    Strength/Mobility quests (weekday body-zone map) and the Quests tab are **retired**.
+    - **Today**: the one screen a daily user opens. One big action (start / resume today's
+      day), the week's pips, active rest, weekly conditioning minutes, a level/XP strip.
+    - **Quest**: the current quest (week, days, forge progress) on top, the quest board below.
+      Replaces Train, Quests and the Guild's board.
+    - **Hero**: the character — sprite, level, STR/DEX/CON, the **Armoury** (forged items), the
+      **Pack** (real equipment, i.e. My Gear), and later condition (injuries) and skins.
+    - **Chronicle**: looking back — session history, weigh-ins (Check-in), trends.
+    - **Settings** is a cog in the top bar, not a tab.
+    - **Guild** returns later as the multi-user / friends tab.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
@@ -369,7 +382,7 @@ Rework the program format before writing real content:
      Sign in with Apple + Google (Apple requires its own sign-in on iOS if any social login is
      offered), a small backend (e.g. Supabase/Postgres + auth), and a web dashboard. Health data
      on a server brings real privacy/security obligations — decide deliberately.
-- **Guild:** deferred; consider hiding the tab until it does something.
+- **Guild:** comes back as the multi-user / friends tab (Decision 20); hidden until then.
 - **Speed stat:** at lower bodyweight; adding a `StatKind` is cheaper before a year of history.
 - **BLE chest strap** (e.g. Polar H10) for in-workout HR via the standard BLE HR profile.
 - **Maintenance/recomposition** mode after goal weight.

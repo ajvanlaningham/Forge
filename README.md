@@ -16,26 +16,29 @@ between the two lists is where the work is. See [`TODO.md`](TODO.md) for the ful
 
 ### Working today
 
-- **Daily quests** — Strength and Mobility quests generated deterministically from the date, on a
-  Mon–Sun body-zone cycle, with Wed/Sat/Sun drawing from a recovery-only exercise pool.
-- **Quest completion and XP** — mark a quest done to earn XP; un-completing reclaims it.
-- **Weekly conditioning** — cardio minutes tracked against a weekly goal, with a bonus on completion.
-- **Exercise library** — ~71 exercises seeded from JSON into SQLite, filterable by category, body
-  zone, and owned equipment.
-- **Inventory** — track which equipment you own; the library filters to what you can actually do.
-- **Persistence** — SQLite via a generic repository, idempotent seeding, stat initialisation.
+Four tabs (Decision 20 in `TODO.md`):
+
+- **Today** — the daily screen: start or resume today's training day, this week's progress,
+  active rest on days off, weekly conditioning minutes, the movement streak and a level strip.
+- **Quest** — the quest underway (a 4-week training block: week, days, forge meter) and the quest
+  board for choosing the next one, in Dumbbell / Kettlebell versions × 3 or 4 days a week.
+- **Hero** — level, XP and STR/DEX/CON; the Armoury (forged items, not built yet); the Pack (your
+  real equipment and the weights you own, lb and kg side by side).
+- **Chronicle** — weigh-ins with a moving-average trend, and every finished session.
+- **Settings** — a cog in each tab's top bar: units, rest timer, gym equipment, backup/restore,
+  in-app updates.
+
+Under that: session logging with last-time numbers, double progression snapped to the weights you
+own, swaps by location (Home / Gym), a rest timer with an exact alarm, PRs, XP per training day
+with a ×1.2 perfect-week multiplier, level-ups, and a daily SQLite backup to Download/Forge.
 
 ### Not working yet
 
-- **Levelling** — XP accrues but `UserStats.Level` never advances, and the XP bar pins at 100%
-  once the first level is cleared. (PBI 4.1)
-- **Stat scores** — STR/DEX/CON are seeded at 1 and nothing moves them. Baseline testing is
-  designed but not built. (Epic 5)
-- **Check-in** — weight, sleep, steps, and resting heart rate are a static placeholder page.
-  This is the app's core purpose and the top build priority. (Epic 3)
-- **Training session logging** — the Train tab is a placeholder with navigation buttons. (Epic 8)
-- **Quest generation does not consider inventory.** Only the library browser filters by owned gear.
-- **Guild** — a tab exists; nothing is behind it. Deliberately deferred.
+- **Forging** — the 75% rule is tracked (the forge meter) but nothing is forged or shown in the
+  Armoury yet.
+- **Stat scores** — STR/DEX/CON are seeded at 1; the week-4 stat tests aren't built. (Epic 5)
+- **Condition** — injuries and limitations are designed, not built.
+- **Guild** — returns later as the multi-user / friends tab.
 
 ---
 

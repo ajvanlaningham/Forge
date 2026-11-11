@@ -236,6 +236,9 @@ namespace Forge.Services.Implementations
             return delta;
         }
 
+        public async Task<int> CompletedDaysInBlockAsync(int blockId)
+            => (await TrainingAsync(blockId)).Count;
+
         public async Task<(int DayIndex, int Xp)?> DayCompletedBySessionAsync(int sessionId)
             => (await _days.WhereAsync(r => r.SessionId == sessionId && r.Completed)).FirstOrDefault() is { } row
                 ? (row.DayIndex, row.XpAwarded)

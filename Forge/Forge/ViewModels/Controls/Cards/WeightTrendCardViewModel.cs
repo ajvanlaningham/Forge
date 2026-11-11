@@ -41,8 +41,12 @@ namespace Forge.ViewModels.Controls.Cards
             Title = AppResources.WeightTrendCard_Title;
 
             ToggleExpandedCommand = new RelayCommand(() => IsExpanded = !IsExpanded);
+            // Check-in is pushed from the Chronicle tab (Decision 20); on Check-in itself, stay.
             GoToCheckInCommand = new AsyncRelayCommand(async () =>
-                await Shell.Current.GoToAsync("//checkin"));
+            {
+                if (Shell.Current.CurrentPage is Forge.Views.CheckInPage) return;
+                await Shell.Current.GoToAsync(nameof(Forge.Views.CheckInPage));
+            });
         }
 
         private string _averageDisplay = AppResources.WeightTrendCard_Empty;

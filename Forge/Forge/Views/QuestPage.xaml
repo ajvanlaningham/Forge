@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-    The guild's quest board: training programs pinned to a wooden wall as parchment notices.
+    The Quest tab (Decision 20): the quest underway on top, the quest board below. Programs are
+    pinned to a wooden wall as parchment notices.
     Pixel art (board_wood, nail, wax_seal) comes from art/ via the render script in install mode.
     Single-world styling on purpose: ink on parchment, iron nails, a wax seal with the forge's anvil.
 -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Forge.ViewModels"
-             x:Class="Forge.Views.GuildPage"
+             x:Class="Forge.Views.QuestPage"
              x:DataType="vm:QuestBoardViewModel"
              x:Name="Page"
-             Shell.NavBarIsVisible="False"
-             Title="Quest Board">
+             Title="Quest">
     <ContentPage.Resources>
         <Color x:Key="Parchment">#D9C9A3</Color>
         <Color x:Key="ParchmentShade">#B8A37A</Color>
@@ -29,13 +29,85 @@
         <ScrollView>
             <VerticalStackLayout Padding="18,20,18,32" Spacing="22">
 
+                <!-- The quest underway -->
+                <Grid x:Name="CurrentQuest" x:DataType="vm:CurrentQuestViewModel" Margin="6,0">
+                    <Border BackgroundColor="{StaticResource Parchment}" Stroke="{StaticResource WoodDeep}"
+                            StrokeThickness="3" StrokeShape="RoundRectangle 2" Padding="18,22,18,16">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="4,6" Radius="0" Opacity="0.45" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="YOUR QUEST" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}" />
+                            <Label Text="{Binding ProgramName}" FontFamily="FantasyH" FontSize="26"
+                                   TextColor="{StaticResource Ink}" Margin="0,0,56,0" LineBreakMode="WordWrap" />
+                            <Label Text="{Binding WeekText}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource Ink}" />
+                            <Label Text="{Binding BlockText}" FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource InkSoft}" />
+                            <Label Text="{Binding WeekNote}" IsVisible="{Binding HasWeekNote}"
+                                   FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}" />
+                            <Label Text="{Binding ProgramDescription}" FontFamily="PixelUI" FontSize="17"
+                                   TextColor="{StaticResource InkSoft}" IsVisible="{Binding HasProgram, Converter={StaticResource InvertBool}}" />
+
+                            <!-- Forge meter -->
+                            <ProgressBar Progress="{Binding ForgeProgress}" ProgressColor="{StaticResource Wax}"
+                                         BackgroundColor="{StaticResource ParchmentShade}" HeightRequest="10" Margin="0,6,0,0"
+                                         IsVisible="{Binding HasProgram}" />
+                            <Label Text="{Binding ForgeText}" FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource InkSoft}"
+                                   IsVisible="{Binding HasProgram}" />
+
+                            <BoxView HeightRequest="2" Color="{StaticResource ParchmentShade}" Margin="0,4" />
+
+                            <!-- This week's days -->
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Days}" Spacing="8">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ProgramDayItem">
+                                        <Border BackgroundColor="#CDBB92" Stroke="{StaticResource ParchmentShade}" StrokeThickness="2"
+                                                StrokeShape="RoundRectangle 2" Padding="12,8">
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding IsNext}" Value="True">
+                                                    <Setter Property="Stroke" Value="{StaticResource Wax}" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding IsDone}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.6" />
+                                                </DataTrigger>
+                                            </Border.Triggers>
+                                            <VerticalStackLayout Spacing="2">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <Label Text="{Binding Header}" FontFamily="PixelUI" FontSize="21" TextColor="{StaticResource Ink}" />
+                                                    <Label Grid.Column="1" Text="{Binding StatusText}" IsVisible="{Binding HasStatus}"
+                                                           FontFamily="PixelUI" FontSize="16" TextColor="{StaticResource Wax}" VerticalOptions="Center" />
+                                                </Grid>
+                                                <Label Text="{Binding Summary}" FontSize="13" TextColor="{StaticResource InkSoft}" />
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="8" Margin="0,8,0,0">
+                                <Button Text="Repeat this block" Command="{Binding RepeatBlockCommand}" IsVisible="{Binding IsBlockComplete}"
+                                        FontFamily="PixelUI" FontSize="18" BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
+                                        BorderColor="Black" BorderWidth="2" CornerRadius="4" />
+                                <Button Text="Exercise library" Command="{Binding OpenLibraryCommand}"
+                                        FontFamily="PixelUI" FontSize="18" BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
+                                        BorderColor="Black" BorderWidth="2" CornerRadius="4" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Image Source="nail.png" WidthRequest="20" HeightRequest="20"
+                           HorizontalOptions="Start" VerticalOptions="Start" Margin="8,6,0,0" />
+                    <Image Source="nail.png" WidthRequest="20" HeightRequest="20"
+                           HorizontalOptions="End" VerticalOptions="Start" Margin="0,6,8,0" />
+                    <Image Source="wax_seal.png" WidthRequest="52" HeightRequest="52" IsVisible="{Binding HasProgram}"
+                           HorizontalOptions="End" VerticalOptions="Start" Margin="0,40,22,0" />
+                </Grid>
+
                 <!-- Hanging sign -->
                 <Border BackgroundColor="{StaticResource WoodDeep}" Stroke="Black" StrokeThickness="3"
                         StrokeShape="RoundRectangle 4" Padding="16,10" HorizontalOptions="Center">
                     <VerticalStackLayout Spacing="2">
                         <Label Text="Quest Board" FontFamily="FantasyH" FontSize="34" TextColor="#E6E1CF"
                                HorizontalTextAlignment="Center" />
-                        <Label Text="Accept a quest. Four weeks at the forge, and the item is yours."
+                        <Label Text="Accept a quest. Four weeks at the forge, and the item is yours. Switching ends the current block."
                                FontFamily="PixelUI" FontSize="17" TextColor="#B8A37A" HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Border>

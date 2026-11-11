@@ -9,47 +9,16 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Forge">
 
+    <!-- Four tabs (Decision 20). Settings is a cog in each tab's top bar; the Guild returns
+         later as the multi-user / friends tab. -->
     <TabBar>
-        <ShellContent
-            Title="{x:Static res:AppResources.TabNavigation_Home}"
-            ContentTemplate="{DataTemplate views:HomePage}"
-            Route="HomePage"
-            Icon="{StaticResource IconHome}"/>
-
-        <ShellContent
-            Title="{x:Static res:AppResources.TabNavigation_Train}"
-            ContentTemplate="{DataTemplate views:TrainPage}"
-            Route="train"
-            Icon="{StaticResource IconTrain}"/>
-
-        <ShellContent
-            Title="{x:Static res:AppResources.TabNavigation_Quests}"
-            ContentTemplate="{DataTemplate views:QuestsPage}"
-            Route="quests"
-            Icon="{StaticResource IconQuests}"/>
-
-        <ShellContent 
-            Title="{x:Static res:AppResources.TabNavigation_Guild}"
-            Route="guild"
-            ContentTemplate="{DataTemplate views:GuildPage}"
-            Icon="{StaticResource IconGuild}"/>
-        
-        <ShellContent
-            Title="{x:Static res:AppResources.TabNavigation_Stats}"
-            ContentTemplate="{DataTemplate views:StatsPage}"
-            Route="stats" 
-            Icon="{StaticResource IconStats}"/>
-
-        <ShellContent
-            Title="{x:Static res:AppResources.TabNavigation_CheckIn}"
-            ContentTemplate="{DataTemplate views:CheckInPage}"
-            Route="checkin"
-            Icon="{StaticResource IconCheckIn}"/>
-
-        <ShellContent
-            Title="{x:Static res:AppResources.TabNavigation_Settings}"
-            ContentTemplate="{DataTemplate views:SettingsPage}"
-            Route="settings"
-            Icon="{StaticResource IconSettings}"/>
+        <ShellContent Title="Today" ContentTemplate="{DataTemplate views:TodayPage}"
+                      Route="today" Icon="{StaticResource IconToday}" />
+        <ShellContent Title="Quest" ContentTemplate="{DataTemplate views:QuestPage}"
+                      Route="quest" Icon="{StaticResource IconQuests}" />
+        <ShellContent Title="Hero" ContentTemplate="{DataTemplate views:HeroPage}"
+                      Route="hero" Icon="{StaticResource IconHero}" />
+        <ShellContent Title="Chronicle" ContentTemplate="{DataTemplate views:ChroniclePage}"
+                      Route="chronicle" Icon="{StaticResource IconChronicle}" />
     </TabBar>
 </Shell>

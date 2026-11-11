@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The Hero tab (Decision 20): the character, the Armoury, the Pack. -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
+             xmlns:models="clr-namespace:Forge.Models"
+             xmlns:cards="clr-namespace:Forge.Controls.Cards;assembly=Forge"
+             x:Class="Forge.Views.HeroPage"
+             x:DataType="vm:HeroViewModel"
+             Title="Hero">
+    <ScrollView>
+        <VerticalStackLayout Padding="18,12,18,28" Spacing="16">
+
+            <Image Source="wizard_bot.png" HeightRequest="170" Aspect="AspectFit" HorizontalOptions="Center"
+                   SemanticProperties.Description="Your character" />
+            <Label Text="{Binding StreakText}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Accent}"
+                   HorizontalTextAlignment="Center" />
+
+            <cards:StatCard x:Name="Stats" />
+
+            <!-- Armoury: forged items -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Armoury" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" />
+                <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 10" Padding="14">
+                    <Label Text="{Binding ArmouryText}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource OnBg}" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Pack: real equipment -->
+            <VerticalStackLayout Spacing="6">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Pack" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
+                    <Button Grid.Column="1" Text="Edit gear" Command="{Binding EditPackCommand}" />
+                </Grid>
+                <Label Text="The gear you own at home. Quests and swaps use it." FontSize="13" TextColor="{StaticResource Muted}" />
+                <Label Text="Nothing yet. Tap Edit gear to add what you have." IsVisible="{Binding PackEmpty}"
+                       FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource Muted}" />
+                <FlexLayout BindableLayout.ItemsSource="{Binding Pack}" Wrap="Wrap" JustifyContent="Start">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:GearItem">
+                            <Border WidthRequest="116" HeightRequest="104" Margin="0,0,6,6" Padding="6,8" BackgroundColor="{StaticResource Surface}"
+                                    Stroke="{StaticResource Accent}" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                                <VerticalStackLayout Spacing="2">
+                                    <Image Source="{Binding SpriteSource}" HeightRequest="36" WidthRequest="36" Aspect="AspectFit" />
+                                    <Label Text="{Binding DisplayName}" FontSize="13" HorizontalTextAlignment="Center"
+                                           LineBreakMode="TailTruncation" TextColor="{StaticResource OnBg}" />
+                                    <Label Text="{Binding Summary}" IsVisible="{Binding HasSummary}" FontFamily="GymNum" FontSize="12"
+                                           TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </VerticalStackLayout>
+
+            <!-- Condition: injuries and limitations (backlog) -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Condition" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" />
+                <Label Text="Injuries and limitations will live here as status effects. Not built yet."
+                       FontSize="13" TextColor="{StaticResource Muted}" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

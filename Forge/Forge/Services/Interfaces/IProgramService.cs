@@ -54,5 +54,8 @@ namespace Forge.Services.Interfaces
 
         /// <summary>The training day a session completed and the XP it earned, or null.</summary>
         Task<(int DayIndex, int Xp)?> DayCompletedBySessionAsync(int sessionId);
+
+        /// <summary>Training days completed in a block so far (the forge meter, Decision 18).</summary>
+        Task<int> CompletedDaysInBlockAsync(int blockId);
     }
 }

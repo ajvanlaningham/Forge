@@ -2,6 +2,17 @@ using SQLite;
 
 namespace Forge.Models
 {
+    /// <summary>
+    /// Kind of a <see cref="QuestCompletionRow"/>. The daily quests are retired (Decision 20); rows
+    /// of kind Mobility now record active rest, and old Strength rows are history only.
+    /// </summary>
+    public enum QuestKind
+    {
+        Strength,
+        Mobility,
+        Conditioning
+    }
+
     [Table("QuestCompletion")]
     public sealed class QuestCompletionRow
     {

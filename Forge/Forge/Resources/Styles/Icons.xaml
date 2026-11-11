@@ -16,5 +16,13 @@
     <!-- scroll -->
     <FontImageSource x:Key="IconGuild"    FontFamily="FA" Glyph="&#xF0C0;" Color="{DynamicResource OnBg}" Size="24" />
     <!-- users -->
+    <FontImageSource x:Key="IconToday"    FontFamily="FA" Glyph="&#xF6E3;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- hammer -->
+    <FontImageSource x:Key="IconHero"     FontFamily="FA" Glyph="&#xF3ED;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- shield-halved -->
+    <FontImageSource x:Key="IconChronicle" FontFamily="FA" Glyph="&#xF02D;" Color="{DynamicResource OnBg}" Size="24" />
+    <!-- book -->
+    <FontImageSource x:Key="IconCog"      FontFamily="FA" Glyph="&#xF013;" Color="{DynamicResource OnBg}" Size="22" />
+    <!-- gear -->
 
 </ResourceDictionary>
