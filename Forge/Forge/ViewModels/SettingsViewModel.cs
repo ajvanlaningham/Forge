@@ -33,21 +33,31 @@ namespace Forge.ViewModels
         /// </summary>
         private async Task RestoreAsync()
         {
-            FileResult? picked;
+            Stream? stream;
+            string fileName;
             try
             {
-                picked = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = "Choose a Forge backup" });
+#if ANDROID
+                // Opens straight into Download/Forge rather than the phone's recent files.
+                var picked = await Forge.Platforms.Android.BackupFilePicker.PickAsync();
+                if (picked is null) return;
+                (stream, fileName) = picked.Value;
+#else
+                var picked = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = "Choose a Forge backup" });
+                if (picked is null) return;
+                stream = await picked.OpenReadAsync();
+                fileName = picked.FileName;
+#endif
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Restore", $"Couldn't open the file picker: {ex.Message}", "OK");
                 return;
             }
-            if (picked is null) return;
 
             RestoreCheck check;
-            await using (var stream = await picked.OpenReadAsync())
-                check = await _backup.InspectAsync(stream, picked.FileName);
+            await using (stream)
+                check = await _backup.InspectAsync(stream, fileName);
             if (!check.Ok)
             {
                 await Shell.Current.DisplayAlert("Can't restore that file", check.Message, "OK");
@@ -55,7 +65,7 @@ namespace Forge.ViewModels
             }
 
             var go = await Shell.Current.DisplayAlert("Replace your data?",
-                $"{picked.FileName}\n{check.Summary}\n\nEverything currently in Forge is replaced by this backup. " +
+                $"{fileName}\n{check.Summary}\n\nEverything currently in Forge is replaced by this backup. " +
                 "Your current data is backed up first, so this can be undone by restoring that copy.",
                 "Restore", "Cancel");
             if (!go) return;

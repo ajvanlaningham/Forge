@@ -36,6 +36,16 @@ namespace Forge.Services.Implementations
             try
             {
                 if (!BackupPolicy.IsDue(LastBackupUtc, DateTime.UtcNow)) return;
+
+                // Never auto-back-up an empty database. After a reinstall the first launch would
+                // otherwise write a blank copy that is the *newest* file — exactly the one a
+                // person restoring "the latest backup" would pick. (Manual backups still work.)
+                if (await IsEmptyAsync())
+                {
+                    System.Diagnostics.Debug.WriteLine("Scheduled backup skipped: nothing logged yet.");
+                    return;
+                }
+
                 var result = await BackUpNowAsync();
                 System.Diagnostics.Debug.WriteLine($"Scheduled backup: {result.Message}");
             }
@@ -44,6 +54,22 @@ namespace Forge.Services.Implementations
                 // Never block or interrupt the app over a backup. Tomorrow's launch retries.
                 System.Diagnostics.Debug.WriteLine($"Scheduled backup failed: {ex}");
             }
+        }
+
+        /// <summary>True when nothing has ever been logged: no sessions, weigh-ins, or completed quests.</summary>
+        private async Task<bool> IsEmptyAsync()
+        {
+            var c = _db.Connection;
+            async Task<int> Count(string sql)
+            {
+                try { return await c.ExecuteScalarAsync<int>(sql); }
+                catch (SQLiteException) { return 0; } // table not created yet
+            }
+            var total = await Count("SELECT COUNT(*) FROM TrainingSession WHERE Status = 1")
+                        + await Count("SELECT COUNT(*) FROM WeightEntry")
+                        + await Count("SELECT COUNT(*) FROM QuestCompletion WHERE Completed = 1")
+                        + await Count("SELECT COUNT(*) FROM ProgramDayCompletion WHERE Completed = 1");
+            return total == 0;
         }
 
         public async Task<RestoreCheck> InspectAsync(Stream picked, string fileName)
@@ -78,8 +104,12 @@ namespace Forge.Services.Implementations
                 if (schema > BackupPolicy.SchemaVersion)
                     return Fail($"That backup was made by a newer version of Forge (schema {schema}). Update Forge first.");
 
-                int Count(string table) => tables.Contains(table) ? conn.ExecuteScalar<int>($"SELECT COUNT(*) FROM \"{table}\"") : 0;
-                var summary = $"{Count("TrainingSession")} sessions · {Count("WeightEntry")} weigh-ins · {Count("UserStats") switch { 0 => 0, _ => conn.ExecuteScalar<int>("SELECT Xp FROM UserStats LIMIT 1") }} XP";
+                int Count(string table, string where = "") =>
+                    tables.Contains(table) ? conn.ExecuteScalar<int>($"SELECT COUNT(*) FROM \"{table}\" {where}") : 0;
+                var sessions = Count("TrainingSession", "WHERE Status = 1"); // finished only
+                var weighIns = Count("WeightEntry");
+                var xp = Count("UserStats") == 0 ? 0 : conn.ExecuteScalar<int>("SELECT Xp FROM UserStats LIMIT 1");
+                var summary = $"{sessions} session{(sessions == 1 ? "" : "s")} · {weighIns} weigh-in{(weighIns == 1 ? "" : "s")} · {xp} XP";
 
                 // Older schemas restore as-is: missing tables and columns are created on first use.
                 return new RestoreCheck(true, "Looks good.", staged, schema, summary);

@@ -207,8 +207,10 @@ Defaults taken without asking (veto-able):
       stamped in the file name (`-s2`) for 10.2
 - [x] Settings → Backup: last backup time + location, "Back up now". Verified on device: launch
       backup written, `integrity_check` ok, contents match the live DB.
-- [ ] Prove it survives an actual uninstall — deliberately not done during the autonomous run,
-      because uninstalling wipes the phone's data. Do it together, then restore (10.2).
+- [x] Proven 2026-11-11 with the user: uninstall → backups still in Download/Forge → reinstall
+      → restore → data identical (XP, sessions, sets, program days, quest completions).
+- [x] Auto-backup skips an empty database, so a fresh reinstall can't write a blank "newest"
+      copy that someone would restore by mistake.
 
 ### 4.2 / 4.3 Level-up moment and streak (stretch)
 - Visible level-up feedback, fired exactly once per level (persist last celebrated level);
@@ -259,8 +261,12 @@ Defaults taken without asking (veto-able):
 - **7.3** RHR trend card reusing the moving-average helper.
 
 ### Data safety
-- **10.2 Restore:** list backups with dates; confirm; replace DB and reload; schema version
-  stamped and checked. Test a real uninstall → reinstall → restore.
+- **10.2 Restore:** ✅ done 2026-11-11. Settings → Restore opens the system picker directly in
+  Download/Forge; validates (SQLite, Forge tables, integrity, schema ≤ current); confirms with a
+  summary; backs up current data first; swaps the DB; closes the app. Verified end to end.
+- **Decide: Android Auto Backup.** The manifest has `allowBackup="true"`, so Android silently
+  restored an older cloud snapshot (225 XP from that morning) on reinstall. Keep it as a free
+  second copy, or turn it off so a reinstall is clean and restore is explicit?
 - **10.3 Export:** share latest backup via share sheet; schema-versioned JSON export; off the UI
   thread.
 
