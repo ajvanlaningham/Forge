@@ -40,36 +40,40 @@ class Frame(gc.Canvas):
             for x in range(S):
                 if self.px[y][x] is None and any((x + dx, y + dy) in filled for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy):
                     self.px[y][x] = gc.OUTLINE
-        for x in range(6, 34):                          # ground shadow
-            if self.px[36][x] is None:
-                self.px[36][x] = gc.SHADOW
+        for x in range(8, 34):                          # ground shadow
+            if self.px[35][x] is None:
+                self.px[35][x] = gc.SHADOW
 
 
 def anvil(f):
-    f.part(gc.rect(10, 31, 29, 34), IRON)                                   # base
-    f.part(gc.rect(13, 28, 26, 30), IRON)
-    f.part(gc.rect(15, 24, 24, 27), IRON)                                   # waist
+    """A blacksmith's anvil: long tapering horn, deep face, hardy hole, narrow waist, arched feet."""
+    base = gc.rect(10, 30, 31, 33) - gc.rect(17, 32, 24, 33)                 # feet with an arch between
+    f.part(base | gc.rect(12, 29, 29, 29), IRON)
+    f.part(gc.rect(15, 23, 26, 28) | gc.rect(14, 28, 27, 28), IRON)          # waist
     f.part(gc.rows('''
-     ######################
-   ########################
- ##########################
-###########################
-   ########################''', 5, 19), IRON)                              # face with the horn to the left
-    f.part(gc.rect(8, 19, 31, 19), IRON_TOP, outline=False)                 # the lit top edge
-    f.dots([(30, 21), (30, 22)], '#E0C045')                                 # a gold rivet: house accent
-    f.part(gc.rect(15, 16, 24, 18), INGOT)                                  # the glowing ingot
-    f.dots([(16, 16), (17, 16)], '#FFFFFF')
+         ########################
+    #############################
+#################################
+   ##############################
+        #########################
+             ##############''', 1, 17), IRON)                                # horn, face and the underside
+    f.part(gc.rect(10, 17, 33, 17), IRON_TOP, outline=False)                 # the lit working face
+    f.part(gc.rect(5, 18, 9, 18), IRON_TOP, outline=False)                   # light along the horn
+    f.dots([(30, 18), (31, 18)], '#1A1A20')                                  # hardy hole
+    f.dots([(32, 20)], '#E0C045')                                            # a gold rivet: house accent
+    f.part(gc.rect(17, 14, 24, 16), INGOT)                                   # the glowing ingot
+    f.dots([(18, 14), (19, 14)], '#FFFFFF')
 
 
 def hammer(f, y):
     """The hammer head over the ingot at height y, handle running off to the right."""
-    f.part(gc.rect(23, y + 2, 39, y + 3), WOOD)
-    f.part(gc.rect(15, y, 23, y + 5), HEAD)
-    f.dots([(16, y + 1)], '#FFFFFF')
+    f.part(gc.rect(23, y + 1, 37, y + 2), WOOD)
+    f.part(gc.rect(17, y, 23, y + 3), HEAD)
+    f.dots([(18, y)], '#FFFFFF')
 
 
 def sparks(f):
-    for (x, y) in [(11, 12), (13, 9), (9, 15), (12, 16), (27, 16), (30, 14), (33, 17), (29, 8), (32, 10)]:
+    for (x, y) in [(13, 10), (15, 7), (11, 13), (14, 14), (27, 14), (30, 12), (33, 15), (29, 7), (32, 9)]:
         f.set(x, y, SPARK[0])
         for (dx, dy) in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             if f.get(x + dx, y + dy) is None:
@@ -79,7 +83,7 @@ def sparks(f):
 def frame(n):
     f = Frame()
     anvil(f)
-    hammer(f, (1, 6, 10)[n])
+    hammer(f, (2, 7, 10)[n])
     f.finish_frame()
     if n == 2:
         sparks(f)

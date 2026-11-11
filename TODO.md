@@ -371,7 +371,7 @@ Rework the program format before writing real content:
   sprites from `art/` in the house palette (a metal palette per tier: copper, bronze, iron…).
 - ~~**Character look**~~ — done 2026-11-11: 6 races (Human, Elf, Dwarf, Orc, Halfling, Construct) ×
   6 classes (Wizard, Warrior, Rogue, Ranger, Cleric, Monk), one sprite per combination on a shared
-  32×44 frame (`art/gen_characters.py`) so forged gear can be layered on any of them later. Picked
+  32×48 frame (`art/gen_characters.py`) so forged gear can be layered on any of them later. Picked
   on the Hero tab (tap the sprite); Construct Wizard is the original robot. Forgeable items:
   Helm/Hammer/Boots × 7 metals (`art/gen_items.py`), shown on the Armoury rack. Splash and
   loading screen: the anvil and hammer (`art/gen_forge.py`).

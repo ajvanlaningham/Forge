@@ -2,7 +2,7 @@
 
     python3 art/gen_characters.py          # writes art/sprites/char_<race>_<class>.txt + a review sheet
 
-The frame is fixed (32x40): head, torso, hands and feet sit at the same pixels for every race, so
+The frame is fixed (32x48, four rows of headroom for hats): head, torso, hands and feet sit at the same pixels for every race, so
 forged gear (a helm on the head, boots on the feet, a weapon in the hand) can be layered over any
 character later (Decision: "layered, wearable later"). Parts are drawn back to front; each part gets
 its own black outline ring, which reads as the house style's chunky outlines between pieces.
@@ -15,7 +15,7 @@ shield.
 import struct, sys, zlib
 from pathlib import Path
 
-W, H = 32, 44
+W, H = 32, 48
 TOP = 4            # headroom: frame y=0 is canvas row 4, so hats and helm crests can rise to y=-4
 ART = Path(__file__).resolve().parent
 OUT = ART / 'sprites'
@@ -106,8 +106,8 @@ class Canvas:
                 if any((x + dx, y + dy) in filled for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy):
                     self.px[y][x] = OUTLINE
         for x in range(8, 25):                     # ground shadow, behind everything
-            for y in (37 + TOP, 38 + TOP):
-                if self.px[y][x] is None and not (y == 38 + TOP and x in (8, 9, 23, 24)):
+            for y in (GROUND + TOP, GROUND + 1 + TOP):
+                if self.px[y][x] is None and not (y == GROUND + 1 + TOP and x in (8, 9, 23, 24)):
                     self.px[y][x] = SHADOW
 
 
@@ -126,19 +126,23 @@ def C(ramp, i):
     return RAMPS[ramp][i]
 
 # ------------------------------------------------------------------ the frame (shared by everyone)
-#  head  x10..21 y9..19     torso x11..20 y20..28     arms x8..10 / x21..23 y20..27
-#  hands x8..10 / x21..23 y27..29     legs x12..14 / x17..19 y29..33     feet y34..35
-HEAD = rect(10, 9, 21, 19) - {(10, 9), (21, 9), (10, 19), (21, 19)}
-TORSO = rect(11, 20, 20, 28)
-ARM_R = rect(8, 20, 10, 26)        # the character's right arm (viewer's left): weapon hand
-ARM_L = rect(21, 20, 23, 26)
-HAND_R = rect(8, 27, 10, 29)
-HAND_L = rect(21, 27, 23, 29)
-LEG_R = rect(12, 29, 14, 33)
-LEG_L = rect(17, 29, 19, 33)
-FOOT_R = rect(11, 34, 14, 35)
-FOOT_L = rect(17, 34, 20, 35)
-EYES = [(13, 14), (13, 15), (18, 14), (18, 15)]
+# Proportions: an 8-wide, 9-tall head on a body about four heads tall, so it reads as an adventurer,
+# not a chibi. Every race and class draws on these pixels; forged gear will too.
+#  head  x12..19 y7..15     torso x11..20 y16..27     arms x8..10 / x21..23 y16..25
+#  hands x8..10 / x21..23 y26..28     legs x12..14 / x17..19 y28..37     feet y38..39
+HEAD = rect(12, 7, 19, 15) - {(12, 7), (19, 7), (12, 15), (19, 15)}
+TORSO = rect(11, 16, 20, 27)
+ARM_R = rect(8, 16, 10, 25)        # the character's right arm (viewer's left): weapon hand
+ARM_L = rect(21, 16, 23, 25)
+HAND_R = rect(8, 26, 10, 28)
+HAND_L = rect(21, 26, 23, 28)
+LEG_R = rect(12, 28, 14, 37)
+LEG_L = rect(17, 28, 19, 37)
+FOOT_R = rect(11, 38, 14, 39)
+FOOT_L = rect(17, 38, 20, 39)
+EYES = [(14, 11), (14, 12), (17, 11), (17, 12)]
+MOUTH = [(15, 14), (16, 14)]
+GROUND = 41                        # the ground shadow's first row
 
 # ------------------------------------------------------------------ races
 
@@ -154,67 +158,63 @@ RACES = {
 def draw_head(cv, race):
     r = RACES[race]
     if race == 'construct':
-        # the robot: a gold box head, dark visor, purple eyes, ear bolt
-        cv.part(rect(9, 10, 22, 19), 'brass')
-        cv.part(rect(11, 12, 20, 17), ('#222E3B', '#161B22', '#0E1116'), flat=True)
-        cv.dots([(x, y) for x in (12, 13, 18, 19) for y in (13, 14, 15)], C('purple', 1))
-        cv.dots([(12, 13), (18, 13)], C('purple', 0))
-        cv.dots([(15, 15), (16, 15)], C('purple', 1))          # the little centre light
-        cv.part(rect(23, 12, 25, 16), 'brass')                 # ear bolt
-        cv.dots([(24, 14)], '#5A3A10')
+        # the robot: a gold box head, dark visor, purple eyes, centre light, ear bolt
+        # A robot can wear a bigger box head than the frame's 8x9 and still take a helm.
+        cv.part(rect(22, 9, 24, 12), 'brass')                          # ear bolt (behind)
+        cv.dots([(23, 10), (23, 11)], '#5A3A10')
+        cv.part(rect(10, 6, 21, 15), 'brass')
+        cv.part(rect(11, 8, 20, 13), ('#222E3B', '#161B22', '#0E1116'), flat=True)
+        cv.dots([(x, y) for x in (12, 13, 18, 19) for y in (9, 10, 11)], C('purple', 1))
+        cv.dots([(15, 12), (16, 12)], C('purple', 0))                  # the little centre light
         return
+    skin = r['skin']
     # ears behind the head
     if race == 'elf':
         cv.part(rows('''
 ##
 ###
  ###
-  ##''', 6, 11), r['skin'])
+  ##''', 8, 9), skin)
         cv.part(rows('''
   ##
  ###
 ###
-##''', 22, 11), r['skin'])
+##''', 20, 9), skin)
     elif race == 'halfling':
         cv.part(rows('''
  #
 ##
-##
- #''', 8, 12), r['skin'])                                       # small pointed ears
+ #''', 10, 10), skin)
         cv.part(rows('''
 #
 ##
-##
-#''', 22, 12), r['skin'])
-    elif race in ('human', 'dwarf'):
-        cv.part(rect(9, 13, 9, 16), r['skin'])
-        cv.part(rect(22, 13, 22, 16), r['skin'])
+#''', 20, 10), skin)
     elif race == 'orc':
-        cv.part(rect(8, 12, 9, 15), r['skin'])
-        cv.part(rect(22, 12, 23, 15), r['skin'])
-    cv.part(HEAD, r['skin'])
-    # face
+        cv.part(rect(10, 9, 11, 12), skin)
+        cv.part(rect(20, 9, 21, 12), skin)
+    else:
+        cv.part(rect(11, 10, 11, 12), skin)
+        cv.part(rect(20, 10, 20, 12), skin)
+    cv.part(HEAD, skin)
     cv.dots(EYES, '#1A1A20')
     if race == 'orc':
-        cv.dots([(12, 13), (13, 13), (14, 13), (17, 13), (18, 13), (19, 13)], C('skin_orc', 2))  # heavy brow
-        cv.dots([(13, 18), (18, 18)], '#F2EEDF')                                                  # tusks
-        cv.dots([(13, 17), (18, 17)], '#F2EEDF')
-    if race == 'halfling':
-        cv.dots([(12, 16), (19, 16)], '#E88A7A')                                                  # rosy cheeks
-        cv.dots([(12, 17), (14, 16), (17, 16), (19, 17)], C('skin_halfling', 2))                  # freckles
-    if race in ('human', 'elf', 'halfling'):
-        cv.dots([(15, 17), (16, 17)], C(r['skin'], 2))                                            # mouth
-    if race == 'dwarf':
-        # the beard: over the chin and down the chest
+        cv.dots([(13, 10), (14, 10), (17, 10), (18, 10)], C(skin, 2))           # heavy brow
+        cv.dots([(14, 14), (17, 14), (14, 13), (17, 13)], '#F2EEDF')            # tusks
+    elif race == 'dwarf':
         cv.part(rows('''
- ##########
-############
-############
- ##########
-  ########
-   ######
-    ####''', 10, 16), r['hair'])
-        cv.dots([(15, 17), (16, 17)], C('hair_ginger', 2))                                        # mouth in the beard
+ ########
+##########
+##########
+ ########
+  ######
+   ####
+    ##''', 11, 13), r['hair'])                                               # the beard
+        cv.dots([(15, 14), (16, 14)], C('hair_ginger', 2))
+    else:
+        cv.dots(MOUTH, C(skin, 2))
+    if race == 'halfling':
+        cv.dots([(13, 13), (18, 13)], '#E88A7A')                                 # rosy cheeks
+        cv.dots([(13, 12), (18, 12)], C(skin, 2))                                # freckles
 
 def side_curls(cv):
     """Halfling curls that show under any hat or hood: they're the race's tell."""
@@ -223,15 +223,12 @@ def side_curls(cv):
 ##
 ###
 ##
-###
- #''', 9, 11), hair)
+ #''', 10, 9), hair)
     cv.part(rows('''
  ##
 ###
  ##
-###
- #''', 20, 11), hair)
-
+ #''', 19, 9), hair)
 
 def draw_hair(cv, race, hidden):
     r = RACES[race]
@@ -242,85 +239,96 @@ def draw_hair(cv, race, hidden):
     hair = r['hair']
     if race == 'elf':
         cv.part(rows('''
- ##########
-############
-##        ##
-#          #
-#          #
-#          #
-#          #
-#          #
-##        ##''', 10, 7), hair)
+ ########
+##########
+##      ##
+#        #
+#        #
+#        #
+#        #
+#        #
+##      ##''', 11, 5), hair)                                            # long, past the shoulders
     elif race == 'orc':
         cv.part(rows('''
-  ########
- ##########
-############''', 10, 7), hair)                                    # flat-top
+ ######
+########''', 12, 5), hair)                                              # flat-top
     elif race == 'halfling':
         cv.part(rows('''
-  # ## ## ## #
- ############
-##############
-###        ###
-##          ##
-##          ##
- #          #''', 9, 6), hair)                                     # a big curly mop
-        cv.dots([(11, 7), (15, 7), (19, 7), (9, 9), (22, 10)], C(hair, 0))
-    elif race == 'dwarf':
-        cv.part(rows('''
-  ########
- ##########
-############
-#          #''', 10, 7), hair)
+ # ## ## #
+##########
+###########
+###      ###
+##        ##
+##        ##''', 10, 4), hair)                                          # a big curly mop
+        cv.dots([(12, 5), (15, 5), (18, 5), (10, 7), (21, 8)], C(hair, 0))
     else:
         cv.part(rows('''
-  ########
- ##########
-############
-##   #    ##
-#          #''', 10, 7), hair)
+  ####
+ ######
+########
+##  #  ##
+#        #''', 11, 5), hair)
 
 # ------------------------------------------------------------------ classes
 
-def body_parts(cv, race, sleeve, torso, pants, boots, hand_ramp=None):
-    """Legs, boots, torso and arms in the class's colours; hands in the race's skin (or gloves)."""
+def body_parts(cv, race, sleeve, torso, pants, boots):
+    """Legs, feet, torso and arms in the class's colours."""
     skin = RACES[race]['skin']
     cv.part(LEG_R, pants); cv.part(LEG_L, pants)
     if race == 'halfling':
         # rolled-up trousers and big bare hairy feet
-        cv.part(rect(12, 32, 14, 33), skin); cv.part(rect(17, 32, 19, 33), skin)
-        cv.part(rect(10, 34, 14, 35), skin); cv.part(rect(17, 34, 21, 35), skin)
-        cv.dots([(12, 33), (13, 32), (18, 33), (19, 32)], C('hair_curly', 1))
-        cv.dots([(10, 35), (11, 35), (12, 35), (19, 35), (20, 35), (21, 35)], C(skin, 2))
+        cv.part(rect(12, 35, 14, 37), skin); cv.part(rect(17, 35, 19, 37), skin)
+        cv.part(rect(10, 38, 14, 39), skin); cv.part(rect(17, 38, 21, 39), skin)
+        cv.dots([(12, 36), (13, 35), (18, 36), (19, 35)], C('hair_curly', 1))
+        cv.dots([(10, 39), (11, 39), (12, 39), (19, 39), (20, 39), (21, 39)], C(skin, 2))
     else:
         cv.part(FOOT_R, boots); cv.part(FOOT_L, boots)
-    torso_mask = TORSO | (rect(10, 21, 21, 28) if race == 'dwarf' else set())   # dwarves are broad
+    torso_mask = TORSO | (rect(10, 17, 21, 27) if race in ('dwarf', 'orc') else set())   # broad builds
     cv.part(torso_mask, torso)
     cv.part(ARM_R, sleeve); cv.part(ARM_L, sleeve)
     if race == 'construct':
         # gold limbs with dark joints, like the robot
-        for arm in (ARM_R, ARM_L):
-            cv.part(arm, 'brass')
-        cv.dots([(9, 23), (22, 23)], '#5A3A10')
+        cv.part(ARM_R, 'brass'); cv.part(ARM_L, 'brass')
+        cv.dots([(9, 20), (22, 20)], '#5A3A10')
         cv.part(LEG_R, 'brass'); cv.part(LEG_L, 'brass')
-        cv.dots([(13, 31), (18, 31)], '#5A3A10')
-    return hand_ramp or skin
+        cv.dots([(13, 32), (18, 32)], '#5A3A10')
+    return skin
 
 def hands(cv, ramp):
     cv.part(HAND_R, ramp)
     cv.part(HAND_L, ramp)
 
 
+def wizard_hat(cv):
+    """Tall cone with a folded tip, a gold band, a wide brim: the robot's hat."""
+    cv.part(rows('''
+    ##
+   ###
+   ####
+  #####
+  ######
+ #######
+ ########
+##########''', 11, -4), 'navy')
+    cv.part(rows('''
+###
+ ###
+  ###
+   ##''', 16, -5), 'navy')                                   # the tip, folded over to the right
+    cv.part(rect(11, 4, 20, 5), 'gold')                      # band
+    cv.part(rect(8, 6, 23, 7), 'navy')                       # brim
+
 def wizard(cv, race):
     hand = body_parts(cv, race, 'navy', 'navy', 'navy', 'leather')
     if race == 'construct':
         cv.part(FOOT_R, 'brass'); cv.part(FOOT_L, 'brass')
-        cv.part(rect(11, 27, 20, 28), 'navy')                    # hip band
-        cv.part(rect(10, 20, 11, 24), 'brass'); cv.part(rect(20, 20, 21, 24), 'brass')   # shoulder panels
+        cv.part(rect(11, 26, 20, 27), 'navy')                                     # hip band
+        cv.part(rect(10, 16, 11, 20), 'brass'); cv.part(rect(20, 16, 21, 20), 'brass')   # shoulder panels
     else:
-        cv.part(rect(11, 27, 20, 32), 'navy')                    # robe skirt over the legs
-    cv.part(rect(12, 26, 19, 26), 'gold', outline=False)         # belt
-    cv.dots([(15, 21), (16, 21), (14, 22), (15, 23), (16, 23), (16, 24), (15, 25), (14, 25)], C('purple', 1))  # the S rune
+        cv.part(rect(11, 26, 20, 36), 'navy')                                     # the robe, to the ankles
+        cv.dots([(15, y) for y in range(28, 36, 2)], C('navy', 2))                # its fold
+    cv.part(rect(12, 24, 19, 24), 'gold', outline=False)                          # belt
+    cv.dots([(15, 18), (16, 18), (14, 19), (15, 20), (16, 20), (17, 21), (16, 22), (15, 22)], C('purple', 1))   # the S rune
     draw_head(cv, race)
     draw_hair(cv, race, hidden=True)
     wizard_hat(cv)
@@ -339,43 +347,22 @@ def wizard(cv, race):
   #
   #
   #
+  #
  ###
 ## ##
-#####''', 2, 15), ('#C8CCD2', '#9AA0A8', '#6A7078'))
+#####''', 4, 15), ('#C8CCD2', '#9AA0A8', '#6A7078'))
         hands(cv, 'brass')
         shield(cv, 'gold', emblem='leaf')
     else:
         staff(cv, orb='purple')
         hands(cv, hand)
 
-def wizard_hat(cv):
-    """Tall cone with a folded tip, a thick gold band, a wide brim: the robot's hat."""
-    cv.part(rows('''
-     ##
-    ###
-    ####
-   #####
-   ######
-  #######
-  ########
- #########
- ##########
-###########''', 10, -4), 'navy')
-    cv.part(rows('''
-###
- ####
-   ###
-    ##''', 16, -4), 'navy')                                  # the tip, folded over to the right
-    cv.part(rect(10, 6, 21, 8), 'gold')                          # band
-    cv.part(rect(6, 9, 25, 10), 'navy')                          # brim
-
-
 def warrior(cv, race):
     hand = body_parts(cv, race, 'iron', 'iron', 'pants', 'iron')
-    cv.part(rect(13, 21, 18, 28), 'red')                         # tabard
-    cv.part(rect(11, 27, 20, 27), 'leather', outline=False)      # belt
-    cv.dots([(15, 27), (16, 27)], C('gold', 1))
-    cv.part(rect(7, 19, 11, 21), 'iron'); cv.part(rect(20, 19, 24, 21), 'iron')   # pauldrons
+    cv.part(rect(13, 17, 18, 29), 'red')                         # tabard, past the belt
+    cv.part(rect(11, 24, 20, 24), 'leather', outline=False)      # belt
+    cv.dots([(15, 24), (16, 24)], C('gold', 1))
+    cv.part(rect(8, 15, 12, 17), 'iron'); cv.part(rect(19, 15, 23, 17), 'iron')   # pauldrons
     draw_head(cv, race)
     draw_hair(cv, race, hidden=False)
     sword(cv)
@@ -383,31 +370,31 @@ def warrior(cv, race):
     shield(cv, 'iron', emblem='cross')
 
 def rogue(cv, race):
-    # cloak behind the body
-    cv.part(rect(8, 19, 23, 33), 'charcoal')
+    cv.part(rect(9, 15, 22, 35), 'charcoal')                     # cloak behind the body
     hand = body_parts(cv, race, 'charcoal', 'leather', 'charcoal', 'leather')
-    cv.part(rect(11, 24, 20, 24), 'charcoal', outline=False)     # belt with buckles
-    cv.dots([(13, 24), (18, 24)], C('steel', 1))
+    cv.part(rect(11, 23, 20, 23), 'charcoal', outline=False)     # belt with buckles
+    cv.dots([(13, 23), (18, 23)], C('steel', 1))
+    cv.dots([(12 + i, 17 + i) for i in range(6)], C('charcoal', 2))   # baldric
     # hood: behind the head...
     cv.part(rows('''
-   ########
-  ##########
- ############
-##############
-##############
-##############
-##############
-##############
-##############
- ############''', 9, 6), 'charcoal')
+  ######
+ ########
+##########
+##########
+##########
+##########
+##########
+##########
+##########
+ ########''', 11, 4), 'charcoal')
     draw_head(cv, race)
-    # ...and the hood's front lip over the brow
+    # ...and the hood's front lip over the brow, and a face mask
     cv.part(rows('''
- ##########
-############
-##        ##
-#          #''', 10, 7), 'charcoal')
-    cv.part(rect(11, 17, 20, 19) if race != 'construct' else set(), 'charcoal')   # face mask
+ ######
+########
+#      #''', 12, 5), 'charcoal')
+    if race != 'construct':
+        cv.part(rect(13, 13, 18, 15), 'charcoal')
     draw_hair(cv, race, hidden=True)
     dagger(cv)
     hands(cv, hand)
@@ -416,94 +403,96 @@ def rogue(cv, race):
 ###
  #
  #
- #''', 22, 23), 'steel')                                           # off-hand dagger
+ #
+ #''', 22, 20), 'steel')                                        # off-hand dagger
 
 def ranger(cv, race):
-    cv.part(rect(9, 19, 22, 32), 'forest')                        # short cloak
-    cv.part(rect(6, 14, 8, 22), 'leather')                        # quiver over the shoulder
-    cv.dots([(6, 12), (7, 11), (8, 12), (6, 13), (8, 13)], C('red', 0))
-    cv.dots([(7, 12), (7, 13)], C('cream', 0))
+    cv.part(rect(9, 15, 22, 32), 'forest')                       # short cloak
+    cv.part(rect(5, 10, 7, 20), 'leather')                       # quiver over the shoulder
+    cv.dots([(5, 8), (6, 7), (7, 8), (5, 9), (7, 9)], C('red', 0))
+    cv.dots([(6, 8), (6, 9)], C('cream', 0))
     hand = body_parts(cv, race, 'leather', 'forest', 'pants', 'leather')
-    cv.dots([(12 + i, 21 + i) for i in range(8)], C('leather', 2))   # quiver strap
-    cv.part(rect(11, 26, 20, 26), 'leather', outline=False)
+    cv.dots([(12 + i, 17 + i) for i in range(8)], C('leather', 2))   # quiver strap
+    cv.part(rect(11, 25, 20, 25), 'leather', outline=False)
     draw_head(cv, race)
     draw_hair(cv, race, hidden=False)
-    # feathered cap
     cv.part(rows('''
-  ########
- ##########
-############''', 10, 6), 'forest')
+  ####
+ ######
+########''', 12, 4), 'forest')                                # feathered cap
     cv.part(rows('''
 #
 ##
  ##
-  #''', 22, 3), 'red')
-    # bow in the off hand, arrow tips over the right shoulder
-    cv.part({(26, y) for y in range(12, 36)} | {(25, 11), (25, 36), (24, 10), (24, 37)}, 'wood')
-    cv.dots([(27 - 1, y) for y in range(13, 35)], None)
-    for y in range(12, 37):
-        cv.set(28, y, '#D9C9A3') if 13 <= y <= 35 else None
+  #''', 19, 1), 'red')
+    # the bow in the off hand, its string to the right
+    cv.part({(26, y) for y in range(10, 37)} | {(25, 9), (25, 37), (24, 8), (24, 38)}, 'wood')
+    for y in range(11, 37):
+        cv.set(28, y, '#D9C9A3')
     hands(cv, hand)
-    cv.part(rect(21, 27, 23, 29) | rect(24, 23, 26, 25), 'leather')   # the bow hand, gloved
+    cv.part(rect(21, 26, 23, 28) | rect(24, 21, 26, 23), 'leather')   # the bow hand, gloved
 
 def cleric(cv, race):
     hand = body_parts(cv, race, 'cream', 'cream', 'cream', 'leather')
-    cv.part(rect(11, 27, 20, 32), 'cream')                        # vestment skirt
-    cv.part(rect(15, 20, 16, 32), 'gold', outline=False)          # stole
-    cv.dots([(14, 23), (15, 22), (16, 22), (17, 23), (15, 24), (16, 24)], C('gold', 0))   # sun
+    cv.part(rect(11, 26, 20, 36), 'cream')                        # vestment to the ankles
+    cv.part(rect(15, 16, 16, 36), 'gold', outline=False)          # stole
+    cv.dots([(14, 19), (15, 18), (16, 18), (17, 19), (15, 20), (16, 20)], C('gold', 0))   # sun
     draw_head(cv, race)
     draw_hair(cv, race, hidden=False)
-    cv.part(rect(10, 9, 21, 9), 'gold')                           # circlet
-    cv.dots([(15, 9), (16, 9)], '#7CC4E8')
+    cv.part(rect(12, 7, 19, 7), 'gold')                           # circlet
+    cv.dots([(15, 7), (16, 7)], '#7CC4E8')
     mace(cv)
     hands(cv, hand)
     shield(cv, 'cream', emblem='sun', small=True)
 
 def monk(cv, race):
-    hand = body_parts(cv, race, 'saffron', 'saffron', 'saffron', 'leather', hand_ramp='cream')
+    body_parts(cv, race, 'saffron', 'saffron', 'saffron', 'leather')
     cv.part(rows('''
 ##########
  ########
-  ######''', 11, 20), 'saffron')                                 # crossed gi front
-    cv.dots([(15, 21), (16, 22), (15, 23)], C('saffron', 2))
-    cv.part(rect(11, 26, 20, 27), 'charcoal')                     # sash
-    cv.part(rect(19, 27, 20, 30), 'charcoal')
+  ######
+   ####''', 11, 16), 'saffron')                                  # crossed gi front
+    cv.dots([(15, 17), (16, 18), (15, 19), (16, 20)], C('saffron', 2))
+    cv.part(rect(11, 24, 20, 25), 'charcoal')                     # sash
+    cv.part(rect(19, 25, 20, 29), 'charcoal')
     draw_head(cv, race)
     if race in ('halfling', 'elf'):
-        draw_hair(cv, race, hidden=False)                       # not every monk shaves
+        draw_hair(cv, race, hidden=False)                         # not every monk shaves
     elif race != 'construct':
-        cv.dots([(11, 9), (12, 9), (19, 9), (20, 9)], C(RACES[race]['skin'], 0))   # shaved head shine
-    cv.dots([(11, 22), (12, 23), (13, 24), (14, 25), (17, 25), (18, 24), (19, 23), (20, 22)], C('wood', 1))  # prayer beads
+        cv.dots([(13, 7), (14, 7), (17, 7), (18, 7)], C(RACES[race]['skin'], 0))   # shaved head shine
+    cv.dots([(12, 17), (13, 18), (14, 19), (15, 20), (16, 20), (17, 19), (18, 18), (19, 17)], C('wood', 1))  # prayer beads
     hands(cv, 'cream')                                             # wrapped fists
-    cv.dots([(9, 28), (22, 28)], C('cream', 2))
+    cv.dots([(9, 27), (22, 27)], C('cream', 2))
 
-# ------------------------------------------------------------------ held items
+# ------------------------------------------------------------------ held items (right hand at y26..28)
 
 def staff(cv, orb):
-    cv.part({(5, y) for y in range(8, 36)} | {(6, y) for y in range(8, 36)}, 'wood')
-    cv.part(ellipse(5.5, 5, 2.5, 2.5), orb)
-    cv.dots([(4, 4)], '#FFFFFF')
+    cv.part({(5, y) for y in range(3, 40)} | {(6, y) for y in range(3, 40)}, 'wood')
+    cv.part(ellipse(5.5, 0, 2.5, 2.5), orb)
+    cv.dots([(4, -1)], '#FFFFFF')
 
 def sword(cv):
-    cv.part(rect(5, 6, 6, 24), 'steel')                           # blade
-    cv.part(rect(3, 25, 8, 26), 'gold')                           # crossguard
-    cv.part(rect(5, 27, 6, 30), 'leather')                        # grip
-    cv.part(rect(5, 31, 6, 31), 'gold')                           # pommel
+    cv.part(rect(5, 4, 6, 22), 'steel')                           # blade
+    cv.dots([(5, 3)], C('steel', 0))
+    cv.part(rect(3, 23, 8, 24), 'gold')                           # crossguard
+    cv.part(rect(5, 25, 6, 29), 'leather')                        # grip
+    cv.part(rect(5, 30, 6, 30), 'gold')                           # pommel
 
 def dagger(cv):
-    cv.part(rect(6, 19, 6, 26), 'steel')
-    cv.part(rect(4, 27, 7, 27), 'gold')
+    cv.part(rect(6, 18, 6, 25), 'steel')
+    cv.part(rect(4, 26, 7, 26), 'gold')
 
 def mace(cv):
-    cv.part(rect(6, 14, 6, 30), 'wood')
-    cv.part(ellipse(6, 12, 2, 2), 'iron')
-    cv.dots([(6, 9), (3, 12), (9, 12)], C('iron', 2))
+    cv.part(rect(6, 11, 6, 32), 'wood')
+    cv.part(ellipse(6, 8, 2, 2), 'iron')
+    cv.dots([(6, 5), (3, 8), (9, 8)], C('iron', 2))
 
 def shield(cv, ramp, emblem, small=False):
     if small:
-        mask = ellipse(24.5, 27, 3.5, 3.5)
+        mask = ellipse(24.5, 24, 3.5, 3.5)
     else:
         mask = rows('''
+#########
 #########
 #########
 #########
@@ -513,15 +502,16 @@ def shield(cv, ramp, emblem, small=False):
  #######
   #####
    ###
-    #''', 21, 22)
+    #''', 20, 18)
     cv.part(mask, ramp)
-    cx, cy = (24, 27) if small else (25, 26)
+    cx, cy = (24, 24) if small else (24, 22)
     if emblem == 'leaf':
-        cv.part(rect(23, 24, 27, 29), 'navy', outline=False)
-        cv.dots([(25, 25), (26, 25), (24, 26), (25, 26), (26, 26), (25, 27), (25, 28)], C('leaf', 1))
-        cv.dots([(25, 25)], C('leaf', 0))
+        cv.part(rect(22, 20, 26, 26), 'navy', outline=False)
+        cv.dots([(24, 21), (25, 21), (23, 22), (24, 22), (25, 22), (24, 23), (24, 24), (24, 25)], C('leaf', 1))
+        cv.dots([(24, 21)], C('leaf', 0))
     elif emblem == 'cross':
-        cv.dots([(cx, cy - 2), (cx, cy - 1), (cx, cy), (cx, cy + 1), (cx, cy + 2), (cx - 2, cy - 1), (cx - 1, cy - 1), (cx + 1, cy - 1), (cx + 2, cy - 1)], C('red', 1))
+        cv.dots([(cx, cy - 2), (cx, cy - 1), (cx, cy), (cx, cy + 1), (cx, cy + 2), (cx, cy + 3),
+                 (cx - 2, cy), (cx - 1, cy), (cx + 1, cy), (cx + 2, cy)], C('red', 1))
     elif emblem == 'sun':
         cv.dots([(cx, cy), (cx + 1, cy), (cx, cy + 1), (cx + 1, cy + 1)], C('gold', 1))
         cv.dots([(cx, cy - 2), (cx + 1, cy + 3), (cx - 2, cy + 1), (cx + 3, cy)], C('gold', 2))
@@ -534,8 +524,6 @@ CLASSES = {
     'cleric': (cleric, 'Cleric'),
     'monk': (monk, 'Monk'),
 }
-
-# ------------------------------------------------------------------ output
 
 KEYS = '0123456789abcdefghijklmnopqrstuvwxyzBCDFGHIJKLMNOPQRSTUVXYZ!@$%^&*+=~?<>:;'
 
