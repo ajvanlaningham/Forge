@@ -4,9 +4,18 @@ namespace Forge.Views;
 
 public partial class SettingsPage : ContentPage
 {
+    private readonly SettingsViewModel _vm;
+
     public SettingsPage(SettingsViewModel vm)
     {
         InitializeComponent();
-        BindingContext = vm;
+        BindingContext = _vm = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        // The daily backup runs in the background on launch; show its latest result.
+        _vm.RefreshBackupStatus();
     }
 }

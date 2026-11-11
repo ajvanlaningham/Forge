@@ -15,10 +15,42 @@ namespace Forge.ViewModels
     public sealed class SettingsViewModel : BaseViewModel
     {
         private readonly IUpdateService _updates;
+        private readonly IBackupService _backup;
 
-        public SettingsViewModel(IUpdateService updates)
+        private string _backupStatus = "";
+        public string BackupStatus { get => _backupStatus; private set => SetProperty(ref _backupStatus, value); }
+
+        private bool _isBackingUp;
+        public bool IsBackingUp { get => _isBackingUp; private set => SetProperty(ref _isBackingUp, value); }
+
+        public ICommand BackUpNowCommand { get; }
+
+        /// <summary>Shows when the last backup ran, so a silently failing backup is noticeable.</summary>
+        public void RefreshBackupStatus()
+        {
+            var last = _backup.LastBackupUtc;
+            BackupStatus = last is DateTime t
+                ? $"Last backup: {t.ToLocalTime():ddd MMM d, h:mm tt} · {_backup.Location}"
+                : $"No backup yet · they go to {_backup.Location}";
+        }
+
+        public SettingsViewModel(IUpdateService updates, IBackupService backup)
         {
             _updates = updates;
+            _backup = backup;
+            BackUpNowCommand = new Command(async () =>
+            {
+                if (IsBackingUp) return;
+                IsBackingUp = true;
+                try
+                {
+                    var result = await _backup.BackUpNowAsync();
+                    RefreshBackupStatus();
+                    if (!result.Success) BackupStatus = result.Message;
+                }
+                finally { IsBackingUp = false; }
+            });
+            RefreshBackupStatus();
 
             Title = AppResources.SettingsPage_Title;
 

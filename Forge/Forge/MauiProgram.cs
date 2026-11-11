@@ -52,9 +52,13 @@ namespace Forge
             builder.Services.AddSingleton<ITrainingService, TrainingService>();
 #if ANDROID
             builder.Services.AddSingleton<IRestAlarm, Forge.Platforms.Android.RestAlarm>();
+            builder.Services.AddSingleton<IBackupSink, Forge.Platforms.Android.DownloadsBackupSink>();
 #else
             builder.Services.AddSingleton<IRestAlarm, NoopRestAlarm>();
+            builder.Services.AddSingleton<IBackupSink, AppDataBackupSink>();
 #endif
+            // Daily backup (PBI 10.1), triggered from App on start/resume.
+            builder.Services.AddSingleton<IBackupService, BackupService>();
             builder.Services.AddSingleton<IConditioningWeekService, ConditioningWeekService>();
 
             // Stats

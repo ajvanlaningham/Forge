@@ -200,8 +200,15 @@ Defaults taken without asking (veto-able):
 - `VACUUM INTO` (never a file copy of a live DB), written **outside** app-private storage so it
   survives uninstall. Triggered on foreground if >1 day old; keep ~14; never blocks startup or
   shows a modal. "Last backed up" shown in Settings.
-- [ ] Choose location (SAF folder or MediaStore) and verify it survives uninstall
-- [ ] `IBackupService`, foreground trigger, retention, Settings display
+- [x] Location: MediaStore `Download/Forge` (shared storage, no permission, outlives the app;
+      Android 10+). SAF would need a one-time folder pick; not worth it for daily copies.
+- [x] `BackupService`: `VACUUM INTO` → sink, on window Created/Resumed if none today (local
+      calendar day), fire-and-forget; retention 14 (`BackupPolicy`, tested); schema version
+      stamped in the file name (`-s2`) for 10.2
+- [x] Settings → Backup: last backup time + location, "Back up now". Verified on device: launch
+      backup written, `integrity_check` ok, contents match the live DB.
+- [ ] Prove it survives an actual uninstall — deliberately not done during the autonomous run,
+      because uninstalling wipes the phone's data. Do it together, then restore (10.2).
 
 ### 4.2 / 4.3 Level-up moment and streak (stretch)
 - Visible level-up feedback, fired exactly once per level (persist last celebrated level);
