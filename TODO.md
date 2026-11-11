@@ -49,6 +49,12 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     rest). Each consecutive perfect week keeps a ×1.2 multiplier on the following week's XP; a
     miss resets it to ×1.0, nothing is taken away. Possible later: a once-per-block "sick week"
     freeze so the bonus never tempts training while ill.
+16. **Owned weights** (2026-11-11). Equipment carries the loads you can actually use, and
+    suggestions/steppers only land on them. Dumbbells: fixed pairs (checklist) or adjustable
+    (range + step). Kettlebells: checklist of standard bells (lb or kg sets). Barbell: bar weight
+    (45/35 lb, 20/15 kg) + max + smallest jump (default 5 lb / 2.5 kg). Home = what's entered in
+    My Gear; **Gym = everything** (no max, 5 lb / 2.5 kg steps). Machines/cables: 5 lb steps
+    anywhere. At the heaviest owned weight, progression switches to reps and says so.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
@@ -127,7 +133,11 @@ Defaults taken without asking (veto-able):
 - With a program active, the Quests focus pill shows the program day and weekday "Recovery"
   days no longer apply to lifting (mobility still uses the recovery pool on Wed/Sat/Sun).
 
-### Next: programs as blocks (Decisions 12–15)
+### Next: owned weights (Decision 16), then programs as blocks (Decisions 12–15)
+- [ ] Weight sets per equipment + location (`Forge.Core`: available loads, next/prev load, tests)
+- [ ] My Gear editor for dumbbell / kettlebell / barbell weights; Gym defaults to "everything"
+- [ ] Steppers and progression suggestions use available loads; "outgrown your heaviest" hint
+
 Rework the program format before writing real content:
 - [ ] Block → weeks → days; day kinds: training / active rest / test. Calendar week advancement.
 - [ ] Slots tagged main vs accessory; accessories may differ per week, mains may not (validated).
