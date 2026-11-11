@@ -120,6 +120,24 @@ namespace Forge.Training
             => string.Join(" · ", weights.GroupBy(w => w).OrderBy(g => g.Key).Select(g =>
                 g.Key.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture) + (g.Count() > 1 ? $"×{g.Count()}" : "")));
 
+        /// <summary>
+        /// A load as you'd say it: a kilo bell you own reads "16 kg" even when you train in pounds,
+        /// instead of "35.3 lb". Anything else is shown in <paramref name="unit"/>.
+        /// </summary>
+        public string LoadLabel(double lb, WeightUnit unit)
+        {
+            static string F(double v) => v.ToString("0.#", System.Globalization.CultureInfo.CurrentCulture);
+            foreach (var f in new FixedWeights?[] { Kettlebells, Dumbbells })
+            {
+                if (f is null) continue;
+                if (f.Kg.FirstOrDefault(k => Math.Abs(Lb(k, WeightUnit.Kilograms) - lb) < 0.01) is var kg and > 0)
+                    return $"{F(kg)} kg";
+                if (f.Lb.FirstOrDefault(p => Math.Abs(p - lb) < 0.01) is var lbs and > 0)
+                    return $"{F(lbs)} lb";
+            }
+            return $"{F(WeightMath.ToDisplay(lb, unit))} {WeightMath.UnitLabel(unit)}";
+        }
+
         /// <summary>Implements whose weights matter: tapping them opens a weights editor.</summary>
         public static bool IsWeighted(Equipment e) => e is Equipment.Dumbbell or Equipment.Kettlebell or Equipment.Barbell;
 

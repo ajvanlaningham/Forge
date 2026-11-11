@@ -166,4 +166,13 @@ public class LoadSetTests
         Assert.Equal("5–30 lb", new GearLoads { Dumbbells = new DumbbellGear { Lb = [5, 5, 10, 10, 15, 20, 25, 30] } }.Summary(Equipment.Dumbbell));
         Assert.DoesNotContain("Weights", back.ToJson());
     }
+
+    [Fact]
+    public void LoadLabel_SaysOwnedWeightsInTheirOwnUnit()
+    {
+        var gear = new GearLoads { Kettlebells = new KettlebellGear { Lb = [15], Kg = [16] } };
+        Assert.Equal("16 kg", gear.LoadLabel(WeightMath.ToStoredPounds(16, WeightUnit.Kilograms), WeightUnit.Pounds));
+        Assert.Equal("15 lb", gear.LoadLabel(15, WeightUnit.Kilograms));
+        Assert.Equal("45 lb", gear.LoadLabel(45, WeightUnit.Pounds));
+    }
 }

@@ -145,6 +145,11 @@ namespace Forge.Training
         public int? Seconds { get; init; }
         public int? RestSeconds { get; init; }
         public string? Notes { get; init; }
+        /// <summary>
+        /// Superset group: consecutive slots with the same group are done alternately (A1 set 1,
+        /// A2 set 1, A1 set 2…) with a short transition between them. Null = straight sets.
+        /// </summary>
+        public string? Superset { get; init; }
         [JsonIgnore] public bool IsTimed => Seconds is not null;
     }
 
@@ -203,6 +208,10 @@ namespace Forge.Training
                     for (var s = 0; s < day.Accessories[w].Count; s++)
                         CheckSlot(day.Accessories[w][s], $"{where} week {w + 1} accessory {s + 1}", errors);
 
+                CheckSupersets(day.Main, $"{where} main", errors);
+                for (var w = 0; w < day.Accessories.Count; w++)
+                    CheckSupersets(day.Accessories[w], $"{where} week {w + 1} accessories", errors);
+
                 // A main lift is the block's constant — it can't also be someone's rotating accessory.
                 var mains = day.Main.Select(m => m.Exercise).ToHashSet(StringComparer.Ordinal);
                 foreach (var dup in day.Accessories.SelectMany(a => a).Where(a => mains.Contains(a.Exercise)).Select(a => a.Exercise).Distinct())
@@ -212,6 +221,18 @@ namespace Forge.Training
             for (var s = 0; s < p.ActiveRest.Flow.Count; s++)
                 CheckSlot(p.ActiveRest.Flow[s], $"active rest {s + 1}", errors);
             return errors;
+        }
+
+        /// <summary>A superset's partners must be next to each other: the guided order alternates neighbours.</summary>
+        private static void CheckSupersets(IReadOnlyList<ProgramSlot> slots, string at, List<string> errors)
+        {
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            for (var i = 0; i < slots.Count; i++)
+            {
+                if (slots[i].Superset is not { } key) continue;
+                if (i > 0 && slots[i - 1].Superset == key) continue;
+                if (!seen.Add(key)) errors.Add($"{at}: superset '{key}' is split up");
+            }
         }
 
         private static void CheckSlot(ProgramSlot slot, string at, List<string> errors)

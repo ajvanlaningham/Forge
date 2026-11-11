@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The guided session: one set at a time, big enough to read from the floor. Sets run on a timer
+     and log themselves; rest counts down to "Get ready!" and the next set appears on its own. -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
+             x:Class="Forge.Views.GuidedSessionPage"
+             x:DataType="vm:GuidedSessionViewModel"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="List" Command="{Binding OverviewCommand}" />
+        <ToolbarItem Text="⋮" Command="{Binding MenuCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,*" Padding="18,10,18,18">
+        <!-- Where in the session -->
+        <Grid ColumnDefinitions="*,Auto">
+            <Label Text="{Binding StepText}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource Muted}" />
+            <Label Grid.Column="1" Text="{Binding ElapsedText}" FontFamily="GymNum" FontSize="24" TextColor="{StaticResource Muted}" />
+        </Grid>
+
+        <!-- READY: waiting for a tap (only after coming back to a session) -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsReady}" Spacing="14" VerticalOptions="Center">
+            <Label Text="{Binding Caption}" FontFamily="PixelUI" FontSize="26" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding ExerciseName}" FontFamily="PixelUI" FontSize="34" TextColor="{StaticResource OnBg}"
+                   HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+            <Label Text="{Binding LoadText}" FontFamily="GymNum" FontSize="56" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding WorkText}" FontFamily="GymNum" FontSize="48" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
+            <Button Text="START SET" Command="{Binding StartCommand}" HeightRequest="80" FontFamily="PixelUI" FontSize="30"
+                    BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" Margin="0,12,0,0" />
+            <Label Text="{Binding ReadyText}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+
+        <!-- WORK: the set, running -->
+        <Grid Grid.Row="1" IsVisible="{Binding IsWork}" RowDefinitions="*,Auto">
+            <VerticalStackLayout Spacing="8" VerticalOptions="Center">
+                <Label Text="{Binding Caption}" FontFamily="PixelUI" FontSize="26" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding ExerciseName}" FontFamily="PixelUI" FontSize="36" TextColor="{StaticResource OnBg}"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                <Label Text="{Binding LoadText}" FontFamily="GymNum" FontSize="64" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding WorkText}" FontFamily="GymNum" FontSize="64" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding ClockText}" FontFamily="GymNum" FontSize="40" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                <ProgressBar Progress="{Binding ClockProgress}" ProgressColor="{StaticResource Accent}" HeightRequest="12" />
+                <Label Text="{Binding ThenText}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}"
+                       HorizontalTextAlignment="Center" Margin="0,8,0,0" />
+            </VerticalStackLayout>
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                <Button Text="{Binding PauseText}" Command="{Binding PauseCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="20" />
+                <Button Grid.Column="1" Text="+10 s" Command="{Binding MoreTimeCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="20" />
+                <Button Grid.Column="2" Text="Done" Command="{Binding SkipCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="20" />
+            </Grid>
+        </Grid>
+
+        <!-- REST: countdown, what's next, fix what was logged -->
+        <Grid Grid.Row="1" IsVisible="{Binding IsRest}" RowDefinitions="*,Auto,Auto" RowSpacing="12">
+            <VerticalStackLayout Spacing="6" VerticalOptions="Center">
+                <Label Text="{Binding Caption}" FontFamily="PixelUI" FontSize="34" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsGetReady}" Value="True">
+                            <Setter Property="TextColor" Value="{StaticResource Accent}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Text="{Binding ClockText}" FontFamily="GymNum" FontSize="96" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
+                <ProgressBar Progress="{Binding ClockProgress}" ProgressColor="{StaticResource Leaf}" HeightRequest="12" />
+                <Label Text="UP NEXT" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" Margin="0,14,0,0" />
+                <Label Text="{Binding ExerciseName}" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource OnBg}"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                <Label HorizontalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding LoadText}" FontFamily="GymNum" FontSize="34" TextColor="{StaticResource Accent}" />
+                            <Span Text="  " />
+                            <Span Text="{Binding WorkText}" FontFamily="GymNum" FontSize="34" TextColor="{StaticResource OnBg}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </VerticalStackLayout>
+
+            <!-- Fix the set just logged -->
+            <Border Grid.Row="1" IsVisible="{Binding HasLogged}" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}"
+                    StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10,8">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{Binding LoggedText}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource OnBg}" LineBreakMode="WordWrap" />
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
+                        <Button Text="− rep" Command="{Binding LoggedRepsDownCommand}" HeightRequest="44" Padding="0" FontSize="15" />
+                        <Button Grid.Column="1" Text="+ rep" Command="{Binding LoggedRepsUpCommand}" HeightRequest="44" Padding="0" FontSize="15" />
+                        <Button Grid.Column="2" Text="− wt" Command="{Binding LoggedLoadDownCommand}" HeightRequest="44" Padding="0" FontSize="15" />
+                        <Button Grid.Column="3" Text="+ wt" Command="{Binding LoggedLoadUpCommand}" HeightRequest="44" Padding="0" FontSize="15" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
+                <Button Text="{Binding PauseText}" Command="{Binding PauseCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="19" Padding="0" />
+                <Button Grid.Column="1" Text="−15" Command="{Binding LessTimeCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="19" Padding="0" />
+                <Button Grid.Column="2" Text="+15" Command="{Binding MoreTimeCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="19" Padding="0" />
+                <Button Grid.Column="3" Text="Go" Command="{Binding SkipCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="19" Padding="0" />
+            </Grid>
+        </Grid>
+
+        <!-- DONE -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsDone}" Spacing="16" VerticalOptions="Center">
+            <Label Text="SESSION COMPLETE" FontFamily="PixelUI" FontSize="34" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding DoneText}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
+            <Button Text="FINISH" Command="{Binding FinishCommand}" HeightRequest="76" FontFamily="PixelUI" FontSize="30"
+                    BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

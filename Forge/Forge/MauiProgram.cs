@@ -90,6 +90,10 @@ namespace Forge
             builder.Services.AddTransient<HeroPage>();
             builder.Services.AddTransient<ChronicleViewModel>();
             builder.Services.AddTransient<ChroniclePage>();
+            builder.Services.AddTransient<BriefingViewModel>();
+            builder.Services.AddTransient<BriefingPage>();
+            builder.Services.AddTransient<GuidedSessionViewModel>();
+            builder.Services.AddTransient<GuidedSessionPage>();
             builder.Services.AddTransient<ActiveSessionViewModel>();
             builder.Services.AddTransient<ActiveSessionPage>();
             builder.Services.AddTransient<SessionSummaryViewModel>();

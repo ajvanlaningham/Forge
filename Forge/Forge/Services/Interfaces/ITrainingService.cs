@@ -11,6 +11,31 @@ namespace Forge.Services.Interfaces
         public TrainingLocation Location => (TrainingLocation)Session.Location;
     }
 
+    /// <summary>A program session before it starts: the briefing.</summary>
+    public sealed class SessionPlan
+    {
+        public required DateOnly Date { get; init; }
+        public required TrainingLocation Location { get; init; }
+        public required string Title { get; init; }
+        public required ActiveProgram Program { get; init; }
+        public required Forge.Training.ResolvedDay Day { get; init; }
+        public required IReadOnlyList<PlannedExercise> Exercises { get; init; }
+    }
+
+    public sealed class PlannedExercise
+    {
+        public required string Name { get; init; }
+        public string? SwappedFrom { get; init; }
+        public required Forge.Training.ProgramSlot Slot { get; init; }
+        public required int SlotIndex { get; init; }
+        public required bool IsMain { get; init; }
+        public ExerciseInfo? Info { get; init; }
+        // Settled in the briefing.
+        public double PlannedLoadLb { get; set; }
+        public int? PlannedReps { get; set; }
+        public int? PlannedSeconds { get; set; }
+    }
+
     public sealed class SessionExerciseSnapshot
     {
         public required SessionExerciseRow Row { get; init; }
@@ -42,6 +67,18 @@ namespace Forge.Services.Interfaces
         /// each slot against the equipment at <paramref name="location"/> (swapping where needed).
         /// </summary>
         Task<SessionSnapshot> StartFromProgramAsync(DateOnly date, TrainingLocation location);
+
+        /// <summary>
+        /// What today's program session would be at <paramref name="location"/>, swaps applied,
+        /// without starting anything: the briefing shown before BEGIN.
+        /// </summary>
+        Task<SessionPlan> PlanFromProgramAsync(DateOnly date, TrainingLocation location);
+
+        /// <summary>Starts the session a briefing settled on (loads and targets included).</summary>
+        Task<SessionSnapshot> StartFromPlanAsync(SessionPlan plan);
+
+        /// <summary>Corrects a logged set (the guided session logs targets; the user fixes misses).</summary>
+        Task UpdateSetAsync(int setId, double loadLb, int? reps, int? seconds);
 
         /// <summary>Starts an empty session for unplanned training.</summary>
         Task<SessionSnapshot> StartEmptyAsync(DateOnly date, TrainingLocation location);

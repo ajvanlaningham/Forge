@@ -79,6 +79,17 @@ namespace Forge.Models
         public int? RestSeconds { get; set; }
 
         public bool Skipped { get; set; }
+
+        /// <summary>A main lift (gets a built-in warm-up in the guided session) rather than an accessory.</summary>
+        public bool IsMain { get; set; }
+
+        /// <summary>Superset group from the program slot; neighbours sharing one alternate sets.</summary>
+        public string? Superset { get; set; }
+
+        // What the briefing settled on before BEGIN: the guided session runs on these.
+        public double? PlannedLoadLb { get; set; }
+        public int? PlannedReps { get; set; }
+        public int? PlannedSeconds { get; set; }
     }
 
     /// <summary>A logged set. Loads are stored in pounds, like body weight.</summary>

@@ -244,6 +244,22 @@ public class ShippedProgramContentTests
     [Theory, MemberData(nameof(ProgramFiles))]
     public void ProgramParses(string file) => Load(file);
 
+    [Fact]
+    public void Superset_PartnersMustBeNeighbours()
+    {
+        var p = Load("programs/copper-helm-db-3day.v3.json");
+        var day = p.Days[0];
+        var split = new List<ProgramSlot> { day.Main[1], day.Main[0], day.Main[2] }; // A, -, A
+        var broken = new ProgramDefinition
+        {
+            Id = p.Id, Name = p.Name, Version = p.Version, Quest = p.Quest, Item = p.Item,
+            Discipline = p.Discipline, Implement = p.Implement,
+            Days = p.Days.Select((d, i) => i == 0 ? new ProgramDay { Name = d.Name, Main = split, Accessories = d.Accessories } : d).ToList()
+        };
+        Assert.Contains(ProgramParser.Validate(broken), e => e.Contains("superset 'A' is split up"));
+        Assert.Empty(ProgramParser.Validate(p));
+    }
+
     [Theory, MemberData(nameof(ProgramFiles))]
     public void EverySlotNamesALibraryExercise(string file)
     {

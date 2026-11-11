@@ -54,7 +54,12 @@ namespace Forge.Constants
                 "programs/copper-helm-db-4day.v2.json",
                 "programs/copper-helm-db-3day.v2.json",
                 "programs/copper-helm-kb-4day.v2.json",
-                "programs/copper-helm-kb-3day.v2.json"
+                "programs/copper-helm-kb-3day.v2.json",
+                // v3: supersets (A = main lifts, B = accessories) for the guided session
+                "programs/copper-helm-db-4day.v3.json",
+                "programs/copper-helm-db-3day.v3.json",
+                "programs/copper-helm-kb-4day.v3.json",
+                "programs/copper-helm-kb-3day.v3.json"
             };
 
             /// <summary>Program offered when none has been chosen yet.</summary>

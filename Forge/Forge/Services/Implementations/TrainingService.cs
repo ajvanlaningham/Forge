@@ -109,32 +109,25 @@ namespace Forge.Services.Implementations
         {
             var existing = await GetInProgressAsync();
             if (existing is not null) return existing; // one session at a time
+            return await StartFromPlanAsync(await PlanFromProgramAsync(date, location));
+        }
 
+        public async Task<SessionPlan> PlanFromProgramAsync(DateOnly date, TrainingLocation location)
+        {
             var view = await _programs.GetViewAsync(date)
                        ?? throw new InvalidOperationException("No active program");
             var day = view.Day ?? throw new InvalidOperationException("This week's training is already done");
 
             var lib = await LibraryAsync();
             var available = await GetEquipmentAsync(location);
-            UserSettings.LastLocation = location;
-
-            var session = NewSession(date, location);
-            session.ProgramId = view.Program.Definition.Id;
-            session.ProgramVersion = view.Program.Definition.Version;
-            session.BlockId = view.Program.BlockId;
-            session.DayIndex = day.DayIndex;
-            session.Title = $"{ProgramDefinition.WeekName(view.Week)} · {day.Name}" + (day.IsLight ? " (light)" : "");
-            await _sessions.InsertAsync(session);
 
             // This week's slots: mains + this week's accessories; week 4 already has a set fewer.
-            var slots = day.Slots.Select(s => s.Slot).ToList();
-
             // Prescribed exercises claim their names first, so a swap never duplicates one.
-            var used = new HashSet<string>(slots.Select(s => s.Exercise), StringComparer.Ordinal);
-
-            for (var i = 0; i < slots.Count; i++)
+            var used = new HashSet<string>(day.Slots.Select(s => s.Slot.Exercise), StringComparer.Ordinal);
+            var planned = new List<PlannedExercise>();
+            for (var i = 0; i < day.Slots.Count; i++)
             {
-                var slot = slots[i];
+                var slot = day.Slots[i].Slot;
                 var name = slot.Exercise;
                 string? swappedFrom = null;
 
@@ -148,19 +141,54 @@ namespace Forge.Services.Implementations
                     swappedFrom = prescribed.Name;
                     used.Add(resolved.Name);
                 }
+                planned.Add(new PlannedExercise
+                {
+                    Name = name, SwappedFrom = swappedFrom, Slot = slot, SlotIndex = i, IsMain = day.Slots[i].IsMain,
+                    Info = lib.GetValueOrDefault(name)
+                });
+            }
 
+            return new SessionPlan
+            {
+                Date = date, Location = location, Program = view.Program, Day = day, Exercises = planned,
+                Title = $"{ProgramDefinition.WeekName(view.Week)} · {day.Name}" + (day.IsLight ? " (light)" : "")
+            };
+        }
+
+        public async Task<SessionSnapshot> StartFromPlanAsync(SessionPlan plan)
+        {
+            var existing = await GetInProgressAsync();
+            if (existing is not null) return existing; // one session at a time
+
+            UserSettings.LastLocation = plan.Location;
+            var session = NewSession(plan.Date, plan.Location);
+            session.ProgramId = plan.Program.Definition.Id;
+            session.ProgramVersion = plan.Program.Definition.Version;
+            session.BlockId = plan.Program.BlockId;
+            session.DayIndex = plan.Day.DayIndex;
+            session.Title = plan.Title;
+            await _sessions.InsertAsync(session);
+
+            for (var i = 0; i < plan.Exercises.Count; i++)
+            {
+                var p = plan.Exercises[i];
                 await _exercises.InsertAsync(new SessionExerciseRow
                 {
                     SessionId = session.Id,
                     Position = i,
-                    ExerciseName = name,
-                    SwappedFrom = swappedFrom,
-                    SlotIndex = i,
-                    TargetSets = slot.Sets,
-                    RepsMin = slot.RepsMin,
-                    RepsMax = slot.RepsMax,
-                    TargetSeconds = slot.Seconds,
-                    RestSeconds = slot.RestSeconds
+                    ExerciseName = p.Name,
+                    SwappedFrom = p.SwappedFrom,
+                    SlotIndex = p.SlotIndex,
+                    TargetSets = p.Slot.Sets,
+                    RepsMin = p.Slot.RepsMin,
+                    RepsMax = p.Slot.RepsMax,
+                    TargetSeconds = p.Slot.Seconds,
+                    RestSeconds = p.Slot.RestSeconds,
+                    IsMain = p.IsMain,
+                    Superset = p.Slot.Superset,
+                    PlannedLoadLb = p.PlannedLoadLb,
+                    PlannedReps = p.PlannedReps,
+                    PlannedSeconds = p.PlannedSeconds
                 });
             }
 
@@ -249,6 +277,15 @@ namespace Forge.Services.Implementations
                 ordered[i].Position = i;
                 await _exercises.UpdateAsync(ordered[i]);
             }
+        }
+
+        public async Task UpdateSetAsync(int setId, double loadLb, int? reps, int? seconds)
+        {
+            var set = await _sets.GetByIdAsync(setId) ?? throw new InvalidOperationException("No such set");
+            set.LoadLb = Math.Max(0, loadLb);
+            set.Reps = reps;
+            set.Seconds = seconds;
+            await _sets.UpdateAsync(set);
         }
 
         public async Task<SessionSetRow> LogSetAsync(int sessionExerciseId, double loadLb, int? reps, int? seconds, bool isWarmup)

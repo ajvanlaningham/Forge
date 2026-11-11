@@ -85,6 +85,14 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     - **Chronicle**: looking back — session history, weigh-ins (Check-in), trends.
     - **Settings** is a cog in the top bar, not a tab.
     - **Guild** returns later as the multi-user / friends tab.
+21. **Guided sessions** (agreed with the user 2026-11-11). Start → a **briefing** (Home/Gym, the
+    plan with swaps, weights to settle, a gather list, an estimate) → BEGIN. Then one set at a
+    time, **hands-free**: a set runs on a timer (3 s/rep + 5 s setup, or the hold's time), logs its
+    target when it ends, and rest starts; misses are corrected on the rest screen. Rest ends with
+    "Get ready!" and a 3-2-1 buzz; the next set appears on its own. **Programs decide supersets**
+    (v3: main lifts pair as A, accessories as B; A1/A2 alternate with a 30 s transition and the
+    full rest after each round). Main loaded lifts get a **built-in warm-up** (about half the
+    working weight × 8) when a lighter weight is owned. The list view stays as the logbook.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per

@@ -24,6 +24,7 @@ namespace Forge.ViewModels
         private readonly IExerciseLibraryImporter _importer;
         private readonly ProgressService _progress;
         private int? _inProgressId;
+        private bool _inProgressGuided;
         private DateOnly _today;
 
         public event EventHandler<int>? XpAwarded;
@@ -130,6 +131,7 @@ namespace Forge.ViewModels
                 var view = await _programs.GetViewAsync(_today);
                 var open = await _training.GetInProgressAsync();
                 _inProgressId = open?.Session.Id;
+                _inProgressGuided = open?.Session.ProgramId is not null; // program sessions run guided
                 CanStartOpen = open is null;
                 ApplyQuest(view, open?.Session.Title);
 
@@ -174,7 +176,7 @@ namespace Forge.ViewModels
             if (inProgressTitle is not null)
             {
                 ActionText = $"Resume: {inProgressTitle}";
-                _action = () => OpenSessionAsync(_inProgressId);
+                _action = () => OpenSessionAsync(_inProgressId, _inProgressGuided);
             }
 
             if (view is null)
@@ -212,7 +214,7 @@ namespace Forge.ViewModels
             else if (view.Day is { } day)
             {
                 ActionText = $"Start {day.Name}" + (day.IsLight ? " (light)" : "");
-                _action = () => StartAsync(fromProgram: true);
+                _action = () => Shell.Current.GoToAsync(nameof(BriefingPage));
                 PlanText = string.Join("\n", day.Slots.Select(r => Describe(r.Slot) + (r.IsMain ? "" : "  · acc")));
             }
             else
@@ -276,10 +278,10 @@ namespace Forge.ViewModels
             await OpenSessionAsync(snap.Session.Id);
         }
 
-        private static async Task OpenSessionAsync(int? sessionId)
+        private static async Task OpenSessionAsync(int? sessionId, bool guided = false)
         {
             if (sessionId is null) return;
-            await Shell.Current.GoToAsync($"{nameof(ActiveSessionPage)}?sessionId={sessionId}");
+            await Shell.Current.GoToAsync($"{(guided ? nameof(GuidedSessionPage) : nameof(ActiveSessionPage))}?sessionId={sessionId}");
         }
     }
 }
