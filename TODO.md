@@ -149,7 +149,7 @@ Defaults taken without asking (veto-able):
 - [x] Locations: Home = owned Inventory, Gym = `UserSettings.GymEquipment` (default all).
       Swaps at session start never duplicate an exercise already in the session; empty Home
       gear prompts to set it up. Bodyweight moves log *added* load.
-- [ ] Gym equipment editor (default "everything" is fine for now)
+- [x] Gym equipment editor (Settings → Gym equipment)
 
 ### 8.5 Progressive overload
 - Default **double progression**: when every working set hits the top of the rep range, next
@@ -174,7 +174,7 @@ Defaults taken without asking (veto-able):
       notification on a `rest_timer` channel; verified firing with the app backgrounded.
       Notification permission asked once at session start; if denied, the app vibrates in-app.
       iOS gets a no-op until it's built.
-- [ ] Default rest time editable in Settings
+- [x] Default rest time editable in Settings (15 s steps)
 
 ### 8.2 Sessions complete quests
 - Finishing a session completes its quest via the existing XP path. Manual checkbox still

@@ -14,6 +14,7 @@ namespace Forge
             Routing.RegisterRoute(nameof(SessionSummaryPage), typeof(SessionSummaryPage));
             Routing.RegisterRoute(nameof(SessionHistoryPage), typeof(SessionHistoryPage));
             Routing.RegisterRoute(nameof(ExerciseHistoryPage), typeof(ExerciseHistoryPage));
+            Routing.RegisterRoute(nameof(GymEquipmentPage), typeof(GymEquipmentPage));
 
         }
     }

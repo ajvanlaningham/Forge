@@ -69,6 +69,20 @@
 
             <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
 
+            <Label Text="Training" FontSize="22" FontAttributes="Bold" />
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                <Label Text="Default rest between sets" VerticalOptions="Center" />
+                <Button Grid.Column="1" Text="−" Command="{Binding RestDownCommand}" WidthRequest="48" Padding="0" />
+                <Label Grid.Column="2" Text="{Binding RestText}" FontFamily="OpenSansSemibold" FontSize="20"
+                       VerticalOptions="Center" WidthRequest="56" HorizontalTextAlignment="Center" />
+                <Button Grid.Column="3" Text="+" Command="{Binding RestUpCommand}" WidthRequest="48" Padding="0" />
+            </Grid>
+            <Label Text="Used when a program doesn't set its own rest. Warm-ups rest at most a minute." FontSize="13" Opacity="0.7" />
+            <Button Text="Gym equipment" Command="{Binding OpenGymEquipmentCommand}" />
+            <Label Text="Home uses My gear on the Train tab." FontSize="13" Opacity="0.7" />
+
+            <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
+
             <Label Text="Backup" FontSize="22" FontAttributes="Bold" />
             <Label Text="A copy of your data is saved once a day when you open Forge. Copies survive uninstalling the app." 
                    FontSize="13" Opacity="0.7" />

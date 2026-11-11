@@ -25,6 +25,23 @@ namespace Forge.ViewModels
 
         public ICommand BackUpNowCommand { get; }
 
+        public ICommand OpenGymEquipmentCommand { get; } = new Command(async () =>
+            await Shell.Current.GoToAsync(nameof(Forge.Views.SubPages.GymEquipmentPage)));
+
+        public ICommand RestDownCommand { get; }
+        public ICommand RestUpCommand { get; }
+
+        private string _restText = "";
+        /// <summary>Default rest between sets when a program doesn't say (PBI 8.3).</summary>
+        public string RestText { get => _restText; private set => SetProperty(ref _restText, value); }
+
+        private void ChangeRest(int delta)
+        {
+            UserSettings.DefaultRestSeconds = Math.Clamp(UserSettings.DefaultRestSeconds + delta, 15, 600);
+            var r = UserSettings.DefaultRestSeconds;
+            RestText = $"{r / 60}:{r % 60:00}";
+        }
+
         /// <summary>Shows when the last backup ran, so a silently failing backup is noticeable.</summary>
         public void RefreshBackupStatus()
         {
@@ -51,6 +68,9 @@ namespace Forge.ViewModels
                 finally { IsBackingUp = false; }
             });
             RefreshBackupStatus();
+            RestDownCommand = new Command(() => ChangeRest(-15));
+            RestUpCommand = new Command(() => ChangeRest(+15));
+            ChangeRest(0);
 
             Title = AppResources.SettingsPage_Title;
 
