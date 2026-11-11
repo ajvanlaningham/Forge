@@ -82,6 +82,8 @@ namespace Forge
             // UI
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<QuestBoardViewModel>();
+            builder.Services.AddTransient<GuildPage>();
             builder.Services.AddTransient<TrainViewModel>();
             builder.Services.AddTransient<TrainPage>();
             builder.Services.AddTransient<ActiveSessionViewModel>();

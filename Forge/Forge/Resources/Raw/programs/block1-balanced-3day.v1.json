@@ -3,6 +3,9 @@
   "name": "Block 1 · Balanced — 3-day",
   "description": "Full body three times a week, 30–40 min. Day 1 heavy, day 2 medium, day 3 light. Same main lifts as the 4-day.",
   "family": "block1-balanced",
+  "goal": "Balanced",
+  "minutes": "30–40",
+  "difficulty": 1,
   "version": 1,
   "equipment": [
     "dumbbell",

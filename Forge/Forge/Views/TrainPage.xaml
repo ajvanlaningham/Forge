@@ -40,7 +40,7 @@
                     <Label Text="{Binding StreakText}" FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource Leaf}" />
                     <Button Text="Repeat this block" Command="{Binding RepeatBlockCommand}" IsVisible="{Binding IsBlockComplete}"
                             BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" Margin="0,8,0,0" />
-                    <Button Text="Change program" Command="{Binding ChangeProgramCommand}" Margin="0,8,0,0" />
+                    <Button Text="Quest board: change program" Command="{Binding ChangeProgramCommand}" Margin="0,8,0,0" />
                 </VerticalStackLayout>
             </Border>
 

@@ -2,6 +2,7 @@
 
     python3 art/render.py                 # every art/sprites/*.txt -> art/out/<name>.png (1x) and <name>-x8.png
     python3 art/render.py kettlebell 4    # one sprite at 4x
+    python3 art/render.py --install       # art/manifest.txt -> Forge/Forge/Resources/Images/Pixel/<name>.png
 
 Each sprite is a grid of palette keys (art/palette.txt); '.' is transparent. The palette was read
 pixel-by-pixel from the hand-drawn Resources/Images/Equipment/dumbbell.png, which sets the house
@@ -30,8 +31,26 @@ def png(rows, scale, pal):
     return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', w * scale, h * scale, 8, 6, 0, 0, 0))
             + chunk(b'IDAT', zlib.compress(raw, 9)) + chunk(b'IEND', b''))
 
+APP_PIXEL = ART.parent / 'Forge' / 'Forge' / 'Resources' / 'Images' / 'Pixel'
+
+def install(pal):
+    """Render every sprite in art/manifest.txt at its scale into the app's Pixel image folder.
+    Pre-scaled with nearest-neighbour so the app never resamples small pixels (blur); the
+    csproj marks Resources/Images/Pixel/* Resize="False" for the same reason."""
+    APP_PIXEL.mkdir(parents=True, exist_ok=True)
+    for line in (ART / 'manifest.txt').read_text().splitlines():
+        if not line.strip() or line.startswith('#'):
+            continue
+        name, scale = line.split()[:2]
+        rows = [l for l in (ART / 'sprites' / f'{name}.txt').read_text().splitlines() if not l.startswith('#')]
+        (APP_PIXEL / f'{name}.png').write_bytes(png(rows, int(scale), pal))
+        print(f'installed {name} x{scale} -> {len(rows[0]) * int(scale)}x{len(rows) * int(scale)}')
+
 def main():
     pal = palette()
+    if sys.argv[1:2] == ['--install']:
+        install(pal)
+        return
     names = [sys.argv[1]] if len(sys.argv) > 1 else sorted(p.stem for p in (ART / 'sprites').glob('*.txt'))
     scales = [int(sys.argv[2])] if len(sys.argv) > 2 else [1, 8]
     out = ART / 'out'; out.mkdir(exist_ok=True)

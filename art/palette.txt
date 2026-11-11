@@ -6,5 +6,18 @@ D #786C5C warm rim
 E #2E3B47 cast shadow (outside the outline)
 F #8A8472 warm light
 G #E6E1CF top-lit edge (cream)
+L #9AA0A8 iron highlight (nails)
+W #C8CCD2 iron shine
 H #E0C045 gold accent
 I #E09145 orange accent
+# Quest board (wood, parchment, iron nails, wax seal). Warm, to sit with D/F above.
+w #2B1D14 wood deep (gaps between planks)
+x #4A3222 wood dark
+y #63432C wood mid
+z #7D5839 wood light
+k #3A271B wood knot / grain
+p #D9C9A3 parchment
+q #B8A37A parchment shade
+r #8E2A2A wax red
+s #5E1A1A wax dark
+t #B84A3A wax light

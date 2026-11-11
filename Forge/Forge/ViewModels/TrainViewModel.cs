@@ -93,7 +93,8 @@ namespace Forge.ViewModels
             StartEmptyCommand = new Command(async () => await StartAsync(fromProgram: false));
             ResumeCommand = new Command(async () => await OpenSessionAsync(_inProgressId));
             Title = "Train";
-            ChangeProgramCommand = new Command(async () => await ChangeProgramAsync());
+            // Programs are chosen on the Guild's quest board.
+            ChangeProgramCommand = new Command(async () => await Shell.Current.GoToAsync("//guild"));
             RepeatBlockCommand = new Command(async () => await RepeatBlockAsync());
             OpenLibraryCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(ExerciseLibraryPage)));
             OpenGearCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(MyGearPage)));
@@ -215,27 +216,6 @@ namespace Forge.ViewModels
             var active = await _programs.GetActiveAsync();
             if (active is null) return;
             await _programs.StartProgramAsync(active.Definition.Id, DateOnly.FromDateTime(DateTime.Today));
-            await RefreshAsync();
-        }
-
-        private async Task ChangeProgramAsync()
-        {
-            var programs = await _programs.GetProgramsAsync();
-            if (programs.Count == 0) return;
-
-            var labels = programs.Select(p => p.Placeholder ? $"{p.Name} (placeholder)" : p.Name).ToArray();
-            var choice = await Shell.Current.DisplayActionSheet("Choose a program", "Cancel", null, labels);
-            var index = Array.IndexOf(labels, choice);
-            if (index < 0) return;
-
-            var picked = programs[index];
-            var confirm = await Shell.Current.DisplayAlert(
-                "Start program?",
-                $"Start \"{picked.Name}\" at week 1, today? Your current block ends. Workout history is kept.",
-                "Start", "Cancel");
-            if (!confirm) return;
-
-            await _programs.StartProgramAsync(picked.Id, DateOnly.FromDateTime(DateTime.Today));
             await RefreshAsync();
         }
     }

@@ -31,6 +31,15 @@ namespace Forge.Training
 
         public string? Description { get; init; }
 
+        /// <summary>What the block is for: "Balanced", "Strength", "Conditioning".</summary>
+        public string Goal { get; init; } = "Balanced";
+
+        /// <summary>Typical session length as shown on the quest board, e.g. "30–40".</summary>
+        public string? Minutes { get; init; }
+
+        /// <summary>1 = novice … 3 = seasoned. Shown as a rank on the quest board.</summary>
+        public int Difficulty { get; init; } = 1;
+
         /// <summary>Equipment the program is written for. Missing pieces are handled by swaps.</summary>
         public IReadOnlyList<string> Equipment { get; init; } = Array.Empty<string>();
 

@@ -1,0 +1,6 @@
+# Sprites installed into the app: <sprite name> <scale>
+# Rendered (nearest-neighbour, pre-scaled so the app never resamples small pixels) into
+# Forge/Forge/Resources/Images/Pixel/<name>.png. Android resource names: lowercase, digits, _.
+board_wood 12
+nail 8
+wax_seal 8

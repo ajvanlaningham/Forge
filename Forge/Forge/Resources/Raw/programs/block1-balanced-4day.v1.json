@@ -3,6 +3,9 @@
   "name": "Block 1 · Balanced — 4-day",
   "description": "Upper / lower twice a week, 30–40 min. A days go heavier (6–10 reps), B days lighter (10–15). Dumbbells and a box; the gym swaps in bench and barbell.",
   "family": "block1-balanced",
+  "goal": "Balanced",
+  "minutes": "30–40",
+  "difficulty": 1,
   "version": 1,
   "equipment": [
     "dumbbell",

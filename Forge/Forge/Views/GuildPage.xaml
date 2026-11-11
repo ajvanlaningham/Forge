@@ -1,16 +1,98 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!--
+    The guild's quest board: training programs pinned to a wooden wall as parchment notices.
+    Pixel art (board_wood, nail, wax_seal) comes from art/ via the render script in install mode.
+    Single-world styling on purpose: ink on parchment, iron nails, a wax seal with the forge's anvil.
+-->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:res="clr-namespace:Forge.Resources.Strings"
+             xmlns:vm="clr-namespace:Forge.ViewModels"
              x:Class="Forge.Views.GuildPage"
-             Title="Guild">
-    <VerticalStackLayout Padding="24" Spacing="12">
-        <Label Text="Heroes’ Guild" FontFamily="PixelH" FontSize="22" TextColor="{StaticResource Accent}" />
-        <Frame Padding="16">
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Your party (0)" />
-                <Label Text="Invite allies to track progress together. (Coming soon)"/>
+             x:DataType="vm:QuestBoardViewModel"
+             x:Name="Page"
+             Shell.NavBarIsVisible="False"
+             Title="Quest Board">
+    <ContentPage.Resources>
+        <Color x:Key="Parchment">#D9C9A3</Color>
+        <Color x:Key="ParchmentShade">#B8A37A</Color>
+        <Color x:Key="Ink">#2B1D14</Color>
+        <Color x:Key="InkSoft">#5A4330</Color>
+        <Color x:Key="WoodDark">#4A3222</Color>
+        <Color x:Key="WoodDeep">#2B1D14</Color>
+        <Color x:Key="Wax">#8E2A2A</Color>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- The wall -->
+        <Image Source="board_wood.png" Aspect="AspectFill" />
+
+        <ScrollView>
+            <VerticalStackLayout Padding="18,20,18,32" Spacing="22">
+
+                <!-- Hanging sign -->
+                <Border BackgroundColor="{StaticResource WoodDeep}" Stroke="Black" StrokeThickness="3"
+                        StrokeShape="RoundRectangle 4" Padding="16,10" HorizontalOptions="Center">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Quest Board" FontFamily="FantasyH" FontSize="34" TextColor="#E6E1CF"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Accept a block. Four weeks of training, then return for the next."
+                               FontFamily="PixelUI" FontSize="17" TextColor="#B8A37A" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Notices -->
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Notices}" Spacing="26">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:QuestNotice">
+                            <Grid Rotation="{Binding Tilt}" Margin="6,0">
+                                <Border BackgroundColor="{StaticResource Parchment}" Stroke="{StaticResource WoodDeep}"
+                                        StrokeThickness="3" StrokeShape="RoundRectangle 2" Padding="18,20,18,16">
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black" Offset="4,6" Radius="0" Opacity="0.45" />
+                                    </Border.Shadow>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding IsRumour}" Value="True">
+                                            <Setter Property="Opacity" Value="0.55" />
+                                            <Setter Property="BackgroundColor" Value="{StaticResource ParchmentShade}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <VerticalStackLayout Spacing="6">
+                                        <Label Text="{Binding ActiveText}" IsVisible="{Binding HasActiveText}"
+                                               FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}" />
+                                        <Label Text="{Binding Title}" FontFamily="FantasyH" FontSize="24"
+                                               TextColor="{StaticResource Ink}" Margin="0,0,56,0" LineBreakMode="WordWrap" />
+                                        <Label Text="{Binding Meta}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource InkSoft}" />
+                                        <BoxView HeightRequest="2" Color="{StaticResource ParchmentShade}" Margin="0,2" />
+                                        <Label Text="{Binding Description}" IsVisible="{Binding HasDescription}"
+                                               FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Ink}" />
+                                        <Label Text="{Binding Gear}" IsVisible="{Binding HasGear}"
+                                               FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource InkSoft}" />
+                                        <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0">
+                                            <Label Text="{Binding Rank}" FontFamily="PixelUI" FontSize="17"
+                                                   TextColor="{StaticResource InkSoft}" VerticalOptions="Center" />
+                                            <Button Grid.Column="1" Text="{Binding ButtonText}" IsVisible="{Binding IsRumour, Converter={StaticResource InvertBool}}"
+                                                    IsEnabled="{Binding CanAccept}"
+                                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.AcceptCommand}"
+                                                    CommandParameter="{Binding Id}"
+                                                    FontFamily="PixelUI" FontSize="20" HeightRequest="48" Padding="16,0"
+                                                    BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
+                                                    BorderColor="Black" BorderWidth="2" CornerRadius="4" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                                <!-- Pinned with nails; sealed with the forge's anvil -->
+                                <Image Source="nail.png" WidthRequest="20" HeightRequest="20"
+                                       HorizontalOptions="Start" VerticalOptions="Start" Margin="8,6,0,0" />
+                                <Image Source="nail.png" WidthRequest="20" HeightRequest="20"
+                                       HorizontalOptions="End" VerticalOptions="Start" Margin="0,6,8,0" />
+                                <Image Source="wax_seal.png" WidthRequest="52" HeightRequest="52"
+                                       HorizontalOptions="End" VerticalOptions="Start" Margin="0,40,22,0"
+                                       IsVisible="{Binding IsActive}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
             </VerticalStackLayout>
-        </Frame>
-    </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>
