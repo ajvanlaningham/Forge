@@ -21,3 +21,5 @@ q #B8A37A parchment shade
 r #8E2A2A wax red
 s #5E1A1A wax dark
 t #B84A3A wax light
+u #B88A5A rope (tan; drawn bare like steel cable)
+v #7A5638 rope shade

@@ -25,11 +25,21 @@ class Sprite:
         if y1 > y0:
             for x in range(x0, x1 + 1): self.put(x, y0, top)
     def rivet(self, x, y): self.put(x, y, 'H'); self.put(x, y + 1, 'I')
+    def wheel(self, cx, cy, r, rim='F', body='B', hub='C'):
+        """A flywheel: lit rim on the upper-left, shaded lower-right, dark hub."""
+        for y in range(cy - r, cy + r + 1):
+            for x in range(cx - r, cx + r + 1):
+                d2 = (x - cx) ** 2 + (y - cy) ** 2
+                if d2 <= r * r:
+                    edge = d2 > (r - 1.3) ** 2
+                    lit = (x - cx) + (y - cy) < 0
+                    self.put(x, y, ('G' if lit else 'C') if edge else body)
+        self.fill(cx - 1, cy - 1, cx, cy, hub)
     def finish(self, name):
         g = self.g
         filled = {(x, y) for y in range(N) for x in range(N) if g[y][x] != '.'}
-        # Thin steel cable (W) is drawn bare: outlining a 1px line would bury it in black.
-        solid = {(x, y) for (x, y) in filled if g[y][x] != 'W'}
+        # Thin steel cable (W) and thin rope (u) are drawn bare: outlining a 1px line buries it.
+        solid = {(x, y) for (x, y) in filled if g[y][x] not in 'Wu'}
         for y in range(N):
             for x in range(N):
                 if (x, y) in filled: continue
@@ -137,3 +147,80 @@ s.block(21, 6, 23, 12, body='B', top='G', rim='D')          # plates on the horn
 s.block(24, 7, 25, 11, body='B', top='G', rim='D')
 s.rivet(17, 12)
 s.finish('machine')
+
+
+# ================= Batch 2: conditioning gear =================
+
+# --- bike: stationary bike, side view ---
+s = Sprite()
+s.block(3, 24, 26, 25, body='B', top='F', rim='D')          # base
+s.wheel(20, 18, 5)                                          # flywheel
+for i in range(12):                                          # frame: rear foot up to the seat post
+    s.put(8 + i // 3, 23 - i, 'B'); s.put(9 + i // 3, 23 - i, 'C')
+s.block(7, 9, 9, 13, body='B', top='B', rim='D')            # seat post
+s.block(4, 7, 11, 8, body='D', top='F', rim='F', shade='C') # saddle
+s.block(19, 7, 20, 13, body='B', top='B', rim='D')          # handlebar stem
+s.block(17, 5, 24, 6, body='D', top='F', rim='F', shade='C')# bars
+s.rivet(13, 17)                                             # crank
+s.finish('bike')
+
+# --- row machine: rail, sliding seat, flywheel housing, chain to the handle ---
+s = Sprite()
+s.block(2, 20, 27, 21, body='B', top='G', rim='D')          # rail
+s.block(3, 22, 5, 24, body='B', top='B', rim='D')           # rear leg
+s.block(23, 22, 26, 24, body='B', top='B', rim='D')         # front leg
+s.wheel(22, 13, 5)                                          # flywheel housing
+s.block(8, 16, 13, 19, body='D', top='F', rim='F', shade='C')   # seat
+s.block(15, 15, 17, 19, body='B', top='G', rim='D')         # foot stretcher
+for x in range(11, 18): s.put(x, 12, 'W')                   # chain
+s.block(8, 10, 10, 14, body='D', top='F', rim='F', shade='C')   # handle
+s.rivet(22, 12)
+s.finish('row_machine')
+
+# --- ski erg: tower, top housing, two cable handles, platform ---
+s = Sprite()
+s.block(11, 2, 18, 8, body='B', top='G', rim='D')           # top housing
+s.wheel(14, 5, 2, rim='F', body='C', hub='C')
+s.block(13, 9, 16, 23, body='B', top='B', rim='D')          # tower
+s.block(5, 23, 24, 25, body='B', top='F', rim='D')          # platform
+for y in range(8, 16): s.put(9, y, 'W'); s.put(20, y, 'W')  # cables
+for x in (10, 19): s.put(x, 7, 'W')
+s.block(7, 16, 10, 19, body='D', top='F', rim='F', shade='C')   # handles
+s.block(19, 16, 22, 19, body='D', top='F', rim='F', shade='C')
+s.rivet(14, 14)
+s.finish('ski_erg')
+
+# --- jump rope: two handles and a big loop of rope ---
+s = Sprite()
+import math
+for t in range(0, 181, 3):                                   # rope arc over the top
+    a = math.radians(t)
+    x = round(14.5 - 10 * math.cos(a)); y = round(13 - 10 * math.sin(a))
+    s.put(x, y, 'u')
+s.block(3, 13, 6, 22, body='D', top='F', rim='F', shade='C')    # left handle
+s.block(23, 13, 26, 22, body='D', top='F', rim='F', shade='C')  # right handle
+s.rivet(4, 20); s.rivet(24, 20)                              # end caps
+s.finish('jump_rope')
+
+# --- battle rope: thick rope in waves to an anchor post ---
+s = Sprite()
+s.block(23, 6, 27, 24, body='B', top='G', rim='D')           # anchor post
+s.rivet(25, 14)
+for x in range(2, 23):                                       # 2px-thick wave, lit top / shaded bottom
+    y = round(15 + 4 * math.sin((x - 2) / 3.2))
+    s.put(x, y, 'u'); s.put(x, y + 1, 'v'); s.put(x, y + 2, 'v')
+s.block(1, 13, 3, 19, body='D', top='F', rim='F', shade='C') # handle end
+s.finish('battle_rope')
+
+# --- sled: push sled — skids, two posts, plates on the centre horn ---
+s = Sprite()
+s.block(2, 22, 27, 23, body='B', top='G', rim='D')           # skids
+s.put(1, 21, 'B'); s.put(2, 21, 'G')                          # upturned nose
+s.block(5, 5, 7, 21, body='B', top='G', rim='D')             # left post
+s.block(22, 5, 24, 21, body='B', top='G', rim='D')           # right post
+s.block(11, 12, 18, 14, body='B', top='G', rim='D')          # plates on the horn
+s.block(10, 15, 19, 18, body='B', top='F', rim='D')
+s.block(11, 19, 18, 21, body='B', top='F', rim='D')
+s.rivet(14, 9)                                               # horn top
+s.fill(14, 10, 15, 11, 'F')
+s.finish('sled')
