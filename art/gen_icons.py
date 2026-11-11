@@ -240,14 +240,23 @@ ring(12, 13, 9, 7, 't', 'r', 's')
 ring(18, 17, 8, 6, 'z', 'y', 'x')
 s.finish('bands')
 
-# --- mat: half-rolled yoga mat ---
+# --- mat: a rolled mat lying on its side — spiral end, two straps, sage ---
 s = Sprite()
-s.block(2, 18, 19, 21, body='D', top='F', rim='F', shade='v')   # unrolled part
-s.wheel(22, 16, 6, rim='F', body='D', hub='v')                   # the roll
-for t in range(0, 300, 20):                                      # spiral line on the roll's end
+s.fill(9, 11, 26, 20, 'm')                                        # the roll's body
+s.fill(9, 11, 26, 12, 'o')                                        # lit top
+s.fill(9, 19, 26, 20, 'e')                                        # shaded underside
+for x in (14, 21):                                                # straps
+    s.fill(x, 11, x + 1, 20, 'D'); s.put(x, 11, 'F'); s.put(x + 1, 11, 'F')
+cx, cy = 8, 15.5                                                  # spiral end, facing us
+for y in range(10, 22):
+    for x in range(2, 15):
+        d = ((x - cx) / 6) ** 2 + ((y - cy) / 5.7) ** 2
+        if d <= 1 and x <= 9: s.put(x, y, 'o' if (x - cx) + (y - cy) < -3 else 'm')
+for t in range(0, 540, 15):                                       # the rolled layers
     import math
-    a = math.radians(t); r = 1 + t / 100
-    s.put(round(22 + r * math.cos(a)), round(16 + r * math.sin(a)), 'v')
+    a = math.radians(t); r = 0.6 + t / 140
+    s.put(round(cx + r * math.cos(a) * 1.05), round(cy + r * math.sin(a)), 'e')
+s.rivet(22, 15)
 s.finish('mat')
 
 # --- wall: a section of brick wall ---
@@ -303,3 +312,17 @@ s.block(6, 18, 11, 20, body='D', top='F', rim='F', shade='C')     # handles
 s.block(18, 18, 23, 20, body='D', top='F', rim='F', shade='C')
 s.rivet(14, 2)
 s.finish('suspension_trainer')
+
+
+# --- punching bag: heavy bag hung from a mount by two chains in a V ---
+s = Sprite()
+s.block(13, 0, 16, 1, body='B', top='G', rim='D')                 # mount
+for i in range(6):                                                # chains fanning out to the bag's corners
+    s.put(14 - i, 2 + i, 'W'); s.put(15 + i, 2 + i, 'W')
+s.block(8, 8, 21, 26, body='r', top='t', rim='t', shade='s')      # the bag
+for (x, y) in [(8, 8), (21, 8), (8, 26), (21, 26)]: s.put(x, y, '.')   # rounded corners
+s.fill(8, 9, 21, 9, 't')                                          # stitched top edge
+s.fill(8, 13, 21, 13, 's'); s.fill(8, 22, 21, 22, 's')            # bands
+s.fill(10, 10, 11, 20, 't')                                       # leather shine
+s.rivet(18, 16)
+s.finish('punching_bag')

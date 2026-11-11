@@ -213,5 +213,20 @@
     "skill": "beginner",
     "isActive": true,
     "pair": true
+  },
+  {
+    "name": "Heavy Bag Rounds",
+    "description": "Rounds on the heavy bag: punches and combinations, light on your feet, steady breathing. Stop when form goes.",
+    "category": "conditioning",
+    "bodyZone": "fullBody",
+    "movement": "rotation",
+    "modality": "bodyweight",
+    "equipment": [
+      "punchingBag"
+    ],
+    "action": "time",
+    "defaultSeconds": 120,
+    "skill": "beginner",
+    "isActive": true
   }
 ]

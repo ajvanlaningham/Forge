@@ -85,7 +85,8 @@ namespace Forge.Models
         // Commercial-gym equipment (added for the Gym location and barbell/cable programs).
         SquatRack = 1 << 20,
         CableMachine = 1 << 21,
-        Machine = 1 << 22   // selectorized / plate-loaded machines (leg press, lat pulldown, ...)
+        Machine = 1 << 22,  // selectorized / plate-loaded machines (leg press, lat pulldown, ...)
+        PunchingBag = 1 << 23
     }
 
     public static class EquipmentGroups
@@ -109,6 +110,7 @@ namespace Forge.Models
             { Equipment.JumpRope, "Conditioning" },
             { Equipment.BattleRope, "Conditioning" },
             { Equipment.Sled, "Conditioning" },
+            { Equipment.PunchingBag, "Conditioning" },
 
             { Equipment.Bands, "Mobility" },
             { Equipment.Mat, "Mobility" },

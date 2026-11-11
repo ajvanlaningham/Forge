@@ -32,7 +32,7 @@ namespace Forge.Constants
                 "recovery.v1.json"
             };
 
-            public const string LibraryVersion = "v6"; // v6: pull-up ladder (band-assisted, negatives, dead hang)
+            public const string LibraryVersion = "v7"; // v7: punching bag + heavy bag rounds
             public const string ExSourceTag = "recovery";
         }
 
