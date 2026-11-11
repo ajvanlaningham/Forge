@@ -8,6 +8,11 @@ character later (Decision: "layered, wearable later"). Parts are drawn back to f
 its own black outline ring, which reads as the house style's chunky outlines between pieces.
 Shading follows the house style: lit top and left edge, shaded right and bottom edge.
 
+Approved sprites are frozen (--freeze): a '# frozen' first line makes the file the source of truth,
+edited by hand, and this script skips it. Hand edits should keep the frame's anchors so forged gear
+still fits: head box x12..19 y7..15 (the Construct's box head x10..21 y6..15), weapon hand x8..10
+y26..28, off hand x21..23 y26..28, feet x11..14 / x17..20 y38..39 (frame rows; canvas row = y + TOP).
+
 Construct x Wizard is the user's robot wizard (wizard_bot.png) redrawn in this frame: gold visor head
 with purple eyes, ear bolt, navy hat with a gold band, navy robe with a purple rune, wrench and leaf
 shield.
@@ -567,13 +572,66 @@ def build(race, cls):
     cv.finish()
     return cv
 
+FROZEN = '# frozen'
+
+
+def is_frozen(name):
+    """An approved sprite: its file is the source of truth and the generator leaves it alone."""
+    path = OUT / f'{name}.txt'
+    return path.exists() and path.read_text().startswith(FROZEN)
+
+
+def load(name):
+    """A sprite file back into a canvas (for the review sheet)."""
+    cv = Canvas()
+    pal = {'A': OUTLINE, 'E': SHADOW}
+    grid = []
+    for line in (OUT / f'{name}.txt').read_text().splitlines():
+        if line.startswith('#!'):
+            _, key, color = line.split()[:3]
+            pal[key] = color
+        elif not line.startswith('#'):
+            grid.append(line)
+    if len(grid) != H or any(len(row) != W for row in grid):
+        print(f'warning: {name} is {len(grid[0]) if grid else 0}x{len(grid)}, the frame is {W}x{H}')
+    for y, row in enumerate(grid[:H]):
+        for x, ch in enumerate(row[:W]):
+            cv.px[y][x] = None if ch == '.' else pal.get(ch)
+    return cv
+
+
+def freeze(names, thaw=False):
+    import datetime
+    for name in names:
+        path = OUT / f'{name}.txt'
+        text = path.read_text()
+        if thaw:
+            path.write_text('\n'.join(l for l in text.splitlines() if not l.startswith(FROZEN)) + '\n')
+            print('thawed', name)
+        elif not text.startswith(FROZEN):
+            path.write_text(f'{FROZEN} {datetime.date.today()}: approved. Edit this file by hand; gen_characters.py skips it.\n' + text)
+            print('froze', name)
+
+
 if __name__ == '__main__':
-    cells = []
+    # python3 art/gen_characters.py                      regenerate every sprite that isn't frozen
+    # python3 art/gen_characters.py --freeze orc_monk    approve sprites (or --freeze all)
+    # python3 art/gen_characters.py --thaw orc_monk      hand a sprite back to the generator
+    names = [f'char_{r}_{c}' for r in RACES for c in CLASSES]
+    if sys.argv[1:2] in (['--freeze'], ['--thaw']):
+        picked = names if sys.argv[2:] == ['all'] else [n if n.startswith('char_') else f'char_{n}' for n in sys.argv[2:]]
+        freeze(picked, thaw=sys.argv[1] == '--thaw')
+        sys.exit()
+    cells, wrote, kept = [], 0, 0
     for race in RACES:
         for cls in CLASSES:
-            cv = build(race, cls)
-            write(f'char_{race}_{cls}', cv)
-            cells.append(cv)
+            name = f'char_{race}_{cls}'
+            if is_frozen(name):
+                cells.append(load(name)); kept += 1
+            else:
+                cv = build(race, cls)
+                write(name, cv)
+                cells.append(cv); wrote += 1
     (ART / 'out').mkdir(exist_ok=True)
     sheet(cells, len(CLASSES), 4, ART / 'out' / 'characters.png')
-    print(f'wrote {len(cells)} characters; sheet: art/out/characters.png')
+    print(f'generated {wrote}, kept {kept} frozen; sheet: art/out/characters.png')
