@@ -116,6 +116,16 @@ namespace Forge.Services
             set => Preferences.Set("Profile.Norms", value);
         }
 
+        /// <summary>
+        /// The first-run flow has been completed (or skipped because this install already had data,
+        /// or was restored from a backup).
+        /// </summary>
+        public static bool OnboardingDone
+        {
+            get => Preferences.Get("Onboarding.Done", false);
+            set => Preferences.Set("Onboarding.Done", value);
+        }
+
         // --- the hero's look (race x class sprite, picked on the Hero tab) ---
 
         public static readonly (string Id, string Label)[] Races =

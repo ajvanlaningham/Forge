@@ -11,7 +11,13 @@ namespace Forge
         {
             // The loading screen (the hammer on the anvil) first, then the tabs.
             var window = new Window();
-            window.Page = new Views.LoadingPage(() => window.Page = new AppShell());
+            // A fresh install gets the first run (start fresh or restore, units, hero, gear, first quest).
+            window.Page = new Views.LoadingPage(async () =>
+            {
+                window.Page = await Views.OnboardingPage.NeededAsync()
+                    ? new Views.OnboardingPage(() => window.Page = new AppShell())
+                    : new AppShell();
+            });
 
             // Daily backup (PBI 10.1): on launch and whenever the app comes back to the
             // foreground, back up if today's copy doesn't exist yet. Fire-and-forget — it never

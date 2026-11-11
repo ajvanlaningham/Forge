@@ -405,8 +405,10 @@ Rework the program format before writing real content:
   circlets; the jade bracers read as books.
 - **Hero tab (the character page), remaining:** injuries and limitations as status effects (see
   below); unlockable looks from consistency milestones (never PRs or weight).
-- **Onboarding** (Decision 20 journey): first-run choice of start fresh / restore, units, a quick
-  gear tap, days per week → a suggested quest version. Before a second user installs.
+- [~] **Onboarding** (built 2026-11-11, not yet device-tested): welcome (start fresh / restore a
+  backup), units, hero, home gear tiles, first quest (Balanced/Stronger/Fitter × 3/4 days → the
+  fitting version via `FirstQuest` in Core, shown as the hero's own item). Installs with data skip
+  it; Settings → "Preview the first run" walks it without changing anything.
 - **Polish:** status bar is still the template purple; app icon is still the .NET template (the
   anvil would do); Today's plan preview shows prescribed names, not home swaps; the logbook and
   history still convert kilo bells to pounds (the briefing and guided session already say "16 kg").

@@ -27,59 +27,15 @@ namespace Forge.ViewModels
 
         public ICommand RestoreCommand => new Command(async () => await RestoreAsync());
 
-        /// <summary>
-        /// PBI 10.2: pick a backup (the system picker can see Download/Forge, including copies from
-        /// a previous install), validate it, confirm, restore, then close so the app reopens on it.
-        /// </summary>
-        private async Task RestoreAsync()
+        private Task RestoreAsync()
+            => RestoreFlow.RunAsync(Shell.Current.CurrentPage, _backup);
+
+        /// <summary>Walk through the first-run screens without changing anything (QA, curiosity).</summary>
+        public ICommand PreviewFirstRunCommand { get; } = new Command(async () =>
         {
-            Stream? stream;
-            string fileName;
-            try
-            {
-#if ANDROID
-                // Opens straight into Download/Forge rather than the phone's recent files.
-                var picked = await Forge.Platforms.Android.BackupFilePicker.PickAsync();
-                if (picked is null) return;
-                (stream, fileName) = picked.Value;
-#else
-                var picked = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = "Choose a Forge backup" });
-                if (picked is null) return;
-                stream = await picked.OpenReadAsync();
-                fileName = picked.FileName;
-#endif
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Restore", $"Couldn't open the file picker: {ex.Message}", "OK");
-                return;
-            }
-
-            RestoreCheck check;
-            await using (stream)
-                check = await _backup.InspectAsync(stream, fileName);
-            if (!check.Ok)
-            {
-                await Shell.Current.DisplayAlert("Can't restore that file", check.Message, "OK");
-                return;
-            }
-
-            var go = await Shell.Current.DisplayAlert("Replace your data?",
-                $"{fileName}\n{check.Summary}\n\nEverything currently in Forge is replaced by this backup. " +
-                "Your current data is backed up first, so this can be undone by restoring that copy.",
-                "Restore", "Cancel");
-            if (!go) return;
-
-            var result = await _backup.RestoreAsync(check);
-            if (!result.Success)
-            {
-                await Shell.Current.DisplayAlert("Restore failed", result.Message, "OK");
-                return;
-            }
-
-            await Shell.Current.DisplayAlert("Restored", result.Message + "\n\nForge will now close. Open it again to continue.", "Close Forge");
-            Application.Current?.Quit();
-        }
+            var nav = Shell.Current.Navigation;
+            await nav.PushModalAsync(new Forge.Views.OnboardingPage(async () => await nav.PopModalAsync(), preview: true));
+        });
 
         public ICommand OpenComparisonsCommand { get; } = new Command(async () =>
             await Shell.Current.GoToAsync(nameof(Forge.Views.SubPages.ComparisonsPage)));
