@@ -15,8 +15,8 @@ shield.
 import struct, sys, zlib
 from pathlib import Path
 
-W, H = 32, 48
-TOP = 4            # headroom: frame y=0 is canvas row 4, so hats and helm crests can rise to y=-4
+W, H = 32, 50
+TOP = 6            # headroom: frame y=0 is canvas row 6, so hats and helm crests can rise to y=-6
 ART = Path(__file__).resolve().parent
 OUT = ART / 'sprites'
 
