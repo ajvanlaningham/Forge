@@ -21,3 +21,11 @@ ski_erg 4
 jump_rope 4
 battle_rope 4
 sled 4
+bands 4
+mat 4
+wall 4
+box_step 4
+medicine_ball 4
+sandbag 4
+suspension_trainer 4
+punching_bag 4

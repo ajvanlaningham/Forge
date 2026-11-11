@@ -250,7 +250,9 @@ def axial(x, y): return (x - P0[0]) * ux + (y - P0[1]) * uy, (x - P0[0]) * nx + 
 for y in range(N):                                     # the body: lit upper side, sage, shaded underside
     for x in range(N):
         a_, b_ = axial(x + 0.5, y + 0.5)
-        if 0 <= a_ <= L and abs(b_) <= R:
+        body = 0 <= a_ <= L and abs(b_) <= R
+        far_cap = a_ > L and ((a_ - L) / (R * 0.78)) ** 2 + (b_ / R) ** 2 <= 1   # rounded far end
+        if body or far_cap:
             s.put(x, y, 'o' if b_ > R * 0.45 else 'e' if b_ < -R * 0.5 else 'm')
 for t in (0.42, 0.74):                                 # two straps wrapping the roll
     for y in range(N):
