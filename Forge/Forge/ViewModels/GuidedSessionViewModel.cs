@@ -388,7 +388,7 @@ namespace Forge.ViewModels
                 StatKind.Dexterity => ("mobility test", "three tape-measure tests: ankle, hamstrings, shoulders."),
                 _ => ("conditioning test", "three minutes on a step to a beat, then a one-minute pulse count. Take 5 minutes first so your pulse settles.")
             };
-            TestText = $"{(due.Calibration ? "Practice run" : "Honing")}: the {name} is next. {what}";
+            TestText = $"{(due.Calibration ? "Practice run" : "Honing")}: the {name} is next. {char.ToUpperInvariant(what[0])}{what[1..]}";
             TestButton = due.Calibration ? $"Do the practice {name}" : $"Take the {name}";
         }
 
