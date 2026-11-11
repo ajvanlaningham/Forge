@@ -26,6 +26,8 @@ namespace Forge.ViewModels
         public required string DetailText { get; init; }
         public required IDrawable Trend { get; init; }
         public bool HasTrend { get; init; }
+        /// <summary>Tap the row: how this compares with published norms, where any apply (Decision 23).</summary>
+        public required ICommand CompareCommand { get; init; }
     }
 
     public sealed class HeroViewModel : BaseViewModel
@@ -108,9 +110,37 @@ namespace Forge.ViewModels
                     ChangeText = change is int c ? $"{(c >= 0 ? "+" : "")}{c} since last" : latest is not null ? "baseline" : "",
                     DetailText = detail,
                     Trend = new Forge.ViewModels.Controls.Sparkline(scored.Select(t => (double)t.Score).ToList(), line, accent),
-                    HasTrend = scored.Count >= 2
+                    HasTrend = scored.Count >= 2,
+                    CompareCommand = new Command(async () => await Shell.Current.DisplayAlert("How this compares", CompareText(kind, last), "OK"))
                 });
             }
+        }
+
+        /// <summary>
+        /// Coarse published-norm bands, only where a credible table matches how we run the test.
+        /// Today that's push-ups (CSEP-PATH); the others say plainly why there's no comparison.
+        /// </summary>
+        private static string CompareText(StatKind kind, StatTestRow? last)
+        {
+            const string self = "Your score only ever compares you with yourself.";
+            if (kind != StatKind.Strength)
+                return $"There's no published table that matches this test as Forge runs it, so there's no comparison here. {self}";
+            var group = UserSettings.NormsGroup;
+            if (group == "none" || UserSettings.BirthYear is not int year)
+                return $"Comparisons are off. To see push-ups against published norms, choose a set of norms and add your birth year in Settings → Compare my test results. {self}";
+            var push = last is null ? null : (System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, double>>(last.MeasuresJson) ?? new())
+                .FirstOrDefault(kv => kv.Key.StartsWith("pushups:", StringComparison.Ordinal)) is { Key: not null } kv ? kv : (KeyValuePair<string, double>?)null;
+            if (push is null) return $"No push-up result yet. {self}";
+            var version = push.Value.Key["pushups:".Length..];
+            var reps = (int)push.Value.Value;
+            var age = DateTime.Today.Year - year;
+            var groupName = group == "women" ? "women" : "men";
+            if (Norms.PushUpBand(group, age, version, reps) is { } band)
+                return $"Push-ups: {reps} · {band} for {groupName} {Norms.AgeBand(age)}.\n\nSource: {Norms.PushUpSource}. A coarse band, not a health verdict. {self}";
+            var needs = group == "women" ? "knee push-ups" : "full push-ups from the floor";
+            return age is < 20 or > 69
+                ? $"The published table covers ages 20–69. {self}"
+                : $"The {groupName}'s table is for {needs}; your test is '{version}', so it doesn't apply. {self}";
         }
 
         public async Task RefreshAsync()

@@ -153,8 +153,8 @@ public sealed class StatTestPage : ContentPage
         Picker? inclinePicker = null;
         if (incline is null)
         {
-            inclinePicker = new Picker { Title = "Where", ItemsSource = new[] { "Floor", "Hands on a box or step", "Hands on a wall" }, SelectedIndex = 1, FontSize = 18, TextColor = _onBg };
-            _body.Add(Note("Pick the version you can do at least a few of. It's kept for every test."));
+            inclinePicker = new Picker { Title = "Where", ItemsSource = new[] { "Floor", "Knees", "Hands on a box or step", "Hands on a wall" }, SelectedIndex = 2, FontSize = 18, TextColor = _onBg };
+            _body.Add(Note("Pick the version you can do at least a few of. It's kept for every test. (Published norms exist for full push-ups from the floor for men, and knee push-ups for women, if you ever want a comparison.)"));
             _body.Add(inclinePicker);
         }
         else _body.Add(Note($"Same as always: {incline}."));

@@ -355,12 +355,12 @@ Rework the program format before writing real content:
   clamp 1–100, retest cap +10; inverted inputs (gaps, heart rate) where smaller is better.
 - [x] **5.2** Protocol v2 as data: per-user frozen choices (test lifts, step height, push-up incline);
   `StatTestRow` (date, kind, protocol version, raw measures, bodyweight, calibration flag, score).
-- [~] **5.3** Test steps (built as a test page opened from Today's test-day card or Hero, not yet inside the guided session): STR top sets that ask "How many?",
+- [x] **5.3** Test steps: a test page opened from Today's test-day card, from Hero, or as the guided session's last steps on a test day: STR top sets that ask "How many?",
   push-ups to failure; DEX measurement entry with diagrams; CON step test with a 96-beat
   metronome and a timed 1-minute pulse count; optional resting HR.
 - [x] **5.4** Calibration run in week 1 of the first quest (unscored); baseline in its week 4.
-- **5.5** Stat cards on Hero: score, change, sparkline, raw measures, absolute and relative e1RM.
-- [~] **5.6** Optional birth year and norms group in Settings (done: "Compare my results with: Women's / Men's / Don't compare"); norm bands still to come; coarse norm bands behind a tap on tests with credible
+- [x] **5.5** Stat cards on Hero: score, change, sparkline, raw measures, absolute and relative e1RM.
+- [x] **5.6** Optional birth year and norms group in Settings ("Compare my results with: Women's / Men's / Don't compare"). Norm bands: **push-ups only** (CSEP-PATH, men floor / women knees, 20–69); the step test, sit-and-reach and knee-to-wall have no table that is both credible and matches our protocol, so they say so; coarse norm bands behind a tap on tests with credible
   tables. No health claims.
 
 ### Nutrition & devices (Epics 6, 7)

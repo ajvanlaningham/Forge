@@ -96,6 +96,10 @@ stat input, because its ceiling makes it useless for a log scale.
    baseline. Population norms appear only as an **optional, coarse band** ("about average for
    men 40–49, ACSM") behind a tap, on tests with credible tables (push-ups, sit-and-reach,
    knee-to-wall, the step test once one source is chosen), and only if age and sex are entered.
+   *Built 2026-11-11 for push-ups only* (CSEP-PATH: men full push-ups from the floor, women knee
+   push-ups, ages 20–69). The step-test tables disagree and lack a women's table; adult
+   sit-and-reach norms use a different protocol; the knee-to-wall norms weren't retrievable. Those
+   tests say plainly that there's no comparison.
    No health claims. The Guild, when it comes, compares **progress** (points gained), not
    percentiles.
 2. **Push-ups count toward STR**, alongside the three lifts.

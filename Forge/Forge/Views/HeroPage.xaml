@@ -32,6 +32,9 @@
                     <DataTemplate x:DataType="vm:StatHistoryItem">
                         <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}" StrokeThickness="1"
                                 StrokeShape="RoundRectangle 8" Padding="12,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CompareCommand}" />
+                            </Border.GestureRecognizers>
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10">
                                 <VerticalStackLayout Spacing="2">
                                     <Label Text="{Binding Label}" FontFamily="PixelUI" FontSize="21" TextColor="{StaticResource Accent}" />
