@@ -95,6 +95,16 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     Copper staff becomes a Copper axe). The quest board names **your hero's** item ("Copper
     Staff · Anvil"). Wearing: each frozen sprite marks which pixels belong to which slot, and a
     forged piece recolours them in its metal.
+23. **Stat tests, protocol v2** (approved 2026-11-11; `docs/baseline-tests.md`). Tests run in
+    Honing (week 4) of every quest on their slotted days. **STR:** a squat/lunge, a press and a
+    row chosen once from your gear, one all-out set at the heaviest owned weight you can lift
+    3–10 times → e1RM ÷ bodyweight; **push-ups to failure count too**. **DEX:** knee-to-wall,
+    back-saver sit-and-reach, shoulder reach (tape measure); the deep-squat hold drops out; the
+    sitting-rising test is a milestone, not a stat input. **CON:** 3-minute step test with a
+    hand-counted 1-minute recovery pulse (until a strap); a known resting HR may be typed in.
+    **Calibration run in week 1 of the first quest**, baseline in its week 4. **Scores stay
+    self-relative** (Decision 5); optional coarse norm bands where tables are credible, behind a
+    tap, needing optional age and sex; the Guild compares progress, not percentiles.
 21. **Guided sessions** (agreed with the user 2026-11-11). Start → a **briefing** (Home/Gym, the
     plan with swaps, weights to settle, a gather list, an estimate) → BEGIN. Then one set at a
     time, **hands-free**: a set runs on a timer (3 s/rep + 5 s setup, or the hold's time), logs its
@@ -340,17 +350,18 @@ Rework the program format before writing real content:
 - **3.4 Rest of check-in:** `DailyCheckInRow` (sleep, steps, RHR, note), all optional, with a
   per-field manual-vs-synced flag so sync never overwrites hand entries.
 
-### Baseline testing (Epic 5)
-- **5.1** Implement log scoring (Decision 5) with XML docs; delete `ScoreFrom`/`ScoreStepRatio`;
-  scores can fall; tests for baseline=10, doubling=35, halving, retest cap.
-- **5.2** Protocols from `docs/baseline-tests.md` as versioned seed data; record per-lift fixed
-  loads at first test. CON is scored in total reps, not rounds.
-- **5.3** Guided test flow with timers; `StatTestRow` (date, kind, protocol version, raw
-  measures, bodyweight, score); grants quest XP; abandon/resume safely.
-- **5.4** 7-day test window on every 4th level; three sessions; expires without penalty.
-- **5.5** First baseline taken twice a week apart, second one kept; guarded reset only.
-- **5.6** Stat cards: score, delta, sparkline, raw measures, relative + absolute e1RM, next
-  window date.
+### Baseline testing (Epic 5): protocol v2, Decision 23
+- **5.1** Log scoring (Decision 5) in Core with tests: baseline = 10, doubling = +25, halving,
+  clamp 1–100, retest cap +10; inverted inputs (gaps, heart rate) where smaller is better.
+- **5.2** Protocol v2 as data: per-user frozen choices (test lifts, step height, push-up incline);
+  `StatTestRow` (date, kind, protocol version, raw measures, bodyweight, calibration flag, score).
+- **5.3** Test steps inside the Honing guided session: STR top sets that ask "How many?",
+  push-ups to failure; DEX measurement entry with diagrams; CON step test with a 96-beat
+  metronome and a timed 1-minute pulse count; optional resting HR.
+- **5.4** Calibration run in week 1 of the first quest (unscored); baseline in its week 4.
+- **5.5** Stat cards on Hero: score, change, sparkline, raw measures, absolute and relative e1RM.
+- **5.6** Optional age and sex in Settings; coarse norm bands behind a tap on tests with credible
+  tables. No health claims.
 
 ### Nutrition & devices (Epics 6, 7)
 - **6.1** Manual protein/calorie fields on check-in, configurable targets, shown next to weight.
