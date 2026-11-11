@@ -18,12 +18,14 @@
         </Style>
     </ContentPage.Resources>
 
-    <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="12">
-        <Label Text="{x:Static res:AppResources.GearPage_TapToToggleCTA}"
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+        <Button Text="Set the weights you own"
+                Clicked="OnWeightsClicked" />
+        <Label Grid.Row="1" Text="{x:Static res:AppResources.GearPage_TapToToggleCTA}"
                FontSize="16"
                Margin="2,0,0,4" />
 
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="2"
                         ItemsSource="{Binding GroupedGear}"
                         IsGrouped="True"
                         SelectionMode="None">

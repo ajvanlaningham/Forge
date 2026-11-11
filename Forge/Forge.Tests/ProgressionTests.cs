@@ -10,8 +10,10 @@ public class ProgressionTests
     private static IReadOnlyList<WorkSet> Session(double load, params int[] reps)
         => reps.Select(r => new WorkSet(load, r, null)).ToList();
 
+    private static readonly LoadSet Plates5 = new LoadSet.Range(45, null, 5, WeightUnit.Pounds);
+
     private static Suggestion? Suggest(Prescription rx, params IReadOnlyList<WorkSet>[] history)
-        => Progression.Suggest(rx, history, 5, WeightUnit.Pounds);
+        => Progression.Suggest(rx, history, Plates5, WeightUnit.Pounds);
 
     [Fact]
     public void NoHistory_NoSuggestion()
@@ -109,13 +111,37 @@ public class ProgressionTests
     [Fact]
     public void Kilograms_StepInKilograms()
     {
-        // 60 kg stored as pounds, 2.5 kg step: next is 62.5 kg, not 60 kg + 5 lb.
+        // 60 kg stored as pounds, 2.5 kg steps: next is 62.5 kg, not 60 kg + 5 lb.
         var lb = WeightMath.ToStoredPounds(60, WeightUnit.Kilograms);
-        var s = Progression.Suggest(ThreeBySixToTen, [Session(lb, 10, 10, 10)], 2.5, WeightUnit.Kilograms)!;
+        var kgBar = new LoadSet.Range(WeightMath.ToStoredPounds(20, WeightUnit.Kilograms), null, 2.5, WeightUnit.Kilograms);
+        var s = Progression.Suggest(ThreeBySixToTen, [Session(lb, 10, 10, 10)], kgBar, WeightUnit.Kilograms)!;
         Assert.Equal(62.5, WeightMath.ToDisplay(s.LoadLb, WeightUnit.Kilograms), 6);
     }
 
     [Fact]
-    public void OffGridLoad_StillGoesUp()
-        => Assert.True(Progression.StepUp(137, 5, WeightUnit.Pounds) > 137);
+    public void OwnedDumbbells_JumpToTheNextOneYouHave()
+    {
+        var pairs = new LoadSet.Discrete([15, 20, 25, 35, 50]);
+        var s = Progression.Suggest(ThreeBySixToTen, [Session(25, 10, 10, 10)], pairs, WeightUnit.Pounds)!;
+        Assert.Equal(SuggestionKind.IncreaseLoad, s.Kind);
+        Assert.Equal(35, s.LoadLb);              // not 30: you don't own 30s
+        Assert.Contains("big jump", s.Reason);    // +40%
+    }
+
+    [Fact]
+    public void AtTheHeaviestOwned_SwitchesToReps()
+    {
+        var bells = new LoadSet.Discrete([35.27, 44.09]);
+        var s = Progression.Suggest(ThreeBySixToTen, [Session(44.09, 10, 10, 10)], bells, WeightUnit.Pounds)!;
+        Assert.Equal(SuggestionKind.AtHeaviestOwned, s.Kind);
+        Assert.Equal(44.09, s.LoadLb);
+    }
+
+    [Fact]
+    public void BarbellRange_StopsAtTheMax()
+    {
+        var bar = new LoadSet.Range(45, 225, 5, WeightUnit.Pounds);
+        Assert.Equal(SuggestionKind.AtHeaviestOwned,
+            Progression.Suggest(ThreeBySixToTen, [Session(225, 10, 10, 10)], bar, WeightUnit.Pounds)!.Kind);
+    }
 }

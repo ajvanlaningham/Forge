@@ -24,7 +24,9 @@ namespace Forge.Training
         /// <summary>Bodyweight at the top of the range: reps alone have run out.</summary>
         BodyweightTopOfRange,
         /// <summary>Timed exercise: add seconds.</summary>
-        AddTime
+        AddTime,
+        /// <summary>Top of the range at the heaviest load you own: reps are the only way up.</summary>
+        AtHeaviestOwned
     }
 
     public sealed record Suggestion(SuggestionKind Kind, double LoadLb, int? Reps, int? Seconds, string Reason);
@@ -43,15 +45,19 @@ namespace Forge.Training
         /// <summary>Seconds added to a timed exercise once every set hits the target.</summary>
         public const int TimeStepSeconds = 5;
 
+        /// <summary>A load increase above this fraction is called out as a big jump.</summary>
+        public const double BigJump = 0.15;
+
         /// <param name="rx">The current prescription (which may differ from when history was logged).</param>
         /// <param name="history">Working sets per past session, <b>most recent first</b>.</param>
-        /// <param name="loadStep">One increment in the display unit (see <see cref="LoadIncrements"/>).</param>
-        /// <param name="unit">The display unit the step is expressed in.</param>
+        /// <param name="loads">The loads actually available (Decision 16): the next weight is the next
+        /// one you own, not an abstract increment.</param>
+        /// <param name="unit">Display unit, for the reason text.</param>
         /// <returns>Null with no usable history: there is nothing to progress from.</returns>
         public static Suggestion? Suggest(
             Prescription rx,
             IReadOnlyList<IReadOnlyList<WorkSet>> history,
-            double loadStep,
+            LoadSet loads,
             WeightUnit unit)
         {
             var last = history.FirstOrDefault(s => s.Count > 0);
@@ -75,9 +81,16 @@ namespace Forge.Training
                     return new Suggestion(SuggestionKind.BodyweightTopOfRange, 0, hi,
                         null, $"All sets hit {hi}. Add load or a harder variation.");
 
-                var next = StepUp(top, loadStep, unit);
-                return new Suggestion(SuggestionKind.IncreaseLoad, next, lo, null,
-                    $"All {atTop.Count} sets hit {hi} last time — add weight, back to {lo}.");
+                if (loads.Next(top) is not double next)
+                    return new Suggestion(SuggestionKind.AtHeaviestOwned, top, hi, null,
+                        $"All sets hit {hi} at your heaviest weight. Add reps or slow the tempo — or it's time for heavier equipment.");
+
+                // A big jump (e.g. 35 → 45 lb dumbbells, +29%) gets a gentler target.
+                var jump = (next - top) / top;
+                var reason = jump > BigJump
+                    ? $"All {atTop.Count} sets hit {hi}. Next weight up is a big jump (+{jump:P0}) — aim for {lo}, fewer is fine at first."
+                    : $"All {atTop.Count} sets hit {hi} last time — add weight, back to {lo}.";
+                return new Suggestion(SuggestionKind.IncreaseLoad, next, lo, null, reason);
             }
 
             if (minReps < lo)
@@ -111,13 +124,5 @@ namespace Forge.Training
         private static bool MissedAt(IReadOnlyList<WorkSet> session, double load, int repsMin)
             => session.Any(s => s.LoadLb == load && s.Reps < repsMin);
 
-        /// <summary>One increment up, computed in the display unit and stored back as pounds.</summary>
-        public static double StepUp(double loadLb, double step, WeightUnit unit)
-        {
-            var display = WeightMath.ToDisplay(loadLb, unit);
-            var next = LoadIncrements.Snap(display + step, step);
-            if (next <= display) next = display + step; // off-grid loads still go up
-            return WeightMath.ToStoredPounds(next, unit);
-        }
     }
 }

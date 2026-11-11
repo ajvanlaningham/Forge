@@ -86,8 +86,8 @@ namespace Forge.ViewModels
                 if (sets.Count > 0)
                 {
                     var history = await _training.GetRecentWorkingSetsAsync(ex.Row.ExerciseName);
-                    var step = LoadIncrements.StepFor(ex.Info?.Modality ?? Forge.Models.Modality.Dumbbell, unit);
-                    if (Progression.Suggest(ExerciseCardViewModel.RxOf(ex.Row), history, step, unit) is { } sug)
+                    var loads = UserSettings.GearAt(snap.Location).For(ex.Info?.Modality ?? Forge.Models.Modality.Dumbbell, unit);
+                    if (Progression.Suggest(ExerciseCardViewModel.RxOf(ex.Row), history, loads, unit) is { } sug)
                     {
                         var load = sug.LoadLb > 0
                             ? WeightMath.ToDisplay(sug.LoadLb, unit).ToString("0.#", CultureInfo.CurrentCulture) + $" {u} × "

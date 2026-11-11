@@ -18,6 +18,7 @@ namespace Forge.Services
         private const string GymEquipmentKey = "Settings.GymEquipment";
         private const string LastLocationKey = "Settings.LastTrainingLocation";
         private const string DefaultRestKey = "Settings.DefaultRestSeconds";
+        private const string HomeGearKey = "Settings.HomeGear";
 
         /// <summary>Weekly cardio goal in minutes. Defaults to 3 hours.</summary>
         public static int WeeklyConditioningGoalMinutes
@@ -62,6 +63,20 @@ namespace Forge.Services
             get => Preferences.Get(DefaultRestKey, 90);
             set => Preferences.Set(DefaultRestKey, Math.Clamp(value, 0, 600));
         }
+
+        /// <summary>
+        /// The weights owned at Home (Decision 16): dumbbells, kettlebells, barbell. Sections left
+        /// unset fall back to plain steps until entered. The Gym is always "everything".
+        /// </summary>
+        public static Forge.Training.GearLoads HomeGear
+        {
+            get => Forge.Training.GearLoads.FromJson(Preferences.Get(HomeGearKey, null));
+            set => Preferences.Set(HomeGearKey, value.ToJson());
+        }
+
+        /// <summary>Loads available at a location.</summary>
+        public static Forge.Training.GearLoads GearAt(TrainingLocation location)
+            => location == TrainingLocation.Gym ? Forge.Training.GearLoads.Everything(WeightUnit) : HomeGear;
 
         private static Forge.Models.Equipment AllEquipment =>
             Enum.GetValues<Forge.Models.Equipment>().Aggregate(Forge.Models.Equipment.None, (a, e) => a | e);

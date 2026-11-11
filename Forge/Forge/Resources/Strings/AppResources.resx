@@ -162,7 +162,7 @@
     <comment>New</comment>
   </data>
   <data name="GearPage_TapToToggleCTA" xml:space="preserve">
-    <value>Tap gear you own too toggle!</value>
+    <value>Tap the gear you own to toggle it.</value>
     <comment>New</comment>
   </data>
   <data name="GearPage_Title" xml:space="preserve">

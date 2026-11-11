@@ -134,9 +134,11 @@ Defaults taken without asking (veto-able):
   days no longer apply to lifting (mobility still uses the recovery pool on Wed/Sat/Sun).
 
 ### Next: owned weights (Decision 16), then programs as blocks (Decisions 12–15)
-- [ ] Weight sets per equipment + location (`Forge.Core`: available loads, next/prev load, tests)
-- [ ] My Gear editor for dumbbell / kettlebell / barbell weights; Gym defaults to "everything"
-- [ ] Steppers and progression suggestions use available loads; "outgrown your heaviest" hint
+- [x] `LoadSet` (discrete / range) + `GearLoads` per location in `Forge.Core`, with tests
+- [x] My Gear → "Set the weights you own": dumbbell pairs or adjustable, kettlebell checklist (lb/kg),
+      barbell bar + max + smallest jump. Gym = everything.
+- [x] Steppers step through owned loads (verified on device: 0 → 15 → 25 → 35, stops at 35);
+      suggestions jump to the next owned weight, call out big jumps, and switch to reps at the heaviest
 
 Rework the program format before writing real content:
 - [ ] Block → weeks → days; day kinds: training / active rest / test. Calendar week advancement.

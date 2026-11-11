@@ -160,7 +160,7 @@ namespace Forge.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap gear you own too toggle!.
+        ///   Looks up a localized string similar to Tap the gear you own to toggle it..
         /// </summary>
         internal static string GearPage_TapToToggleCTA {
             get {

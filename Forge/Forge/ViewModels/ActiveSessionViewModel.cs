@@ -73,6 +73,8 @@ namespace Forge.ViewModels
 
         internal ITrainingService Training => _training;
         internal Equipment AvailableEquipment { get; private set; }
+        /// <summary>Weights available where this session is happening (Decision 16).</summary>
+        internal GearLoads Gear { get; private set; } = new();
         internal IReadOnlyList<ExerciseInfo> Library { get; private set; } = Array.Empty<ExerciseInfo>();
 
         public ActiveSessionViewModel(ITrainingService training, IRestAlarm alarm)
@@ -94,6 +96,7 @@ namespace Forge.ViewModels
             var snap = await _training.GetSessionAsync(sessionId);
             Library = await _training.GetLibraryAsync();
             AvailableEquipment = await _training.GetEquipmentAsync(snap.Location);
+            Gear = UserSettings.GearAt(snap.Location);
 
             SessionTitle = snap.Session.Title ?? "Session";
             LocationText = snap.Location == TrainingLocation.Gym ? "GYM" : "HOME";
@@ -363,7 +366,10 @@ namespace Forge.ViewModels
         public string LoadCaption => _snap.Info?.Modality == Modality.Bodyweight
             ? $"ADDED ({UnitLabel})"
             : $"LOAD ({UnitLabel})";
-        private double Step => LoadIncrements.StepFor(_snap.Info?.Modality ?? Modality.Dumbbell, Unit);
+        /// <summary>The loads this exercise can actually use here: owned dumbbells, bells, bar range.</summary>
+        private LoadSet Loads => _owner.Gear.For(_snap.Info?.Modality ?? Modality.Dumbbell, Unit);
+        private double LoadLb => WeightMath.ToStoredPounds(Load, Unit);
+        private void SetLoadLb(double lb) => Load = Math.Round(WeightMath.ToDisplay(lb, Unit), 2);
 
         private double _load;
         public double Load { get => _load; set { if (SetProperty(ref _load, Math.Max(0, value))) OnPropertyChanged(nameof(LoadText)); } }
@@ -399,8 +405,9 @@ namespace Forge.ViewModels
             _snap = snap;
             _isSkipped = snap.Row.Skipped;
 
-            LoadUpCommand = new Command(() => Load = LoadIncrements.Snap(Load + Step, Step));
-            LoadDownCommand = new Command(() => Load = LoadIncrements.Snap(Load - Step, Step));
+            // +/- step through weights you actually have: 35 -> 45 if there are no 40s.
+            LoadUpCommand = new Command(() => { if (Loads.Next(LoadLb) is double up) SetLoadLb(up); });
+            LoadDownCommand = new Command(() => SetLoadLb(Loads.Prev(LoadLb) ?? 0));
             RepsUpCommand = new Command(() => Reps++);
             RepsDownCommand = new Command(() => Reps--);
             SecondsUpCommand = new Command(() => Seconds += 5);
@@ -441,7 +448,7 @@ namespace Forge.ViewModels
             OnPropertyChanged(nameof(HasLast));
 
             var history = await _owner.Training.GetRecentWorkingSetsAsync(Name, _owner.SessionId);
-            _suggestion = Progression.Suggest(RxOf(_snap.Row), history, Step, Unit);
+            _suggestion = Progression.Suggest(RxOf(_snap.Row), history, Loads, Unit);
             NextText = _suggestion is null ? null : $"▲ {DescribeTarget(_suggestion)} — {_suggestion.Reason}";
             OnPropertyChanged(nameof(HasNext));
             Prefill();
@@ -460,7 +467,7 @@ namespace Forge.ViewModels
             // Within a session, repeat the previous set. Otherwise the progression suggestion
             // (PBI 8.5), then last time's matching set, then the prescription.
             var loadLb = lastHere?.LoadLb ?? _suggestion?.LoadLb ?? lastTime?.LoadLb ?? 0;
-            Load = LoadIncrements.Snap(WeightMath.ToDisplay(loadLb, Unit), Step);
+            SetLoadLb(loadLb > 0 ? Loads.Snap(loadLb) : 0);
             Reps = lastHere?.Reps ?? _suggestion?.Reps ?? lastTime?.Reps ?? _snap.Row.RepsMin ?? 8;
             Seconds = lastHere?.Seconds ?? _suggestion?.Seconds ?? lastTime?.Seconds ?? _snap.Row.TargetSeconds ?? 30;
         }
