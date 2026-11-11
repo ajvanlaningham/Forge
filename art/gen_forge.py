@@ -114,11 +114,11 @@ if __name__ == '__main__':
     (APP / 'Splash' / 'splash.svg').write_text(svg(frames[2]))
     # The app icon: the strike, centred in the adaptive-icon safe zone (the middle ~60%), so
     # round and squircle launchers don't clip it. The background colour is set in Forge.csproj.
-    icon = svg(frames[2], scale=10)
+    icon = svg(frames[2], scale=7)
     inner = icon[icon.index('>') + 1:icon.rindex('</svg>')]
     (APP / 'AppIcon' / 'appiconfg.svg').write_text(
         '<svg xmlns="http://www.w3.org/2000/svg" width="456" height="456" viewBox="0 0 456 456" shape-rendering="crispEdges">'
-        f'<g transform="translate(28 4)">{inner}</g></svg>\n')
+        f'<g transform="translate(88 72)">{inner}</g></svg>\n')
     (APP / 'AppIcon' / 'appicon.svg').write_text(
         '<svg xmlns="http://www.w3.org/2000/svg" width="456" height="456" viewBox="0 0 456 456">'
         '<rect x="0" y="0" width="456" height="456" fill="#101418"/></svg>\n')

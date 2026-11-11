@@ -87,6 +87,13 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
   the phone's database (observed: `firstInstallTime` reset mid-session). The script passes it;
   never deploy with a bare `dotnet build -t:Run`. Check with
   `dumpsys package … | grep firstInstallTime` — it must not move on a deploy.
+- **After changing Android resources, clean before deploying.** Editing
+  `Platforms/Android/Resources/**` or the `MauiIcon`/splash assets can leave an incremental build
+  whose generated resource IDs disagree with the packaged ones: the app then crashes on launch
+  with `IllegalArgumentException: No view found for id … for fragment
+  NavigationRootManager_ElementBasedFragment` (seen 2026-11-11). `rm -rf Forge/Forge/obj
+  Forge/Forge/bin` and deploy again. CI builds clean, so it's a local-only hazard; it's why
+  local changes are checked on the device before they're pushed.
 - **Inspecting the phone's database:** local builds are debuggable, so
   `adb shell run-as io.github.ajvanlaningham.forge cat files/forge.db3 > forge.db3` pulls it
   (journal mode is `delete`, so the single file is complete); `sqlite3` is in platform-tools.
