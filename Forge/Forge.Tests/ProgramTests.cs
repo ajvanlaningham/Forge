@@ -278,6 +278,17 @@ public class ShippedProgramContentTests
                 Assert.NotEmpty(p.Resolve(day, week).Slots);
     }
 
+    [Theory, MemberData(nameof(ProgramFiles))]
+    public void KettlebellVersions_AreSingleBell(string file)
+    {
+        // Decision 19: home kettlebell work uses one bell at a time (two unmatched bells is common).
+        var p = Load(file);
+        if (p.Implement != "Kettlebell") return;
+        var doubles = AllSlots(p).Select(sl => sl.Exercise).Distinct()
+            .Where(n => Library.Value[n].TryGetProperty("doubleBell", out var d) && d.GetBoolean()).ToList();
+        Assert.True(doubles.Count == 0, $"{file} uses double-bell exercises: {string.Join(", ", doubles)}");
+    }
+
     [Fact]
     public void VersionsOfAQuest_AgreeOnItsIdentity()
     {

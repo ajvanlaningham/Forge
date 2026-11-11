@@ -56,11 +56,16 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     for the process: Kindling, Tempering, Quenching, Honing (the light/test week). Quests come in
     **versions** — implement (Kettlebell / Dumbbell / Gym) × schedule (3 or 4 days); the board
     shows one notice per quest and asks for the version, sorted by what's in My Gear.
-18. **Forging** (defaults, adjustable): a block forges its item when ≥ 75% of its training days
-    were completed (perfect weeks are a bonus, not a requirement). Every version forges the same
-    item. A tier unlocks after forging 3 items from the one before; until then it shows as
-    rumours. Forged items unlock cosmetics on the Character page — rewarding consistency, never
-    PRs or weight.
+18. **Forging** (confirmed by the user 2026-11-11): a block forges its item if ≥ 75% of its
+    training days were completed — judged **at the end of the block**, and the gear unlocks
+    only then (hitting 75% early unlocks nothing). Perfect weeks are a bonus, not a requirement.
+    Every version (kettlebell, dumbbell, barbell/gym…) forges the same item. Tiers unlock in
+    sequence: 3 forged items in a tier opens the next; until then it shows as rumours. Forged
+    items unlock cosmetics on the Character page — rewarding consistency, never PRs or weight.
+19. **Kettlebell versions are single-bell** (the user owns two unmatched bells, 2026-11-11). Home
+    kettlebell work uses one bell at a time — single-arm presses/rows/cleans, racked single-bell
+    squats and lunges, two-handed swings and deadlifts. No double-bell exercises in kettlebell
+    versions (enforced by a content test via the library's `doubleBell` flag).
 16. **Owned weights** (2026-11-11). Equipment carries the loads you can actually use, and
     suggestions/steppers only land on them. Dumbbells: fixed pairs (checklist) or adjustable
     (range + step). Kettlebells: checklist of standard bells (lb or kg sets). Barbell: bar weight
