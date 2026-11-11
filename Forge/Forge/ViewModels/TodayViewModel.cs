@@ -155,7 +155,9 @@ namespace Forge.ViewModels
                 _inProgressId = open?.Session.Id;
                 _inProgressGuided = open?.Session.ProgramId is not null; // program sessions run guided
                 CanStartOpen = open is null;
+                _planDay = false;
                 ApplyQuest(view, open?.Session.Title);
+                if (_planDay) await ShowSwappedPlanAsync();
 
                 _due = await _tests.DueTodayAsync(_today);
                 HasTest = _due is not null;
@@ -252,11 +254,31 @@ namespace Forge.ViewModels
                 ActionText = $"Start {day.Name}" + (day.IsLight ? " (light)" : "");
                 _action = () => Shell.Current.GoToAsync(nameof(BriefingPage));
                 PlanText = string.Join("\n", day.Slots.Select(r => Describe(r.Slot) + (r.IsMain ? "" : "  · acc")));
+                _planDay = true;
             }
             else
             {
                 HasAction = false;
                 StatusText = "This week's training is done. Active rest until the week turns.";
+            }
+        }
+
+        private bool _planDay;
+
+        /// <summary>
+        /// Today's exercises as they'll actually be done where you last trained: the briefing's plan,
+        /// with home swaps applied (Floor Press, not Bench Press, without a bench).
+        /// </summary>
+        private async Task ShowSwappedPlanAsync()
+        {
+            try
+            {
+                var plan = await _training.PlanFromProgramAsync(_today, UserSettings.LastLocation);
+                PlanText = string.Join("\n", plan.Exercises.Select(p => Describe(p.Slot with { Exercise = p.Name }) + (p.IsMain ? "" : "  · acc")));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Plan preview fell back to the prescription: {ex.Message}");
             }
         }
 

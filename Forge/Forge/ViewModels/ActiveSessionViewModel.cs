@@ -477,15 +477,13 @@ namespace Forge.ViewModels
 
         private string DescribeTarget(Suggestion s)
         {
-            var load = s.LoadLb > 0
-                ? $"{WeightMath.ToDisplay(s.LoadLb, Unit).ToString("0.#", CultureInfo.CurrentCulture)} {UnitLabel} × "
-                : "";
+            var load = s.LoadLb > 0 ? $"{LoadDisplay.Label(s.LoadLb)} × " : "";
             return s.Seconds is int sec ? $"{load}{sec}s" : $"{load}{s.Reps}";
         }
 
         private string Describe(SessionSetRow s)
         {
-            var load = s.LoadLb > 0 ? WeightMath.ToDisplay(s.LoadLb, Unit).ToString("0.#", CultureInfo.CurrentCulture) : "BW";
+            var load = s.LoadLb > 0 ? LoadDisplay.Short(s.LoadLb) : "BW";
             var work = s.Seconds is int sec ? $"{sec}s" : $"{s.Reps}";
             return s.LoadLb > 0 ? $"{load}×{work}" : $"{work}";
         }
@@ -501,9 +499,7 @@ namespace Forge.ViewModels
                 {
                     Id = s.Id,
                     NumberText = label,
-                    LoadText = s.LoadLb > 0
-                        ? $"{WeightMath.ToDisplay(s.LoadLb, Unit).ToString("0.#", CultureInfo.CurrentCulture)} {UnitLabel}"
-                        : "bodyweight",
+                    LoadText = s.LoadLb > 0 ? LoadDisplay.Label(s.LoadLb) : "bodyweight",
                     WorkText = s.Seconds is int sec ? $"{sec}s" : $"× {s.Reps}",
                     IsWarmup = s.IsWarmup
                 });

@@ -112,7 +112,7 @@ namespace Forge.ViewModels
             var history = await _training.GetExerciseHistoryAsync(exerciseName);
             IsEmpty = history.Count == 0;
 
-            string Fmt(double lb) => WeightMath.ToDisplay(lb, unit).ToString("0.#", CultureInfo.CurrentCulture);
+            string Fmt(double lb) => LoadDisplay.Short(lb);   // "25", or "16 kg" for a kilo bell
 
             // Loaded lifts chart best e1RM; bodyweight and timed work chart best reps/seconds.
             var loaded = history.SelectMany(h => h.WorkingSets).Any(s => s.LoadLb > 0 && s.Reps is not null);

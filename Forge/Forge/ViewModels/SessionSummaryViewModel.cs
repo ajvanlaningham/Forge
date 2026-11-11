@@ -79,7 +79,7 @@ namespace Forge.ViewModels
                 var detail = sets.Count == 0
                     ? (ex.Row.Skipped ? "skipped" : "no working sets")
                     : string.Join(", ", sets.Select(s =>
-                        (s.LoadLb > 0 ? WeightMath.ToDisplay(s.LoadLb, unit).ToString("0.#", CultureInfo.CurrentCulture) + "×" : "")
+                        (s.LoadLb > 0 ? LoadDisplay.Short(s.LoadLb) + "×" : "")
                         + (s.Seconds is int sec ? $"{sec}s" : $"{s.Reps}")));
                 // Next time: progression from this session (now finished, so it is the most recent).
                 string? next = null;
@@ -89,9 +89,7 @@ namespace Forge.ViewModels
                     var loads = UserSettings.GearAt(snap.Location).For(ex.Info?.Modality ?? Forge.Models.Modality.Dumbbell, unit, ex.Info?.NeedsPair ?? false);
                     if (Progression.Suggest(ExerciseCardViewModel.RxOf(ex.Row), history, loads, unit) is { } sug)
                     {
-                        var load = sug.LoadLb > 0
-                            ? WeightMath.ToDisplay(sug.LoadLb, unit).ToString("0.#", CultureInfo.CurrentCulture) + $" {u} × "
-                            : "";
+                        var load = sug.LoadLb > 0 ? LoadDisplay.Label(sug.LoadLb) + " × " : "";
                         next = $"Next time: {load}{(sug.Seconds is int sec ? $"{sec}s" : $"{sug.Reps}")}";
                     }
                 }
@@ -99,9 +97,9 @@ namespace Forge.ViewModels
                 if (records.TryGetValue(ex.Row.ExerciseName, out var prs))
                     recordText = "Record: " + string.Join(" · ", prs.Select(pr => pr.Kind switch
                     {
-                        PrKind.HeaviestLoad => $"heaviest {WeightMath.ToDisplay(pr.LoadLb, unit):0.#} {u}",
+                        PrKind.HeaviestLoad => $"heaviest {LoadDisplay.Label(pr.LoadLb)}",
                         PrKind.BestE1rm => $"best e1RM {WeightMath.ToDisplay(pr.Value, unit):0} {u}",
-                        _ => pr.LoadLb > 0 ? $"{pr.Reps} reps at {WeightMath.ToDisplay(pr.LoadLb, unit):0.#} {u}" : $"{pr.Reps} reps"
+                        _ => pr.LoadLb > 0 ? $"{pr.Reps} reps at {LoadDisplay.Label(pr.LoadLb)}" : $"{pr.Reps} reps"
                     }));
                 Lines.Add(new SummaryLine { Name = ex.Row.ExerciseName, Detail = detail, Next = next, Records = recordText });
             }

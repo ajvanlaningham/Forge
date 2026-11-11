@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Android theme colours: the status bar and system widgets match the app's dark forge,
+     not the .NET template's purple. Bg #101418, Surface #161B22, Accent (gold) #D4AF37. -->
 <resources>
-    <color name="colorPrimary">#512BD4</color>
-    <color name="colorPrimaryDark">#2B0B98</color>
-    <color name="colorAccent">#2B0B98</color>
+    <color name="colorPrimary">#161B22</color>
+    <color name="colorPrimaryDark">#101418</color>
+    <color name="colorAccent">#D4AF37</color>
 </resources>

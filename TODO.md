@@ -409,9 +409,10 @@ Rework the program format before writing real content:
   backup), units, hero, home gear tiles, first quest (Balanced/Stronger/Fitter × 3/4 days → the
   fitting version via `FirstQuest` in Core, shown as the hero's own item). Installs with data skip
   it; Settings → "Preview the first run" walks it without changing anything.
-- **Polish:** status bar is still the template purple; app icon is still the .NET template (the
-  anvil would do); Today's plan preview shows prescribed names, not home swaps; the logbook and
-  history still convert kilo bells to pounds (the briefing and guided session already say "16 kg").
+- [~] **Polish** (built 2026-11-11, not yet device-tested): status bar and system colours from the
+  app's dark theme (no template purple); the anvil strike as the app icon; Today's plan preview
+  shows home swaps; owned kilo bells read "16 kg" in the logbook, summary and history
+  (`LoadDisplay`). Still open: configurable weight increments.
 - **Injuries and limitations** (entered on the Character page). Tag exercises with the
   joints/areas they load (knee, lower back, shoulder, wrist, elbow, hip). A limitation is
   permanent ("bad knee") or temporary with an end date ("tweaked shoulder, 2 weeks"); it filters
