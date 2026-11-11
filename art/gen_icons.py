@@ -240,23 +240,32 @@ ring(12, 13, 9, 7, 't', 'r', 's')
 ring(18, 17, 8, 6, 'z', 'y', 'x')
 s.finish('bands')
 
-# --- mat: a rolled mat lying on its side — spiral end, two straps, sage ---
+# --- mat: a rolled mat lying at an angle — the near end shows the rolled spiral ---
 s = Sprite()
-s.fill(9, 11, 26, 20, 'm')                                        # the roll's body
-s.fill(9, 11, 26, 12, 'o')                                        # lit top
-s.fill(9, 19, 26, 20, 'e')                                        # shaded underside
-for x in (14, 21):                                                # straps
-    s.fill(x, 11, x + 1, 20, 'D'); s.put(x, 11, 'F'); s.put(x + 1, 11, 'F')
-cx, cy = 8, 15.5                                                  # spiral end, facing us
-for y in range(10, 22):
-    for x in range(2, 15):
-        d = ((x - cx) / 6) ** 2 + ((y - cy) / 5.7) ** 2
-        if d <= 1 and x <= 9: s.put(x, y, 'o' if (x - cx) + (y - cy) < -3 else 'm')
-for t in range(0, 540, 15):                                       # the rolled layers
-    import math
-    a = math.radians(t); r = 0.6 + t / 140
-    s.put(round(cx + r * math.cos(a) * 1.05), round(cy + r * math.sin(a)), 'e')
-s.rivet(22, 15)
+import math
+P0, P1, R = (10.5, 18.5), (23.5, 10.5), 6.2            # near end (lower-left), far end, roll radius
+ux, uy = P1[0] - P0[0], P1[1] - P0[1]; L = math.hypot(ux, uy); ux, uy = ux / L, uy / L
+nx, ny = uy, -ux                                       # perpendicular, pointing up-left (toward the light)
+def axial(x, y): return (x - P0[0]) * ux + (y - P0[1]) * uy, (x - P0[0]) * nx + (y - P0[1]) * ny
+for y in range(N):                                     # the body: lit upper side, sage, shaded underside
+    for x in range(N):
+        a_, b_ = axial(x + 0.5, y + 0.5)
+        if 0 <= a_ <= L and abs(b_) <= R:
+            s.put(x, y, 'o' if b_ > R * 0.45 else 'e' if b_ < -R * 0.5 else 'm')
+for t in (0.42, 0.74):                                 # two straps wrapping the roll
+    for y in range(N):
+        for x in range(N):
+            a_, b_ = axial(x + 0.5, y + 0.5)
+            if abs(a_ - t * L) <= 0.9 and abs(b_) <= R + 0.2:
+                s.put(x, y, 'F' if b_ > R * 0.45 else 'D')
+for y in range(N):                                     # near end cap: concentric rings of rolled layers
+    for x in range(N):
+        a_, b_ = axial(x + 0.5, y + 0.5)
+        rr = math.sqrt((a_ / (R * 0.78)) ** 2 + (b_ / R) ** 2)
+        if rr <= 1:
+            ring = int(rr * 3.4)          # three bold rings: core, layer, outer wrap
+            s.put(x, y, ('e', 'o', 'e', 'm')[min(ring, 3)])
+s.rivet(round(P0[0] + 0.58 * L * ux + 2 * nx), round(P0[1] + 0.58 * L * uy + 2 * ny))
 s.finish('mat')
 
 # --- wall: a section of brick wall ---
