@@ -369,6 +369,13 @@ Rework the program format before writing real content:
 - **Forging & the armoury** (Decisions 17–18). On block completion, check the 75% rule and
   forge the item; show it on the Character page; tier unlocks after 3 forged items. Items are
   sprites from `art/` in the house palette (a metal palette per tier: copper, bronze, iron…).
+- ~~**Character look**~~ — done 2026-11-11: 6 races (Human, Elf, Dwarf, Orc, Halfling, Construct) ×
+  6 classes (Wizard, Warrior, Rogue, Ranger, Cleric, Monk), one sprite per combination on a shared
+  32×44 frame (`art/gen_characters.py`) so forged gear can be layered on any of them later. Picked
+  on the Hero tab (tap the sprite); Construct Wizard is the original robot. Forgeable items:
+  Helm/Hammer/Boots × 7 metals (`art/gen_items.py`), shown on the Armoury rack. Splash and
+  loading screen: the anvil and hammer (`art/gen_forge.py`).
+- **Wear forged gear** on the hero sprite: draw helm/boots/weapon overlays per metal on the frame.
 - **Character page.** A home for "you" in the RPG layer, reached from Home (tap the sprite):
   - **Injuries & limitations** are entered and tracked here (see below) — framed as the
     character's condition, with active ones shown as status effects until they clear.

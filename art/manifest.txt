@@ -29,3 +29,69 @@ medicine_ball 4
 sandbag 4
 suspension_trainer 4
 punching_bag 4
+
+# Characters (Hero tab, picker): race x class on one 32x44 frame, x8 -> 256x352. gen_characters.py.
+char_human_wizard 8
+char_human_warrior 8
+char_human_rogue 8
+char_human_ranger 8
+char_human_cleric 8
+char_human_monk 8
+char_elf_wizard 8
+char_elf_warrior 8
+char_elf_rogue 8
+char_elf_ranger 8
+char_elf_cleric 8
+char_elf_monk 8
+char_dwarf_wizard 8
+char_dwarf_warrior 8
+char_dwarf_rogue 8
+char_dwarf_ranger 8
+char_dwarf_cleric 8
+char_dwarf_monk 8
+char_orc_wizard 8
+char_orc_warrior 8
+char_orc_rogue 8
+char_orc_ranger 8
+char_orc_cleric 8
+char_orc_monk 8
+char_halfling_wizard 8
+char_halfling_warrior 8
+char_halfling_rogue 8
+char_halfling_ranger 8
+char_halfling_cleric 8
+char_halfling_monk 8
+char_construct_wizard 8
+char_construct_warrior 8
+char_construct_rogue 8
+char_construct_ranger 8
+char_construct_cleric 8
+char_construct_monk 8
+
+# Forgeable items (Armoury): item x metal, 30x30 x4 -> 120px. gen_items.py.
+item_helm_copper 4
+item_helm_bronze 4
+item_helm_iron 4
+item_helm_steel 4
+item_helm_damascus 4
+item_helm_mithril 4
+item_helm_starmetal 4
+item_hammer_copper 4
+item_hammer_bronze 4
+item_hammer_iron 4
+item_hammer_steel 4
+item_hammer_damascus 4
+item_hammer_mithril 4
+item_hammer_starmetal 4
+item_boots_copper 4
+item_boots_bronze 4
+item_boots_iron 4
+item_boots_steel 4
+item_boots_damascus 4
+item_boots_mithril 4
+item_boots_starmetal 4
+
+# The forge (loading screen animation): anvil + hammer, 40x40 x6. gen_forge.py.
+forge_0 6
+forge_1 6
+forge_2 6

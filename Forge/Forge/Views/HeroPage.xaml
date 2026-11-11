@@ -11,8 +11,17 @@
     <ScrollView>
         <VerticalStackLayout Padding="18,12,18,28" Spacing="16">
 
-            <Image Source="wizard_bot.png" HeightRequest="170" Aspect="AspectFit" HorizontalOptions="Center"
-                   SemanticProperties.Description="Your character" />
+            <!-- The hero: tap to choose race and class -->
+            <VerticalStackLayout Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeLookCommand}" />
+                </VerticalStackLayout.GestureRecognizers>
+                <Image Source="{Binding SpriteFile}" HeightRequest="200" Aspect="AspectFit" HorizontalOptions="Center"
+                       SemanticProperties.Description="Your character" />
+                <Label Text="{Binding HeroTitle}" FontFamily="PixelUI" FontSize="26" TextColor="{StaticResource OnBg}"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="tap to change" FontSize="12" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
             <Label Text="{Binding StreakText}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Accent}"
                    HorizontalTextAlignment="Center" />
 
@@ -23,7 +32,21 @@
                 <Label Text="Armoury" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" />
                 <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}" StrokeThickness="1"
                         StrokeShape="RoundRectangle 10" Padding="14">
-                    <Label Text="{Binding ArmouryText}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource OnBg}" />
+                    <VerticalStackLayout Spacing="10">
+                        <!-- This tier's three items: lit when forged, faint until then -->
+                        <Grid ColumnDefinitions="*,*,*" BindableLayout.ItemsSource="{Binding Rack}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:RackItem">
+                                    <VerticalStackLayout Grid.Column="{Binding Column}" Spacing="2">
+                                        <Image Source="{Binding Sprite}" HeightRequest="60" Opacity="{Binding Opacity}" Aspect="AspectFit" />
+                                        <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="16" HorizontalTextAlignment="Center"
+                                               TextColor="{StaticResource Muted}" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </Grid>
+                        <Label Text="{Binding ArmouryText}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource OnBg}" />
+                    </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
 

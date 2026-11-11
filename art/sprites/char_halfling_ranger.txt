@@ -1,0 +1,65 @@
+#! 0 #1A1A20
+#! 1 #332C24
+#! 2 #344A26
+#! 3 #4A3222
+#! 4 #4E4438
+#! 5 #53341E
+#! 6 #56733C
+#! 7 #6A5E50
+#! 8 #7C5232
+#! 9 #7D5839
+#! a #7E9E58
+#! b #A47450
+#! c #A8744A
+#! d #A9714E
+#! e #B07E52
+#! f #C25A48
+#! g #D9C9A3
+#! h #DDA47C
+#! i #E88A7A
+#! j #F2EEDF
+#! k #F5C7A0
+................................
+................................
+................................
+................................
+................................
+.....................AAA........
+....................AAAAA.......
+....................AAfAAA......
+..........AAAAAAAAAAAAffAAA.....
+.........AAAAAAAAAAAAAAffAA.....
+........AAAAaaaaaaaaAAcAfAA.....
+.......AAAAa66666666aAAAAAA.....
+.......AAAa2222222222aAAAA......
+.......AAcAAAAAAAAAAAA5AAAA.....
+......AAAc5AhhhhhhhhAccAeAAA....
+.....AAfAc5AhhhhhhhhAc5AAeAAA...
+.....AfjAAcAhhhhhhhhAcAAAAeAAA..
+....AAfAkAAhhhhhhhhhhAAkAAAAgA..
+....AAbAkAkhh0hhhh0hhdAdAAAAgA..
+....AAb9AAkhh0hhhh0hhdAAAAAAgA..
+....AAb93AkhihdhhdhihdAAAAAAgA..
+....AAb93AkhdhhddhhdhdAAAAAAgA..
+....AAb93AkhhhhhhhhhhdAAAAAAgA..
+....AAb9AAAkdddddddddAAAAAAAgA..
+....AAbAbbbAAAAAAAAAAbbbAAAAgA..
+....AAbAb93A36666666Ab93AAAAgA..
+....AAbAb93A63666666Ab93AAAAgA..
+....AAAAb93A66366666Ab9AbbbAgA..
+.....AAAb93A66636666Ab9Ab93AgA..
+......AAb93A66663666Ab9Ab33AgA..
+......AAAAAbbbbbbbbbbAAAAAAAgA..
+......AAkkkA66666636AbbbAAAAgA..
+......AAkhdA22222223Ab93AAAAgA..
+......AAkddAAAAAAAAAAb33AAAAgA..
+......AAAAAA741AA741AAAAAAAAgA..
+.......AAa6AAAAAAAAAA62AAAAAgA..
+.......AAa2Ak8kAAkk8A22AAAAAgA..
+.......AAAAA8AAAAA8AAAAAAAAAgA..
+........AAkkkkkAAkkkkkAAAAAAgA..
+........AAdddddAAkddddAAAAeAgA..
+........AAAAAAAAAAAAAAAAAeAAAA..
+........EAAAAAAAAAAAAAAAeAAA....
+..........EEEEEEEEEEEEAAAAA.....
+.......................AAA......

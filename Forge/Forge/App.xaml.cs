@@ -9,7 +9,9 @@ namespace Forge
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            var window = new Window(new AppShell());
+            // The loading screen (the hammer on the anvil) first, then the tabs.
+            var window = new Window();
+            window.Page = new Views.LoadingPage(() => window.Page = new AppShell());
 
             // Daily backup (PBI 10.1): on launch and whenever the app comes back to the
             // foreground, back up if today's copy doesn't exist yet. Fire-and-forget — it never

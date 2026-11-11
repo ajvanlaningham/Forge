@@ -78,6 +78,36 @@ namespace Forge.Services
         public static Forge.Training.GearLoads GearAt(TrainingLocation location)
             => location == TrainingLocation.Gym ? Forge.Training.GearLoads.Everything(WeightUnit) : HomeGear;
 
+        // --- the hero's look (race x class sprite, picked on the Hero tab) ---
+
+        public static readonly (string Id, string Label)[] Races =
+            { ("human", "Human"), ("elf", "Elf"), ("dwarf", "Dwarf"), ("orc", "Orc"), ("halfling", "Halfling"), ("construct", "Construct") };
+        public static readonly (string Id, string Label)[] Classes =
+            { ("wizard", "Wizard"), ("warrior", "Warrior"), ("rogue", "Rogue"), ("ranger", "Ranger"), ("cleric", "Cleric"), ("monk", "Monk") };
+
+        /// <summary>Defaults to Construct: the robot wizard the app started with.</summary>
+        public static string HeroRace
+        {
+            get => Valid(Preferences.Get("Hero.Race", "construct"), Races, "construct");
+            set => Preferences.Set("Hero.Race", value);
+        }
+
+        public static string HeroClass
+        {
+            get => Valid(Preferences.Get("Hero.Class", "wizard"), Classes, "wizard");
+            set => Preferences.Set("Hero.Class", value);
+        }
+
+        /// <summary>The sprite file for a race and class (art/gen_characters.py, installed x8).</summary>
+        public static string HeroSprite(string race, string cls) => $"char_{race}_{cls}.png";
+        public static string HeroSpriteFile => HeroSprite(HeroRace, HeroClass);
+        public static string HeroTitle => $"{Label(Races, HeroRace)} {Label(Classes, HeroClass)}";
+
+        private static string Valid(string id, (string Id, string Label)[] options, string fallback)
+            => options.Any(o => o.Id == id) ? id : fallback;
+        private static string Label((string Id, string Label)[] options, string id)
+            => options.FirstOrDefault(o => o.Id == id).Label ?? id;
+
         private static Forge.Models.Equipment AllEquipment =>
             Enum.GetValues<Forge.Models.Equipment>().Aggregate(Forge.Models.Equipment.None, (a, e) => a | e);
     }

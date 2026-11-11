@@ -1,0 +1,113 @@
+"""The forge: an anvil with a glowing ingot, and a hammer striking it, in three frames.
+
+    python3 art/gen_forge.py     # art/sprites/forge_0..2.txt, the splash SVG, art/out/forge.png
+
+forge_0 hammer raised, forge_1 coming down, forge_2 the strike (sparks). The loading screen cycles
+them; the splash screen is the strike, written as an SVG of square pixels for MauiSplashScreen.
+"""
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gen_characters as gc
+
+S = 40
+ART = Path(__file__).resolve().parent
+APP = ART.parent / 'Forge' / 'Forge' / 'Resources'
+
+IRON = ('#9AA0A8', '#5E636B', '#3A3E45')
+IRON_TOP = ('#E6E1CF', '#8A8472', '#786C5C')       # the house cream top edge and warm rim
+INGOT = ('#FFE08A', '#F2A848', '#D27E24')
+WOOD = ('#B07E52', '#80583A', '#523622')
+HEAD = ('#C8CCD2', '#8E949C', '#55595F')
+SPARK = ('#FFFFFF', '#FFE08A', '#F2A848')
+
+
+class Frame(gc.Canvas):
+    def __init__(self):
+        self.px = [[None] * S for _ in range(S)]
+
+    def get(self, x, y):
+        return self.px[y][x] if 0 <= x < S and 0 <= y < S else None
+
+    def set(self, x, y, c):
+        if 0 <= x < S and 0 <= y < S:
+            self.px[y][x] = c
+
+    def finish_frame(self):
+        filled = {(x, y) for y in range(S) for x in range(S) if self.px[y][x] is not None and self.px[y][x] not in SPARK}
+        for y in range(S):
+            for x in range(S):
+                if self.px[y][x] is None and any((x + dx, y + dy) in filled for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy):
+                    self.px[y][x] = gc.OUTLINE
+        for x in range(6, 34):                          # ground shadow
+            if self.px[36][x] is None:
+                self.px[36][x] = gc.SHADOW
+
+
+def anvil(f):
+    f.part(gc.rect(10, 31, 29, 34), IRON)                                   # base
+    f.part(gc.rect(13, 28, 26, 30), IRON)
+    f.part(gc.rect(15, 24, 24, 27), IRON)                                   # waist
+    f.part(gc.rows('''
+     ######################
+   ########################
+ ##########################
+###########################
+   ########################''', 5, 19), IRON)                              # face with the horn to the left
+    f.part(gc.rect(8, 19, 31, 19), IRON_TOP, outline=False)                 # the lit top edge
+    f.dots([(30, 21), (30, 22)], '#E0C045')                                 # a gold rivet: house accent
+    f.part(gc.rect(15, 16, 24, 18), INGOT)                                  # the glowing ingot
+    f.dots([(16, 16), (17, 16)], '#FFFFFF')
+
+
+def hammer(f, y):
+    """The hammer head over the ingot at height y, handle running off to the right."""
+    f.part(gc.rect(23, y + 2, 39, y + 3), WOOD)
+    f.part(gc.rect(15, y, 23, y + 5), HEAD)
+    f.dots([(16, y + 1)], '#FFFFFF')
+
+
+def sparks(f):
+    for (x, y) in [(11, 12), (13, 9), (9, 15), (12, 16), (27, 16), (30, 14), (33, 17), (29, 8), (32, 10)]:
+        f.set(x, y, SPARK[0])
+        for (dx, dy) in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            if f.get(x + dx, y + dy) is None:
+                f.set(x + dx, y + dy, SPARK[1])
+
+
+def frame(n):
+    f = Frame()
+    anvil(f)
+    hammer(f, (1, 6, 10)[n])
+    f.finish_frame()
+    if n == 2:
+        sparks(f)
+    return f
+
+
+def svg(f, scale=12):
+    """Square pixels as rects; crispEdges keeps them sharp when the splash is rasterised."""
+    rects = []
+    for y in range(S):
+        for x in range(S):
+            c = f.px[y][x]
+            if c is not None:
+                rects.append(f'<rect x="{x * scale}" y="{y * scale}" width="{scale}" height="{scale}" fill="{c}"/>')
+    size = S * scale
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" viewBox="0 0 {size} {size}" '
+            f'shape-rendering="crispEdges">' + ''.join(rects) + '</svg>\n')
+
+
+if __name__ == '__main__':
+    frames = [frame(n) for n in range(3)]
+    for n, f in enumerate(frames):
+        colors = sorted({c for row in f.px for c in row if c is not None and c not in (gc.OUTLINE, gc.SHADOW)})
+        key = {gc.OUTLINE: 'A', gc.SHADOW: 'E'}
+        key.update({c: gc.KEYS[i] for i, c in enumerate(colors)})
+        lines = [f'#! {key[c]} {c}' for c in colors] + [''.join('.' if c is None else key[c] for c in row) for row in f.px]
+        (ART / 'sprites' / f'forge_{n}.txt').write_text('\n'.join(lines) + '\n')
+    (APP / 'Splash' / 'splash.svg').write_text(svg(frames[2]))
+    gc.W, gc.H = S, S
+    gc.sheet(frames, 3, 8, ART / 'out' / 'forge.png')
+    print('wrote forge_0..2, splash.svg; sheet art/out/forge.png')

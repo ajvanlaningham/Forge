@@ -18,7 +18,7 @@
                     <TapGestureRecognizer Command="{Binding OpenHeroCommand}" />
                 </Border.GestureRecognizers>
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                    <Image Source="wizard_bot.png" HeightRequest="56" WidthRequest="56" Aspect="AspectFit" />
+                    <Image Source="{Binding SpriteFile}" HeightRequest="64" WidthRequest="48" Aspect="AspectFit" />
                     <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="{Binding LevelText}" FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Accent}" />

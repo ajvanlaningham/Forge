@@ -38,6 +38,9 @@ namespace Forge.ViewModels
         private double _xpProgress;
         public double XpProgress { get => _xpProgress; private set => SetProperty(ref _xpProgress, value); }
 
+        private string _spriteFile = UserSettings.HeroSpriteFile;
+        public string SpriteFile { get => _spriteFile; private set => SetProperty(ref _spriteFile, value); }
+
         // --- header ---
         private string _dateText = "";
         public string DateText { get => _dateText; private set => SetProperty(ref _dateText, value); }
@@ -120,6 +123,7 @@ namespace Forge.ViewModels
                 await _importer.EnsureSeededAsync(GameConstants.Exercises.LibraryFiles, GameConstants.Exercises.LibraryVersion);
                 _today = DateOnly.FromDateTime(DateTime.Today);
                 DateText = _today.ToString("dddd, MMM d", CultureInfo.CurrentCulture);
+                SpriteFile = UserSettings.HeroSpriteFile;
 
                 await _stats.InitAsync();
                 var xp = (await _stats.GetUserStatsAsync()).Xp;

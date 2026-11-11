@@ -14,6 +14,9 @@ namespace Forge.ViewModels
     /// The Hero tab (Decision 20): the character. Level and stats, the Armoury (forged items), the
     /// Pack (real equipment) and, later, condition (injuries) and skins.
     /// </summary>
+    /// <summary>One item on the Armoury rack: lit when forged, faint until then.</summary>
+    public sealed record RackItem(string Name, string Sprite, double Opacity, int Column);
+
     public sealed class HeroViewModel : BaseViewModel
     {
         private readonly IStatsService _stats;
@@ -33,6 +36,14 @@ namespace Forge.ViewModels
         private bool _packEmpty;
         public bool PackEmpty { get => _packEmpty; private set => SetProperty(ref _packEmpty, value); }
 
+        public ObservableCollection<RackItem> Rack { get; } = new();
+
+        private string _spriteFile = UserSettings.HeroSpriteFile;
+        public string SpriteFile { get => _spriteFile; private set => SetProperty(ref _spriteFile, value); }
+        private string _heroTitle = UserSettings.HeroTitle;
+        public string HeroTitle { get => _heroTitle; private set => SetProperty(ref _heroTitle, value); }
+        public ICommand ChangeLookCommand { get; } = new Command(async () => await Shell.Current.GoToAsync(nameof(HeroPickerPage)));
+
         public ICommand EditPackCommand { get; } = new Command(async () => await Shell.Current.GoToAsync(nameof(MyGearPage)));
 
         public HeroViewModel(IStatsService stats, IProgramService programs, IInventoryService inventory, ProgressService progress)
@@ -46,6 +57,8 @@ namespace Forge.ViewModels
 
         public async Task RefreshAsync()
         {
+            SpriteFile = UserSettings.HeroSpriteFile;
+            HeroTitle = UserSettings.HeroTitle;
             StatsCard.Title = "Level & stats";
             await _stats.InitAsync();
             var core = await _stats.GetCoreStatsAsyncFromDb();
@@ -59,6 +72,15 @@ namespace Forge.ViewModels
 
             // Forging isn't built yet (TODO: Forging & the armoury): show what's in the fire.
             var view = await _programs.GetViewAsync(DateOnly.FromDateTime(DateTime.Today));
+            // The tier's three items (helm, hammer, boots): forging isn't built yet, so all faint;
+            // the one in the fire is a little brighter.
+            var metal = (view?.Program.Definition.Metal ?? "Copper").ToLowerInvariant();
+            var inFire = view?.Program.Definition.Item.ToLowerInvariant();
+            Rack.Clear();
+            var col = 0;
+            foreach (var (id, name) in new[] { ("helm", "Helm"), ("hammer", "Hammer"), ("boots", "Boots") })
+                Rack.Add(new RackItem($"{view?.Program.Definition.Metal ?? "Copper"} {name}", $"item_{id}_{metal}.png", id == inFire ? 0.6 : 0.25, col++));
+
             if (view is null)
                 ArmouryText = "Empty racks. Accept a quest to forge your first item.";
             else
