@@ -19,6 +19,8 @@
                             <VerticalStackLayout>
                                 <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}" />
                                 <Label Text="{Binding Detail}" FontFamily="OpenSansSemibold" FontSize="16" TextColor="{StaticResource Muted}" />
+                                <Label Text="{Binding Next}" IsVisible="{Binding HasNext}" FontFamily="PixelUI" FontSize="18"
+                                       TextColor="{StaticResource Accent}" />
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

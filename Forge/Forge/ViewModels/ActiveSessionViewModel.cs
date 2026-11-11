@@ -178,6 +178,7 @@ namespace Forge.ViewModels
         private readonly ActiveSessionViewModel _owner;
         private SessionExerciseSnapshot _snap;
         private LastPerformance? _last;
+        private Suggestion? _suggestion;
 
         public ObservableCollection<SetLineViewModel> Sets { get; } = new();
 
@@ -210,6 +211,11 @@ namespace Forge.ViewModels
         private string? _lastText;
         public string? LastText { get => _lastText; private set => SetProperty(ref _lastText, value); }
         public bool HasLast => LastText is not null;
+
+        private string? _nextText;
+        /// <summary>The progression suggestion for today, e.g. "Try 140 × 6 — all 3 sets hit 10 last time".</summary>
+        public string? NextText { get => _nextText; private set => SetProperty(ref _nextText, value); }
+        public bool HasNext => NextText is not null;
 
         public int WorkingSetCount => _snap.Sets.Count(s => !s.IsWarmup);
         public bool IsComplete => WorkingSetCount >= (_snap.Row.TargetSets ?? 3);
@@ -301,6 +307,11 @@ namespace Forge.ViewModels
             _last = await _owner.Training.GetLastPerformanceAsync(Name, _owner.SessionId);
             LastText = _last is null ? null : $"Last ({_last.Date:MMM d}): " + string.Join(", ", _last.WorkingSets.Select(Describe));
             OnPropertyChanged(nameof(HasLast));
+
+            var history = await _owner.Training.GetRecentWorkingSetsAsync(Name, _owner.SessionId);
+            _suggestion = Progression.Suggest(RxOf(_snap.Row), history, Step, Unit);
+            NextText = _suggestion is null ? null : $"▲ {DescribeTarget(_suggestion)} — {_suggestion.Reason}";
+            OnPropertyChanged(nameof(HasNext));
             Prefill();
         }
 
@@ -314,10 +325,23 @@ namespace Forge.ViewModels
             var index = WorkingSetCount;
             var lastTime = _last?.WorkingSets.ElementAtOrDefault(index) ?? _last?.WorkingSets.LastOrDefault();
 
-            var loadLb = lastHere?.LoadLb ?? lastTime?.LoadLb ?? 0;
+            // Within a session, repeat the previous set. Otherwise the progression suggestion
+            // (PBI 8.5), then last time's matching set, then the prescription.
+            var loadLb = lastHere?.LoadLb ?? _suggestion?.LoadLb ?? lastTime?.LoadLb ?? 0;
             Load = LoadIncrements.Snap(WeightMath.ToDisplay(loadLb, Unit), Step);
-            Reps = lastHere?.Reps ?? lastTime?.Reps ?? _snap.Row.RepsMin ?? 8;
-            Seconds = lastHere?.Seconds ?? lastTime?.Seconds ?? _snap.Row.TargetSeconds ?? 30;
+            Reps = lastHere?.Reps ?? _suggestion?.Reps ?? lastTime?.Reps ?? _snap.Row.RepsMin ?? 8;
+            Seconds = lastHere?.Seconds ?? _suggestion?.Seconds ?? lastTime?.Seconds ?? _snap.Row.TargetSeconds ?? 30;
+        }
+
+        internal static Prescription RxOf(SessionExerciseRow r)
+            => new(r.TargetSets ?? 3, r.RepsMin, r.RepsMax, r.TargetSeconds);
+
+        private string DescribeTarget(Suggestion s)
+        {
+            var load = s.LoadLb > 0
+                ? $"{WeightMath.ToDisplay(s.LoadLb, Unit).ToString("0.#", CultureInfo.CurrentCulture)} {UnitLabel} × "
+                : "";
+            return s.Seconds is int sec ? $"{load}{sec}s" : $"{load}{s.Reps}";
         }
 
         private string Describe(SessionSetRow s)

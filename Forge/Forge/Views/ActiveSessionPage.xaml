@@ -92,6 +92,8 @@
                                            TextColor="{StaticResource Muted}" />
                                     <Label Text="{Binding LastText}" IsVisible="{Binding HasLast}"
                                            FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Leaf}" />
+                                    <Label Text="{Binding NextText}" IsVisible="{Binding HasNext}"
+                                           FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Accent}" />
 
                                     <!-- Logged sets -->
                                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding Sets}" Spacing="2">

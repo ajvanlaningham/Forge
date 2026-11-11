@@ -353,6 +353,32 @@ namespace Forge.Services.Implementations
             return null;
         }
 
+        public async Task<IReadOnlyList<IReadOnlyList<WorkSet>>> GetRecentWorkingSetsAsync(
+            string exerciseName, int? excludingSessionId = null, int sessions = 4)
+        {
+            var finished = (await _sessions.WhereAsync(s => s.Status == (int)SessionStatus.Finished))
+                .Where(s => s.Id != excludingSessionId)
+                .ToDictionary(s => s.Id);
+            if (finished.Count == 0) return Array.Empty<IReadOnlyList<WorkSet>>();
+
+            var result = new List<IReadOnlyList<WorkSet>>();
+            var exercises = (await _exercises.WhereAsync(e => e.ExerciseName == exerciseName))
+                .Where(e => finished.ContainsKey(e.SessionId))
+                .OrderByDescending(e => finished[e.SessionId].StartedAtUtc);
+
+            foreach (var ex in exercises)
+            {
+                var working = (await _sets.WhereAsync(s => s.SessionExerciseId == ex.Id && !s.IsWarmup))
+                    .OrderBy(s => s.Position)
+                    .Select(s => new WorkSet(s.LoadLb, s.Reps, s.Seconds))
+                    .ToList();
+                if (working.Count == 0) continue;
+                result.Add(working);
+                if (result.Count >= sessions) break;
+            }
+            return result;
+        }
+
         public async Task<IReadOnlyList<TrainingSessionRow>> GetHistoryAsync(int limit = 100)
             => (await _sessions.WhereAsync(s => s.Status == (int)SessionStatus.Finished))
                 .OrderByDescending(s => s.StartedAtUtc)

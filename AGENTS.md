@@ -75,6 +75,12 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
   passed via `env:`, never on a command line) and stamps `versionCode` with the latest CI build
   number from `gh release list`. An equal versionCode reinstalls in place; the next CI build is +1
   and still arrives as an in-app update. Without the keystore it falls back to debug signing.
+- **The script refuses to install a stale APK.** Incremental builds don't treat signing
+  properties or `ApplicationVersion` as inputs, so after a plain `dotnet build` (debug key,
+  versionCode 1) a signed deploy would reuse the debug APK — signature mismatch, forced uninstall,
+  data gone. The script builds with `-t:SignAndroidPackage` first, checks the APK's certificate
+  (`apksigner`) and versionCode (`aapt`), cleans and rebuilds if either is wrong, and after
+  installing fails loudly if `firstInstallTime` moved (i.e. it was a reinstall, not an update).
 - **`AndroidPreserveUserData=true` is load-bearing.** Fast deployment silently falls back to a
   full reinstall whenever the build configuration changes — including a new versionCode, which
   happens after every CI release. Without the flag that reinstall is uninstall + install and wipes

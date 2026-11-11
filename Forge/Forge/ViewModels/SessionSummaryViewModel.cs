@@ -3,6 +3,7 @@ using System.Globalization;
 using Forge.Constants;
 using Forge.Services;
 using Forge.Services.Interfaces;
+using Forge.Training;
 
 namespace Forge.ViewModels
 {
@@ -10,6 +11,8 @@ namespace Forge.ViewModels
     {
         public required string Name { get; init; }
         public required string Detail { get; init; }
+        public string? Next { get; init; }
+        public bool HasNext => Next is not null;
     }
 
     /// <summary>End-of-session summary (PBI 8.1 basics; PRs and next-time suggestions arrive with 8.5/8.6).</summary>
@@ -52,7 +55,21 @@ namespace Forge.ViewModels
                     : string.Join(", ", sets.Select(s =>
                         (s.LoadLb > 0 ? WeightMath.ToDisplay(s.LoadLb, unit).ToString("0.#", CultureInfo.CurrentCulture) + "×" : "")
                         + (s.Seconds is int sec ? $"{sec}s" : $"{s.Reps}")));
-                Lines.Add(new SummaryLine { Name = ex.Row.ExerciseName, Detail = detail });
+                // Next time: progression from this session (now finished, so it is the most recent).
+                string? next = null;
+                if (sets.Count > 0)
+                {
+                    var history = await _training.GetRecentWorkingSetsAsync(ex.Row.ExerciseName);
+                    var step = LoadIncrements.StepFor(ex.Info?.Modality ?? Forge.Models.Modality.Dumbbell, unit);
+                    if (Progression.Suggest(ExerciseCardViewModel.RxOf(ex.Row), history, step, unit) is { } sug)
+                    {
+                        var load = sug.LoadLb > 0
+                            ? WeightMath.ToDisplay(sug.LoadLb, unit).ToString("0.#", CultureInfo.CurrentCulture) + $" {u} × "
+                            : "";
+                        next = $"Next time: {load}{(sug.Seconds is int sec ? $"{sec}s" : $"{sug.Reps}")}";
+                    }
+                }
+                Lines.Add(new SummaryLine { Name = ex.Row.ExerciseName, Detail = detail, Next = next });
             }
         }
     }

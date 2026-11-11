@@ -60,6 +60,12 @@ namespace Forge.Services.Interfaces
         /// <summary>Working sets from the most recent finished session containing the exercise.</summary>
         Task<LastPerformance?> GetLastPerformanceAsync(string exerciseName, int? excludingSessionId = null);
 
+        /// <summary>
+        /// Working sets for an exercise from recent finished sessions, most recent first — the
+        /// input to <see cref="Progression.Suggest"/>. Sessions where it had no working sets are left out.
+        /// </summary>
+        Task<IReadOnlyList<IReadOnlyList<WorkSet>>> GetRecentWorkingSetsAsync(string exerciseName, int? excludingSessionId = null, int sessions = 4);
+
         /// <summary>Exercises doable at a location, for substitutes and "add exercise".</summary>
         Task<IReadOnlyList<ExerciseInfo>> GetLibraryAsync(ExerciseCategory? category = null);
 

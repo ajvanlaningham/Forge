@@ -75,7 +75,44 @@ fi
 # AndroidPreserveUserData: fast deployment falls back to a full reinstall whenever the build
 # configuration changes — including a new versionCode, i.e. after every CI release. Without this
 # that reinstall is uninstall + install, and silently deletes the SQLite database on the phone.
-echo ">> build + install + launch (net9.0-android) on $PHONE_IP:$PORT"
-dotnet build "$CSPROJ" -f net9.0-android -t:Run -p:AdbTarget="-s $PHONE_IP:$PORT" \
-  -p:AndroidPreserveUserData=true "${SIGN_ARGS[@]}"
-echo ">> done. App should be running on the device."
+BUILD_ARGS=(-f net9.0-android -p:AndroidPreserveUserData=true "${SIGN_ARGS[@]}")
+PKG=io.github.ajvanlaningham.forge
+APK="$SCRIPT_DIR/Forge/Forge/bin/Debug/net9.0-android/$PKG-Signed.apk"
+BUILD_TOOLS="$(ls -d "${ANDROID_HOME:-$HOME/android-sdk}"/build-tools/*/ | sort -V | tail -1)"
+# The release certificate (also recorded in AGENTS.md).
+RELEASE_CERT="ff47dbc7892001aaa091e16a1ad5072eed8fd3227f8d33f63b5242a41201739c"
+
+# Incremental builds do NOT treat signing properties or ApplicationVersion as inputs: after a
+# plain `dotnet build` (debug key, versionCode 1) a signed deploy happily reuses the stale
+# debug-signed APK, the signature mismatch forces an uninstall, and the database is gone.
+# So build first, inspect the APK that would be installed, and rebuild clean if it is wrong.
+apk_ok() {
+  [[ ${#SIGN_ARGS[@]} -eq 0 ]] && return 0   # debug deploys: nothing to check
+  [[ -f "$APK" ]] || return 1
+  local cert ver
+  cert="$("$BUILD_TOOLS/apksigner" verify --print-certs "$APK" 2>/dev/null | awk -F': ' '/SHA-256 digest/ { print $2; exit }')"
+  ver="$("$BUILD_TOOLS/aapt" dump badging "$APK" 2>/dev/null | grep -o "versionCode='[0-9]*'" | grep -o '[0-9]\+')"
+  [[ "$cert" == "$RELEASE_CERT" && "$ver" == "$VERSION_CODE" ]] || { echo "   APK has cert ${cert:0:12}… versionCode ${ver:-?}"; return 1; }
+}
+
+echo ">> build (net9.0-android)"
+dotnet build "$CSPROJ" "${BUILD_ARGS[@]}" -t:SignAndroidPackage -v:q -nologo
+if ! apk_ok; then
+  echo ">> stale APK (wrong key or versionCode) — cleaning and rebuilding"
+  dotnet clean "$CSPROJ" -f net9.0-android -v:q -nologo
+  dotnet build "$CSPROJ" "${BUILD_ARGS[@]}" -t:SignAndroidPackage -v:q -nologo
+  apk_ok || { echo "!! APK still isn't release-signed with versionCode $VERSION_CODE — refusing to install (it would wipe the app's data)" >&2; exit 1; }
+fi
+
+BEFORE="$(adb -s "$PHONE_IP:$PORT" shell dumpsys package "$PKG" 2>/dev/null | grep -m1 firstInstallTime || true)"
+echo ">> install + launch on $PHONE_IP:$PORT"
+dotnet build "$CSPROJ" "${BUILD_ARGS[@]}" -t:Run -p:AdbTarget="-s $PHONE_IP:$PORT" -v:q -nologo
+AFTER="$(adb -s "$PHONE_IP:$PORT" shell dumpsys package "$PKG" 2>/dev/null | grep -m1 firstInstallTime || true)"
+
+if [[ -n "$BEFORE" && "$BEFORE" != "$AFTER" ]]; then
+  echo "!! the app was REINSTALLED, not updated — its data on the phone was wiped" >&2
+  echo "!!   before: $BEFORE" >&2
+  echo "!!   after:  $AFTER" >&2
+  exit 1
+fi
+echo ">> done. App updated in place and running on the device."

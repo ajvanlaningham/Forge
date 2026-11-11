@@ -156,8 +156,12 @@ Defaults taken without asking (veto-able):
   load goes up one increment and reps reset low. Missing the bottom holds the load; repeated
   misses hint at a deload, never act on it.
 - Per-equipment increments, configurable. Suggestion is a pre-fill, never a constraint.
-- [ ] Rule in `Forge.Core` with tests (no history, partial session, changed rep range)
-- [ ] Increments in settings; feed suggestions into pre-fill and session summary
+- [x] Rule in `Forge.Core` (`Progression`) with tests: no history, partial session, changed rep
+      range, repeated misses (hint only), back-off sets, bodyweight, timed, kg steps
+- [x] Suggestion pre-fills the first set and shows its reason on the card; the summary shows
+      "Next time" per exercise
+- [x] Per-equipment increments (`LoadIncrements`): 5 lb / 2.5 kg, kettlebells 9 lb / 4 kg
+- [ ] Make increments user-configurable (defaults are fine until someone has odd plates)
 
 ### 8.3 Rest timer
 - Auto-starts on set log (slot rest time or settings default); pause, +15 s, skip.
