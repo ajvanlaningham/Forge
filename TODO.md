@@ -190,8 +190,11 @@ Defaults taken without asking (veto-able):
   chart (Epley `w * (1 + reps/30)`, shared with 5.2).
 - PRs detected on save (heaviest load, best e1RM, most reps at a load); end-of-session summary
   with duration, volume, PRs, XP, next-time suggestions.
-- [ ] Epley + PR detection in `Forge.Core` with tests
-- [ ] History views, summary screen, e1RM chart
+- [x] Epley + PR detection (`StrengthMath`) with tests. First session is a baseline, not records.
+- [x] Session history (Train → History) → tap for the session summary
+- [x] Per-exercise history: best-e1RM chart (bodyweight: reps, timed: seconds) + every set;
+      reachable from the summary and the exercise ⋯ menu
+- [x] Summary: duration, volume, "Day N complete · +150 XP", records stated plainly, next time
 
 ### 10.1 Daily backup
 - `VACUUM INTO` (never a file copy of a live DB), written **outside** app-private storage so it

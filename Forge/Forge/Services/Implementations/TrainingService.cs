@@ -441,6 +441,43 @@ namespace Forge.Services.Implementations
             return result;
         }
 
+        public async Task<IReadOnlyList<ExerciseHistoryEntry>> GetExerciseHistoryAsync(string exerciseName)
+        {
+            var finished = (await _sessions.WhereAsync(s => s.Status == (int)SessionStatus.Finished)).ToDictionary(s => s.Id);
+            var result = new List<ExerciseHistoryEntry>();
+            foreach (var ex in (await _exercises.WhereAsync(e => e.ExerciseName == exerciseName))
+                         .Where(e => finished.ContainsKey(e.SessionId))
+                         .OrderBy(e => finished[e.SessionId].StartedAtUtc))
+            {
+                var working = (await _sets.WhereAsync(s => s.SessionExerciseId == ex.Id && !s.IsWarmup))
+                    .OrderBy(s => s.Position).ToList();
+                if (working.Count == 0) continue;
+                var session = finished[ex.SessionId];
+                result.Add(new ExerciseHistoryEntry(
+                    DateOnly.ParseExact(session.DateKey, "yyyy-MM-dd"), session.Id, session.Title, working));
+            }
+            return result;
+        }
+
+        public async Task<IReadOnlyDictionary<string, IReadOnlyList<PersonalRecord>>> GetSessionRecordsAsync(int sessionId)
+        {
+            var result = new Dictionary<string, IReadOnlyList<PersonalRecord>>();
+            var session = await _sessions.GetByIdAsync(sessionId);
+            if (session is null || session.Status != (int)SessionStatus.Finished) return result;
+
+            foreach (var name in (await _exercises.WhereAsync(e => e.SessionId == sessionId)).Select(e => e.ExerciseName).Distinct())
+            {
+                var history = await GetExerciseHistoryAsync(name);
+                static WorkSet W(SessionSetRow r) => new(r.LoadLb, r.Reps, r.Seconds);
+                var earlier = history.TakeWhile(h => h.SessionId != sessionId).SelectMany(h => h.WorkingSets).Select(W).ToList();
+                var now = history.FirstOrDefault(h => h.SessionId == sessionId)?.WorkingSets.Select(W).ToList();
+                if (now is null) continue;
+                var prs = StrengthMath.FindRecords(earlier, now);
+                if (prs.Count > 0) result[name] = prs;
+            }
+            return result;
+        }
+
         public async Task<IReadOnlyList<TrainingSessionRow>> GetHistoryAsync(int limit = 100)
             => (await _sessions.WhereAsync(s => s.Status == (int)SessionStatus.Finished))
                 .OrderByDescending(s => s.StartedAtUtc)

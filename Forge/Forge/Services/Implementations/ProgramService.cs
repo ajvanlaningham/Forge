@@ -228,6 +228,9 @@ namespace Forge.Services.Implementations
             return delta;
         }
 
+        public async Task<int?> DayCompletedBySessionAsync(int sessionId)
+            => (await _days.WhereAsync(r => r.SessionId == sessionId && r.Completed)).FirstOrDefault()?.DayIndex;
+
         private static DateOnly ParseKey(string key)
             => DateOnly.ParseExact(key, "yyyy-MM-dd", CultureInfo.InvariantCulture);
     }

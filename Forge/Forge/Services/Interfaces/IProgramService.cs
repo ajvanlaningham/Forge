@@ -47,5 +47,8 @@ namespace Forge.Services.Interfaces
         /// ones un-completed. Returns the net delta (a multiple of the per-day award).
         /// </summary>
         Task<int> ReconcileXpAsync(DateOnly date);
+
+        /// <summary>The program day a session completed (zero-based index), or null if it completed none.</summary>
+        Task<int?> DayCompletedBySessionAsync(int sessionId);
     }
 }

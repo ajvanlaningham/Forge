@@ -66,6 +66,7 @@ namespace Forge.ViewModels
         public ICommand ChangeProgramCommand { get; }
         public ICommand OpenLibraryCommand { get; }
         public ICommand OpenGearCommand { get; }
+        public ICommand OpenHistoryCommand { get; } = new Command(async () => await Shell.Current.GoToAsync(nameof(SessionHistoryPage)));
 
         public TrainViewModel(IProgramService programs, ITrainingService training)
         {

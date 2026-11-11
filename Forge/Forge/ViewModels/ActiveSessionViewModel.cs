@@ -531,10 +531,11 @@ namespace Forge.ViewModels
 
         private async Task MenuAsync()
         {
-            const string swap = "Swap exercise", skip = "Skip", unskip = "Un-skip", up = "Move up", down = "Move down";
-            var choice = await Shell.Current.DisplayActionSheet(Name, "Cancel", null, swap, IsSkipped ? unskip : skip, up, down);
+            const string swap = "Swap exercise", skip = "Skip", unskip = "Un-skip", up = "Move up", down = "Move down", hist = "History";
+            var choice = await Shell.Current.DisplayActionSheet(Name, "Cancel", null, swap, IsSkipped ? unskip : skip, up, down, hist);
             switch (choice)
             {
+                case hist: await Forge.Views.ExerciseHistoryPage.OpenAsync(Name); break;
                 case swap: await SwapAsync(); break;
                 case skip: await _owner.Training.SetSkippedAsync(Id, true); await _owner.ReloadAsync(); break;
                 case unskip: await _owner.Training.SetSkippedAsync(Id, false); await _owner.ReloadAsync(); break;

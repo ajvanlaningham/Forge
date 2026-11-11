@@ -20,6 +20,9 @@ namespace Forge.Services.Interfaces
                                || Info?.Action is ActionType.Hold or ActionType.Time;
     }
 
+    /// <summary>One past session's working sets for an exercise.</summary>
+    public sealed record ExerciseHistoryEntry(DateOnly Date, int SessionId, string? SessionTitle, IReadOnlyList<SessionSetRow> WorkingSets);
+
     /// <summary>What was done for an exercise the last time it was performed.</summary>
     public sealed record LastPerformance(DateOnly Date, IReadOnlyList<SessionSetRow> WorkingSets);
 
@@ -82,6 +85,15 @@ namespace Forge.Services.Interfaces
 
         /// <summary>Equipment available at a location.</summary>
         Task<Equipment> GetEquipmentAsync(TrainingLocation location);
+
+        /// <summary>Every finished session's working sets for an exercise, oldest first.</summary>
+        Task<IReadOnlyList<ExerciseHistoryEntry>> GetExerciseHistoryAsync(string exerciseName);
+
+        /// <summary>
+        /// Personal records set in a finished session, per exercise, measured against every
+        /// earlier finished session. Shown neutrally; they earn nothing (see StrengthMath).
+        /// </summary>
+        Task<IReadOnlyDictionary<string, IReadOnlyList<PersonalRecord>>> GetSessionRecordsAsync(int sessionId);
 
         /// <summary>Finished sessions, newest first.</summary>
         Task<IReadOnlyList<TrainingSessionRow>> GetHistoryAsync(int limit = 100);

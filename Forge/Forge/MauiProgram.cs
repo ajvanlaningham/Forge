@@ -79,6 +79,10 @@ namespace Forge
             builder.Services.AddTransient<ActiveSessionPage>();
             builder.Services.AddTransient<SessionSummaryViewModel>();
             builder.Services.AddTransient<SessionSummaryPage>();
+            builder.Services.AddTransient<SessionHistoryViewModel>();
+            builder.Services.AddTransient<SessionHistoryPage>();
+            builder.Services.AddTransient<ExerciseHistoryViewModel>();
+            builder.Services.AddTransient<ExerciseHistoryPage>();
             builder.Services.AddTransient<StatsViewModel>();
             builder.Services.AddTransient<StatsPage>();
             builder.Services.AddTransient<QuestsViewModel>();
