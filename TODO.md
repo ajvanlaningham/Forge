@@ -321,11 +321,19 @@ Rework the program format before writing real content:
 
 ### Future milestones
 
-- **Injuries and limitations.** Tag exercises with the joints/areas they load (knee, lower back,
-  shoulder, wrist, elbow, hip). A profile of limitations — permanent ("bad knee") or temporary
-  with an end date ("tweaked shoulder, 2 weeks") — filters exercises and drives the existing
-  swap system to substitute around them, with a "how did that feel?" check after flagged
-  exercises. Never medical advice: pain that persists → see a professional.
+- **Character page.** A home for "you" in the RPG layer, reached from Home (tap the sprite):
+  - **Injuries & limitations** are entered and tracked here (see below) — framed as the
+    character's condition, with active ones shown as status effects until they clear.
+  - **Sprite skins:** pick or unlock looks for the character sprite (the wizard-bot today).
+    Unlocks could follow consistency milestones (levels, perfect-week streaks, completed blocks)
+    — never PRs or weight, per the design decisions. Art via the `art/` sprite pipeline in the
+    house palette.
+  - A natural place for level, stat cards, streaks, and completed blocks to live together.
+- **Injuries and limitations** (entered on the Character page). Tag exercises with the
+  joints/areas they load (knee, lower back, shoulder, wrist, elbow, hip). A limitation is
+  permanent ("bad knee") or temporary with an end date ("tweaked shoulder, 2 weeks"); it filters
+  exercises and drives the existing swap system to substitute around them, with a "how did that
+  feel?" check after flagged exercises. Never medical advice: persistent pain → see a professional.
 
 - **Off-device backup, web view, device migration.** Staged plan (2026-11-11 discussion):
   1. *User-chosen backup folder* (SAF on Android, Files on iOS). Picking a Google Drive /
