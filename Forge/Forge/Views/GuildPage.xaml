@@ -58,7 +58,8 @@
                                     </Border.Triggers>
                                     <VerticalStackLayout Spacing="6">
                                         <Label Text="{Binding ActiveText}" IsVisible="{Binding HasActiveText}"
-                                               FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}" />
+                                               FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}"
+                                               Margin="0,0,64,0" LineBreakMode="WordWrap" />
                                         <Label Text="{Binding Title}" FontFamily="FantasyH" FontSize="24"
                                                TextColor="{StaticResource Ink}" Margin="0,0,56,0" LineBreakMode="WordWrap" />
                                         <Label Text="{Binding Discipline}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Wax}" />
