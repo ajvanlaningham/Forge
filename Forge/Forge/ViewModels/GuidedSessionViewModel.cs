@@ -25,6 +25,7 @@ namespace Forge.ViewModels
 
         private readonly ITrainingService _training;
         private readonly IRestAlarm _alarm;
+        private readonly IStatTestService _tests;
         private IDispatcherTimer? _timer;
 
         private SessionSnapshot? _snap;
@@ -116,6 +117,16 @@ namespace Forge.ViewModels
         private string _readyText = "";
         public string ReadyText { get => _readyText; private set => SetProperty(ref _readyText, value); }
 
+        // --- a stat test as the last steps of a test day (Decision 23) ---
+        private DueTest? _dueTest;
+        private bool _hasTest;
+        public bool HasTest { get => _hasTest; private set => SetProperty(ref _hasTest, value); }
+        private string _testText = "";
+        public string TestText { get => _testText; private set => SetProperty(ref _testText, value); }
+        private string _testButton = "";
+        public string TestButton { get => _testButton; private set => SetProperty(ref _testButton, value); }
+        public ICommand TestCommand { get; }
+
         private string _doneText = "";
         public string DoneText { get => _doneText; private set => SetProperty(ref _doneText, value); }
 
@@ -132,10 +143,16 @@ namespace Forge.ViewModels
         public ICommand FinishCommand { get; }
         public ICommand MenuCommand { get; }
 
-        public GuidedSessionViewModel(ITrainingService training, IRestAlarm alarm)
+        public GuidedSessionViewModel(ITrainingService training, IRestAlarm alarm, IStatTestService tests)
         {
             _training = training;
             _alarm = alarm;
+            _tests = tests;
+            TestCommand = new Command(async () =>
+            {
+                if (_dueTest is { } d)
+                    await Shell.Current.GoToAsync($"{nameof(Forge.Views.SubPages.StatTestPage)}?kind={d.Kind}&calibration={d.Calibration}");
+            });
             StartCommand = new Command(async () => await StartWorkAsync());
             PauseCommand = new Command(async () => await TogglePauseAsync());
             MoreTimeCommand = new Command(async () => await AdjustAsync(+1));
@@ -355,8 +372,24 @@ namespace Forge.ViewModels
             _workEndsUtc = null;
             var working = _exercises.Sum(e => e.Sets.Count(s => !s.IsWarmup));
             DoneText = $"{working} working sets in {ElapsedText}.";
+            _ = LoadDueTestAsync();
             StepText = $"{_steps.Count} of {_steps.Count}";
             Phase = GuidedPhase.Done;
+        }
+
+        private async Task LoadDueTestAsync()
+        {
+            _dueTest = await _tests.DueTodayAsync(DateOnly.FromDateTime(DateTime.Today));
+            HasTest = _dueTest is not null;
+            if (_dueTest is not { } due) return;
+            var (name, what) = due.Kind switch
+            {
+                StatKind.Strength => ("strength test", "one all-out set on your three test lifts, then push-ups to failure. You're warm, so it's the right moment."),
+                StatKind.Dexterity => ("mobility test", "three tape-measure tests: ankle, hamstrings, shoulders."),
+                _ => ("conditioning test", "three minutes on a step to a beat, then a one-minute pulse count. Take 5 minutes first so your pulse settles.")
+            };
+            TestText = $"{(due.Calibration ? "Practice run" : "Honing")}: the {name} is next. {what}";
+            TestButton = due.Calibration ? $"Do the practice {name}" : $"Take the {name}";
         }
 
         // ------------------------------------------------------------------ the clock

@@ -118,6 +118,14 @@
         <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsDone}" Spacing="16" VerticalOptions="Center">
             <Label Text="SESSION COMPLETE" FontFamily="PixelUI" FontSize="34" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
             <Label Text="{Binding DoneText}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
+            <!-- On a test day the test is the session's last steps -->
+            <Border IsVisible="{Binding HasTest}" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}"
+                    StrokeThickness="2" StrokeShape="RoundRectangle 10" Padding="14">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{Binding TestText}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource OnBg}" />
+                    <Button Text="{Binding TestButton}" Command="{Binding TestCommand}" HeightRequest="60" FontFamily="PixelUI" FontSize="22" />
+                </VerticalStackLayout>
+            </Border>
             <Button Text="FINISH" Command="{Binding FinishCommand}" HeightRequest="76" FontFamily="PixelUI" FontSize="30"
                     BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
         </VerticalStackLayout>

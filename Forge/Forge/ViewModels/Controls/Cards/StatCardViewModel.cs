@@ -22,6 +22,10 @@ namespace Forge.ViewModels.Controls.Cards
         public int Dexterity { get => _dexterity; set => SetProperty(ref _dexterity, value); }
         public int Constitution { get => _constitution; set => SetProperty(ref _constitution, value); }
         public int Level { get => _level; set => SetProperty(ref _level, value); }
+
+        private bool _showStats = true;
+        /// <summary>The STR/DEX/CON row. Hero hides it: its stat-test rows carry the scores and their history.</summary>
+        public bool ShowStats { get => _showStats; set => SetProperty(ref _showStats, value); }
         public int Xp { get => _xp; set => SetProperty(ref _xp, value); }
         public double XpProgress { get => _xpProgress; set => SetProperty(ref _xpProgress, value); }
 

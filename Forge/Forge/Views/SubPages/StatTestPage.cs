@@ -129,14 +129,17 @@ public sealed class StatTestPage : ContentPage
         _body.Add(Note("After your warm-ups, pick a weight you can lift 3 to 10 times and do one set to the last clean rep. Rest fully between lifts. Dumbbells: the weight of one."));
         var gear = UserSettings.GearAt(TrainingLocation.Home);
         var rows = new List<(Func<string> Name, NumberField Load, NumberField Reps)>();
+        var inProgress = await _training.GetInProgressAsync();
         for (var i = 0; i < 3; i++)
         {
             var index = i;
             Func<string> name = () => pickers.Count == 3 ? pickers[index].SelectedItem as string ?? "" : lifts[index];
             var info = (await _training.GetLibraryAsync()).FirstOrDefault(e => e.Name == name());
             var loads = gear.For(info?.Modality ?? Modality.Dumbbell, _unit, info?.NeedsPair ?? false);
+            // Prefer what you just lifted in today's session, then your last finished session.
+            var today = inProgress?.Exercises.FirstOrDefault(e => e.Row.ExerciseName == name())?.Sets.Where(x => !x.IsWarmup).Select(x => (double?)x.LoadLb).Max();
             var history = await _training.GetRecentWorkingSetsAsync(name());
-            var start = history.FirstOrDefault(h => h.Count > 0)?.Max(s => s.LoadLb) ?? loads.Next(0) ?? 0;
+            var start = today ?? history.FirstOrDefault(h => h.Count > 0)?.Max(s => s.LoadLb) ?? loads.Next(0) ?? 0;
             var load = new NumberField(WeightMath.ToDisplay(start, _unit), step: 0, min: 0, max: 1000, unit: WeightMath.UnitLabel(_unit), loads: loads, unitOf: _unit);
             var reps = new NumberField(8, step: 1, min: 0, max: 40, unit: "reps");
             var title = new Label { Text = name(), FontFamily = "PixelUI", FontSize = 24, TextColor = _accent };

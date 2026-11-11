@@ -26,7 +26,28 @@
                    HorizontalTextAlignment="Center" />
 
             <cards:StatCard x:Name="Stats" />
-            <Button Text="Take a stat test" Command="{Binding TakeTestCommand}" Margin="0,-6,0,0" />
+            <!-- Stat tests: latest score, change, trend, the raw results -->
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding TestHistory}" Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:StatHistoryItem">
+                        <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}" StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8" Padding="12,8">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding Label}" FontFamily="PixelUI" FontSize="21" TextColor="{StaticResource Accent}" />
+                                    <Label Text="{Binding DetailText}" FontSize="13" TextColor="{StaticResource Muted}" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" HorizontalOptions="End">
+                                    <Label Text="{Binding ScoreText}" FontFamily="GymNum" FontSize="34" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="End" />
+                                    <Label Text="{Binding ChangeText}" FontFamily="PixelUI" FontSize="16" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="End" />
+                                </VerticalStackLayout>
+                                <GraphicsView Grid.Row="1" Grid.ColumnSpan="2" Drawable="{Binding Trend}" IsVisible="{Binding HasTrend}" HeightRequest="36" Margin="0,4,0,0" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+            <Button Text="Take a stat test" Command="{Binding TakeTestCommand}" />
 
             <!-- Armoury: forged items -->
             <VerticalStackLayout Spacing="6">

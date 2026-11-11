@@ -17,6 +17,17 @@ namespace Forge.ViewModels
     /// <summary>One item on the Armoury rack: lit when forged, faint until then.</summary>
     public sealed record RackItem(string Name, string Sprite, double Opacity, int Column);
 
+    /// <summary>One stat's test history on the Hero tab: latest score, change, trend, raw results.</summary>
+    public sealed class StatHistoryItem
+    {
+        public required string Label { get; init; }
+        public required string ScoreText { get; init; }
+        public string ChangeText { get; init; } = "";
+        public required string DetailText { get; init; }
+        public required IDrawable Trend { get; init; }
+        public bool HasTrend { get; init; }
+    }
+
     public sealed class HeroViewModel : BaseViewModel
     {
         private readonly IStatsService _stats;
@@ -24,8 +35,9 @@ namespace Forge.ViewModels
         private readonly IInventoryService _inventory;
         private readonly ProgressService _progress;
         private readonly IForgeService _forge;
+        private readonly IStatTestService _tests;
 
-        public StatCardViewModel StatsCard { get; } = new();
+        public StatCardViewModel StatsCard { get; } = new() { ShowStats = false };
         public ObservableCollection<GearItem> Pack { get; } = new();
 
         private string _armouryText = "";
@@ -38,6 +50,7 @@ namespace Forge.ViewModels
         public bool PackEmpty { get => _packEmpty; private set => SetProperty(ref _packEmpty, value); }
 
         public ObservableCollection<RackItem> Rack { get; } = new();
+        public ObservableCollection<StatHistoryItem> TestHistory { get; } = new();
 
         private string _spriteFile = UserSettings.HeroSpriteFile;
         public string SpriteFile { get => _spriteFile; private set => SetProperty(ref _spriteFile, value); }
@@ -55,8 +68,10 @@ namespace Forge.ViewModels
             if (kind is not null) await Shell.Current.GoToAsync($"{nameof(StatTestPage)}?kind={kind}&calibration=false");
         });
 
-        public HeroViewModel(IStatsService stats, IProgramService programs, IInventoryService inventory, ProgressService progress, IForgeService forge)
+        public HeroViewModel(IStatsService stats, IProgramService programs, IInventoryService inventory, ProgressService progress,
+            IForgeService forge, IStatTestService tests)
         {
+            _tests = tests;
             _forge = forge;
             _stats = stats;
             _programs = programs;
@@ -65,17 +80,52 @@ namespace Forge.ViewModels
             Title = "Hero";
         }
 
+        private async Task LoadTestHistoryAsync()
+        {
+            var accent = (Color)Application.Current!.Resources["Accent"];
+            var line = (Color)Application.Current.Resources["Muted"];
+            TestHistory.Clear();
+            foreach (var (kind, label) in new[] { (StatKind.Strength, "STR · Strength"), (StatKind.Dexterity, "DEX · Mobility"), (StatKind.Constitution, "CON · Conditioning") })
+            {
+                var history = await _tests.HistoryAsync(kind);
+                var scored = history.Where(t => !t.Calibration).ToList();
+                var last = history.LastOrDefault();
+                string detail;
+                if (last is null)
+                    detail = "No test yet. Tests come up on Today in week 1 (a practice run) and in Honing week.";
+                else
+                {
+                    var raw = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(last.DetailJson) ?? new();
+                    var when = DateOnly.ParseExact(last.DateKey, "yyyy-MM-dd").ToString("MMM d", System.Globalization.CultureInfo.CurrentCulture);
+                    detail = $"{(last.Calibration ? "Practice run" : "Last test")} · {when}\n" + string.Join("\n", raw.Select(kv => $"{kv.Key}: {kv.Value}"));
+                }
+                var latest = scored.LastOrDefault();
+                var change = scored.Count >= 2 ? scored[^1].Score - scored[^2].Score : (int?)null;
+                TestHistory.Add(new StatHistoryItem
+                {
+                    Label = label,
+                    ScoreText = latest is null ? "—" : latest.Score.ToString(System.Globalization.CultureInfo.CurrentCulture),
+                    ChangeText = change is int c ? $"{(c >= 0 ? "+" : "")}{c} since last" : latest is not null ? "baseline" : "",
+                    DetailText = detail,
+                    Trend = new Forge.ViewModels.Controls.Sparkline(scored.Select(t => (double)t.Score).ToList(), line, accent),
+                    HasTrend = scored.Count >= 2
+                });
+            }
+        }
+
         public async Task RefreshAsync()
         {
             SpriteFile = UserSettings.HeroSpriteFile;
             HeroTitle = UserSettings.HeroTitle;
-            StatsCard.Title = "Level & stats";
+            StatsCard.Title = "Level";
             await _stats.InitAsync();
             var core = await _stats.GetCoreStatsAsyncFromDb();
             StatsCard.ApplyXp((await _stats.GetUserStatsAsync()).Xp);
             StatsCard.Strength = core.FirstOrDefault(s => s.Kind == StatKind.Strength)?.Score ?? 1;
             StatsCard.Dexterity = core.FirstOrDefault(s => s.Kind == StatKind.Dexterity)?.Score ?? 1;
             StatsCard.Constitution = core.FirstOrDefault(s => s.Kind == StatKind.Constitution)?.Score ?? 1;
+
+            await LoadTestHistoryAsync();
 
             var (current, longest) = await _progress.GetStreakAsync();
             StreakText = $"Moved {current} day{(current == 1 ? "" : "s")} in a row · best {Math.Max(current, longest)}";
