@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true">
+	<!-- allowBackup="false": no silent Google cloud restore. On reinstall it brought back a stale
+	     snapshot without telling anyone. Forge's own backups (Download/Forge) + explicit restore in
+	     Settings are the one way back. Android 12+ still allows device-to-device transfer during
+	     new-phone setup, which is a deliberate, user-initiated migration — that's kept. -->
+	<application android:allowBackup="false" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true">
 		<!-- Hands the downloaded APK to the OS package installer (a different app) via a
 		     content:// URI. Authority matches UpdateService.InstallApkAsync:
 		     ${applicationId}.fileprovider. Paths are declared in Resources/xml/file_paths.xml. -->

@@ -264,9 +264,9 @@ Defaults taken without asking (veto-able):
 - **10.2 Restore:** ✅ done 2026-11-11. Settings → Restore opens the system picker directly in
   Download/Forge; validates (SQLite, Forge tables, integrity, schema ≤ current); confirms with a
   summary; backs up current data first; swaps the DB; closes the app. Verified end to end.
-- **Decide: Android Auto Backup.** The manifest has `allowBackup="true"`, so Android silently
-  restored an older cloud snapshot (225 XP from that morning) on reinstall. Keep it as a free
-  second copy, or turn it off so a reinstall is clean and restore is explicit?
+- **Android Auto Backup: off** (decided 2026-11-11). It silently restored a stale cloud snapshot
+  on reinstall. Device-to-device transfer during new-phone setup is still allowed.
+- **Off-device backup / web access / migration** — wanted eventually. See "Future milestones".
 - **10.3 Export:** share latest backup via share sheet; schema-versioned JSON export; off the UI
   thread.
 
@@ -277,6 +277,16 @@ Defaults taken without asking (veto-able):
   key. Latent (local declarations win), but fix it and drop redundant local copies.
 
 ### Future milestones
+
+- **Off-device backup, web view, device migration.** Staged plan (2026-11-11 discussion):
+  1. *User-chosen backup folder* (SAF on Android, Files on iOS). Picking a Google Drive /
+     Dropbox / iCloud Drive folder makes backups off-device with no backend. Restore on a new
+     phone = install, pick the file. Cheapest real win; do first.
+  2. *Schema-versioned JSON export* (10.3) — the portable format everything later builds on.
+  3. *Accounts + sync + website* only when a second user (or the website) makes it worth it:
+     Sign in with Apple + Google (Apple requires its own sign-in on iOS if any social login is
+     offered), a small backend (e.g. Supabase/Postgres + auth), and a web dashboard. Health data
+     on a server brings real privacy/security obligations — decide deliberately.
 - **Guild:** deferred; consider hiding the tab until it does something.
 - **Speed stat:** at lower bodyweight; adding a `StatKind` is cheaper before a year of history.
 - **BLE chest strap** (e.g. Polar H10) for in-workout HR via the standard BLE HR profile.
