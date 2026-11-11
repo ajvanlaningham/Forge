@@ -59,7 +59,16 @@ namespace Forge.Constants
                 "programs/copper-helm-db-4day.v3.json",
                 "programs/copper-helm-db-3day.v3.json",
                 "programs/copper-helm-kb-4day.v3.json",
-                "programs/copper-helm-kb-3day.v3.json"
+                "programs/copper-helm-kb-3day.v3.json",
+                // The Copper tier's other two quests (2026-11-11): Anvil (strength) and Bellows (conditioning)
+                "programs/copper-hammer-db-4day.v1.json",
+                "programs/copper-hammer-db-3day.v1.json",
+                "programs/copper-hammer-kb-4day.v1.json",
+                "programs/copper-hammer-kb-3day.v1.json",
+                "programs/copper-boots-db-4day.v1.json",
+                "programs/copper-boots-db-3day.v1.json",
+                "programs/copper-boots-kb-4day.v1.json",
+                "programs/copper-boots-kb-3day.v1.json"
             };
 
             /// <summary>Program offered when none has been chosen yet.</summary>

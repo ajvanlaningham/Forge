@@ -1,0 +1,290 @@
+{
+  "id": "copper-hammer-kb-4day",
+  "name": "Copper Hammer",
+  "quest": "copper-hammer",
+  "metal": "Copper",
+  "item": "Hammer",
+  "discipline": "Anvil",
+  "goal": "Strength",
+  "minutes": "30–40",
+  "difficulty": 1,
+  "version": 1,
+  "implement": "Kettlebell",
+  "family": "copper-hammer-kettlebell",
+  "description": "Heavy blows with one bell: front squats, deadlifts, cleans, presses and rows for low reps and full rest, 30–40 min. Pull-up negatives build toward the first pull-up.",
+  "equipment": [
+    "kettlebell",
+    "mat",
+    "pullUpBar"
+  ],
+  "activeRest": {
+    "name": "Active rest",
+    "flow": [
+      {
+        "exercise": "Cat-Cow",
+        "sets": 1,
+        "repsMin": 8,
+        "repsMax": 8
+      },
+      {
+        "exercise": "World's Greatest Stretch",
+        "sets": 1,
+        "seconds": 30
+      },
+      {
+        "exercise": "90/90 Hip Switch",
+        "sets": 1,
+        "repsMin": 10,
+        "repsMax": 10
+      },
+      {
+        "exercise": "Deep Squat Hold",
+        "sets": 1,
+        "seconds": 60
+      },
+      {
+        "exercise": "Child's Pose",
+        "sets": 1,
+        "seconds": 45
+      },
+      {
+        "exercise": "Dead Hang",
+        "sets": 1,
+        "seconds": 20
+      }
+    ],
+    "alternatives": [
+      "Walk or easy cardio, 20+ minutes"
+    ]
+  },
+  "days": [
+    {
+      "name": "Lower — squat",
+      "main": [
+        {
+          "exercise": "Kettlebell Front Squat",
+          "sets": 4,
+          "repsMin": 5,
+          "repsMax": 8,
+          "restSeconds": 150
+        },
+        {
+          "exercise": "Racked Reverse Lunge",
+          "sets": 3,
+          "repsMin": 6,
+          "repsMax": 8,
+          "restSeconds": 120
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Glute Bridge",
+            "sets": 2,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 45,
+            "superset": "B"
+          },
+          {
+            "exercise": "Plank",
+            "sets": 2,
+            "seconds": 40,
+            "restSeconds": 45,
+            "superset": "B"
+          }
+        ],
+        [
+          {
+            "exercise": "Kettlebell Halo",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 10,
+            "restSeconds": 45,
+            "superset": "B"
+          },
+          {
+            "exercise": "Dead Bug",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 12,
+            "restSeconds": 45,
+            "superset": "B"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Upper — press",
+      "main": [
+        {
+          "exercise": "Kettlebell Press",
+          "sets": 4,
+          "repsMin": 4,
+          "repsMax": 6,
+          "restSeconds": 150,
+          "superset": "A"
+        },
+        {
+          "exercise": "Kettlebell Row",
+          "sets": 4,
+          "repsMin": 6,
+          "repsMax": 8,
+          "restSeconds": 120,
+          "superset": "A"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Push-up",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 15,
+            "restSeconds": 60,
+            "superset": "B"
+          },
+          {
+            "exercise": "Dead Hang",
+            "sets": 2,
+            "seconds": 20,
+            "restSeconds": 60,
+            "superset": "B"
+          }
+        ],
+        [
+          {
+            "exercise": "Kettlebell Halo",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 10,
+            "restSeconds": 45,
+            "superset": "B"
+          },
+          {
+            "exercise": "Hollow Hold",
+            "sets": 2,
+            "seconds": 20,
+            "restSeconds": 45,
+            "superset": "B"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower — hinge",
+      "main": [
+        {
+          "exercise": "Kettlebell Deadlift",
+          "sets": 4,
+          "repsMin": 6,
+          "repsMax": 8,
+          "restSeconds": 150
+        },
+        {
+          "exercise": "Kettlebell Clean",
+          "sets": 4,
+          "repsMin": 4,
+          "repsMax": 6,
+          "restSeconds": 120
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Kettlebell Swing",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 15,
+            "restSeconds": 60,
+            "superset": "B"
+          },
+          {
+            "exercise": "Plank",
+            "sets": 2,
+            "seconds": 40,
+            "restSeconds": 45,
+            "superset": "B"
+          }
+        ],
+        [
+          {
+            "exercise": "Glute Bridge",
+            "sets": 2,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 45,
+            "superset": "B"
+          },
+          {
+            "exercise": "Dead Bug",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 12,
+            "restSeconds": 45,
+            "superset": "B"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Upper — pull",
+      "main": [
+        {
+          "exercise": "Kettlebell Floor Press",
+          "sets": 4,
+          "repsMin": 5,
+          "repsMax": 8,
+          "restSeconds": 150,
+          "superset": "A"
+        },
+        {
+          "exercise": "Pull-up Negative",
+          "sets": 4,
+          "repsMin": 3,
+          "repsMax": 5,
+          "restSeconds": 120,
+          "superset": "A"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Turkish Get-up",
+            "sets": 2,
+            "repsMin": 2,
+            "repsMax": 3,
+            "restSeconds": 60,
+            "superset": "B"
+          },
+          {
+            "exercise": "Push-up",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 15,
+            "restSeconds": 60,
+            "superset": "B"
+          }
+        ],
+        [
+          {
+            "exercise": "Band-Assisted Pull-up",
+            "sets": 2,
+            "repsMin": 5,
+            "repsMax": 8,
+            "restSeconds": 60,
+            "superset": "B"
+          },
+          {
+            "exercise": "Kettlebell Halo",
+            "sets": 2,
+            "repsMin": 8,
+            "repsMax": 10,
+            "restSeconds": 45,
+            "superset": "B"
+          }
+        ]
+      ]
+    }
+  ]
+}

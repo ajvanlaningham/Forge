@@ -45,6 +45,7 @@ namespace Forge.ViewModels
 
         private readonly IProgramService _programs;
         private readonly ITrainingService _training;
+        private readonly IForgeService _forge;
         private IReadOnlyList<ProgramDefinition> _catalog = Array.Empty<ProgramDefinition>();
         private Equipment _homeGear;
 
@@ -52,8 +53,9 @@ namespace Forge.ViewModels
         public ICommand AcceptCommand { get; }
         public event EventHandler? QuestAccepted;
 
-        public QuestBoardViewModel(IProgramService programs, ITrainingService training)
+        public QuestBoardViewModel(IProgramService programs, ITrainingService training, IForgeService forge)
         {
+            _forge = forge;
             _programs = programs;
             _training = training;
             Title = "Quest Board";
@@ -99,16 +101,22 @@ namespace Forge.ViewModels
                 });
             }
 
-            // Rumours: quests planned in this tier but not written yet.
-            foreach (var (title, discipline) in new[] { ("Copper Hammer", "Anvil · Strength"), ("Copper Boots", "Bellows · Conditioning") })
+            // The next tier, sealed: what it takes to open it (Decisions 18, 22).
+            var forged = await _forge.GetForgedAsync();
+            var open = Armoury.OpenTier(forged);
+            if (open + 1 < Armoury.Metals.Length)
             {
+                var metal = Armoury.Metals[open];
+                var next = Armoury.Metals[open + 1];
+                var have = Armoury.ForgedIn(forged, metal);
+                var pieces = string.Join(", ", Armoury.Slots.Select(sl => (have.Contains(sl) ? "✓ " : "") + $"{metal} {HeroQuest.ItemName(sl)}"));
                 Notices.Add(new QuestNotice
                 {
                     Id = "",
-                    Title = title,
-                    Discipline = discipline,
-                    Meta = "Rumoured",
-                    Description = "Word in the guild is this quest is coming. Check back.",
+                    Title = $"{next} tier",
+                    Discipline = "Hearth · Anvil · Bellows",
+                    Meta = "Sealed",
+                    Description = $"Forge all three {metal} pieces to break the seal: {pieces}. {have.Count} of 3 forged.",
                     IsRumour = true,
                     Tilt = Tilts[i++ % Tilts.Length]
                 });
@@ -118,8 +126,8 @@ namespace Forge.ViewModels
         private static string Describe(ProgramDefinition p) => p.Discipline switch
         {
             "Hearth" => "A balanced block: strength and muscle together, with movement every day. Four weeks — Kindling, Tempering, Quenching, Honing.",
-            "Anvil" => "Heavy, hard, repeated blows. A strength block.",
-            _ => "Breath and work capacity. A conditioning block."
+            "Anvil" => "Heavy, hard, repeated blows: a strength block. Fewer reps, more sets, full rest, and pull-up negatives toward your first pull-up. Four weeks.",
+            _ => "Breath and work capacity: a conditioning block. Bike intervals, circuits, a long steady ride and rounds. Four weeks."
         };
 
         /// <summary>True when every piece of gear the version is written for is owned at Home.</summary>

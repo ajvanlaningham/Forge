@@ -210,7 +210,10 @@ Rework the program format before writing real content:
 - [x] Copper Helm v2: band-assisted pull-ups every week (Upper B / Full B), dead hang in active
       rest; pull-up ladder in the library (band-assisted → negatives → pull-up). Active blocks
       follow the latest version of their program (sessions keep their own prescriptions).
-- [ ] Copper Hammer · Anvil (strength) and Copper Boots · Bellows (conditioning) — rumours on the board
+- [x] Copper Anvil (strength) and Copper Bellows (conditioning) quests, DB/KB × 3/4-day (2026-11-11).
+  Strength: 4 sets of 4–8, 2–2½ min rest, pull-up negatives. Conditioning: bike intervals, a
+  three-move circuit, a long steady ride, bag rounds or swing sets. The board's sealed notice
+  now names the next tier and the three pieces that open it.
 
 ### 8.4 Training programs (the 4-day split)
 - Program → days → slots (exercise, sets, rep range, rest). Seeded from versioned JSON in
