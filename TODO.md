@@ -91,9 +91,9 @@ cheap to change later.
   re-derived so a fully adherent week ≈ one level (4 × 150 + 7 × 50 = 950 from quests alone);
   weigh-ins and the conditioning bonus are slack. Final numbers live in `GameMath` with tests.
 - **Phone data is disposable.** Schema changes may reset tables; no migrations this push.
-- **Gym UI:** in-workout screens must be readable mid-set at arm's length. Look for a third
-  font that is legible but still gamified (alongside VT323 / Press Start 2P / MedievalSharp);
-  show the user candidates before adopting one. Fall back to large plain numerals.
+- **Gym UI:** in-workout screens must be readable mid-set at arm's length. **Numerals use
+  Jersey 15** (`GymNum`; SIL OFL 1.1, license in `Resources/FontLicenses/`), picked by the user
+  from four candidates on 2026-11-11.
 - **Device QA:** the user provides a wireless-adb port at the start; deploy with
   `deploy-android.sh` and check screens via `adb exec-out screencap`.
 - **Push cadence:** push to `main` once per finished feature (builds, tests pass, verified).

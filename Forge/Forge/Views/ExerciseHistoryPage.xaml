@@ -32,7 +32,7 @@
                                     <Label Grid.Column="1" Text="{Binding BestText}" FontFamily="PixelUI" FontSize="16"
                                            TextColor="{StaticResource Muted}" />
                                 </Grid>
-                                <Label Text="{Binding SetsText}" FontFamily="OpenSansSemibold" FontSize="17" TextColor="{StaticResource OnBg}" />
+                                <Label Text="{Binding SetsText}" FontFamily="GymNum" FontSize="24" TextColor="{StaticResource OnBg}" />
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

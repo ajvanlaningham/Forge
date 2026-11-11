@@ -33,6 +33,9 @@ namespace Forge
                     fonts.AddFont("PressStart2P-Regular.ttf", "PixelH");// chunky heading
                     fonts.AddFont("MedievalSharp-Regular.ttf", "FantasyH");//Fantasy heading
                     fonts.AddFont("fa-solid-900.otf", "FA"); //Font Awesome
+                    // In-gym numerals: legible at arm's length, still gamified. SIL OFL 1.1 —
+                    // license text in Resources/FontLicenses/Jersey15-OFL.txt.
+                    fonts.AddFont("Jersey15-Regular.ttf", "GymNum");
                 });
 
 #if DEBUG

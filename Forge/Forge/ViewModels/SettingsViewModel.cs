@@ -25,6 +25,52 @@ namespace Forge.ViewModels
 
         public ICommand BackUpNowCommand { get; }
 
+        public ICommand RestoreCommand => new Command(async () => await RestoreAsync());
+
+        /// <summary>
+        /// PBI 10.2: pick a backup (the system picker can see Download/Forge, including copies from
+        /// a previous install), validate it, confirm, restore, then close so the app reopens on it.
+        /// </summary>
+        private async Task RestoreAsync()
+        {
+            FileResult? picked;
+            try
+            {
+                picked = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = "Choose a Forge backup" });
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Restore", $"Couldn't open the file picker: {ex.Message}", "OK");
+                return;
+            }
+            if (picked is null) return;
+
+            RestoreCheck check;
+            await using (var stream = await picked.OpenReadAsync())
+                check = await _backup.InspectAsync(stream, picked.FileName);
+            if (!check.Ok)
+            {
+                await Shell.Current.DisplayAlert("Can't restore that file", check.Message, "OK");
+                return;
+            }
+
+            var go = await Shell.Current.DisplayAlert("Replace your data?",
+                $"{picked.FileName}\n{check.Summary}\n\nEverything currently in Forge is replaced by this backup. " +
+                "Your current data is backed up first, so this can be undone by restoring that copy.",
+                "Restore", "Cancel");
+            if (!go) return;
+
+            var result = await _backup.RestoreAsync(check);
+            if (!result.Success)
+            {
+                await Shell.Current.DisplayAlert("Restore failed", result.Message, "OK");
+                return;
+            }
+
+            await Shell.Current.DisplayAlert("Restored", result.Message + "\n\nForge will now close. Open it again to continue.", "Close Forge");
+            Application.Current?.Quit();
+        }
+
         public ICommand OpenGymEquipmentCommand { get; } = new Command(async () =>
             await Shell.Current.GoToAsync(nameof(Forge.Views.SubPages.GymEquipmentPage)));
 

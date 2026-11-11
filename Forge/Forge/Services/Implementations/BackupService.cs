@@ -1,6 +1,7 @@
 using System.Globalization;
 using Forge.Constants;
 using Forge.Services.Interfaces;
+using SQLite;
 
 namespace Forge.Services.Implementations
 {
@@ -43,6 +44,73 @@ namespace Forge.Services.Implementations
                 // Never block or interrupt the app over a backup. Tomorrow's launch retries.
                 System.Diagnostics.Debug.WriteLine($"Scheduled backup failed: {ex}");
             }
+        }
+
+        public async Task<RestoreCheck> InspectAsync(Stream picked, string fileName)
+        {
+            var staged = Path.Combine(FileSystem.CacheDirectory, $"restore-{Guid.NewGuid():N}.db3");
+            await using (var output = File.Create(staged))
+                await picked.CopyToAsync(output);
+
+            RestoreCheck Fail(string why)
+            {
+                try { File.Delete(staged); } catch { /* best effort */ }
+                return new RestoreCheck(false, why, null, 0, "");
+            }
+
+            // 1. Is it SQLite at all?
+            var header = new byte[16];
+            await using (var f = File.OpenRead(staged))
+                if (await f.ReadAsync(header) < 16 || System.Text.Encoding.ASCII.GetString(header, 0, 15) != "SQLite format 3")
+                    return Fail("That file isn't a Forge backup (not a database).");
+
+            // 2. Is it Forge's, and which schema? The name carries it; a renamed file is inferred.
+            try
+            {
+                using var conn = new SQLiteConnection(staged, SQLiteOpenFlags.ReadOnly);
+                var tables = conn.QueryScalars<string>("SELECT name FROM sqlite_master WHERE type = 'table'").ToHashSet();
+                if (!tables.Contains("UserStats"))
+                    return Fail("That database isn't from Forge.");
+                if (conn.ExecuteScalar<string>("PRAGMA integrity_check") != "ok")
+                    return Fail("That backup is damaged (integrity check failed).");
+
+                var schema = BackupPolicy.SchemaOf(fileName) ?? (tables.Contains("TrainingSession") ? 2 : 1);
+                if (schema > BackupPolicy.SchemaVersion)
+                    return Fail($"That backup was made by a newer version of Forge (schema {schema}). Update Forge first.");
+
+                int Count(string table) => tables.Contains(table) ? conn.ExecuteScalar<int>($"SELECT COUNT(*) FROM \"{table}\"") : 0;
+                var summary = $"{Count("TrainingSession")} sessions · {Count("WeightEntry")} weigh-ins · {Count("UserStats") switch { 0 => 0, _ => conn.ExecuteScalar<int>("SELECT Xp FROM UserStats LIMIT 1") }} XP";
+
+                // Older schemas restore as-is: missing tables and columns are created on first use.
+                return new RestoreCheck(true, "Looks good.", staged, schema, summary);
+            }
+            catch (Exception ex)
+            {
+                return Fail($"Couldn't read that backup: {ex.Message}");
+            }
+        }
+
+        public async Task<BackupResult> RestoreAsync(RestoreCheck check)
+        {
+            if (!check.Ok || check.StagedPath is null || !File.Exists(check.StagedPath))
+                return new BackupResult(false, null, "Nothing to restore.");
+
+            // Safety net: whatever is live right now gets backed up before it is replaced.
+            var safety = await BackUpNowAsync();
+            if (!safety.Success)
+                return new BackupResult(false, null, $"Restore cancelled: couldn't back up the current data first ({safety.Message}).");
+
+            await _db.CloseAsync();
+            foreach (var side in new[] { "-journal", "-wal", "-shm" })
+                try { File.Delete(_db.Path + side); } catch { /* not present */ }
+            File.Copy(check.StagedPath, _db.Path, overwrite: true);
+            try { File.Delete(check.StagedPath); } catch { /* cache */ }
+
+            // Preferences that cache facts about the database: let them be re-derived.
+            Preferences.Remove("Progress.LastCelebratedLevel");      // re-seeded silently from the restored XP
+            Preferences.Remove(GameConstants.Exercises.PrefixKey);   // library re-upserts into the restored DB
+
+            return new BackupResult(true, null, $"Restored ({check.Summary}). The current data was saved as {safety.FileName}.");
         }
 
         public async Task<BackupResult> BackUpNowAsync()

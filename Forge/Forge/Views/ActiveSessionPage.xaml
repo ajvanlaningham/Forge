@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-    In-gym logging. Legibility first: numbers are large plain numerals (OpenSans Semibold) and
-    every tap target is at least ~56dp. The theme carries through colors and the pixel headers.
-    The numeral font is a candidate for the "legible but gamified" font the user asked for.
+    In-gym logging. Legibility first: numbers use Jersey 15 (GymNum), the user's pick for a
+    legible-but-gamified numeral face, and every tap target is at least ~56dp. The theme carries
+    through colors and the pixel headers.
 -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -14,8 +14,8 @@
              Title="Session">
     <ContentPage.Resources>
         <Style x:Key="Num" TargetType="Label">
-            <Setter Property="FontFamily" Value="OpenSansSemibold" />
-            <Setter Property="FontSize" Value="34" />
+            <Setter Property="FontFamily" Value="GymNum" />
+            <Setter Property="FontSize" Value="48" />
             <Setter Property="LineBreakMode" Value="NoWrap" />
             <Setter Property="TextColor" Value="{StaticResource OnBg}" />
             <Setter Property="HorizontalTextAlignment" Value="Center" />
@@ -43,7 +43,7 @@
             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                 <Label Text="{Binding SessionTitle}" FontFamily="PixelUI" FontSize="28"
                        TextColor="{StaticResource Accent}" LineBreakMode="TailTruncation" />
-                <Label Grid.Column="1" Text="{Binding ElapsedText}" FontFamily="OpenSansSemibold" FontSize="28"
+                <Label Grid.Column="1" Text="{Binding ElapsedText}" FontFamily="GymNum" FontSize="36"
                        TextColor="{StaticResource OnBg}" />
                 <HorizontalStackLayout Grid.Row="1" Spacing="10">
                     <Border Padding="8,1" Stroke="{StaticResource Accent}" StrokeShape="RoundRectangle 6">
@@ -81,8 +81,8 @@
                                     <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                                         <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="26"
                                                TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
-                                        <Label Grid.Column="1" Text="{Binding SetCountText}" FontFamily="OpenSansSemibold"
-                                               FontSize="20" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding SetCountText}" FontFamily="GymNum"
+                                               FontSize="28" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
                                         <Button Grid.Column="2" Text="⋯" Command="{Binding MenuCommand}"
                                                 FontSize="24" WidthRequest="52" HeightRequest="44" Padding="0" />
                                     </Grid>
@@ -100,12 +100,12 @@
                                         <BindableLayout.ItemTemplate>
                                             <DataTemplate x:DataType="vm:SetLineViewModel">
                                                 <Grid ColumnDefinitions="36,*,Auto,44" ColumnSpacing="8" HeightRequest="40">
-                                                    <Label Text="{Binding NumberText}" FontFamily="OpenSansSemibold" FontSize="18"
+                                                    <Label Text="{Binding NumberText}" FontFamily="GymNum" FontSize="24"
                                                            TextColor="{StaticResource Muted}" VerticalOptions="Center" />
-                                                    <Label Grid.Column="1" Text="{Binding LoadText}" FontFamily="OpenSansSemibold"
-                                                           FontSize="22" TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
-                                                    <Label Grid.Column="2" Text="{Binding WorkText}" FontFamily="OpenSansSemibold"
-                                                           FontSize="22" TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
+                                                    <Label Grid.Column="1" Text="{Binding LoadText}" FontFamily="GymNum"
+                                                           FontSize="30" TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
+                                                    <Label Grid.Column="2" Text="{Binding WorkText}" FontFamily="GymNum"
+                                                           FontSize="30" TextColor="{StaticResource OnBg}" VerticalOptions="Center" />
                                                     <Button Grid.Column="3" Text="✕" FontSize="14" Padding="0"
                                                             BackgroundColor="Transparent" BorderWidth="0"
                                                             TextColor="{StaticResource Muted}"
@@ -202,15 +202,15 @@
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                     <VerticalStackLayout VerticalOptions="Center">
                         <Label Text="{Binding RestCaption}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" />
-                        <Label Text="{Binding RestText}" FontFamily="OpenSansSemibold" FontSize="44"
+                        <Label Text="{Binding RestText}" FontFamily="GymNum" FontSize="60"
                                TextColor="{StaticResource OnBg}" LineBreakMode="NoWrap" />
                     </VerticalStackLayout>
                     <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto"
                           ColumnSpacing="8" RowSpacing="8" VerticalOptions="Center">
                         <Button Text="−15" Command="{Binding RestMinusCommand}" WidthRequest="74" HeightRequest="52"
-                                FontFamily="OpenSansSemibold" FontSize="18" Padding="0" />
+                                FontFamily="GymNum" FontSize="24" Padding="0" />
                         <Button Grid.Column="1" Text="+15" Command="{Binding RestPlusCommand}" WidthRequest="74" HeightRequest="52"
-                                FontFamily="OpenSansSemibold" FontSize="18" Padding="0" />
+                                FontFamily="GymNum" FontSize="24" Padding="0" />
                         <Button Grid.Row="1" Text="{Binding PauseText}" Command="{Binding RestPauseCommand}" WidthRequest="74"
                                 HeightRequest="52" FontFamily="PixelUI" FontSize="16" Padding="0" />
                         <Button Grid.Row="1" Grid.Column="1" Text="SKIP" Command="{Binding RestSkipCommand}" WidthRequest="74"

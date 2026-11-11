@@ -19,7 +19,21 @@ namespace Forge.Services.Interfaces
 
         /// <summary>Backs up now regardless of the schedule.</summary>
         Task<BackupResult> BackUpNowAsync();
+
+        /// <summary>
+        /// Checks that a picked file is a Forge backup this version can restore. Copies it to a
+        /// staging file first; nothing live is touched. Returns the staged path on success.
+        /// </summary>
+        Task<RestoreCheck> InspectAsync(Stream picked, string fileName);
+
+        /// <summary>
+        /// Replaces the live database with a staged backup from <see cref="InspectAsync"/>, after
+        /// backing up the current data. The app must restart afterwards.
+        /// </summary>
+        Task<BackupResult> RestoreAsync(RestoreCheck check);
     }
+
+    public sealed record RestoreCheck(bool Ok, string Message, string? StagedPath, int Schema, string Summary);
 
     /// <summary>Where backup files land. Platform-specific: shared storage on Android.</summary>
     public interface IBackupSink

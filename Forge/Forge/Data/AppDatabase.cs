@@ -1,4 +1,4 @@
-﻿using Forge.Constants;
+using Forge.Constants;
 using Forge.Services.Interfaces;
 using SQLite;
 
@@ -11,11 +11,15 @@ namespace Forge.Data
         public AppDatabase()
         {
             SQLitePCL.Batteries_V2.Init();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, GameConstants.Db.FileName);
-            _connection = new SQLiteAsyncConnection(dbPath);
+            Path = System.IO.Path.Combine(FileSystem.AppDataDirectory, GameConstants.Db.FileName);
+            _connection = new SQLiteAsyncConnection(Path);
         }
 
         public SQLiteAsyncConnection Connection => _connection;
+
+        public string Path { get; }
+
+        public Task CloseAsync() => _connection.CloseAsync();
 
         public async Task EnsureTablesAsync(params Type[] tableTypes)
         {

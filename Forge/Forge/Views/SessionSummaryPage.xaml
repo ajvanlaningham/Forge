@@ -26,7 +26,7 @@
                             </Border.GestureRecognizers>
                             <VerticalStackLayout>
                                 <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}" />
-                                <Label Text="{Binding Detail}" FontFamily="OpenSansSemibold" FontSize="16" TextColor="{StaticResource Muted}" />
+                                <Label Text="{Binding Detail}" FontFamily="GymNum" FontSize="22" TextColor="{StaticResource Muted}" />
                                 <Label Text="{Binding Records}" IsVisible="{Binding HasRecords}" FontFamily="PixelUI" FontSize="17"
                                        TextColor="{StaticResource OnBg}" />
                                 <Label Text="{Binding Next}" IsVisible="{Binding HasNext}" FontFamily="PixelUI" FontSize="18"
