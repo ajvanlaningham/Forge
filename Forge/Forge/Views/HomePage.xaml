@@ -45,6 +45,8 @@
                 </Grid>
             </Grid>
 
+            <Label Text="{Binding StreakText}" FontFamily="PixelUI" FontSize="22"
+                   TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" Margin="0,-10,0,0" />
             <controls:WeightTrendCard BindingContext="{Binding WeightTrendCard}" />
 
         </VerticalStackLayout>

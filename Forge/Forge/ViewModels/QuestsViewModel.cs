@@ -171,11 +171,15 @@ namespace Forge.ViewModels
                 {
                     if (p is null) return;
                     if (!int.TryParse(p.ToString(), out var m) || m <= 0) return;
+                    var wasComplete = WeeklyCard.GoalMinutes > 0 && WeeklyCard.Minutes >= WeeklyCard.GoalMinutes;
                     var updated = await _conditioning.AddConditioningMinutesAsync(_todayDate, m, ct);
                     WeeklyCard.Minutes = updated.Minutes;
                     WeeklyCard.GoalMinutes = updated.GoalMinutes;
                     WeeklyCard.WeekRangeText = $"{updated.WeekStart:MMM d} – {updated.WeekEnd:MMM d}";
-                    //TODO: Add toast notification when completed
+                    if (!wasComplete && updated.Completed)
+                        await Shell.Current.DisplayAlert("Weekly goal reached",
+                            $"{updated.Minutes} conditioning minutes this week. +{Forge.Constants.GameMath.Quests.ConditioningWeeklyXp} XP",
+                            "Nice");
                 });
                 Debug.WriteLine($"QuestsViewModel.InitializeAsync completed in {sw.ElapsedMilliseconds} ms");
             }

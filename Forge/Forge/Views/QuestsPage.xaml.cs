@@ -53,6 +53,10 @@ namespace Forge.Views
             var ok = AppResources.Common_OK;
             
             await DisplayAlert(title, message, ok);
+
+            // Crossing a level is its own moment, after the routine XP note (PBI 4.2).
+            var progress = IPlatformApplication.Current?.Services.GetService<Forge.Services.ProgressService>();
+            if (progress is not null) await progress.CheckLevelUpAsync();
         }
     }
 }

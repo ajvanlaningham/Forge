@@ -59,6 +59,8 @@ namespace Forge
 #endif
             // Daily backup (PBI 10.1), triggered from App on start/resume.
             builder.Services.AddSingleton<IBackupService, BackupService>();
+            // Streak + level-up moment (PBIs 4.2 / 4.3).
+            builder.Services.AddSingleton<Forge.Services.ProgressService>();
             builder.Services.AddSingleton<IConditioningWeekService, ConditioningWeekService>();
 
             // Stats

@@ -17,5 +17,12 @@ public partial class HomePage : ContentPage
     {
         base.OnAppearing();
         await _vm.InitializeAsync();
+        await CheckLevelUpAsync();
+    }
+
+    private static async Task CheckLevelUpAsync()
+    {
+        var progress = IPlatformApplication.Current?.Services.GetService<Forge.Services.ProgressService>();
+        if (progress is not null) await progress.CheckLevelUpAsync();
     }
 }

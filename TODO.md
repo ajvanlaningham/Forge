@@ -216,7 +216,16 @@ Defaults taken without asking (veto-able):
 - XP sources enumerated in one place (quests, check-ins, tests, conditioning goal); symmetric
   undo; daily streak displayed; weekly conditioning completion notifies
   (`QuestsViewModel.cs` TODO).
-- [ ] Level-up detection + presentation; consolidate XP awards; streak; tests
+- [x] Level-up screen (`LevelUpPage`), fired once per level via a persisted last-celebrated
+      level (`ProgressService`); checked on Home, after quest XP, and on the session summary.
+      Fresh installs record their level silently; undo-then-re-earn doesn't re-celebrate.
+      Verified on device (crossed 1250 → level 2; no repeat on revisit).
+- [x] Daily streak (`StreakMath`, tested): days with any completed quest or program day; today
+      not done yet doesn't break it. Shown on Home with the best run.
+- [x] Weekly conditioning goal notifies when reached (the old `QuestsViewModel` TODO)
+- [ ] Consolidate XP awards behind one service (quests, program days, weigh-ins, conditioning
+      each still grant their own) and unit-test undo symmetry
+- [ ] Test-window announcement is a placeholder line until Epic 5 exists
 
 ## Later
 

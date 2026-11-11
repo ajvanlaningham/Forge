@@ -21,6 +21,8 @@ public partial class SessionSummaryPage : ContentPage
         try
         {
             await _vm.LoadAsync(SessionId);
+            var progress = IPlatformApplication.Current?.Services.GetService<Forge.Services.ProgressService>();
+            if (progress is not null) await progress.CheckLevelUpAsync();
         }
         catch (Exception ex)
         {

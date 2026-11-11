@@ -12,12 +12,19 @@ namespace Forge.ViewModels
     {
         private readonly IStatsService _stats;
         private readonly IExerciseLibraryImporter _importer;
+        private readonly Forge.Services.ProgressService _progress;
+
+        private string _streakText = "";
+        /// <summary>Consecutive days with a completed quest (PBI 4.3).</summary>
+        public string StreakText { get => _streakText; private set => SetProperty(ref _streakText, value); }
 
         public HomeViewModel(
             IStatsService statsService,
             IExerciseLibraryImporter importer,
-            WeightTrendCardViewModel weightTrendCard)
+            WeightTrendCardViewModel weightTrendCard,
+            Forge.Services.ProgressService progress)
         {
+            _progress = progress;
             _stats = statsService;
             _importer = importer;
             WeightTrendCard = weightTrendCard;
@@ -69,6 +76,14 @@ namespace Forge.ViewModels
             StatsCard.Constitution = ConstitutionScore;
 
             await WeightTrendCard.RefreshAsync();
+
+            var (current, longest) = await _progress.GetStreakAsync();
+            StreakText = current switch
+            {
+                0 => "No streak yet — complete a quest to start one.",
+                1 => $"Streak: 1 day · best {Math.Max(1, longest)}",
+                _ => $"Streak: {current} days · best {longest}"
+            };
         }
 
         private int _userLevel;
