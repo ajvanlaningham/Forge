@@ -28,11 +28,11 @@
             Route="quests"
             Icon="{StaticResource IconQuests}"/>
 
-        <ShellContent
-            Title="{x:Static res:AppResources.TabNavigation_CheckIn}"
-            ContentTemplate="{DataTemplate views:CheckInPage}"
-            Route="checkin"
-            Icon="{StaticResource IconCheckIn}"/>
+        <ShellContent 
+            Title="{x:Static res:AppResources.TabNavigation_Guild}"
+            Route="guild"
+            ContentTemplate="{DataTemplate views:GuildPage}"
+            Icon="{StaticResource IconGuild}"/>
         
         <ShellContent
             Title="{x:Static res:AppResources.TabNavigation_Stats}"
@@ -40,11 +40,11 @@
             Route="stats" 
             Icon="{StaticResource IconStats}"/>
 
-        <ShellContent 
-            Title="{x:Static res:AppResources.TabNavigation_Guild}"
-            Route="guild"
-            ContentTemplate="{DataTemplate views:GuildPage}"
-            Icon="{StaticResource IconGuild}"/>
+        <ShellContent
+            Title="{x:Static res:AppResources.TabNavigation_CheckIn}"
+            ContentTemplate="{DataTemplate views:CheckInPage}"
+            Route="checkin"
+            Icon="{StaticResource IconCheckIn}"/>
 
         <ShellContent
             Title="{x:Static res:AppResources.TabNavigation_Settings}"
