@@ -110,27 +110,31 @@ namespace Forge.Services.Implementations
             var existing = await GetInProgressAsync();
             if (existing is not null) return existing; // one session at a time
 
-            var day = await _programs.GetDayForDateAsync(date)
-                      ?? throw new InvalidOperationException("No active program");
+            var view = await _programs.GetViewAsync(date)
+                       ?? throw new InvalidOperationException("No active program");
+            var day = view.Day ?? throw new InvalidOperationException("This week's training is already done");
 
             var lib = await LibraryAsync();
             var available = await GetEquipmentAsync(location);
             UserSettings.LastLocation = location;
 
             var session = NewSession(date, location);
-            session.ProgramId = day.Program.Definition.Id;
-            session.ProgramVersion = day.Program.Definition.Version;
-            session.BlockId = day.Program.BlockId;
+            session.ProgramId = view.Program.Definition.Id;
+            session.ProgramVersion = view.Program.Definition.Version;
+            session.BlockId = view.Program.BlockId;
             session.DayIndex = day.DayIndex;
-            session.Title = $"Day {day.DayNumber} · {day.Day.Name}";
+            session.Title = $"Wk {view.Week} · {day.Name}" + (day.IsLight ? " (light)" : "");
             await _sessions.InsertAsync(session);
 
-            // Prescribed exercises claim their names first, so a swap never duplicates one.
-            var used = new HashSet<string>(day.Day.Slots.Select(s => s.Exercise), StringComparer.Ordinal);
+            // This week's slots: mains + this week's accessories; week 4 already has a set fewer.
+            var slots = day.Slots.Select(s => s.Slot).ToList();
 
-            for (var i = 0; i < day.Day.Slots.Count; i++)
+            // Prescribed exercises claim their names first, so a swap never duplicates one.
+            var used = new HashSet<string>(slots.Select(s => s.Exercise), StringComparer.Ordinal);
+
+            for (var i = 0; i < slots.Count; i++)
             {
-                var slot = day.Day.Slots[i];
+                var slot = slots[i];
                 var name = slot.Exercise;
                 string? swappedFrom = null;
 
@@ -371,9 +375,9 @@ namespace Forge.Services.Implementations
             if (working.Count == 0) return;
 
             var date = DateOnly.ParseExact(row.DateKey, "yyyy-MM-dd");
-            var offer = await _programs.GetDayForDateAsync(date);
-            if (offer is null || offer.Program.BlockId != row.BlockId || offer.DayIndex != row.DayIndex) return;
-            if (offer.CompletedOnDate) return;
+            var view = await _programs.GetViewAsync(date);
+            if (view?.Day is null || view.Program.BlockId != row.BlockId || view.Day.DayIndex != row.DayIndex) return;
+            if (view.CompletedOnDate) return;
 
             await _programs.CompleteDayAsync(date, row.Id);
             await _programs.ReconcileXpAsync(date);

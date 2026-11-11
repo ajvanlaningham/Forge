@@ -5,98 +5,198 @@ using Forge.Training;
 
 namespace Forge.Tests;
 
-public class ProgramRotationTests
+public class BlockScheduleTests
 {
-    private static readonly DateOnly Mon = new(2026, 11, 9);
+    private static readonly DateOnly Start = new(2026, 11, 9); // a Monday, though blocks can start any day
+
+    [Theory]
+    [InlineData(0, 1)]
+    [InlineData(6, 1)]
+    [InlineData(7, 2)]
+    [InlineData(27, 4)]
+    [InlineData(40, 4)] // past the end: still reported as the last week
+    public void WeeksFollowTheCalendar(int daysIn, int week)
+        => Assert.Equal(week, BlockSchedule.WeekOf(Start, Start.AddDays(daysIn)));
+
+    [Fact]
+    public void BlockCompletesAfterFourWeeks()
+    {
+        Assert.False(BlockSchedule.IsComplete(Start, Start.AddDays(27)));
+        Assert.True(BlockSchedule.IsComplete(Start, Start.AddDays(28)));
+    }
 
     [Fact]
     public void NoHistory_OffersDayOne()
-        => Assert.Equal(new ProgramDayOffer(0, false), ProgramRotation.OfferFor(4, [], Mon));
+        => Assert.Equal(new BlockOffer(1, 0, false, false), BlockSchedule.OfferFor(Start, 4, [], Start));
 
     [Fact]
-    public void AdvancesByCompletionOrder_NotWeekday()
+    public void WithinAWeek_TheNextUndoneDayIsOffered()
     {
-        // Day 1 Monday, then nothing until Thursday: Thursday is Day 2, not Day 4.
-        var done = new[] { new DayCompletion(0, Mon) };
-        Assert.Equal(new ProgramDayOffer(1, false), ProgramRotation.OfferFor(4, done, Mon.AddDays(3)));
+        var done = new[] { new DayCompletion(0, Start), new DayCompletion(1, Start.AddDays(2)) };
+        Assert.Equal(2, BlockSchedule.OfferFor(Start, 4, done, Start.AddDays(3)).TrainingDay);
     }
 
     [Fact]
-    public void CompletedToday_OffersTheSameDayAsDone_NotTheNext()
+    public void DaysCanBeDoneOutOfOrder()
     {
-        var done = new[] { new DayCompletion(0, Mon), new DayCompletion(1, Mon.AddDays(1)) };
-        Assert.Equal(new ProgramDayOffer(1, true), ProgramRotation.OfferFor(4, done, Mon.AddDays(1)));
+        // Did day 3 first; day 1 is still owed this week.
+        var done = new[] { new DayCompletion(2, Start) };
+        Assert.Equal(0, BlockSchedule.OfferFor(Start, 4, done, Start.AddDays(1)).TrainingDay);
     }
 
     [Fact]
-    public void WrapsAfterTheLastDay()
+    public void CompletedToday_ShowsTodaysDayAsDone()
     {
-        var done = Enumerable.Range(0, 4).Select(i => new DayCompletion(i, Mon.AddDays(i))).ToList();
-        Assert.Equal(new ProgramDayOffer(0, false), ProgramRotation.OfferFor(4, done, Mon.AddDays(5)));
+        var done = new[] { new DayCompletion(0, Start.AddDays(1)) };
+        Assert.Equal(new BlockOffer(1, 0, true, false), BlockSchedule.OfferFor(Start, 4, done, Start.AddDays(1)));
     }
 
     [Fact]
-    public void LookingAtAnEarlierDate_IgnoresLaterSessions()
+    public void AllTrainingDone_TheRestOfTheWeekIsActiveRest()
     {
-        var done = new[] { new DayCompletion(0, Mon), new DayCompletion(1, Mon.AddDays(2)) };
-        Assert.Equal(new ProgramDayOffer(1, false), ProgramRotation.OfferFor(4, done, Mon.AddDays(1)));
+        var done = Enumerable.Range(0, 3).Select(i => new DayCompletion(i, Start.AddDays(i))).ToList();
+        Assert.Null(BlockSchedule.OfferFor(Start, 3, done, Start.AddDays(4)).TrainingDay);
     }
 
     [Fact]
-    public void OrderOfInputDoesNotMatter()
+    public void MissedDays_AreSimplyMissed_TheNextWeekStartsFresh()
     {
-        var done = new[] { new DayCompletion(2, Mon.AddDays(4)), new DayCompletion(0, Mon), new DayCompletion(1, Mon.AddDays(2)) };
-        Assert.Equal(new ProgramDayOffer(3, false), ProgramRotation.OfferFor(4, done, Mon.AddDays(6)));
+        var done = new[] { new DayCompletion(0, Start) }; // only day 1 in week 1
+        var offer = BlockSchedule.OfferFor(Start, 4, done, Start.AddDays(7));
+        Assert.Equal(2, offer.Week);
+        Assert.Equal(0, offer.TrainingDay);
+    }
+
+    // --- perfect weeks ---
+
+    private static (List<DayCompletion> Training, HashSet<DateOnly> RestDays) PerfectWeek(int week, int trainingDays)
+    {
+        var (start, _) = BlockSchedule.WeekRange(Start, week);
+        var training = Enumerable.Range(0, trainingDays).Select(i => new DayCompletion(i, start.AddDays(i * 2))).ToList();
+        var rest = Enumerable.Range(0, 7).Select(d => start.AddDays(d)).Where(d => training.All(t => t.Date != d)).ToHashSet();
+        return (training, rest);
     }
 
     [Fact]
-    public void HistoryFromALongerProgram_WrapsIntoRange()
+    public void PerfectWeek_EveryDayMoved_AllTrainingDone()
     {
-        var done = new[] { new DayCompletion(5, Mon) };
-        Assert.Equal(new ProgramDayOffer(2, false), ProgramRotation.OfferFor(4, done, Mon.AddDays(1)));
+        var (t, r) = PerfectWeek(1, 4);
+        Assert.True(BlockSchedule.IsPerfectWeek(Start, 1, 4, t, r));
+    }
+
+    [Fact]
+    public void OneDayWithoutMovement_IsNotPerfect()
+    {
+        var (t, r) = PerfectWeek(1, 4);
+        r.Remove(r.First());
+        Assert.False(BlockSchedule.IsPerfectWeek(Start, 1, 4, t, r));
+    }
+
+    [Fact]
+    public void MovingEveryDay_ButSkippingATrainingDay_IsNotPerfect()
+    {
+        var (t, r) = PerfectWeek(1, 4);
+        var dropped = t[^1];
+        t.Remove(dropped);
+        r.Add(dropped.Date);
+        Assert.False(BlockSchedule.IsPerfectWeek(Start, 1, 4, t, r));
+    }
+
+    [Fact]
+    public void Streak_CountsFinishedPerfectWeeks_AndSetsTheMultiplier()
+    {
+        var (t1, r1) = PerfectWeek(1, 3);
+        var (t2, r2) = PerfectWeek(2, 3);
+        var training = t1.Concat(t2).ToList();
+        var rest = r1.Concat(r2).ToHashSet();
+
+        Assert.Equal(0, BlockSchedule.PerfectWeekStreak(Start, 3, training, rest, Start.AddDays(3)));  // week 1 not finished
+        Assert.Equal(1, BlockSchedule.PerfectWeekStreak(Start, 3, training, rest, Start.AddDays(10))); // in week 2
+        Assert.Equal(2, BlockSchedule.PerfectWeekStreak(Start, 3, training, rest, Start.AddDays(15))); // in week 3
+        Assert.Equal(1.2, BlockSchedule.Multiplier(2));
+        Assert.Equal(1.0, BlockSchedule.Multiplier(0));
+    }
+
+    [Fact]
+    public void AMiss_ResetsTheStreak()
+    {
+        var (t1, r1) = PerfectWeek(1, 3);
+        var (t3, r3) = PerfectWeek(3, 3); // week 2 empty
+        Assert.Equal(1, BlockSchedule.PerfectWeekStreak(Start, 3, t1.Concat(t3).ToList(), r1.Concat(r3).ToHashSet(), Start.AddDays(22)));
+        Assert.Equal(0, BlockSchedule.PerfectWeekStreak(Start, 3, t1, r1, Start.AddDays(15)));
     }
 }
 
-public class ProgramParserTests
+public class ProgramDefinitionTests
 {
     private const string Minimal = """
-        { "id": "x", "version": 1, "name": "X",
-          "days": [ { "name": "A", "slots": [ { "exercise": "Push-up", "sets": 3, "repsMin": 8, "repsMax": 12 } ] } ] }
+        { "id": "x", "name": "X",
+          "days": [
+            { "name": "A", "main": [ { "exercise": "Goblet Squat", "sets": 3, "repsMin": 8, "repsMax": 12 } ],
+              "accessories": [ [ { "exercise": "Plank", "sets": 2, "seconds": 30 } ],
+                               [ { "exercise": "Dead Bug", "sets": 2, "repsMin": 8, "repsMax": 12 } ] ] },
+            { "name": "B", "main": [ { "exercise": "Push-up", "sets": 3, "repsMin": 8, "repsMax": 15 } ] },
+            { "name": "C", "main": [ { "exercise": "Glute Bridge", "sets": 3, "repsMin": 10, "repsMax": 15 } ] } ] }
         """;
 
     [Fact]
-    public void ParsesMinimalProgram()
+    public void MainsAreFixed_AccessoriesRotateWeekly()
     {
         var p = ProgramParser.Parse(Minimal);
-        Assert.Equal("x@1", p.Key);
-        Assert.Equal(8, p.Days[0].Slots[0].RepsMin);
-        Assert.False(p.Days[0].Slots[0].IsTimed);
+        Assert.Equal(new[] { "Goblet Squat", "Plank" }, p.Resolve(0, 1).Slots.Select(s => s.Slot.Exercise));
+        Assert.Equal(new[] { "Goblet Squat", "Dead Bug" }, p.Resolve(0, 2).Slots.Select(s => s.Slot.Exercise));
+        Assert.Equal(new[] { "Goblet Squat", "Plank" }, p.Resolve(0, 3).Slots.Select(s => s.Slot.Exercise)); // cycles
+        Assert.True(p.Resolve(0, 1).Slots[0].IsMain);
+        Assert.False(p.Resolve(0, 1).Slots[1].IsMain);
+    }
+
+    [Fact]
+    public void WeekFour_IsLight_SameWeightsFewerSets()
+    {
+        var p = ProgramParser.Parse(Minimal);
+        var w4 = p.Resolve(0, 4);
+        Assert.True(w4.IsLight);
+        Assert.Equal(2, w4.Slots[0].Slot.Sets);   // 3 -> 2
+        Assert.Equal(1, w4.Slots[1].Slot.Sets);   // 2 -> 1 (never 0)
+        Assert.False(p.Resolve(0, 3).IsLight);
+    }
+
+    [Fact]
+    public void WeekFour_SpreadsTheStatTests()
+    {
+        var p = ProgramParser.Parse(Minimal);
+        Assert.Equal(StatTestKind.Strength, p.Resolve(0, 4).Test);
+        Assert.Equal(StatTestKind.Mobility, p.Resolve(1, 4).Test);
+        Assert.Equal(StatTestKind.Conditioning, p.Resolve(2, 4).Test);
+        Assert.Null(p.Resolve(0, 2).Test);
+    }
+
+    [Fact]
+    public void AFourDayBlock_HasOneDayWithoutATest()
+    {
+        var four = new ProgramDefinition { Days = Enumerable.Range(0, 4).Select(_ => new ProgramDay()).ToList() };
+        Assert.Null(four.TestFor(2));
+        Assert.Equal(StatTestKind.Conditioning, four.TestFor(3));
     }
 
     [Theory]
-    [InlineData("""{ "exercise": "Plank", "sets": 3, "repsMin": 8, "repsMax": 12, "seconds": 30 }""")] // both
-    [InlineData("""{ "exercise": "Plank", "sets": 3 }""")]                                            // neither
-    [InlineData("""{ "exercise": "Push-up", "sets": 3, "repsMin": 12, "repsMax": 8 }""")]             // inverted range
-    [InlineData("""{ "exercise": "Push-up", "sets": 0, "repsMin": 8, "repsMax": 12 }""")]             // no sets
-    [InlineData("""{ "exercise": "", "sets": 3, "repsMin": 8, "repsMax": 12 }""")]                    // no exercise
-    public void RejectsBadSlots(string slot)
+    [InlineData("""{ "id": "x", "name": "X", "days": [] }""")]                                        // no days
+    [InlineData("""{ "id": "x", "name": "X", "days": [ {"name":"A","main":[]}, {"name":"B","main":[]}, {"name":"C","main":[]} ] }""")] // no mains
+    [InlineData("{ not json")]
+    public void RejectsBadPrograms(string json)
+        => Assert.Throws<FormatException>(() => ProgramParser.Parse(json));
+
+    [Fact]
+    public void AMainLift_CannotAlsoRotateAsAnAccessory()
     {
-        var json = $$"""{ "id": "x", "name": "X", "days": [ { "name": "A", "slots": [ {{slot}} ] } ] }""";
-        Assert.Throws<FormatException>(() => ProgramParser.Parse(json));
+        var bad = Minimal.Replace("\"exercise\": \"Plank\", \"sets\": 2, \"seconds\": 30", "\"exercise\": \"Goblet Squat\", \"sets\": 2, \"repsMin\": 8, \"repsMax\": 12");
+        Assert.Throws<FormatException>(() => ProgramParser.Parse(bad));
     }
-
-    [Fact]
-    public void RejectsProgramWithNoDays()
-        => Assert.Throws<FormatException>(() => ProgramParser.Parse("""{ "id": "x", "name": "X", "days": [] }"""));
-
-    [Fact]
-    public void RejectsInvalidJson()
-        => Assert.Throws<FormatException>(() => ProgramParser.Parse("{ not json"));
 }
 
 /// <summary>
-/// Validates the program files that actually ship, against the exercise library that actually
-/// ships. A typo in an exercise name would otherwise surface only on the phone, mid-workout.
+/// Validates the programs that actually ship against the exercise library that actually ships.
+/// A typo in an exercise name would otherwise surface only on the phone, mid-workout.
 /// </summary>
 public class ShippedProgramContentTests
 {
@@ -121,63 +221,75 @@ public class ShippedProgramContentTests
         return data;
     }
 
-    [Theory]
-    [MemberData(nameof(ProgramFiles))]
-    public void ProgramParses(string file)
-        => ProgramParser.Parse(File.ReadAllText(Raw(file)), file);
+    private static ProgramDefinition Load(string file) => ProgramParser.Parse(File.ReadAllText(Raw(file)), file);
 
-    [Theory]
-    [MemberData(nameof(ProgramFiles))]
+    private static IEnumerable<ProgramSlot> AllSlots(ProgramDefinition p)
+        => p.Days.SelectMany(d => d.Main.Concat(d.Accessories.SelectMany(a => a))).Concat(p.ActiveRest.Flow);
+
+    [Theory, MemberData(nameof(ProgramFiles))]
+    public void ProgramParses(string file) => Load(file);
+
+    [Theory, MemberData(nameof(ProgramFiles))]
     public void EverySlotNamesALibraryExercise(string file)
     {
-        var p = ProgramParser.Parse(File.ReadAllText(Raw(file)), file);
-        var missing = p.Days.SelectMany(d => d.Slots).Select(s => s.Exercise)
-            .Where(n => !Library.Value.ContainsKey(n)).Distinct().ToList();
+        var missing = AllSlots(Load(file)).Select(s => s.Exercise).Where(n => !Library.Value.ContainsKey(n)).Distinct().ToList();
         Assert.True(missing.Count == 0, $"{file} names exercises not in the library: {string.Join(", ", missing)}");
     }
 
-    [Theory]
-    [MemberData(nameof(ProgramFiles))]
+    [Theory, MemberData(nameof(ProgramFiles))]
     public void SlotPrescriptionMatchesTheExerciseAction(string file)
     {
-        var p = ProgramParser.Parse(File.ReadAllText(Raw(file)), file);
-        foreach (var slot in p.Days.SelectMany(d => d.Slots))
+        foreach (var slot in AllSlots(Load(file)))
         {
             var action = Library.Value[slot.Exercise].GetProperty("action").GetString();
-            var timedAction = action is "hold" or "time";
-            Assert.True(slot.IsTimed == timedAction,
+            Assert.True(slot.IsTimed == action is "hold" or "time",
                 $"{file}: '{slot.Exercise}' is a '{action}' exercise but the slot is {(slot.IsTimed ? "timed" : "rep-based")}");
         }
     }
 
-    [Theory]
-    [MemberData(nameof(ProgramFiles))]
+    [Theory, MemberData(nameof(ProgramFiles))]
     public void DeclaredEquipmentNamesAreRealEquipment(string file)
     {
-        var p = ProgramParser.Parse(File.ReadAllText(Raw(file)), file);
-        foreach (var name in p.Equipment)
+        foreach (var name in Load(file).Equipment)
             Assert.True(Enum.TryParse<Equipment>(name, ignoreCase: true, out _), $"{file}: unknown equipment '{name}'");
+    }
+
+    [Theory, MemberData(nameof(ProgramFiles))]
+    public void EveryWeekResolves(string file)
+    {
+        var p = Load(file);
+        for (var day = 0; day < p.Days.Count; day++)
+            for (var week = 1; week <= ProgramDefinition.WeeksPerBlock; week++)
+                Assert.NotEmpty(p.Resolve(day, week).Slots);
     }
 
     [Fact]
     public void ProgramIdsAndVersionsAreUnique()
     {
-        var keys = GameConstants.Programs.Files.Select(f => ProgramParser.Parse(File.ReadAllText(Raw(f)), f).Key).ToList();
+        var keys = GameConstants.Programs.Files.Select(f => Load(f).Key).ToList();
         Assert.Equal(keys.Count, keys.Distinct().Count());
     }
 
     [Fact]
+    public void AFamilyShares_ItsMainLifts()
+    {
+        foreach (var family in GameConstants.Programs.Files.Select(Load).Where(p => p.Family is not null).GroupBy(p => p.Family))
+        {
+            var sets = family.Select(p => p.Days.SelectMany(d => d.Main).Select(m => m.Exercise).ToHashSet()).ToList();
+            Assert.True(sets.All(s => s.SetEquals(sets[0])), $"family '{family.Key}' programs don't share main lifts");
+        }
+    }
+
+    [Fact]
     public void DefaultProgramExists()
-        => Assert.Contains(GameConstants.Programs.Files,
-            f => ProgramParser.Parse(File.ReadAllText(Raw(f)), f).Id == GameConstants.Programs.DefaultProgramId);
+        => Assert.Contains(GameConstants.Programs.Files, f => Load(f).Id == GameConstants.Programs.DefaultProgramId);
 
     [Fact]
     public void LibraryNamesAreUnique_AcrossFiles()
     {
         var names = GameConstants.Exercises.LibraryFiles
             .SelectMany(f => JsonDocument.Parse(File.ReadAllText(Raw(f))).RootElement.EnumerateArray())
-            .Select(e => e.GetProperty("name").GetString())
-            .ToList();
+            .Select(e => e.GetProperty("name").GetString()).ToList();
         var dupes = names.GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
         Assert.True(dupes.Count == 0, "duplicate exercise names: " + string.Join(", ", dupes));
     }

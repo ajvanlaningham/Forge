@@ -13,6 +13,7 @@ namespace Forge.ViewModels
         private readonly IStatsService _stats;
         private readonly IExerciseLibraryImporter _importer;
         private readonly Forge.Services.ProgressService _progress;
+        private readonly IProgramService _programs;
 
         private string _streakText = "";
         /// <summary>Consecutive days with a completed quest (PBI 4.3).</summary>
@@ -22,9 +23,11 @@ namespace Forge.ViewModels
             IStatsService statsService,
             IExerciseLibraryImporter importer,
             WeightTrendCardViewModel weightTrendCard,
-            Forge.Services.ProgressService progress)
+            Forge.Services.ProgressService progress,
+            IProgramService programs)
         {
             _progress = progress;
+            _programs = programs;
             _stats = statsService;
             _importer = importer;
             WeightTrendCard = weightTrendCard;
@@ -78,12 +81,17 @@ namespace Forge.ViewModels
             await WeightTrendCard.RefreshAsync();
 
             var (current, longest) = await _progress.GetStreakAsync();
-            StreakText = current switch
+            var movement = current switch
             {
-                0 => "No streak yet — complete a quest to start one.",
-                1 => $"Streak: 1 day · best {Math.Max(1, longest)}",
-                _ => $"Streak: {current} days · best {longest}"
+                0 => "No streak yet — train or do active rest to start one.",
+                1 => $"Moved 1 day in a row · best {Math.Max(1, longest)}",
+                _ => $"Moved {current} days in a row · best {longest}"
             };
+            // Perfect weeks (Decision 15): the streak that sets this week's ×1.2.
+            var view = await _programs.GetViewAsync(DateOnly.FromDateTime(DateTime.Today));
+            StreakText = view is { PerfectWeekStreak: > 0 }
+                ? $"{movement}\nPerfect weeks: {view.PerfectWeekStreak} · ×{view.Multiplier:0.0} XP this week"
+                : movement;
         }
 
         private int _userLevel;

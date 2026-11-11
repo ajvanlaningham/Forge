@@ -65,8 +65,8 @@ namespace Forge.ViewModels
             Stats = $"{minutes} min · {working.Count} working sets · {volume.ToString("N0", CultureInfo.CurrentCulture)} {u} volume";
 
             var day = await _programs.DayCompletedBySessionAsync(sessionId);
-            XpText = day is int d
-                ? $"Day {d + 1} complete · +{Forge.Constants.GameMath.Quests.XpPerProgramDay} XP"
+            XpText = day is { } d
+                ? $"Training day {d.DayIndex + 1} complete · +{d.Xp} XP"
                 : null;
             OnPropertyChanged(nameof(HasXp));
 

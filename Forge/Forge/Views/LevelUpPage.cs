@@ -61,14 +61,6 @@ public sealed class LevelUpPage : ContentPage
             }
         };
 
-        // Every 4th level opens a baseline test window (Epic 5, not built yet): say so plainly.
-        if (level % 4 == 0)
-            lines.Children.Add(new Label
-            {
-                Text = "Every fourth level is a retest milestone. Baseline testing arrives in a later update.",
-                FontFamily = "PixelUI", FontSize = 18, TextColor = muted, HorizontalTextAlignment = TextAlignment.Center
-            });
-
         lines.Children.Add(ok);
         Content = lines;
 

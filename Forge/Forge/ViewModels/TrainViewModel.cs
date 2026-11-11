@@ -8,17 +8,18 @@ using Forge.Views.SubPages;
 
 namespace Forge.ViewModels
 {
-    /// <summary>One row in the program's day list.</summary>
+    /// <summary>One training day of the current week.</summary>
     public sealed class ProgramDayItem
     {
         public int Number { get; init; }
         public string Name { get; init; } = "";
         public string Summary { get; init; } = "";
         public bool IsNext { get; init; }
+        public bool IsDone { get; init; }
         public bool IsDoneToday { get; init; }
-        public string Header => $"Day {Number} · {Name}";
-        public string StatusText => IsDoneToday ? "DONE TODAY" : IsNext ? "UP NEXT" : "";
-        public bool HasStatus => IsDoneToday || IsNext;
+        public string Header => $"{Number} · {Name}";
+        public string StatusText => IsDoneToday ? "DONE TODAY" : IsDone ? "DONE" : IsNext ? "UP NEXT" : "";
+        public bool HasStatus => IsDone || IsNext;
     }
 
     public sealed class TrainViewModel : BaseViewModel
@@ -47,6 +48,21 @@ namespace Forge.ViewModels
         private string _blockText = "";
         public string BlockText { get => _blockText; private set => SetProperty(ref _blockText, value); }
 
+        private string _weekText = "";
+        /// <summary>"Week 2 of 4".</summary>
+        public string WeekText { get => _weekText; private set => SetProperty(ref _weekText, value); }
+
+        private string? _weekNote;
+        /// <summary>Week 4: "Light week — same weights, fewer sets. Stat tests this week."</summary>
+        public string? WeekNote { get => _weekNote; private set { if (SetProperty(ref _weekNote, value)) OnPropertyChanged(nameof(HasWeekNote)); } }
+        public bool HasWeekNote => WeekNote is not null;
+
+        private string _streakText = "";
+        public string StreakText { get => _streakText; private set => SetProperty(ref _streakText, value); }
+
+        private bool _isBlockComplete;
+        public bool IsBlockComplete { get => _isBlockComplete; private set => SetProperty(ref _isBlockComplete, value); }
+
         private string _startText = "";
         public string StartText { get => _startText; private set => SetProperty(ref _startText, value); }
 
@@ -64,6 +80,7 @@ namespace Forge.ViewModels
         public ICommand StartEmptyCommand { get; }
         public ICommand ResumeCommand { get; }
         public ICommand ChangeProgramCommand { get; }
+        public ICommand RepeatBlockCommand { get; }
         public ICommand OpenLibraryCommand { get; }
         public ICommand OpenGearCommand { get; }
         public ICommand OpenHistoryCommand { get; } = new Command(async () => await Shell.Current.GoToAsync(nameof(SessionHistoryPage)));
@@ -77,6 +94,7 @@ namespace Forge.ViewModels
             ResumeCommand = new Command(async () => await OpenSessionAsync(_inProgressId));
             Title = "Train";
             ChangeProgramCommand = new Command(async () => await ChangeProgramAsync());
+            RepeatBlockCommand = new Command(async () => await RepeatBlockAsync());
             OpenLibraryCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(ExerciseLibraryPage)));
             OpenGearCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(MyGearPage)));
         }
@@ -88,14 +106,14 @@ namespace Forge.ViewModels
             try
             {
                 var today = DateOnly.FromDateTime(DateTime.Today);
-                var view = await _programs.GetDayForDateAsync(today);
+                var view = await _programs.GetViewAsync(today);
 
                 var open = await _training.GetInProgressAsync();
                 _inProgressId = open?.Session.Id;
                 HasInProgress = open is not null;
                 ResumeText = open is null ? "" : $"Resume: {open.Session.Title}";
-                CanStartProgram = view is { CompletedOnDate: false } && open is null;
-                StartText = view is null ? "" : $"Start Day {view.DayNumber} · {view.Day.Name}";
+                CanStartProgram = view is { Day: not null, CompletedOnDate: false, BlockComplete: false } && open is null;
+                StartText = view?.Day is { } d ? $"Start {d.Name}" + (d.IsLight ? " (light)" : "") : "";
 
                 Days.Clear();
                 HasProgram = view is not null;
@@ -104,8 +122,9 @@ namespace Forge.ViewModels
                     ProgramName = "No program";
                     ProgramDescription = "Pick a program to get a planned session every training day.";
                     IsPlaceholder = false;
-                    NextDayText = "";
-                    BlockText = "";
+                    NextDayText = WeekText = BlockText = StreakText = "";
+                    WeekNote = null;
+                    IsBlockComplete = false;
                     return;
                 }
 
@@ -113,21 +132,33 @@ namespace Forge.ViewModels
                 ProgramName = def.Name;
                 ProgramDescription = def.Description;
                 IsPlaceholder = def.Placeholder;
-                BlockText = $"Running since {view.Program.StartedOn:MMM d}";
-                NextDayText = view.CompletedOnDate
-                    ? $"Day {view.DayNumber} · {view.Day.Name} done today. Day {(view.DayIndex + 1) % view.DayCount + 1} is next."
-                    : $"Today: Day {view.DayNumber} · {view.Day.Name}";
+                IsBlockComplete = view.BlockComplete;
+                var (wStart, wEnd) = BlockSchedule.WeekRange(view.Program.StartedOn, view.Week);
+                WeekText = view.BlockComplete ? "Block complete" : $"Week {view.Week} of {ProgramDefinition.WeeksPerBlock}";
+                BlockText = $"{def.TrainingDaysPerWeek} training days + active rest · this week {wStart:MMM d}–{wEnd:MMM d}";
+                WeekNote = view.Week == ProgramDefinition.LightWeek && !view.BlockComplete
+                    ? "Light week: same weights, one set fewer. The stat tests happen this week."
+                    : null;
+                StreakText = view.PerfectWeekStreak > 0
+                    ? $"Perfect weeks in a row: {view.PerfectWeekStreak} · ×{view.Multiplier:0.0} XP this week"
+                    : "Move every day and finish this week's training for a ×1.2 XP week next.";
+                NextDayText = view.BlockComplete ? "Four weeks done. Repeat the block or pick the next one."
+                    : view.Day is null ? "This week's training is done. Active rest the remaining days."
+                    : view.CompletedOnDate ? $"{view.Day.Name} done today."
+                    : $"Today: {view.Day.Name}";
 
                 for (var i = 0; i < def.Days.Count; i++)
                 {
-                    var day = def.Days[i];
+                    var day = def.Resolve(i, view.Week);
+                    var done = view.DoneThisWeek.Contains(i);
                     Days.Add(new ProgramDayItem
                     {
                         Number = i + 1,
                         Name = day.Name,
-                        Summary = string.Join("\n", day.Slots.Select(Describe)),
-                        IsNext = i == view.DayIndex && !view.CompletedOnDate,
-                        IsDoneToday = i == view.DayIndex && view.CompletedOnDate
+                        Summary = string.Join("\n", day.Slots.Select(r => Describe(r.Slot) + (r.IsMain ? "" : "  · acc"))),
+                        IsNext = view.Day?.DayIndex == i && !view.CompletedOnDate,
+                        IsDone = done,
+                        IsDoneToday = done && view.Day?.DayIndex == i && view.CompletedOnDate
                     });
                 }
             }
@@ -179,6 +210,14 @@ namespace Forge.ViewModels
             await Shell.Current.GoToAsync($"{nameof(ActiveSessionPage)}?sessionId={sessionId}");
         }
 
+        private async Task RepeatBlockAsync()
+        {
+            var active = await _programs.GetActiveAsync();
+            if (active is null) return;
+            await _programs.StartProgramAsync(active.Definition.Id, DateOnly.FromDateTime(DateTime.Today));
+            await RefreshAsync();
+        }
+
         private async Task ChangeProgramAsync()
         {
             var programs = await _programs.GetProgramsAsync();
@@ -192,7 +231,7 @@ namespace Forge.ViewModels
             var picked = programs[index];
             var confirm = await Shell.Current.DisplayAlert(
                 "Start program?",
-                $"Start \"{picked.Name}\" from Day 1? Your current program ends today. History is kept.",
+                $"Start \"{picked.Name}\" at week 1, today? Your current block ends. Workout history is kept.",
                 "Start", "Cancel");
             if (!confirm) return;
 

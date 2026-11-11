@@ -12,6 +12,7 @@ namespace Forge.Services.Implementations
     {
         private readonly IRepository<ProgramBlockRow> _blocks;
         private readonly IRepository<ProgramDayCompletionRow> _days;
+        private readonly IRepository<QuestCompletionRow> _quests;
         private readonly IStatsStore _stats;
 
         private readonly SemaphoreSlim _gate = new(1, 1);
@@ -20,10 +21,12 @@ namespace Forge.Services.Implementations
         public ProgramService(
             IRepository<ProgramBlockRow> blocks,
             IRepository<ProgramDayCompletionRow> days,
+            IRepository<QuestCompletionRow> quests,
             IStatsStore stats)
         {
             _blocks = blocks;
             _days = days;
+            _quests = quests;
             _stats = stats;
         }
 
@@ -32,14 +35,12 @@ namespace Forge.Services.Implementations
         private async Task<List<ProgramDefinition>> CatalogAsync()
         {
             if (_catalog is not null) return _catalog;
-
             var loaded = new List<ProgramDefinition>();
             foreach (var file in GameConstants.Programs.Files)
             {
                 using var stream = await FileSystem.OpenAppPackageFileAsync(file);
                 using var reader = new StreamReader(stream);
-                // Parse validates structure; a bad file is a build-time bug caught by
-                // ShippedProgramContentTests, so let it throw loudly here too.
+                // A bad file is a build-time bug caught by ShippedProgramContentTests; fail loudly.
                 loaded.Add(ProgramParser.Parse(await reader.ReadToEndAsync(), file));
             }
             return _catalog = loaded;
@@ -49,7 +50,8 @@ namespace Forge.Services.Implementations
             => (await CatalogAsync())
                 .GroupBy(p => p.Id)
                 .Select(g => g.OrderByDescending(p => p.Version).First())
-                .OrderBy(p => p.Name, StringComparer.CurrentCulture)
+                .OrderBy(p => p.Family ?? p.Name, StringComparer.CurrentCulture)
+                .ThenBy(p => p.TrainingDaysPerWeek)
                 .ToList();
 
         public async Task<ProgramDefinition?> GetProgramAsync(string id, int version)
@@ -63,46 +65,41 @@ namespace Forge.Services.Implementations
         public async Task<ActiveProgram?> GetActiveAsync()
         {
             await _gate.WaitAsync();
-            try
-            {
-                return await GetActiveCoreAsync();
-            }
-            finally
-            {
-                _gate.Release();
-            }
+            try { return await GetActiveCoreAsync(); }
+            finally { _gate.Release(); }
         }
 
         private async Task<ActiveProgram?> GetActiveCoreAsync()
         {
-            var open = (await _blocks.WhereAsync(b => b.EndedDateKey == null))
-                .OrderByDescending(b => b.Id)
-                .FirstOrDefault();
-
+            var open = (await _blocks.WhereAsync(b => b.EndedDateKey == null)).OrderByDescending(b => b.Id).FirstOrDefault();
             if (open is null)
             {
-                // Only auto-start on a truly fresh install. If the user has ever had a block, an
-                // absence of an open one is deliberate and must not be overridden.
-                var any = await _blocks.FirstOrDefaultAsync(b => b.Id > 0);
-                if (any is not null) return null;
-
+                // Auto-start only on a truly fresh install; an ended block with no successor is deliberate.
+                if (await _blocks.FirstOrDefaultAsync(b => b.Id > 0) is not null) return null;
                 var def = await LatestAsync(GameConstants.Programs.DefaultProgramId);
                 if (def is null) return null;
                 open = await OpenBlockAsync(def, DateOnly.FromDateTime(DateTime.Today));
             }
 
-            var definition = await GetProgramAsync(open.ProgramId, open.ProgramVersion)
-                             ?? await LatestAsync(open.ProgramId);
-            if (definition is null) return null; // program removed from the app package
-
+            var definition = await GetProgramAsync(open.ProgramId, open.ProgramVersion) ?? await LatestAsync(open.ProgramId);
+            if (definition is null)
+            {
+                // The block's program no longer ships (e.g. a retired placeholder). End it and fall
+                // back to the default rather than leaving the user with no program.
+                var today = DateOnly.FromDateTime(DateTime.Today);
+                open.EndedDateKey = WeekMath.DateKey(today);
+                await _blocks.UpdateAsync(open);
+                var fallback = await LatestAsync(GameConstants.Programs.DefaultProgramId);
+                if (fallback is null) return null;
+                var row = await OpenBlockAsync(fallback, today);
+                return new ActiveProgram(row.Id, fallback, today);
+            }
             return new ActiveProgram(open.Id, definition, ParseKey(open.StartedDateKey));
         }
 
         public async Task<ActiveProgram> StartProgramAsync(string programId, DateOnly today)
         {
-            var def = await LatestAsync(programId)
-                      ?? throw new ArgumentException($"Unknown program '{programId}'", nameof(programId));
-
+            var def = await LatestAsync(programId) ?? throw new ArgumentException($"Unknown program '{programId}'", nameof(programId));
             await _gate.WaitAsync();
             try
             {
@@ -111,68 +108,71 @@ namespace Forge.Services.Implementations
                     b.EndedDateKey = WeekMath.DateKey(today);
                     await _blocks.UpdateAsync(b);
                 }
-
                 var row = await OpenBlockAsync(def, today);
                 return new ActiveProgram(row.Id, def, today);
             }
-            finally
-            {
-                _gate.Release();
-            }
+            finally { _gate.Release(); }
         }
 
         private async Task<ProgramBlockRow> OpenBlockAsync(ProgramDefinition def, DateOnly today)
         {
-            var row = new ProgramBlockRow
-            {
-                ProgramId = def.Id,
-                ProgramVersion = def.Version,
-                StartedDateKey = WeekMath.DateKey(today)
-            };
+            var row = new ProgramBlockRow { ProgramId = def.Id, ProgramVersion = def.Version, StartedDateKey = WeekMath.DateKey(today) };
             await _blocks.InsertAsync(row);
             return row;
         }
 
-        // --- days ----------------------------------------------------------------------------
+        // --- the block on a date ---------------------------------------------------------------
 
-        public async Task<ProgramDayView?> GetDayForDateAsync(DateOnly date)
+        private async Task<List<DayCompletion>> TrainingAsync(int blockId)
+            => (await _days.WhereAsync(r => r.BlockId == blockId && r.Completed))
+                .Select(r => new DayCompletion(r.DayIndex, ParseKey(r.DateKey))).ToList();
+
+        /// <summary>Days with active rest done: the mobility / active-rest quest.</summary>
+        private async Task<HashSet<DateOnly>> ActiveRestAsync()
+            => (await _quests.WhereAsync(r => r.Kind == (int)QuestKind.Mobility && r.Completed))
+                .Select(r => ParseKey(r.DateKey)).ToHashSet();
+
+        public async Task<BlockView?> GetViewAsync(DateOnly date)
         {
             var active = await GetActiveAsync();
             if (active is null) return null;
+            var def = active.Definition;
 
-            var rows = await _days.WhereAsync(r => r.BlockId == active.BlockId && r.Completed);
-            var completions = rows.Select(r => new DayCompletion(r.DayIndex, ParseKey(r.DateKey)));
-            var offer = ProgramRotation.OfferFor(active.Definition.Days.Count, completions, date);
+            var training = await TrainingAsync(active.BlockId);
+            var rest = await ActiveRestAsync();
+            var offer = BlockSchedule.OfferFor(active.StartedOn, def.TrainingDaysPerWeek, training, date);
+            var (wStart, wEnd) = BlockSchedule.WeekRange(active.StartedOn, offer.Week);
+            var doneThisWeek = training.Where(c => c.Date >= wStart && c.Date <= wEnd).Select(c => c.DayIndex).ToHashSet();
+            var streak = BlockSchedule.PerfectWeekStreak(active.StartedOn, def.TrainingDaysPerWeek, training, rest, date);
 
-            return new ProgramDayView(active, offer.DayIndex, active.Definition.Days[offer.DayIndex], offer.CompletedOnDate);
+            var day = offer.TrainingDay is int i ? def.Resolve(i, offer.Week) : null;
+            return new BlockView(active, offer.Week, day, offer.TrainingDoneToday, offer.BlockComplete,
+                doneThisWeek, streak, BlockSchedule.Multiplier(streak));
         }
+
+        public async Task<double> MultiplierForAsync(DateOnly date)
+            => (await GetViewAsync(date))?.Multiplier ?? 1.0;
 
         public async Task CompleteDayAsync(DateOnly date, int? sessionId = null)
         {
-            var view = await GetDayForDateAsync(date);
-            if (view is null || view.CompletedOnDate) return;
+            var view = await GetViewAsync(date);
+            if (view?.Day is null || view.CompletedOnDate) return;
 
             var key = WeekMath.DateKey(date);
             var blockId = view.Program.BlockId;
-
-            // Reuse a row left behind by an un-complete on the same date, so the XP flags carry over.
+            // Reuse a row left by an un-complete on the same date so its XP bookkeeping carries over.
             var existing = (await _days.WhereAsync(r => r.BlockId == blockId && r.DateKey == key)).FirstOrDefault();
             if (existing is not null)
             {
                 existing.Completed = true;
-                existing.DayIndex = view.DayIndex;
+                existing.DayIndex = view.Day.DayIndex;
                 existing.SessionId = sessionId ?? existing.SessionId;
                 await _days.UpdateAsync(existing);
                 return;
             }
-
             await _days.InsertAsync(new ProgramDayCompletionRow
             {
-                BlockId = blockId,
-                DateKey = key,
-                DayIndex = view.DayIndex,
-                Completed = true,
-                SessionId = sessionId
+                BlockId = blockId, DateKey = key, DayIndex = view.Day.DayIndex, Completed = true, SessionId = sessionId
             });
         }
 
@@ -180,7 +180,6 @@ namespace Forge.Services.Implementations
         {
             var active = await GetActiveAsync();
             if (active is null) return;
-
             var key = WeekMath.DateKey(date);
             foreach (var row in await _days.WhereAsync(r => r.BlockId == active.BlockId && r.DateKey == key && r.Completed))
             {
@@ -192,32 +191,33 @@ namespace Forge.Services.Implementations
         public async Task<int> ReconcileXpAsync(DateOnly date)
         {
             var key = WeekMath.DateKey(date);
-            // Every block, not just the active one: un-completing a day from a block that has since
-            // been ended must still reclaim its XP.
-            var rows = await _days.WhereAsync(r => r.DateKey == key);
+            var rows = await _days.WhereAsync(r => r.DateKey == key); // every block: reclaiming must work after a switch
+            if (rows.Count == 0) return 0;
+
+            var active = await GetActiveAsync();
+            var baseXp = GameMath.Quests.XpForTrainingDay(active?.Definition.TrainingDaysPerWeek ?? 4);
+            var multiplier = await MultiplierForAsync(date);
 
             await _stats.InitAsync();
             var user = await _stats.GetUserStatsAsync();
             var delta = 0;
-
             foreach (var row in rows)
             {
                 if (row.Completed && !row.XpGranted)
                 {
+                    row.XpAwarded = GameMath.Quests.WithMultiplier(baseXp, multiplier);
                     row.XpGranted = true;
-                    delta += GameMath.Quests.XpPerProgramDay;
+                    delta += row.XpAwarded;
                     await _days.UpdateAsync(row);
                 }
                 else if (!row.Completed && row.XpGranted)
                 {
+                    delta -= row.XpAwarded; // exactly what was granted, whatever the multiplier is now
                     row.XpGranted = false;
-                    delta -= GameMath.Quests.XpPerProgramDay;
+                    row.XpAwarded = 0;
                     await _days.UpdateAsync(row);
                 }
-
-                // Fully reverted rows carry no information; drop them.
-                if (!row.Completed && !row.XpGranted)
-                    await _days.DeleteAsync(row);
+                if (!row.Completed && !row.XpGranted) await _days.DeleteAsync(row);
             }
 
             if (delta != 0)
@@ -228,10 +228,11 @@ namespace Forge.Services.Implementations
             return delta;
         }
 
-        public async Task<int?> DayCompletedBySessionAsync(int sessionId)
-            => (await _days.WhereAsync(r => r.SessionId == sessionId && r.Completed)).FirstOrDefault()?.DayIndex;
+        public async Task<(int DayIndex, int Xp)?> DayCompletedBySessionAsync(int sessionId)
+            => (await _days.WhereAsync(r => r.SessionId == sessionId && r.Completed)).FirstOrDefault() is { } row
+                ? (row.DayIndex, row.XpAwarded)
+                : null;
 
-        private static DateOnly ParseKey(string key)
-            => DateOnly.ParseExact(key, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        private static DateOnly ParseKey(string key) => DateOnly.ParseExact(key, "yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 }

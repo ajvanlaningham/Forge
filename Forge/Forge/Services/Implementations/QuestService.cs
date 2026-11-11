@@ -71,39 +71,78 @@ namespace Forge.Services.Implementations
                 PruneCache(date);
             }
 
-            // While a program is active, the Strength quest IS the next program day. It is never
-            // cached: which day is offered depends on completions, not just the date.
-            var programDay = await _programs.GetDayForDateAsync(date);
-            if (programDay is null) return generated;
+            // While a program is active the Strength quest IS today's training day and the
+            // Mobility quest becomes the block's active rest (Decision 12). Never cached: what's
+            // offered depends on completions, not just the date.
+            var view = await _programs.GetViewAsync(date);
+            if (view is null) return generated;
 
             return new DailyQuests
             {
                 Date = generated.Date,
                 BodyFocus = generated.BodyFocus,
-                Strength = BuildProgramQuest(programDay),
-                Mobility = generated.Mobility,
+                Strength = BuildTrainingQuest(view),
+                Mobility = BuildActiveRestQuest(view),
                 Conditioning = generated.Conditioning
             };
         }
 
-        private static Quest BuildProgramQuest(ProgramDayView view) => new()
+        private static Quest BuildTrainingQuest(BlockView view)
         {
-            Kind = QuestKind.Strength,
-            BodyFocus = BodyZone.FullBody,
-            IsProgramDay = true,
-            Title = view.Day.Name,
-            Tag = $"Day {view.DayNumber}/{view.DayCount}",
-            Notes = view.Program.Definition.Name,
-            Exercises = view.Day.Slots.Select(slot => new QuestExercise
+            if (view.Day is not { } day)
+                return new Quest
+                {
+                    Kind = QuestKind.Strength, BodyFocus = BodyZone.FullBody, IsProgramDay = true,
+                    Title = "Training done this week",
+                    Tag = $"Wk {view.Week}/4",
+                    Notes = "Every training day this week is done. The rest of the week is active rest."
+                };
+
+            var notes = view.Program.Definition.Name;
+            if (day.IsLight) notes += " · light week: same weights, fewer sets";
+            if (day.Test is { } test) notes += $" · ends with the {test.ToString().ToLowerInvariant()} test";
+            return new Quest
             {
-                Name = slot.Exercise,
-                Action = slot.IsTimed ? ActionType.Hold : ActionType.Reps,
-                Sets = slot.Sets,
-                RepsMin = slot.RepsMin,
-                RepsMax = slot.RepsMax,
-                Seconds = slot.Seconds
-            }).ToList()
-        };
+                Kind = QuestKind.Strength,
+                BodyFocus = BodyZone.FullBody,
+                IsProgramDay = true,
+                Title = day.Name,
+                Tag = $"Wk {view.Week} · {day.DayNumber}/{view.DayCount}",
+                Notes = notes,
+                Exercises = day.Slots.Select(r => new QuestExercise
+                {
+                    Name = r.IsMain ? r.Slot.Exercise : $"{r.Slot.Exercise} (accessory)",
+                    Action = r.Slot.IsTimed ? ActionType.Hold : ActionType.Reps,
+                    Sets = r.Slot.Sets,
+                    RepsMin = r.Slot.RepsMin,
+                    RepsMax = r.Slot.RepsMax,
+                    Seconds = r.Slot.Seconds
+                }).ToList()
+            };
+        }
+
+        private static Quest BuildActiveRestQuest(BlockView view)
+        {
+            var rest = view.Program.Definition.ActiveRest;
+            return new Quest
+            {
+                Kind = QuestKind.Mobility,
+                BodyFocus = BodyZone.FullBody,
+                IsProgramDay = true,
+                Title = rest.Name,
+                Tag = "Move",
+                Notes = "Or: " + string.Join(" · ", rest.Alternatives),
+                Exercises = rest.Flow.Select(slot => new QuestExercise
+                {
+                    Name = slot.Exercise,
+                    Action = slot.IsTimed ? ActionType.Hold : ActionType.Reps,
+                    Sets = slot.Sets,
+                    RepsMin = slot.RepsMin,
+                    RepsMax = slot.RepsMax,
+                    Seconds = slot.Seconds
+                }).ToList()
+            };
+        }
 
         public async Task CompleteQuestAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
@@ -124,8 +163,8 @@ namespace Forge.Services.Implementations
         public async Task<bool> IsQuestCompletedAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
             await InitializeAsync();
-            if (kind == QuestKind.Strength && await _programs.GetDayForDateAsync(date) is { } day)
-                return day.CompletedOnDate;
+            if (kind == QuestKind.Strength && await _programs.GetViewAsync(date) is { } view)
+                return view.CompletedOnDate || view.WeekTrainingDone;
             var row = await GetRowAsync(date, kind);
             return row?.Completed ?? false;
         }
@@ -165,35 +204,39 @@ namespace Forge.Services.Implementations
                 ? new[] { QuestKind.Mobility }
                 : new[] { QuestKind.Strength, QuestKind.Mobility };
             int netDelta = await _programs.ReconcileXpAsync(date);
-            
+            var multiplier = await _programs.MultiplierForAsync(date);
+
             await _stats.InitAsync();
             var user = await _stats.GetUserStatsAsync();
-            
+
             foreach (var kind in kinds)
             {
                 var row = await GetOrCreateRowAsync(date, kind);
-                // If user marked complete and hasn't been granted XP yet -> grant +50
                 if (row.Completed && !row.XpGranted)
                 {
-                    user.Xp += GameMath.Quests.XpPerQuest; // expected 50
+                    // ×1.2 while the perfect-week streak is alive; the exact amount is recorded.
+                    row.XpAwarded = GameMath.Quests.WithMultiplier(GameMath.Quests.XpPerQuest, multiplier);
                     row.XpGranted = true;
-                    netDelta += GameMath.Quests.XpPerQuest;
+                    user.Xp += row.XpAwarded;
+                    netDelta += row.XpAwarded;
                     await _completionRepo.UpdateAsync(row);
                 }
-                // If user undid completion but XP was already granted -> remove -50
                 else if (!row.Completed && row.XpGranted)
                 {
-                    user.Xp = Math.Max(0, user.Xp - GameMath.Quests.XpPerQuest);
+                    // Reclaim exactly what was granted (rows from before XpAwarded existed hold the base).
+                    var amount = row.XpAwarded > 0 ? row.XpAwarded : GameMath.Quests.XpPerQuest;
+                    user.Xp = Math.Max(0, user.Xp - amount);
                     row.XpGranted = false;
-                    netDelta -= GameMath.Quests.XpPerQuest;
+                    row.XpAwarded = 0;
+                    netDelta -= amount;
                     await _completionRepo.UpdateAsync(row);
                 }
             }
-            
+
             if (netDelta != 0)
                 await _stats.UpsertUserStatsAsync(user);
-            
-            return netDelta; // net of program-day (150) and daily-quest (50) awards
+
+            return netDelta; // net of training-day and active-rest awards, multiplier included
         }
 
         private DailyQuests AssembleDailyQuests(DateOnly date, List<ExerciseRow> active)

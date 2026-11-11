@@ -30,9 +30,16 @@
                     <Label Text="Placeholder content — the real program comes later."
                            IsVisible="{Binding IsPlaceholder}" FontSize="12" TextColor="{StaticResource Muted}"
                            FontAttributes="Italic" />
-                    <Label Text="{Binding BlockText}" FontSize="12" TextColor="{StaticResource Muted}" />
-                    <Label Text="{Binding NextDayText}" FontFamily="PixelUI" FontSize="22"
+                    <Label Text="{Binding WeekText}" FontFamily="PixelUI" FontSize="26"
                            TextColor="{StaticResource OnBg}" Margin="0,6,0,0" />
+                    <Label Text="{Binding BlockText}" FontSize="12" TextColor="{StaticResource Muted}" />
+                    <Label Text="{Binding WeekNote}" IsVisible="{Binding HasWeekNote}" FontFamily="PixelUI" FontSize="18"
+                           TextColor="{StaticResource Accent}" />
+                    <Label Text="{Binding NextDayText}" FontFamily="PixelUI" FontSize="22"
+                           TextColor="{StaticResource OnBg}" Margin="0,4,0,0" />
+                    <Label Text="{Binding StreakText}" FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource Leaf}" />
+                    <Button Text="Repeat this block" Command="{Binding RepeatBlockCommand}" IsVisible="{Binding IsBlockComplete}"
+                            BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" Margin="0,8,0,0" />
                     <Button Text="Change program" Command="{Binding ChangeProgramCommand}" Margin="0,8,0,0" />
                 </VerticalStackLayout>
             </Border>
@@ -49,7 +56,7 @@
                                     <Setter Property="Stroke" Value="{StaticResource Accent}" />
                                     <Setter Property="StrokeThickness" Value="2" />
                                 </DataTrigger>
-                                <DataTrigger TargetType="Border" Binding="{Binding IsDoneToday}" Value="True">
+                                <DataTrigger TargetType="Border" Binding="{Binding IsDone}" Value="True">
                                     <Setter Property="Stroke" Value="{StaticResource Leaf}" />
                                     <Setter Property="StrokeThickness" Value="2" />
                                 </DataTrigger>

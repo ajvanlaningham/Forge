@@ -46,11 +46,12 @@ namespace Forge.Constants
         {
             public static readonly string[] Files =
             {
-                "programs/ppl-full.v1.json"
+                "programs/block1-4day.v1.json",
+                "programs/block1-3day.v1.json"
             };
 
             /// <summary>Program offered when none has been chosen yet.</summary>
-            public const string DefaultProgramId = "ppl-full";
+            public const string DefaultProgramId = "block1-4day";
         }
 
         /// <summary>

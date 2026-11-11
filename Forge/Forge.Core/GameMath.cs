@@ -14,36 +14,43 @@ namespace Forge.Constants
     {
         /// <summary>
         /// XP required to advance one level: exactly one week of full adherence (see
-        /// <see cref="Quests.AdherentWeekXp"/>). That keeps "retest every 4 levels" roughly monthly.
+        /// <see cref="Quests.AdherentWeekXp"/>). Perfect weeks (×1.2) level a little faster.
         /// </summary>
         public const int XpPerLevel = Quests.AdherentWeekXp;
 
         public static class Quests
         {
-            /// <summary>A daily quest: mobility, or the date-generated strength quest when no program is active.</summary>
+            /// <summary>An active-rest day (or the mobility quest when no program is active).</summary>
             public const int XpPerQuest = 50;
 
             /// <summary>
-            /// A program day (a full training session) is substantially more work than a mobility
-            /// routine, so it earns three quests' worth.
+            /// XP a fully adherent week earns from training + active rest, before the conditioning
+            /// bonus. Shared by every program so a 3-day block levels as fast as a 4-day one
+            /// (Decision 13): the training-day award scales with the number of training days.
             /// </summary>
-            public const int XpPerProgramDay = 150;
+            public const int WeekBudgetXp = 800;
 
             /// <summary>Bonus for hitting the weekly conditioning-minutes goal.</summary>
             public const int ConditioningWeeklyXp = XpPerQuest * 6;
 
-            public const int ProgramDaysPerWeek = 4;
-            public const int MobilityQuestsPerWeek = 7;
+            /// <summary>×1.2 on XP while the perfect-week streak is alive (Decision 15).</summary>
+            public const double PerfectWeekMultiplier = 1.2;
+
+            /// <summary>A fully adherent week: 800 from training + active rest, + 300 conditioning = 1100.</summary>
+            public const int AdherentWeekXp = WeekBudgetXp + ConditioningWeeklyXp;
 
             /// <summary>
-            /// A fully adherent week: every program day, daily mobility, and the conditioning goal.
-            /// 4 × 150 + 7 × 50 + 300 = 1250. Weigh-in XP is deliberately left out — it is slack
-            /// on top, not something a level should depend on (weight is its own track).
+            /// XP for one training day in a program with <paramref name="trainingDays"/> per week:
+            /// whatever the week budget leaves after the active-rest days. 3-day → 200, 4-day → 162.
             /// </summary>
-            public const int AdherentWeekXp =
-                ProgramDaysPerWeek * XpPerProgramDay
-                + MobilityQuestsPerWeek * XpPerQuest
-                + ConditioningWeeklyXp;
+            public static int XpForTrainingDay(int trainingDays)
+            {
+                if (trainingDays is < 1 or > 7) throw new ArgumentOutOfRangeException(nameof(trainingDays));
+                return (WeekBudgetXp - (7 - trainingDays) * XpPerQuest) / trainingDays;
+            }
+
+            /// <summary>Applies the perfect-week multiplier, rounding to a whole XP.</summary>
+            public static int WithMultiplier(int baseXp, double multiplier) => (int)Math.Round(baseXp * multiplier);
         }
 
         public static class Stats

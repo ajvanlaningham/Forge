@@ -7,38 +7,57 @@ public class GameMathTests
     // One level == 21 quests at 50 XP == one week of full adherence.
     [Fact]
     public void XpPerLevel_IsOneAdherentWeek()
-        // 4 program days x 150 + 7 mobility x 50 + 300 conditioning bonus.
-        => Assert.Equal(1250, GameMath.XpPerLevel);
+        // 800 training + active rest, + 300 conditioning bonus.
+        => Assert.Equal(1100, GameMath.XpPerLevel);
+
+    [Theory]
+    [InlineData(3, 200)]
+    [InlineData(4, 162)]
+    public void TrainingDayXp_ScalesSoEveryScheduleLevelsAlike(int days, int expected)
+    {
+        Assert.Equal(expected, GameMath.Quests.XpForTrainingDay(days));
+        // A full week (training days + active rest on the others) lands within a few XP of the budget.
+        var week = days * expected + (7 - days) * GameMath.Quests.XpPerQuest;
+        Assert.InRange(week, GameMath.Quests.WeekBudgetXp - days, GameMath.Quests.WeekBudgetXp);
+    }
+
+    [Fact]
+    public void PerfectWeekMultiplier_RoundsToWholeXp()
+    {
+        Assert.Equal(194, GameMath.Quests.WithMultiplier(162, 1.2));
+        Assert.Equal(60, GameMath.Quests.WithMultiplier(50, 1.2));
+        Assert.Equal(162, GameMath.Quests.WithMultiplier(162, 1.0));
+    }
 
     [Theory]
     [InlineData(0, 1)]      // a brand new user starts at level 1, not 0
-    [InlineData(1249, 1)]   // one XP short of the boundary
-    [InlineData(1250, 2)]   // exactly on the boundary
-    [InlineData(1251, 2)]
-    [InlineData(2500, 3)]
+    [InlineData(1099, 1)]   // one XP short of the boundary
+    [InlineData(1100, 2)]   // exactly on the boundary
+    [InlineData(1101, 2)]
+    [InlineData(2200, 3)]
     public void LevelFromXp_CrossesAtTheBoundary(int xp, int expected)
         => Assert.Equal(expected, GameMath.LevelFromXp(xp));
 
     [Theory]
     [InlineData(0, 0)]
-    [InlineData(1249, 1249)]
-    [InlineData(1250, 0)]   // resets at the boundary
-    [InlineData(1251, 1)]
+    [InlineData(1099, 1099)]
+    [InlineData(1100, 0)]   // resets at the boundary
+    [InlineData(1101, 1)]
     public void XpIntoLevel_ResetsEachLevel(int xp, int expected)
         => Assert.Equal(expected, GameMath.XpIntoLevel(xp));
 
     [Theory]
-    [InlineData(0, 1250)]
-    [InlineData(1249, 1)]
-    [InlineData(1250, 1250)]
-    [InlineData(1251, 1249)]
+    [InlineData(0, 1100)]
+    [InlineData(1099, 1)]
+    [InlineData(1100, 1100)]
+    [InlineData(1101, 1099)]
     public void XpToNextLevel_CountsDownToTheBoundary(int xp, int expected)
         => Assert.Equal(expected, GameMath.XpToNextLevel(xp));
 
     [Theory]
     [InlineData(0, 0.0)]
-    [InlineData(625, 0.5)]
-    [InlineData(1250, 1.0)]
+    [InlineData(550, 0.5)]
+    [InlineData(1100, 1.0)]
     public void LevelProgress_IsTheFractionOfOneLevel(int xpIntoLevel, double expected)
         => Assert.Equal(expected, GameMath.LevelProgress(xpIntoLevel), 3);
 
@@ -54,7 +73,7 @@ public class GameMathTests
     [Fact]
     public void LevelProgress_ComposedWithXpIntoLevel_TracksWithinTheCurrentLevel()
     {
-        const int lifetimeXp = 1875; // level 2, halfway to level 3
+        const int lifetimeXp = 1650; // level 2, halfway to level 3
 
         Assert.Equal(2, GameMath.LevelFromXp(lifetimeXp));
         Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(lifetimeXp)), 3);
@@ -105,8 +124,8 @@ public class GameMathTests
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
-    [InlineData(1249)]
-    [InlineData(1250)]
+    [InlineData(1099)]
+    [InlineData(1100)]
     [InlineData(5_432)]
     [InlineData(1_000_000)]
     public void XpIntoLevel_AndXpToNextLevel_AlwaysSumToOneLevel(int xp)
@@ -124,8 +143,8 @@ public class GameMathTests
             var levelStart = level * GameMath.XpPerLevel;
 
             Assert.Equal(0.0, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart)), 3);
-            Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 625)), 3);
-            Assert.True(GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 1249)) > 0.99);
+            Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 550)), 3);
+            Assert.True(GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 1099)) > 0.99);
         }
     }
 }

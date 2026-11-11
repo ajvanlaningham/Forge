@@ -53,5 +53,8 @@ namespace Forge.Models
 
         /// <summary>The training session that completed this day, if it was logged (PBI 8.2).</summary>
         public int? SessionId { get; set; }
+
+        /// <summary>XP actually granted (base × perfect-week multiplier) — reclaimed exactly on undo.</summary>
+        public int XpAwarded { get; set; }
     }
 }

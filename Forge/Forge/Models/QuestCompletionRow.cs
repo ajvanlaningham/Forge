@@ -1,4 +1,4 @@
-﻿using SQLite;
+using SQLite;
 
 namespace Forge.Models
 {
@@ -20,5 +20,8 @@ namespace Forge.Models
 
         // Whether +50 XP has been granted for this quest today
         public bool XpGranted { get; set; }
+
+        /// <summary>XP actually granted (base × perfect-week multiplier) — reclaimed exactly on undo.</summary>
+        public int XpAwarded { get; set; }
     }
 }
