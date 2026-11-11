@@ -40,6 +40,7 @@ namespace Forge.ViewModels.SubPages
 
                 // Get what the user currently owns
                 var ownedFlags = await _inventory.GetOwnedFlagsAsync();
+                var homeGear = Forge.Services.UserSettings.HomeGear;
 
                 // Enumerate all Equipment values (except None)
                 foreach (var e in Enum.GetValues(typeof(Equipment)).Cast<Equipment>())
@@ -52,7 +53,8 @@ namespace Forge.ViewModels.SubPages
                     {
                         Equipment = e,
                         Name = e.ToString(),
-                        Owned = owned
+                        Owned = owned,
+                        Summary = owned ? homeGear.Summary(e) : null
                     });
                 }
 
@@ -77,6 +79,12 @@ namespace Forge.ViewModels.SubPages
         private async Task ToggleOwnedAsync(GearItem? item)
         {
             if (item is null) return;
+            // Weighted gear: owning it and saying which weights is one action, in its editor.
+            if (item.IsWeighted)
+            {
+                await Shell.Current.GoToAsync($"{nameof(Forge.Views.SubPages.HomeWeightsPage)}?kind={item.Equipment}");
+                return;
+            }
 
             var newOwned = !item.Owned;
             await _inventory.SetOwnedAsync(item.Equipment, newOwned);

@@ -51,6 +51,31 @@ namespace Forge.Training
         public static readonly double[] StandardKettlebellsKg = { 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44, 48 };
         public static readonly double[] StandardKettlebellsLb = { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 53, 60, 62, 70, 80, 88, 97, 106 };
 
+        /// <summary>
+        /// One-line summary of owned weights for an implement, for the My Gear tile:
+        /// "15 · 25 · 35 lb", "5–52.5 lb adjustable", "16 · 24 kg", "bar 45 · up to 225 lb".
+        /// Null when nothing is entered.
+        /// </summary>
+        public string? Summary(Equipment implement)
+        {
+            static string F(double v) => v.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            return implement switch
+            {
+                Equipment.Dumbbell when Dumbbells is { Adjustable: true } d
+                    => $"{F(d.Min)}–{F(d.Max)} {WeightMath.UnitLabel(d.Unit)} adjustable",
+                Equipment.Dumbbell when Dumbbells is { Weights.Count: > 0 } d
+                    => $"{string.Join(" · ", d.Weights.OrderBy(w => w).Select(F))} {WeightMath.UnitLabel(d.Unit)}",
+                Equipment.Kettlebell when Kettlebells is { Weights.Count: > 0 } k
+                    => $"{string.Join(" · ", k.Weights.OrderBy(w => w).Select(F))} {WeightMath.UnitLabel(k.Unit)}",
+                Equipment.Barbell when Barbell is { } b
+                    => $"bar {F(b.Bar)} · up to {F(b.Max)} {WeightMath.UnitLabel(b.Unit)}",
+                _ => null
+            };
+        }
+
+        /// <summary>Implements whose weights matter: tapping them opens a weights editor.</summary>
+        public static bool IsWeighted(Equipment e) => e is Equipment.Dumbbell or Equipment.Kettlebell or Equipment.Barbell;
+
         /// <summary>The loads an exercise's modality can use here.</summary>
         public LoadSet For(Modality modality, WeightUnit displayUnit) => modality switch
         {

@@ -1,18 +1,28 @@
 using System.Globalization;
 using Forge.Constants;
+using Forge.Models;
 using Forge.Services;
+using Forge.Services.Interfaces;
 using Forge.Training;
 
 namespace Forge.Views.SubPages;
 
 /// <summary>
-/// The weights owned at Home (Decision 16). Dumbbells as fixed pairs or one adjustable set,
-/// kettlebells as a checklist of standard bells, a barbell as bar + max + smallest jump.
-/// Load steppers and progression suggestions only land on what's entered here. The Gym is always
-/// "everything", so it has no equivalent page.
+/// Owning a weighted implement and saying which weights, in one place (opened from a My Gear
+/// tile). Dumbbells as fixed pairs or one adjustable set, kettlebells as a checklist of standard
+/// bells, a barbell as bar + max + smallest jump. "I have these" is ownership: saving updates both
+/// the Home inventory and the owned weights (Decision 16). The Gym is always "everything".
 /// </summary>
+[QueryProperty(nameof(Kind), "kind")]
 public sealed class HomeWeightsPage : ContentPage
 {
+    private readonly IInventoryService _inventory;
+    private bool _built;
+
+    /// <summary>Which implement to edit: Dumbbell, Kettlebell or Barbell.</summary>
+    public string Kind { get; set; } = nameof(Equipment.Dumbbell);
+    private Equipment Implement => Enum.TryParse<Equipment>(Kind, out var e) && GearLoads.IsWeighted(e) ? e : Equipment.Dumbbell;
+
     private readonly Color _accent = (Color)Application.Current!.Resources["Accent"];
     private readonly Color _surface = (Color)Application.Current.Resources["Surface"];
     private readonly Color _muted = (Color)Application.Current.Resources["Muted"];
@@ -20,23 +30,38 @@ public sealed class HomeWeightsPage : ContentPage
     private readonly Color _bg = (Color)Application.Current.Resources["Bg"];
 
     // Working copies, saved on "Save".
-    private readonly DumbbellGear _db;
-    private readonly KettlebellGear _kb;
-    private readonly BarbellGear _bb;
+    private DumbbellGear _db = new();
+    private KettlebellGear _kb = new();
+    private BarbellGear _bb = new();
     private bool _hasDb, _hasKb, _hasBb;
 
     private readonly VerticalStackLayout _dbBody = new() { Spacing = 8 };
     private readonly VerticalStackLayout _kbBody = new() { Spacing = 8 };
     private readonly VerticalStackLayout _bbBody = new() { Spacing = 8 };
 
-    public HomeWeightsPage()
+    public HomeWeightsPage(IInventoryService inventory)
     {
-        Title = "Home weights";
+        _inventory = inventory;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (_built) return;
+        _built = true;
+        await _inventory.InitializeAsync();
+        var owned = (await _inventory.GetOwnedFlagsAsync()).HasFlag(Implement);
+        Build(owned);
+    }
+
+    private void Build(bool ownedInInventory)
+    {
         var saved = UserSettings.HomeGear;
         var unit = UserSettings.WeightUnit;
-        _hasDb = saved.Dumbbells is not null;
-        _hasKb = saved.Kettlebells is not null;
-        _hasBb = saved.Barbell is not null;
+        // Ownership is the inventory's call; weights already entered are kept either way.
+        _hasDb = ownedInInventory && Implement == Equipment.Dumbbell;
+        _hasKb = ownedInInventory && Implement == Equipment.Kettlebell;
+        _hasBb = ownedInInventory && Implement == Equipment.Barbell;
         _db = saved.Dumbbells ?? new DumbbellGear { Unit = unit, Min = unit == WeightUnit.Kilograms ? 2 : 5, Max = unit == WeightUnit.Kilograms ? 24 : 52.5, Step = unit == WeightUnit.Kilograms ? 1 : 2.5 };
         _kb = saved.Kettlebells ?? new KettlebellGear { Unit = unit };
         _bb = saved.Barbell ?? (unit == WeightUnit.Kilograms
@@ -46,20 +71,24 @@ public sealed class HomeWeightsPage : ContentPage
         var save = new Button { Text = "Save", HeightRequest = 56, FontFamily = "PixelUI", FontSize = 22, BackgroundColor = _accent, TextColor = Colors.Black };
         save.Clicked += async (_, _) => await SaveAsync();
 
+        var (title, intro, section) = Implement switch
+        {
+            Equipment.Kettlebell => ("Kettlebells", "Tap every bell you own. Single bells are fine — programs use one at a time.",
+                Section("Kettlebells", _hasKb, v => { _hasKb = v; RenderKb(); }, _kbBody)),
+            Equipment.Barbell => ("Barbell", "Your bar, the heaviest you can load, and your smallest plate pair.",
+                Section("Barbell", _hasBb, v => { _hasBb = v; RenderBb(); }, _bbBody)),
+            _ => ("Dumbbells", "Fixed pairs or one adjustable set. Suggestions and the +/− buttons only land on these.",
+                Section("Dumbbells", _hasDb, v => { _hasDb = v; RenderDb(); }, _dbBody))
+        };
+        Title = $"My Gear · {title}";
+
         Content = new ScrollView
         {
             Content = new VerticalStackLayout
             {
                 Padding = new Thickness(16, 12, 16, 28),
                 Spacing = 14,
-                Children =
-                {
-                    new Label { Text = "The weights you have at home. Forge's suggestions and the +/− buttons only land on these. Sections you switch off use plain 5 lb / 2.5 kg steps.", FontSize = 15, TextColor = _muted },
-                    Section("Dumbbells", _hasDb, v => { _hasDb = v; RenderDb(); }, _dbBody),
-                    Section("Kettlebells", _hasKb, v => { _hasKb = v; RenderKb(); }, _kbBody),
-                    Section("Barbell", _hasBb, v => { _hasBb = v; RenderBb(); }, _bbBody),
-                    save
-                }
+                Children = { new Label { Text = intro, FontSize = 15, TextColor = _muted }, section, save }
             }
         };
         RenderDb(); RenderKb(); RenderBb();
@@ -121,7 +150,6 @@ public sealed class HomeWeightsPage : ContentPage
 
         _kbBody.Add(UnitToggle(_kb.Unit, u => { if (u == _kb.Unit) return; _kb.Unit = u; _kb.Weights.Clear(); RenderKb(); }));
         var std = _kb.Unit == WeightUnit.Kilograms ? GearLoads.StandardKettlebellsKg : GearLoads.StandardKettlebellsLb;
-        _kbBody.Add(new Label { Text = "Tap every bell you own.", FontSize = 14, TextColor = _muted });
         _kbBody.Add(Chips(std, _kb.Weights, WeightMath.UnitLabel(_kb.Unit)));
     }
 
@@ -221,28 +249,33 @@ public sealed class HomeWeightsPage : ContentPage
 
     private async Task SaveAsync()
     {
-        if (_hasDb && !_db.Adjustable && _db.Weights.Count == 0)
+        var has = Implement switch { Equipment.Kettlebell => _hasKb, Equipment.Barbell => _hasBb, _ => _hasDb };
+        if (has && Implement == Equipment.Dumbbell && !_db.Adjustable && _db.Weights.Count == 0)
         {
-            await DisplayAlert("Dumbbells", "Tap the pairs you own, or switch Dumbbells off.", "OK");
+            await DisplayAlert("Dumbbells", "Tap the pairs you own, or switch \"I have these\" off.", "OK");
             return;
         }
-        if (_hasDb && _db.Adjustable && _db.Max <= _db.Min)
+        if (has && Implement == Equipment.Dumbbell && _db.Adjustable && _db.Max <= _db.Min)
         {
             await DisplayAlert("Dumbbells", "Heaviest must be more than lightest.", "OK");
             return;
         }
-        if (_hasKb && _kb.Weights.Count == 0)
+        if (has && Implement == Equipment.Kettlebell && _kb.Weights.Count == 0)
         {
-            await DisplayAlert("Kettlebells", "Tap the bells you own, or switch Kettlebells off.", "OK");
+            await DisplayAlert("Kettlebells", "Tap the bells you own, or switch \"I have these\" off.", "OK");
             return;
         }
 
-        UserSettings.HomeGear = new GearLoads
+        // Owning it and its weights are one fact: write both.
+        var gear = UserSettings.HomeGear;
+        switch (Implement)
         {
-            Dumbbells = _hasDb ? _db : null,
-            Kettlebells = _hasKb ? _kb : null,
-            Barbell = _hasBb ? _bb : null
-        };
+            case Equipment.Kettlebell: gear.Kettlebells = has ? _kb : null; break;
+            case Equipment.Barbell: gear.Barbell = has ? _bb : null; break;
+            default: gear.Dumbbells = has ? _db : null; break;
+        }
+        UserSettings.HomeGear = gear;
+        await _inventory.SetOwnedAsync(Implement, has);
         await Navigation.PopAsync();
     }
 }

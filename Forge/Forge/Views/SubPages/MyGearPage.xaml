@@ -18,14 +18,12 @@
         </Style>
     </ContentPage.Resources>
 
-    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="12">
-        <Button Text="Set the weights you own"
-                Clicked="OnWeightsClicked" />
-        <Label Grid.Row="1" Text="{x:Static res:AppResources.GearPage_TapToToggleCTA}"
+    <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="12">
+        <Label Text="Tap gear you have at home. Dumbbells, kettlebells and the barbell ask which weights."
                FontSize="16"
                Margin="2,0,0,4" />
 
-        <CollectionView Grid.Row="2"
+        <CollectionView Grid.Row="1"
                         ItemsSource="{Binding GroupedGear}"
                         IsGrouped="True"
                         SelectionMode="None">
@@ -52,7 +50,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Style="{StaticResource TileFrame}">
-                        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="6">
+                        <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="4">
 
                             <Image Grid.Row="0"
                                WidthRequest="40" HeightRequest="40"
@@ -67,7 +65,7 @@
                             </Image>
 
                             <Label Grid.Row="1"
-                               Text="{Binding Name}"
+                               Text="{Binding DisplayName}"
                                FontSize="14"
                                HorizontalTextAlignment="Center"
                                VerticalTextAlignment="Center">
@@ -79,8 +77,13 @@
                                 </Label.Triggers>
                             </Label>
                             
+                            <!-- What's owned, for weighted gear -->
+                            <Label Grid.Row="2" Text="{Binding Summary}" IsVisible="{Binding HasSummary}"
+                                   FontFamily="GymNum" FontSize="13" TextColor="{DynamicResource Accent}"
+                                   HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" />
+
                             <!-- Owned strip -->
-                            <BoxView Grid.Row="2" HeightRequest="4" Opacity="0.0">
+                            <BoxView Grid.Row="3" HeightRequest="4" Opacity="0.0">
                                 <BoxView.Triggers>
                                     <DataTrigger TargetType="BoxView" Binding="{Binding Owned}" Value="True">
                                         <Setter Property="Opacity" Value="1.0" />

@@ -98,4 +98,22 @@ public class LoadSetTests
     [Fact]
     public void Gear_BadJson_IsEmptyNotACrash()
         => Assert.Null(GearLoads.FromJson("{ not json").Dumbbells);
+
+    [Fact]
+    public void Summaries_ReadLikeTheTile()
+    {
+        var gear = new GearLoads
+        {
+            Dumbbells = new DumbbellGear { Weights = [35, 15, 25] },
+            Kettlebells = new KettlebellGear { Unit = WeightUnit.Kilograms, Weights = [24, 16] },
+            Barbell = new BarbellGear { Bar = 45, Max = 225, Step = 5 }
+        };
+        Assert.Equal("15 · 25 · 35 lb", gear.Summary(Equipment.Dumbbell));
+        Assert.Equal("16 · 24 kg", gear.Summary(Equipment.Kettlebell));
+        Assert.Equal("bar 45 · up to 225 lb", gear.Summary(Equipment.Barbell));
+        Assert.Null(new GearLoads().Summary(Equipment.Dumbbell));
+        Assert.Null(gear.Summary(Equipment.Mat));
+        Assert.Equal("5–52.5 lb adjustable",
+            new GearLoads { Dumbbells = new DumbbellGear { Adjustable = true, Min = 5, Max = 52.5 } }.Summary(Equipment.Dumbbell));
+    }
 }

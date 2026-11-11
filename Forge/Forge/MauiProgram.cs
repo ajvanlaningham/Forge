@@ -112,6 +112,7 @@ namespace Forge
             builder.Services.AddTransient<ExerciseLibraryPage>();
             builder.Services.AddTransient<ViewModels.SubPages.MyGearViewModel>();
             builder.Services.AddTransient<MyGearPage>();
+            builder.Services.AddTransient<HomeWeightsPage>();
 
 
             return builder.Build();
