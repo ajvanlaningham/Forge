@@ -132,8 +132,11 @@
                                         <Label Text="{Binding ActiveText}" IsVisible="{Binding HasActiveText}"
                                                FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}"
                                                Margin="0,0,64,0" LineBreakMode="WordWrap" />
-                                        <Label Text="{Binding Title}" FontFamily="FantasyH" FontSize="24"
-                                               TextColor="{StaticResource Ink}" Margin="0,0,56,0" LineBreakMode="WordWrap" />
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" Margin="0,0,56,0">
+                                            <Image Source="{Binding ItemSprite}" IsVisible="{Binding HasItem}" WidthRequest="48" HeightRequest="48" VerticalOptions="Center" />
+                                            <Label Grid.Column="1" Text="{Binding Title}" FontFamily="FantasyH" FontSize="24"
+                                                   TextColor="{StaticResource Ink}" LineBreakMode="WordWrap" VerticalOptions="Center" />
+                                        </Grid>
                                         <Label Text="{Binding Discipline}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Wax}" />
                                         <Label Text="{Binding Meta}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource InkSoft}" />
                                         <BoxView HeightRequest="2" Color="{StaticResource ParchmentShade}" Margin="0,2" />

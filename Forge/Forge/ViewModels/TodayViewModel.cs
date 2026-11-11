@@ -197,8 +197,8 @@ namespace Forge.ViewModels
 
             var def = view.Program.Definition;
             QuestLine = view.BlockComplete
-                ? $"{def.QuestName} · complete"
-                : $"{def.QuestName} · week {view.Week} of {ProgramDefinition.WeeksPerBlock}: {ProgramDefinition.WeekName(view.Week)}";
+                ? $"{HeroQuest.Name(def)} · complete"
+                : $"{HeroQuest.Name(def)} · week {view.Week} of {ProgramDefinition.WeeksPerBlock}: {ProgramDefinition.WeekName(view.Week)}";
             var done = view.DoneThisWeek.Count;
             Pips = string.Join(" ", Enumerable.Range(0, view.DayCount).Select(i => view.DoneThisWeek.Contains(i) ? "■" : "□"));
             PipsText = $"{done} of {view.DayCount} training days this week";
@@ -207,7 +207,7 @@ namespace Forge.ViewModels
 
             if (view.BlockComplete)
             {
-                ActionText = $"The {def.QuestName} awaits: see the quest";
+                ActionText = "Choose your next quest";
                 _action = () => Shell.Current.GoToAsync("//quest");
             }
             else if (view.CompletedOnDate)

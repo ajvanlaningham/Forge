@@ -52,6 +52,7 @@ namespace Forge
             builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
             builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<IActiveRestService, ActiveRestService>();
+            builder.Services.AddSingleton<IForgeService, ForgeService>();
             builder.Services.AddSingleton<ITrainingService, TrainingService>();
 #if ANDROID
             builder.Services.AddSingleton<IRestAlarm, Forge.Platforms.Android.RestAlarm>();

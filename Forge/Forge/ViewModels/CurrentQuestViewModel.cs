@@ -1,3 +1,4 @@
+using Forge.Services;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Forge.Services.Interfaces;
@@ -27,6 +28,7 @@ namespace Forge.ViewModels
     public sealed class CurrentQuestViewModel : BaseViewModel
     {
         private readonly IProgramService _programs;
+        private readonly IForgeService _forge;
 
         public ObservableCollection<ProgramDayItem> Days { get; } = new();
 
@@ -63,9 +65,10 @@ namespace Forge.ViewModels
         public ICommand RepeatBlockCommand { get; }
         public ICommand OpenLibraryCommand { get; } = new Command(async () => await Shell.Current.GoToAsync(nameof(ExerciseLibraryPage)));
 
-        public CurrentQuestViewModel(IProgramService programs)
+        public CurrentQuestViewModel(IProgramService programs, IForgeService forge)
         {
             _programs = programs;
+            _forge = forge;
             RepeatBlockCommand = new Command(async () => await RepeatBlockAsync());
         }
 
@@ -88,11 +91,15 @@ namespace Forge.ViewModels
             }
 
             var def = view.Program.Definition;
-            ProgramName = $"{def.QuestName} · {def.Discipline}";
+            ProgramName = $"{HeroQuest.Name(def)} · {def.Discipline}";
             ProgramDescription = def.Description;
             IsBlockComplete = view.BlockComplete;
             var (wStart, wEnd) = BlockSchedule.WeekRange(view.Program.StartedOn, view.Week);
-            WeekText = view.BlockComplete ? $"The {def.QuestName} is ready to forge"
+            var result = view.BlockComplete ? await _forge.GetResultAsync(view.Program.BlockId) : null;
+            WeekText = view.BlockComplete
+                ? result is null ? $"The {HeroQuest.Name(def)} is ready to forge"
+                  : result.Forged ? $"Forged: the {HeroQuest.Name(def)}"
+                  : "The metal cooled. Try again or choose the next quest."
                 : $"Week {view.Week} of {ProgramDefinition.WeeksPerBlock} · {ProgramDefinition.WeekName(view.Week)}";
             BlockText = $"{def.VersionName} · this week {wStart:MMM d}–{wEnd:MMM d}";
             WeekNote = view.Week == ProgramDefinition.LightWeek && !view.BlockComplete
@@ -105,8 +112,8 @@ namespace Forge.ViewModels
             var done = await _programs.CompletedDaysInBlockAsync(view.Program.BlockId);
             ForgeProgress = Math.Min(1.0, (double)done / needed);
             ForgeText = done >= needed
-                ? $"Forge meter: {done} of {total} days · enough to forge the {def.QuestName} at the block's end"
-                : $"Forge meter: {done} of {total} days · {needed} needed to forge the {def.QuestName}";
+                ? $"Forge meter: {done} of {total} days · enough to forge the {HeroQuest.Name(def)} at the block's end"
+                : $"Forge meter: {done} of {total} days · {needed} needed to forge the {HeroQuest.Name(def)}";
 
             for (var i = 0; i < def.Days.Count; i++)
             {

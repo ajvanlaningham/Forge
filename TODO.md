@@ -376,6 +376,9 @@ Rework the program format before writing real content:
 
 ### Future milestones
 
+- ~~**Forging**~~ — done 2026-11-11: a block is judged once when its four weeks are up
+  (`ForgeService`, `ForgeResultRow`), the forging moment plays on Today, the Armoury rack shows
+  the open tier's three pieces for the current hero, and tiers open in order (`Armoury` in Core).
 - **Forging & the armoury** (Decisions 17–18). On block completion, check the 75% rule and
   forge the item; show it on the Character page; tier unlocks after 3 forged items. Items are
   sprites from `art/` in the house palette (a metal palette per tier: copper, bronze, iron…).

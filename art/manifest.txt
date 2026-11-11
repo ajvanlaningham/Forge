@@ -68,30 +68,12 @@ char_construct_ranger 8
 char_construct_cleric 8
 char_construct_monk 8
 
-# Forgeable items (Armoury): item x metal, 30x30 x4 -> 120px. gen_items.py.
-item_helm_copper 4
-item_helm_bronze 4
-item_helm_iron 4
-item_helm_steel 4
-item_helm_damascus 4
-item_helm_mithril 4
-item_helm_starmetal 4
-item_hammer_copper 4
-item_hammer_bronze 4
-item_hammer_iron 4
-item_hammer_steel 4
-item_hammer_damascus 4
-item_hammer_mithril 4
-item_hammer_starmetal 4
-item_boots_copper 4
-item_boots_bronze 4
-item_boots_iron 4
-item_boots_steel 4
-item_boots_damascus 4
-item_boots_mithril 4
-item_boots_starmetal 4
+# (The shared Helm/Hammer/Boots icons from gen_items.py were superseded by hero gear, Decision 22.)
 
 # The forge (loading screen animation): anvil + hammer, 40x40 x6. gen_forge.py.
 forge_0 6
 forge_1 6
 forge_2 6
+
+# Hero gear (Decision 22): 36 heroes x 3 slots x 7 metals, 30x30 x4 -> 120px. gen_gear.py.
+gear_* 4

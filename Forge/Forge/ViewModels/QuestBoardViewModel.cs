@@ -21,6 +21,9 @@ namespace Forge.ViewModels
         public bool IsActive { get; init; }
         public bool IsRumour { get; init; }
         public string? ActiveText { get; init; }
+        /// <summary>The piece this quest forges for the current hero.</summary>
+        public string? ItemSprite { get; init; }
+        public bool HasItem => ItemSprite is not null;
         /// <summary>A slight tilt so the notices look hand-pinned, not laid out by a grid.</summary>
         public double Tilt { get; init; }
 
@@ -78,13 +81,14 @@ namespace Forge.ViewModels
                 Notices.Add(new QuestNotice
                 {
                     Id = quest.Key,
-                    Title = first.QuestName,
+                    Title = HeroQuest.Name(first),
+                    ItemSprite = HeroQuest.Sprite(first),
                     Discipline = $"{first.Discipline} · {first.Goal}",
                     Meta = $"{string.Join(" or ", days)} days a week · {first.Minutes ?? "?"} min",
                     Versions = "Versions: " + string.Join(" · ", implements),
                     Description = Describe(first),
                     Needs = fits ? null : "Needs gear you haven't marked in My Gear (the Gym has everything)",
-                    Tier = $"{first.Metal} tier · forges the {first.QuestName}",
+                    Tier = $"{first.Metal} tier · forges the {HeroQuest.Name(first)}",
                     IsActive = isActive,
                     ActiveText = isActive && view is not null
                         ? view.BlockComplete
@@ -132,7 +136,7 @@ namespace Forge.ViewModels
             if (versions.Count == 0) return;
 
             var labels = versions.Select(p => p.VersionName + (Fits(p, _homeGear) ? "  ✓ fits your gear" : "")).ToArray();
-            var pick = await Shell.Current.DisplayActionSheet($"{versions[0].QuestName} — choose your version", "Cancel", null, labels);
+            var pick = await Shell.Current.DisplayActionSheet($"{HeroQuest.Name(versions[0])} — choose your version", "Cancel", null, labels);
             var index = Array.IndexOf(labels, pick);
             if (index < 0) return;
             var chosen = versions[index];
@@ -140,12 +144,12 @@ namespace Forge.ViewModels
             var current = (await _programs.GetActiveAsync())?.Definition;
             if (current?.Id == chosen.Id)
             {
-                await Shell.Current.DisplayAlert("Already underway", $"You're already on {chosen.QuestName} · {chosen.VersionName}.", "OK");
+                await Shell.Current.DisplayAlert("Already underway", $"You're already on {HeroQuest.Name(chosen)} · {chosen.VersionName}.", "OK");
                 return;
             }
 
             var ok = await Shell.Current.DisplayAlert("Accept this quest?",
-                $"Start {chosen.QuestName} · {chosen.VersionName} at week 1 (Kindling), today. Your current block ends; your workout history is kept.",
+                $"Start {HeroQuest.Name(chosen)} · {chosen.VersionName} at week 1 (Kindling), today. Your current block ends; your workout history is kept.",
                 "Accept", "Not yet");
             if (!ok) return;
 

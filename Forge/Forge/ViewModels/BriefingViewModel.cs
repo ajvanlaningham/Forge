@@ -122,7 +122,7 @@ namespace Forge.ViewModels
             var today = DateOnly.FromDateTime(DateTime.Today);
             _plan = await _training.PlanFromProgramAsync(today, _location);
             Title = _plan.Title;
-            Subtitle = $"{_plan.Program.Definition.QuestName} · {_plan.Program.Definition.VersionName}";
+            Subtitle = $"{HeroQuest.Name(_plan.Program.Definition)} · {_plan.Program.Definition.VersionName}";
             Gear = UserSettings.GearAt(_location);
             var unit = UserSettings.WeightUnit;
             var groups = _plan.Exercises.Select(e => e.Slot.Superset).ToList();

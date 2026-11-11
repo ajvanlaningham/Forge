@@ -54,10 +54,13 @@ def install(pal):
     for line in (ART / 'manifest.txt').read_text().splitlines():
         if not line.strip() or line.startswith('#'):
             continue
-        name, scale = line.split()[:2]
-        rows, local = read_sprite(ART / 'sprites' / f'{name}.txt', pal)
-        (APP_PIXEL / f'{name}.png').write_bytes(png(rows, int(scale), local))
-        print(f'installed {name} x{scale} -> {len(rows[0]) * int(scale)}x{len(rows) * int(scale)}')
+        pattern, scale = line.split()[:2]
+        # A name may be a glob ("gear_* 4"): 756 gear pieces don't need 756 lines.
+        names = sorted(p.stem for p in (ART / 'sprites').glob(f'{pattern}.txt')) if '*' in pattern else [pattern]
+        for name in names:
+            rows, local = read_sprite(ART / 'sprites' / f'{name}.txt', pal)
+            (APP_PIXEL / f'{name}.png').write_bytes(png(rows, int(scale), local))
+        print(f'installed {pattern} ({len(names)}) x{scale}')
 
 def main():
     pal = palette()
