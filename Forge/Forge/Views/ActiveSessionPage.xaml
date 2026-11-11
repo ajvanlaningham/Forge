@@ -37,7 +37,7 @@
         </Style>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*,Auto">
         <!-- Header -->
         <Border Grid.Row="0" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="18,14,18,10">
             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
@@ -188,5 +188,36 @@
                         BackgroundColor="Transparent" BorderWidth="0" TextColor="{StaticResource Danger}" />
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- Rest timer (PBI 8.3): sticky at the bottom, big enough to read from the bench. -->
+        <Border Grid.Row="2" IsVisible="{Binding IsResting}" StrokeThickness="0"
+                BackgroundColor="{StaticResource Surface}" Padding="14,10,14,14">
+            <Border.Triggers>
+                <DataTrigger TargetType="Border" Binding="{Binding IsRestOver}" Value="True">
+                    <Setter Property="BackgroundColor" Value="{StaticResource Leaf}" />
+                </DataTrigger>
+            </Border.Triggers>
+            <VerticalStackLayout Spacing="8">
+                <ProgressBar Progress="{Binding RestProgress}" ProgressColor="{StaticResource Accent}" HeightRequest="6" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <VerticalStackLayout VerticalOptions="Center">
+                        <Label Text="{Binding RestCaption}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" />
+                        <Label Text="{Binding RestText}" FontFamily="OpenSansSemibold" FontSize="44"
+                               TextColor="{StaticResource OnBg}" LineBreakMode="NoWrap" />
+                    </VerticalStackLayout>
+                    <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto"
+                          ColumnSpacing="8" RowSpacing="8" VerticalOptions="Center">
+                        <Button Text="−15" Command="{Binding RestMinusCommand}" WidthRequest="74" HeightRequest="52"
+                                FontFamily="OpenSansSemibold" FontSize="18" Padding="0" />
+                        <Button Grid.Column="1" Text="+15" Command="{Binding RestPlusCommand}" WidthRequest="74" HeightRequest="52"
+                                FontFamily="OpenSansSemibold" FontSize="18" Padding="0" />
+                        <Button Grid.Row="1" Text="{Binding PauseText}" Command="{Binding RestPauseCommand}" WidthRequest="74"
+                                HeightRequest="52" FontFamily="PixelUI" FontSize="16" Padding="0" />
+                        <Button Grid.Row="1" Grid.Column="1" Text="SKIP" Command="{Binding RestSkipCommand}" WidthRequest="74"
+                                HeightRequest="52" FontFamily="PixelUI" FontSize="16" Padding="0" />
+                    </Grid>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>

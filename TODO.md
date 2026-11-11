@@ -166,8 +166,15 @@ Defaults taken without asking (veto-able):
 ### 8.3 Rest timer
 - Auto-starts on set log (slot rest time or settings default); pause, +15 s, skip.
 - Alerts with screen off / app backgrounded. Computed from a stored end time, not ticks.
-- [ ] Timer UI; end time persisted with the session
-- [ ] Background alert behind a platform interface (Android now, iOS later)
+- [x] Sticky rest bar on the session screen: big countdown, progress, −15 / +15 / pause / skip.
+      Auto-starts after every set (slot rest, else `UserSettings.DefaultRestSeconds` = 90 s;
+      warm-ups capped at 60 s)
+- [x] End time (or paused seconds) persisted on the session row — survives process death
+- [x] `IRestAlarm`: Android exact alarm (USE_EXACT_ALARM) → high-importance vibrating
+      notification on a `rest_timer` channel; verified firing with the app backgrounded.
+      Notification permission asked once at session start; if denied, the app vibrates in-app.
+      iOS gets a no-op until it's built.
+- [ ] Default rest time editable in Settings
 
 ### 8.2 Sessions complete quests
 - Finishing a session completes its quest via the existing XP path. Manual checkbox still

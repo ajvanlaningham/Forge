@@ -43,6 +43,9 @@ namespace Forge.Models
 
         /// <summary>UTC ticks when the current rest countdown ends (PBI 8.3). Null when not resting.</summary>
         public long? RestEndsAtUtc { get; set; }
+
+        /// <summary>Seconds left when the rest was paused. Null when not paused.</summary>
+        public int? RestPausedSeconds { get; set; }
     }
 
     /// <summary>An exercise within a session, with what was prescribed for it.</summary>

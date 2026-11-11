@@ -51,6 +51,17 @@ namespace Forge.Services.Interfaces
         Task<SessionSetRow> LogSetAsync(int sessionExerciseId, double loadLb, int? reps, int? seconds, bool isWarmup);
         Task DeleteSetAsync(int setId);
 
+        /// <summary>Starts (or restarts) the rest countdown. Persisted, so it survives process death.</summary>
+        Task<TrainingSessionRow> StartRestAsync(int sessionId, int seconds);
+
+        /// <summary>Adds (or removes, when negative) time to the running or paused rest.</summary>
+        Task<TrainingSessionRow> AdjustRestAsync(int sessionId, int deltaSeconds);
+
+        /// <summary>Pauses a running rest or resumes a paused one.</summary>
+        Task<TrainingSessionRow> ToggleRestPauseAsync(int sessionId);
+
+        Task<TrainingSessionRow> StopRestAsync(int sessionId);
+
         /// <summary>Finishes the session. Returns the finished snapshot.</summary>
         Task<SessionSnapshot> FinishAsync(int sessionId);
 

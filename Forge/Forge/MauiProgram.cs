@@ -50,6 +50,11 @@ namespace Forge
             builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<IQuestService, QuestService>();
             builder.Services.AddSingleton<ITrainingService, TrainingService>();
+#if ANDROID
+            builder.Services.AddSingleton<IRestAlarm, Forge.Platforms.Android.RestAlarm>();
+#else
+            builder.Services.AddSingleton<IRestAlarm, NoopRestAlarm>();
+#endif
             builder.Services.AddSingleton<IConditioningWeekService, ConditioningWeekService>();
 
             // Stats

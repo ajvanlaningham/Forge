@@ -16,8 +16,15 @@ namespace Forge.ViewModels
     public sealed class ActiveSessionViewModel : BaseViewModel
     {
         private readonly ITrainingService _training;
+        private readonly IRestAlarm _alarm;
         private IDispatcherTimer? _clock;
         private DateTime _startedUtc;
+
+        // Rest timer state mirrors the session row: an end time, or seconds left while paused.
+        private DateTime? _restEndsUtc;
+        private int? _restPausedSeconds;
+        private int _restTotalSeconds = 1;
+        private DateTime? _restOverShownUtc;
 
         public int SessionId { get; private set; }
         public ObservableCollection<ExerciseCardViewModel> Exercises { get; } = new();
@@ -34,6 +41,29 @@ namespace Forge.ViewModels
         private string _progressText = "";
         public string ProgressText { get => _progressText; private set => SetProperty(ref _progressText, value); }
 
+        private bool _isResting;
+        public bool IsResting { get => _isResting; private set => SetProperty(ref _isResting, value); }
+
+        private bool _isRestOver;
+        public bool IsRestOver { get => _isRestOver; private set => SetProperty(ref _isRestOver, value); }
+
+        private string _restText = "";
+        public string RestText { get => _restText; private set => SetProperty(ref _restText, value); }
+
+        private string _restCaption = "REST";
+        public string RestCaption { get => _restCaption; private set => SetProperty(ref _restCaption, value); }
+
+        private double _restProgress;
+        public double RestProgress { get => _restProgress; private set => SetProperty(ref _restProgress, value); }
+
+        private string _pauseText = "PAUSE";
+        public string PauseText { get => _pauseText; private set => SetProperty(ref _pauseText, value); }
+
+        public ICommand RestPauseCommand { get; }
+        public ICommand RestPlusCommand { get; }
+        public ICommand RestMinusCommand { get; }
+        public ICommand RestSkipCommand { get; }
+
         public ICommand FinishCommand { get; }
         public ICommand DiscardCommand { get; }
         public ICommand AddExerciseCommand { get; }
@@ -45,9 +75,14 @@ namespace Forge.ViewModels
         internal Equipment AvailableEquipment { get; private set; }
         internal IReadOnlyList<ExerciseInfo> Library { get; private set; } = Array.Empty<ExerciseInfo>();
 
-        public ActiveSessionViewModel(ITrainingService training)
+        public ActiveSessionViewModel(ITrainingService training, IRestAlarm alarm)
         {
             _training = training;
+            _alarm = alarm;
+            RestPauseCommand = new Command(async () => ApplyRest(await _training.ToggleRestPauseAsync(SessionId)));
+            RestPlusCommand = new Command(async () => ApplyRest(await _training.AdjustRestAsync(SessionId, +15)));
+            RestMinusCommand = new Command(async () => ApplyRest(await _training.AdjustRestAsync(SessionId, -15)));
+            RestSkipCommand = new Command(async () => ApplyRest(await _training.StopRestAsync(SessionId)));
             FinishCommand = new Command(async () => await FinishAsync());
             DiscardCommand = new Command(async () => await DiscardAsync());
             AddExerciseCommand = new Command(async () => await AddExerciseAsync());
@@ -72,10 +107,47 @@ namespace Forge.ViewModels
                 Exercises.Add(card);
             }
             RefreshProgress();
+            ApplyRest(snap.Session);
+            Tick();
+
+            // Ask once, up front, rather than mid-set. Denial just means in-app alerts only.
+            try { await _alarm.EnsurePermissionAsync(); } catch { /* permission UI unavailable */ }
+        }
+
+        /// <summary>Starts the rest countdown after a set (PBI 8.3).</summary>
+        internal async Task StartRestAsync(int? slotRestSeconds, bool afterWarmup, string exerciseName)
+        {
+            var seconds = slotRestSeconds ?? UserSettings.DefaultRestSeconds;
+            if (afterWarmup) seconds = Math.Min(seconds, 60); // warm-ups don't need full rest
+            _restTotalSeconds = Math.Max(1, seconds);
+            _nextUpHint = exerciseName;
+            ApplyRest(await _training.StartRestAsync(SessionId, seconds));
+        }
+
+        private string _nextUpHint = "";
+
+        /// <summary>Syncs local state and the OS alarm from the persisted session row.</summary>
+        private void ApplyRest(TrainingSessionRow row)
+        {
+            _restEndsUtc = row.RestEndsAtUtc is long t ? new DateTime(t, DateTimeKind.Utc) : null;
+            _restPausedSeconds = row.RestPausedSeconds;
+            _restOverShownUtc = null;
+            IsRestOver = false;
+
+            if (_restEndsUtc is DateTime ends && ends > DateTime.UtcNow)
+            {
+                var left = (int)Math.Ceiling((ends - DateTime.UtcNow).TotalSeconds);
+                _restTotalSeconds = Math.Max(_restTotalSeconds, left);
+                _alarm.Schedule(ends, string.IsNullOrEmpty(_nextUpHint) ? "Time for the next set." : $"Next set: {_nextUpHint}");
+            }
+            else
+            {
+                _alarm.Cancel();
+            }
             Tick();
         }
 
-        /// <summary>Reloads one exercise card after a structural change (swap, sets).</summary>
+        /// <summary>Reloads the cards after a structural change (swap, sets).</summary>
         internal async Task ReloadAsync()
         {
             var snap = await _training.GetSessionAsync(SessionId);
@@ -127,7 +199,65 @@ namespace Forge.ViewModels
         {
             var e = DateTime.UtcNow - _startedUtc;
             ElapsedText = e.TotalHours >= 1 ? e.ToString(@"h\:mm\:ss") : e.ToString(@"m\:ss");
+            TickRest();
         }
+
+        private void TickRest()
+        {
+            if (_restPausedSeconds is int paused)
+            {
+                IsResting = true;
+                RestCaption = "PAUSED";
+                PauseText = "RESUME";
+                RestText = Format(paused);
+                RestProgress = 1.0 - (double)paused / _restTotalSeconds;
+                return;
+            }
+
+            PauseText = "PAUSE";
+            if (_restEndsUtc is not DateTime ends)
+            {
+                IsResting = false;
+                IsRestOver = false;
+                return;
+            }
+
+            var left = (ends - DateTime.UtcNow).TotalSeconds;
+            if (left > 0)
+            {
+                IsResting = true;
+                IsRestOver = false;
+                RestCaption = "REST";
+                RestText = Format((int)Math.Ceiling(left));
+                RestProgress = Math.Clamp(1.0 - left / _restTotalSeconds, 0, 1);
+                return;
+            }
+
+            // Rest just ended. The OS notification vibrates when allowed; otherwise buzz in-app.
+            if (_restOverShownUtc is null)
+            {
+                _restOverShownUtc = DateTime.UtcNow;
+                if (!_alarm.CanNotify)
+                {
+                    try { Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(600)); } catch { /* no vibrator */ }
+                }
+            }
+            IsResting = true;
+            IsRestOver = true;
+            RestCaption = "REST OVER";
+            RestText = "GO";
+            RestProgress = 1;
+
+            // Clear the banner after a few seconds.
+            if ((DateTime.UtcNow - _restOverShownUtc.Value).TotalSeconds > 8)
+            {
+                _restEndsUtc = null;
+                IsResting = false;
+                IsRestOver = false;
+            }
+        }
+
+        private static string Format(int seconds) => $"{seconds / 60}:{seconds % 60:00}";
 
         private async Task AddExerciseAsync()
         {
@@ -149,6 +279,7 @@ namespace Forge.ViewModels
             if (!await Shell.Current.DisplayAlert("Finish session", message, "Finish", "Keep going")) return;
 
             StopClock();
+            _alarm.Cancel();
             var snap = await _training.FinishAsync(SessionId);
             Ended?.Invoke(this, snap);
         }
@@ -158,6 +289,7 @@ namespace Forge.ViewModels
             if (!await Shell.Current.DisplayAlert("Discard session",
                     "Throw this session away? Nothing from it will count.", "Discard", "Keep it")) return;
             StopClock();
+            _alarm.Cancel();
             await _training.DiscardAsync(SessionId);
             Ended?.Invoke(this, null);
         }
@@ -382,9 +514,11 @@ namespace Forge.ViewModels
         private async Task LogAsync()
         {
             var loadLb = WeightMath.ToStoredPounds(Load, Unit);
+            var wasWarmup = IsWarmup;
             await _owner.Training.LogSetAsync(Id, loadLb, IsTimed ? null : Reps, IsTimed ? Seconds : null, IsWarmup);
             IsWarmup = false; // warm-up is a per-set choice, never sticky
             await _owner.ReloadAsync();
+            await _owner.StartRestAsync(_snap.Row.RestSeconds, wasWarmup, Name);
             try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { /* not all devices */ }
         }
 

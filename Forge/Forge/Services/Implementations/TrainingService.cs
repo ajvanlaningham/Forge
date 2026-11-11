@@ -42,7 +42,10 @@ namespace Forge.Services.Implementations
         {
             if (_libraryCache is not null) return _libraryCache;
             await _importer.EnsureSeededAsync();
-            var rows = await _library.WhereAsync(r => r.IsActive);
+            // Recovery-tagged entries (breathing drills, recovery flows) belong to the mobility
+            // quest on recovery days — never to a lifting session's picker or its swaps.
+            var rows = (await _library.WhereAsync(r => r.IsActive))
+                .Where(r => !string.Equals(r.SourceTag, Forge.Constants.GameConstants.Exercises.ExSourceTag, StringComparison.OrdinalIgnoreCase));
             return _libraryCache = rows
                 .Select(r => r.ToDomain())
                 .ToDictionary(e => e.Name, e => new ExerciseInfo(
@@ -278,6 +281,63 @@ namespace Forge.Services.Implementations
             if (set is not null) await _sets.DeleteAsync(set);
         }
 
+        // --- rest timer (PBI 8.3) ----------------------------------------------------------
+        // Computed from a stored end time, never by counting ticks, so backgrounding, screen-off
+        // and process death can't make it drift or lose it.
+
+        private async Task<TrainingSessionRow> SessionRowAsync(int id)
+            => await _sessions.GetByIdAsync(id) ?? throw new InvalidOperationException($"No session {id}");
+
+        public async Task<TrainingSessionRow> StartRestAsync(int sessionId, int seconds)
+        {
+            var row = await SessionRowAsync(sessionId);
+            row.RestPausedSeconds = null;
+            row.RestEndsAtUtc = seconds > 0 ? DateTime.UtcNow.AddSeconds(seconds).Ticks : null;
+            await _sessions.UpdateAsync(row);
+            return row;
+        }
+
+        public async Task<TrainingSessionRow> AdjustRestAsync(int sessionId, int deltaSeconds)
+        {
+            var row = await SessionRowAsync(sessionId);
+            if (row.RestPausedSeconds is int paused)
+                row.RestPausedSeconds = Math.Max(0, paused + deltaSeconds);
+            else if (row.RestEndsAtUtc is long ends)
+            {
+                var next = new DateTime(ends, DateTimeKind.Utc).AddSeconds(deltaSeconds);
+                row.RestEndsAtUtc = next <= DateTime.UtcNow ? null : next.Ticks;
+            }
+            await _sessions.UpdateAsync(row);
+            return row;
+        }
+
+        public async Task<TrainingSessionRow> ToggleRestPauseAsync(int sessionId)
+        {
+            var row = await SessionRowAsync(sessionId);
+            if (row.RestPausedSeconds is int paused)
+            {
+                row.RestEndsAtUtc = DateTime.UtcNow.AddSeconds(paused).Ticks;
+                row.RestPausedSeconds = null;
+            }
+            else if (row.RestEndsAtUtc is long ends)
+            {
+                var left = (int)Math.Ceiling((new DateTime(ends, DateTimeKind.Utc) - DateTime.UtcNow).TotalSeconds);
+                row.RestEndsAtUtc = null;
+                row.RestPausedSeconds = Math.Max(0, left);
+            }
+            await _sessions.UpdateAsync(row);
+            return row;
+        }
+
+        public async Task<TrainingSessionRow> StopRestAsync(int sessionId)
+        {
+            var row = await SessionRowAsync(sessionId);
+            row.RestEndsAtUtc = null;
+            row.RestPausedSeconds = null;
+            await _sessions.UpdateAsync(row);
+            return row;
+        }
+
         // --- ending --------------------------------------------------------------------------
 
         public async Task<SessionSnapshot> FinishAsync(int sessionId)
@@ -289,6 +349,7 @@ namespace Forge.Services.Implementations
                 row.Status = (int)SessionStatus.Finished;
                 row.EndedAtUtc = DateTime.UtcNow.Ticks;
                 row.RestEndsAtUtc = null;
+                row.RestPausedSeconds = null;
                 await _sessions.UpdateAsync(row);
 
                 await CompleteProgramDayAsync(row);
@@ -325,6 +386,7 @@ namespace Forge.Services.Implementations
             row.Status = (int)SessionStatus.Discarded;
             row.EndedAtUtc = DateTime.UtcNow.Ticks;
             row.RestEndsAtUtc = null;
+            row.RestPausedSeconds = null;
             await _sessions.UpdateAsync(row);
         }
 

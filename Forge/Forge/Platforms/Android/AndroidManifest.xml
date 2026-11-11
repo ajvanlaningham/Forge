@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true">
 		<!-- Hands the downloaded APK to the OS package installer (a different app) via a
@@ -13,4 +13,10 @@
 	<!-- Lets the in-app Update button install the downloaded release APK. The OS still
 	     prompts the user to allow "install unknown apps" for Forge the first time. -->
 	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+	<!-- Rest timer (PBI 8.3): a vibrating notification when rest ends, screen off or not.
+	     USE_EXACT_ALARM is Play-restricted to alarm apps; irrelevant for a sideloaded app, and it
+	     avoids the user-revocable SCHEDULE_EXACT_ALARM dance. -->
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+	<uses-permission android:name="android.permission.VIBRATE" />
 </manifest>
