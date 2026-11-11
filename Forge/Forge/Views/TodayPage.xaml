@@ -48,6 +48,16 @@
                    FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center" />
             <Label Text="{Binding PlanText}" IsVisible="{Binding HasPlan}" FontSize="14" TextColor="{StaticResource Muted}" />
 
+            <!-- A stat test on its slotted day -->
+            <Border IsVisible="{Binding HasTest}" BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Accent}" StrokeThickness="2" StrokeShape="RoundRectangle 10" Padding="14">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{Binding TestTitle}" FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Accent}" />
+                    <Label Text="{Binding TestText}" FontSize="14" TextColor="{StaticResource OnBg}" />
+                    <Button Text="Take the test" Command="{Binding TestCommand}" Margin="0,4,0,0" />
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Active rest -->
             <Border IsVisible="{Binding ShowActiveRest}" BackgroundColor="{StaticResource Surface}"
                     Stroke="{StaticResource Leaf}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="14">

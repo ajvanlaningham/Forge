@@ -81,6 +81,9 @@ namespace Forge.ViewModels
             Application.Current?.Quit();
         }
 
+        public ICommand OpenComparisonsCommand { get; } = new Command(async () =>
+            await Shell.Current.GoToAsync(nameof(Forge.Views.SubPages.ComparisonsPage)));
+
         public ICommand OpenGymEquipmentCommand { get; } = new Command(async () =>
             await Shell.Current.GoToAsync(nameof(Forge.Views.SubPages.GymEquipmentPage)));
 

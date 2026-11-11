@@ -53,6 +53,7 @@ namespace Forge
             builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<IActiveRestService, ActiveRestService>();
             builder.Services.AddSingleton<IForgeService, ForgeService>();
+            builder.Services.AddSingleton<IStatTestService, StatTestService>();
             builder.Services.AddSingleton<ITrainingService, TrainingService>();
 #if ANDROID
             builder.Services.AddSingleton<IRestAlarm, Forge.Platforms.Android.RestAlarm>();
@@ -117,6 +118,7 @@ namespace Forge
             builder.Services.AddTransient<ViewModels.SubPages.MyGearViewModel>();
             builder.Services.AddTransient<MyGearPage>();
             builder.Services.AddTransient<HomeWeightsPage>();
+            builder.Services.AddTransient<StatTestPage>();
 
 
             return builder.Build();

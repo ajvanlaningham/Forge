@@ -351,16 +351,16 @@ Rework the program format before writing real content:
   per-field manual-vs-synced flag so sync never overwrites hand entries.
 
 ### Baseline testing (Epic 5): protocol v2, Decision 23
-- **5.1** Log scoring (Decision 5) in Core with tests: baseline = 10, doubling = +25, halving,
+- [x] **5.1** Log scoring (Decision 5) in Core with tests: baseline = 10, doubling = +25, halving,
   clamp 1–100, retest cap +10; inverted inputs (gaps, heart rate) where smaller is better.
-- **5.2** Protocol v2 as data: per-user frozen choices (test lifts, step height, push-up incline);
+- [x] **5.2** Protocol v2 as data: per-user frozen choices (test lifts, step height, push-up incline);
   `StatTestRow` (date, kind, protocol version, raw measures, bodyweight, calibration flag, score).
-- **5.3** Test steps inside the Honing guided session: STR top sets that ask "How many?",
+- [~] **5.3** Test steps (built as a test page opened from Today's test-day card or Hero, not yet inside the guided session): STR top sets that ask "How many?",
   push-ups to failure; DEX measurement entry with diagrams; CON step test with a 96-beat
   metronome and a timed 1-minute pulse count; optional resting HR.
-- **5.4** Calibration run in week 1 of the first quest (unscored); baseline in its week 4.
+- [x] **5.4** Calibration run in week 1 of the first quest (unscored); baseline in its week 4.
 - **5.5** Stat cards on Hero: score, change, sparkline, raw measures, absolute and relative e1RM.
-- **5.6** Optional age and sex in Settings; coarse norm bands behind a tap on tests with credible
+- [~] **5.6** Optional birth year and norms group in Settings (done: "Compare my results with: Women's / Men's / Don't compare"); norm bands still to come; coarse norm bands behind a tap on tests with credible
   tables. No health claims.
 
 ### Nutrition & devices (Epics 6, 7)

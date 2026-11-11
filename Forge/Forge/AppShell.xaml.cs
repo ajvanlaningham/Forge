@@ -20,6 +20,8 @@ namespace Forge
             Routing.RegisterRoute(nameof(GymEquipmentPage), typeof(GymEquipmentPage));
             Routing.RegisterRoute(nameof(HomeWeightsPage), typeof(HomeWeightsPage));
             Routing.RegisterRoute(nameof(HeroPickerPage), typeof(HeroPickerPage));
+            Routing.RegisterRoute(nameof(StatTestPage), typeof(StatTestPage));
+            Routing.RegisterRoute(nameof(ComparisonsPage), typeof(ComparisonsPage));
 
         }
     }

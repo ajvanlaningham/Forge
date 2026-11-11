@@ -47,6 +47,14 @@ namespace Forge.ViewModels
 
         public ICommand EditPackCommand { get; } = new Command(async () => await Shell.Current.GoToAsync(nameof(MyGearPage)));
 
+        /// <summary>A test outside its slotted day: still scored (or the baseline, if there isn't one yet).</summary>
+        public ICommand TakeTestCommand { get; } = new Command(async () =>
+        {
+            var pick = await Shell.Current.DisplayActionSheet("Take a stat test", "Cancel", null, "Strength", "Mobility", "Conditioning");
+            var kind = pick switch { "Strength" => "Strength", "Mobility" => "Dexterity", "Conditioning" => "Constitution", _ => null };
+            if (kind is not null) await Shell.Current.GoToAsync($"{nameof(StatTestPage)}?kind={kind}&calibration=false");
+        });
+
         public HeroViewModel(IStatsService stats, IProgramService programs, IInventoryService inventory, ProgressService progress, IForgeService forge)
         {
             _forge = forge;

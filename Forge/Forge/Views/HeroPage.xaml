@@ -26,6 +26,7 @@
                    HorizontalTextAlignment="Center" />
 
             <cards:StatCard x:Name="Stats" />
+            <Button Text="Take a stat test" Command="{Binding TakeTestCommand}" Margin="0,-6,0,0" />
 
             <!-- Armoury: forged items -->
             <VerticalStackLayout Spacing="6">

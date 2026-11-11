@@ -78,6 +78,44 @@ namespace Forge.Services
         public static Forge.Training.GearLoads GearAt(TrainingLocation location)
             => location == TrainingLocation.Gym ? Forge.Training.GearLoads.Everything(WeightUnit) : HomeGear;
 
+        // --- stat tests (protocol v2, Decision 23): choices frozen at the baseline ---
+
+        /// <summary>The three STR test lifts (squat or lunge, press, row), chosen once from your gear.</summary>
+        public static string[]? TestLifts
+        {
+            get => Preferences.Get("Tests.Lifts", null)?.Split('|');
+            set => Preferences.Set("Tests.Lifts", value is null ? null : string.Join('|', value));
+        }
+
+        /// <summary>Where the push-up test is done: floor, a box or step, or a wall.</summary>
+        public static string? PushupIncline
+        {
+            get => Preferences.Get("Tests.PushupIncline", null);
+            set => Preferences.Set("Tests.PushupIncline", value);
+        }
+
+        /// <summary>The step test's step height, in cm, kept for every retest.</summary>
+        public static double? StepHeightCm
+        {
+            get => Preferences.ContainsKey("Tests.StepCm") ? Preferences.Get("Tests.StepCm", 30.0) : null;
+            set { if (value is null) Preferences.Remove("Tests.StepCm"); else Preferences.Set("Tests.StepCm", value.Value); }
+        }
+
+        // --- comparisons (optional): only to place results against published norms ---
+
+        public static int? BirthYear
+        {
+            get => Preferences.ContainsKey("Profile.BirthYear") ? Preferences.Get("Profile.BirthYear", 1990) : null;
+            set { if (value is null) Preferences.Remove("Profile.BirthYear"); else Preferences.Set("Profile.BirthYear", value.Value); }
+        }
+
+        /// <summary>Which published norms to compare with: "women", "men", or "none" (the default).</summary>
+        public static string NormsGroup
+        {
+            get => Preferences.Get("Profile.Norms", "none");
+            set => Preferences.Set("Profile.Norms", value);
+        }
+
         // --- the hero's look (race x class sprite, picked on the Hero tab) ---
 
         public static readonly (string Id, string Label)[] Races =

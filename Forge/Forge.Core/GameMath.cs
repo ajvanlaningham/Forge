@@ -57,7 +57,6 @@ namespace Forge.Constants
         {
             public const int MinScore = 1;
             public const int MaxScore = 100;
-            public const double ScoreStepRatio = 0.1;
         }
 
         /// <summary>
@@ -79,25 +78,6 @@ namespace Forge.Constants
         {
             var into = XpIntoLevel(xp, xpPerLevel);
             return xpPerLevel - into;
-        }
-
-        /// <summary>
-        /// Linear stat scoring: +1 point per 10% improvement over baseline, from a floor of 1.
-        /// </summary>
-        /// <remarks>
-        /// Scheduled for replacement — reaching <see cref="Stats.MaxScore"/> on this curve
-        /// requires roughly a 990% improvement, so the top of the scale is unreachable.
-        /// See PBI 5.1 in TODO.md for the logarithmic replacement.
-        /// </remarks>
-        public static int ScoreFrom(double baseline, double current, bool inverse = false)
-        {
-            if (baseline <= 0 || current <= 0) return Stats.MinScore;
-
-            var ratio = inverse ? (baseline / current) : (current / baseline);
-            var steps = Math.Round((ratio - 1.0) / Stats.ScoreStepRatio);
-            var raw = Stats.MinScore + (int)steps;
-
-            return Math.Clamp(raw, Stats.MinScore, Stats.MaxScore);
         }
     }
 }

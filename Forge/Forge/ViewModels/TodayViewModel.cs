@@ -23,6 +23,7 @@ namespace Forge.ViewModels
         private readonly IStatsService _stats;
         private readonly IExerciseLibraryImporter _importer;
         private readonly ProgressService _progress;
+        private readonly IStatTestService _tests;
         private int? _inProgressId;
         private bool _inProgressGuided;
         private DateOnly _today;
@@ -89,14 +90,31 @@ namespace Forge.ViewModels
 
         public WeeklyConditioningCardViewModel Conditioning { get; } = new();
 
+        // --- a stat test on its slotted day (Decision 23) ---
+        private DueTest? _due;
+        private bool _hasTest;
+        public bool HasTest { get => _hasTest; private set => SetProperty(ref _hasTest, value); }
+        private string _testTitle = "";
+        public string TestTitle { get => _testTitle; private set => SetProperty(ref _testTitle, value); }
+        private string _testText = "";
+        public string TestText { get => _testText; private set => SetProperty(ref _testText, value); }
+        public ICommand TestCommand { get; }
+
         public ICommand ActionCommand { get; }
         public ICommand StartOpenCommand { get; }
         public ICommand ToggleActiveRestCommand { get; }
         public ICommand OpenHeroCommand { get; } = new Command(async () => await Shell.Current.GoToAsync("//hero"));
 
         public TodayViewModel(IProgramService programs, ITrainingService training, IActiveRestService activeRest,
-            IConditioningWeekService conditioning, IStatsService stats, IExerciseLibraryImporter importer, ProgressService progress)
+            IConditioningWeekService conditioning, IStatsService stats, IExerciseLibraryImporter importer, ProgressService progress,
+            IStatTestService tests)
         {
+            _tests = tests;
+            TestCommand = new Command(async () =>
+            {
+                if (_due is { } d)
+                    await Shell.Current.GoToAsync($"{nameof(StatTestPage)}?kind={d.Kind}&calibration={d.Calibration}");
+            });
             _programs = programs;
             _training = training;
             _activeRest = activeRest;
@@ -138,6 +156,20 @@ namespace Forge.ViewModels
                 _inProgressGuided = open?.Session.ProgramId is not null; // program sessions run guided
                 CanStartOpen = open is null;
                 ApplyQuest(view, open?.Session.Title);
+
+                _due = await _tests.DueTodayAsync(_today);
+                HasTest = _due is not null;
+                if (_due is { } due)
+                {
+                    var (name, what) = due.Kind switch
+                    {
+                        Forge.Models.StatKind.Strength => ("Strength test", "After your session: one all-out set on three lifts, and push-ups to failure."),
+                        Forge.Models.StatKind.Dexterity => ("Mobility test", "Three tape-measure tests: ankle, hamstrings, shoulders. About 10 minutes."),
+                        _ => ("Conditioning test", "Three minutes on a step to a beat, then a one-minute pulse count.")
+                    };
+                    TestTitle = due.Calibration ? $"{name} · practice run" : $"{name} · Honing";
+                    TestText = due.Calibration ? $"{what} Unscored: it teaches you the test so your baseline is honest." : what;
+                }
 
                 ActiveRestDone = await _activeRest.IsDoneAsync(_today);
                 // Active rest is for days without training: hidden once today's training is done.
