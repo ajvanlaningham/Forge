@@ -29,12 +29,26 @@ Settled. Changing one means revisiting the PBIs that depend on it.
    retest. Replaces the linear `ScoreFrom`, which needs ~990% improvement to reach 100.
 6. **Relative strength:** STR scores e1RM ÷ bodyweight; absolute e1RM shown alongside.
 7. **Frozen test protocols.** Never edit; version a new one. See `docs/baseline-tests.md`.
-8. **Test week, not test day:** a 7-day window opens every 4th level, three sessions, each
-   granting quest XP.
+8. ~~Test week every 4th level~~ — **superseded 2026-11-11 by #12:** the stat test is the last
+   session of each 4-week block.
 9. **Read nutrition, don't build it.** Manual entry + Health Connect; no food database.
 10. **Manual entry ships before every integration.** Fully usable with all permissions denied.
-11. **The program becomes the quest** (2026-11-11). Quests are organized as days-of-program,
-    advancing by completion order, not weekday. See PBI 8.4.
+11. **The program becomes the quest** (2026-11-11). Quests are organized as days-of-program.
+    See PBI 8.4. (Day advancement is revised by #12: weeks follow the calendar.)
+12. **Programs are 4-week blocks** (2026-11-11). Each week = 3 or 4 training days + active-rest
+    days (mobility, walking, easy conditioning) — 7 days of movement. Weeks 1–3 build; week 4 is
+    lighter and ends with the stat test. Weeks advance **by calendar** from the block start;
+    missed days are simply missed (no penalty).
+13. **3-day and 4-day are separate programs**, grouped in *families* that share main lifts
+    (e.g. "Block 1 — 3-day" / "— 4-day"). XP is normalised so a fully adherent week is one level
+    either way — training-day XP scales with the number of training days.
+14. **Fixed main lifts, rotating accessories.** Main lifts stay the same for the whole block and
+    carry progression, last-time numbers and records. Accessories rotate week to week for
+    variety. The next block changes the main lifts' variations.
+15. **Perfect-week multiplier.** A perfect week = every scheduled day done (training + active
+    rest). Each consecutive perfect week keeps a ×1.2 multiplier on the following week's XP; a
+    miss resets it to ×1.0, nothing is taken away. Possible later: a once-per-block "sick week"
+    freeze so the bonus never tempts training while ill.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
@@ -112,6 +126,17 @@ Defaults taken without asking (veto-able):
   tooling exists.
 - With a program active, the Quests focus pill shows the program day and weekday "Recovery"
   days no longer apply to lifting (mobility still uses the recovery pool on Wed/Sat/Sun).
+
+### Next: programs as blocks (Decisions 12–15)
+Rework the program format before writing real content:
+- [ ] Block → weeks → days; day kinds: training / active rest / test. Calendar week advancement.
+- [ ] Slots tagged main vs accessory; accessories may differ per week, mains may not (validated).
+- [ ] Week 4 "light" modifier (e.g. fewer sets, held loads — exact rule to decide with content)
+      and the closing stat test session (ties into Epic 5).
+- [ ] Active-rest days replace the separate daily mobility quest while a program is active.
+- [ ] Program families; 3-day and 4-day variants; XP normalised per program.
+- [ ] Perfect-week streak + ×1.2 multiplier; Home shows streak and next week's multiplier.
+- [ ] Then: write the real Block 1 (3-day and 4-day), dumbbell/home-first, gym via swaps.
 
 ### 8.4 Training programs (the 4-day split)
 - Program → days → slots (exercise, sets, rep range, rest). Seeded from versioned JSON in
