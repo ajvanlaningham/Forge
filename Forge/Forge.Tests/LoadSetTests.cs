@@ -59,14 +59,14 @@ public class LoadSetTests
     [Fact]
     public void Gear_FixedPairs_AreDiscrete()
     {
-        var gear = new GearLoads { Dumbbells = new DumbbellGear { Weights = [10, 20, 30] } };
+        var gear = new GearLoads { Dumbbells = new DumbbellGear { Lb = [10, 20, 30] } };
         Assert.Equal(30, gear.For(Modality.Dumbbell, WeightUnit.Pounds).Next(20));
     }
 
     [Fact]
     public void Gear_KgKettlebells_StayExactWhenDisplayedInPounds()
     {
-        var gear = new GearLoads { Kettlebells = new KettlebellGear { Unit = WeightUnit.Kilograms, Weights = [16, 24] } };
+        var gear = new GearLoads { Kettlebells = new KettlebellGear { Kg = [16, 24] } };
         var next = gear.For(Modality.Kettlebell, WeightUnit.Pounds).Next(WeightMath.ToStoredPounds(16, WeightUnit.Kilograms))!.Value;
         Assert.Equal(24, WeightMath.ToDisplay(next, WeightUnit.Kilograms), 6);
     }
@@ -104,8 +104,8 @@ public class LoadSetTests
     {
         var gear = new GearLoads
         {
-            Dumbbells = new DumbbellGear { Weights = [35, 15, 25] },
-            Kettlebells = new KettlebellGear { Unit = WeightUnit.Kilograms, Weights = [24, 16] },
+            Dumbbells = new DumbbellGear { Lb = [35, 15, 25] },
+            Kettlebells = new KettlebellGear { Kg = [24, 16] },
             Barbell = new BarbellGear { Bar = 45, Max = 225, Step = 5 }
         };
         Assert.Equal("15 · 25 · 35 lb", gear.Summary(Equipment.Dumbbell));
@@ -120,7 +120,7 @@ public class LoadSetTests
     [Fact]
     public void Pairs_TwoHandedExercisesOnlyUseWeightsYouHaveTwoOf()
     {
-        var gear = new GearLoads { Dumbbells = new DumbbellGear { Weights = [15, 15, 25, 35, 35] } };
+        var gear = new GearLoads { Dumbbells = new DumbbellGear { Lb = [15, 15, 25, 35, 35] } };
         var twoHanded = gear.For(Modality.Dumbbell, WeightUnit.Pounds, needsPair: true);
         var oneHanded = gear.For(Modality.Dumbbell, WeightUnit.Pounds);
         Assert.Equal(35, twoHanded.Next(15));   // skips the single 25
@@ -131,8 +131,39 @@ public class LoadSetTests
     [Fact]
     public void Pairs_NoPairOwnedAtAll_FallsBackToEverySingle()
     {
-        var gear = new GearLoads { Kettlebells = new KettlebellGear { Unit = WeightUnit.Kilograms, Weights = [16, 20] } };
+        var gear = new GearLoads { Kettlebells = new KettlebellGear { Kg = [16, 20] } };
         Assert.NotNull(gear.For(Modality.Kettlebell, WeightUnit.Kilograms, needsPair: true).Next(0));
         Assert.Equal(1, GearLoads.CountOf([16, 20], 16));
+    }
+
+    [Fact]
+    public void MixedUnits_PoundAndKiloBellsLiveTogether()
+    {
+        var gear = new GearLoads { Kettlebells = new KettlebellGear { Lb = [5, 10, 15], Kg = [16, 20] } };
+        Assert.Equal("5–15 lb + 16–20 kg", gear.Summary(Equipment.Kettlebell));
+        var set = gear.For(Modality.Kettlebell, WeightUnit.Pounds);
+        Assert.Equal(WeightMath.ToStoredPounds(16, WeightUnit.Kilograms), set.Next(15)!.Value, 6);
+        Assert.Equal(15, set.Prev(WeightMath.ToStoredPounds(16, WeightUnit.Kilograms)));
+    }
+
+    [Fact]
+    public void MixedUnits_APairIsTheSameWeightInTheSameUnit()
+    {
+        var gear = new GearLoads { Dumbbells = new DumbbellGear { Lb = [10, 10, 20], Kg = [9] } };
+        var twoHanded = gear.For(Modality.Dumbbell, WeightUnit.Pounds, needsPair: true);
+        Assert.Null(twoHanded.Next(10));
+        Assert.Equal("10–20 lb + 9 kg", gear.Summary(Equipment.Dumbbell));
+    }
+
+    [Fact]
+    public void OldSettings_SingleUnitListIsMigrated()
+    {
+        var back = GearLoads.FromJson("""{"Dumbbells":{"Adjustable":false,"Unit":"Pounds","Weights":[15,15,25]},"Kettlebells":{"Unit":"Kilograms","Weights":[16,20]}}""");
+        Assert.Equal([15, 15, 25], back.Dumbbells!.Lb);
+        Assert.Empty(back.Dumbbells.Kg);
+        Assert.Equal([16, 20], back.Kettlebells!.Kg);
+        Assert.Null(back.Kettlebells.Weights);
+        Assert.Equal("5–30 lb", new GearLoads { Dumbbells = new DumbbellGear { Lb = [5, 5, 10, 10, 15, 20, 25, 30] } }.Summary(Equipment.Dumbbell));
+        Assert.DoesNotContain("Weights", back.ToJson());
     }
 }

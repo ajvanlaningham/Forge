@@ -63,7 +63,7 @@ public sealed class HomeWeightsPage : ContentPage
         _hasKb = ownedInInventory && Implement == Equipment.Kettlebell;
         _hasBb = ownedInInventory && Implement == Equipment.Barbell;
         _db = saved.Dumbbells ?? new DumbbellGear { Unit = unit, Min = unit == WeightUnit.Kilograms ? 2 : 5, Max = unit == WeightUnit.Kilograms ? 24 : 52.5, Step = unit == WeightUnit.Kilograms ? 1 : 2.5 };
-        _kb = saved.Kettlebells ?? new KettlebellGear { Unit = unit };
+        _kb = saved.Kettlebells ?? new KettlebellGear();
         _bb = saved.Barbell ?? (unit == WeightUnit.Kilograms
             ? new BarbellGear { Unit = WeightUnit.Kilograms, Bar = 20, Max = 100, Step = 2.5 }
             : new BarbellGear { Unit = WeightUnit.Pounds, Bar = 45, Max = 225, Step = 5 });
@@ -73,7 +73,7 @@ public sealed class HomeWeightsPage : ContentPage
 
         var (title, intro, section) = Implement switch
         {
-            Equipment.Kettlebell => ("Kettlebells", "Tap once for one bell, twice for a pair, again to clear. Programs use one bell at a time.",
+            Equipment.Kettlebell => ("Kettlebells", "Tap once for one bell, twice for a pair, again to clear. Mix pounds and kilos freely. Programs use one bell at a time.",
                 Section("Kettlebells", _hasKb, v => { _hasKb = v; RenderKb(); }, _kbBody)),
             Equipment.Barbell => ("Barbell", "Your bar, the heaviest you can load, and your smallest plate pair.",
                 Section("Barbell", _hasBb, v => { _hasBb = v; RenderBb(); }, _bbBody)),
@@ -119,16 +119,16 @@ public sealed class HomeWeightsPage : ContentPage
         if (!_hasDb) return;
 
         _dbBody.Add(Segmented(new[] { "Fixed weights", "Adjustable" }, _db.Adjustable ? 1 : 0, i => { _db.Adjustable = i == 1; RenderDb(); }));
-        _dbBody.Add(UnitToggle(_db.Unit, u =>
-        {
-            if (u == _db.Unit) return;
-            _db.Unit = u; _db.Weights.Clear();
-            (_db.Min, _db.Max, _db.Step) = u == WeightUnit.Kilograms ? (2, 24, 1) : (5, 52.5, 2.5);
-            RenderDb();
-        }));
 
         if (_db.Adjustable)
         {
+            _dbBody.Add(UnitToggle(_db.Unit, unit =>
+            {
+                if (unit == _db.Unit) return;
+                _db.Unit = unit;
+                (_db.Min, _db.Max, _db.Step) = unit == WeightUnit.Kilograms ? (2, 24, 1) : (5, 52.5, 2.5);
+                RenderDb();
+            }));
             var u = WeightMath.UnitLabel(_db.Unit);
             _dbBody.Add(NumberRow($"Lightest ({u})", _db.Min, v => _db.Min = v));
             _dbBody.Add(NumberRow($"Heaviest ({u})", _db.Max, v => _db.Max = v));
@@ -136,9 +136,9 @@ public sealed class HomeWeightsPage : ContentPage
         }
         else
         {
-            var std = _db.Unit == WeightUnit.Kilograms ? GearLoads.StandardDumbbellsKg : GearLoads.StandardDumbbellsLb;
-            _dbBody.Add(new Label { Text = "Tap once for one dumbbell, twice for a pair, again to clear.", FontSize = 14, TextColor = _muted });
-            _dbBody.Add(Chips(std, _db.Weights, WeightMath.UnitLabel(_db.Unit)));
+            _dbBody.Add(new Label { Text = "Tap once for one dumbbell, twice for a pair, again to clear. Mix pounds and kilos freely.", FontSize = 14, TextColor = _muted });
+            _dbBody.Add(Chips(GearLoads.StandardDumbbellsLb, _db.Lb, "lb"));
+            _dbBody.Add(Chips(GearLoads.StandardDumbbellsKg, _db.Kg, "kg"));
         }
     }
 
@@ -148,9 +148,13 @@ public sealed class HomeWeightsPage : ContentPage
         _kbBody.IsVisible = _hasKb;
         if (!_hasKb) return;
 
-        _kbBody.Add(UnitToggle(_kb.Unit, u => { if (u == _kb.Unit) return; _kb.Unit = u; _kb.Weights.Clear(); RenderKb(); }));
-        var std = _kb.Unit == WeightUnit.Kilograms ? GearLoads.StandardKettlebellsKg : GearLoads.StandardKettlebellsLb;
-        _kbBody.Add(Chips(std, _kb.Weights, WeightMath.UnitLabel(_kb.Unit)));
+        // The user's usual unit first.
+        var units = UserSettings.WeightUnit == WeightUnit.Kilograms
+            ? new[] { WeightUnit.Kilograms, WeightUnit.Pounds }
+            : new[] { WeightUnit.Pounds, WeightUnit.Kilograms };
+        foreach (var unit in units)
+            _kbBody.Add(Chips(unit == WeightUnit.Kilograms ? GearLoads.StandardKettlebellsKg : GearLoads.StandardKettlebellsLb,
+                _kb.In(unit), WeightMath.UnitLabel(unit)));
     }
 
     private void RenderBb()
@@ -206,7 +210,7 @@ public sealed class HomeWeightsPage : ContentPage
             Paint();
             flex.Add(b);
         }
-        return new VerticalStackLayout { Children = { flex, new Label { Text = unit, FontSize = 13, TextColor = _muted } } };
+        return new VerticalStackLayout { Spacing = 2, Children = { new Label { Text = unit, FontFamily = "PixelUI", FontSize = 18, TextColor = _accent }, flex } };
     }
 
     private View Segmented(string[] labels, int selected, Action<int> picked)
@@ -254,7 +258,7 @@ public sealed class HomeWeightsPage : ContentPage
     private async Task SaveAsync()
     {
         var has = Implement switch { Equipment.Kettlebell => _hasKb, Equipment.Barbell => _hasBb, _ => _hasDb };
-        if (has && Implement == Equipment.Dumbbell && !_db.Adjustable && _db.Weights.Count == 0)
+        if (has && Implement == Equipment.Dumbbell && !_db.Adjustable && !_db.Any)
         {
             await DisplayAlert("Dumbbells", "Tap the dumbbells you own, or switch \"I have these\" off.", "OK");
             return;
@@ -264,7 +268,7 @@ public sealed class HomeWeightsPage : ContentPage
             await DisplayAlert("Dumbbells", "Heaviest must be more than lightest.", "OK");
             return;
         }
-        if (has && Implement == Equipment.Kettlebell && _kb.Weights.Count == 0)
+        if (has && Implement == Equipment.Kettlebell && !_kb.Any)
         {
             await DisplayAlert("Kettlebells", "Tap the bells you own, or switch \"I have these\" off.", "OK");
             return;
