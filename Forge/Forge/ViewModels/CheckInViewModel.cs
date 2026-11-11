@@ -166,10 +166,11 @@ namespace Forge.ViewModels
             var display = WeightMath.ToDisplay((double)result.Entry.Pounds, _displayUnit);
             var unitLabel = WeightMath.UnitLabel(_displayUnit);
 
-            StatusMessage = string.Format(AppResources.CheckInPage_Saved_WithXp_Format,
-                display.ToString("0.0", CultureInfo.CurrentCulture),
-                unitLabel,
-                result.XpAwarded);
+            // Correcting a day already logged earns nothing more (one award per day).
+            StatusMessage = result.XpAwarded > 0
+                ? string.Format(AppResources.CheckInPage_Saved_WithXp_Format,
+                    display.ToString("0.0", CultureInfo.CurrentCulture), unitLabel, result.XpAwarded)
+                : $"Updated: {display.ToString("0.0", CultureInfo.CurrentCulture)} {unitLabel}.";
 
             // Reflect the just-saved entry in the on-page trend card without waiting for
             // the next OnAppearing.

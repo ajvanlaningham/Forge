@@ -13,7 +13,7 @@ namespace Forge.Services.Implementations
         private readonly IRepository<ProgramBlockRow> _blocks;
         private readonly IRepository<ProgramDayCompletionRow> _days;
         private readonly IRepository<QuestCompletionRow> _quests;
-        private readonly IStatsStore _stats;
+        private readonly IXpService _xp;
 
         private readonly SemaphoreSlim _gate = new(1, 1);
         private List<ProgramDefinition>? _catalog;
@@ -22,12 +22,12 @@ namespace Forge.Services.Implementations
             IRepository<ProgramBlockRow> blocks,
             IRepository<ProgramDayCompletionRow> days,
             IRepository<QuestCompletionRow> quests,
-            IStatsStore stats)
+            IXpService xp)
         {
             _blocks = blocks;
             _days = days;
             _quests = quests;
-            _stats = stats;
+            _xp = xp;
         }
 
         // --- catalog -------------------------------------------------------------------------
@@ -203,37 +203,23 @@ namespace Forge.Services.Implementations
             if (rows.Count == 0) return 0;
 
             var active = await GetActiveAsync();
-            var baseXp = GameMath.Quests.XpForTrainingDay(active?.Definition.TrainingDaysPerWeek ?? 4);
-            var multiplier = await MultiplierForAsync(date);
+            var award = GameMath.Quests.WithMultiplier(
+                GameMath.Quests.XpForTrainingDay(active?.Definition.TrainingDaysPerWeek ?? 4), await MultiplierForAsync(date));
 
-            await _stats.InitAsync();
-            var user = await _stats.GetUserStatsAsync();
-            var delta = 0;
+            var total = 0;
             foreach (var row in rows)
             {
-                if (row.Completed && !row.XpGranted)
+                var (entry, delta) = XpLedger.Reconcile(row.Completed, new XpEntry(row.XpGranted, row.XpAwarded), award);
+                if (delta != 0)
                 {
-                    row.XpAwarded = GameMath.Quests.WithMultiplier(baseXp, multiplier);
-                    row.XpGranted = true;
-                    delta += row.XpAwarded;
+                    (row.XpGranted, row.XpAwarded) = (entry.Granted, entry.Awarded);
                     await _days.UpdateAsync(row);
-                }
-                else if (!row.Completed && row.XpGranted)
-                {
-                    delta -= row.XpAwarded; // exactly what was granted, whatever the multiplier is now
-                    row.XpGranted = false;
-                    row.XpAwarded = 0;
-                    await _days.UpdateAsync(row);
+                    total += delta;
                 }
                 if (!row.Completed && !row.XpGranted) await _days.DeleteAsync(row);
             }
-
-            if (delta != 0)
-            {
-                user.Xp = Math.Max(0, user.Xp + delta);
-                await _stats.UpsertUserStatsAsync(user);
-            }
-            return delta;
+            if (total != 0) await _xp.ApplyAsync(total);
+            return total;
         }
 
         public async Task<int> CompletedDaysInBlockAsync(int blockId)

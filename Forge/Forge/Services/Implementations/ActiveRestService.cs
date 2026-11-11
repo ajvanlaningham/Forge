@@ -10,13 +10,13 @@ namespace Forge.Services.Implementations
     {
         private readonly IRepository<QuestCompletionRow> _rows;
         private readonly IProgramService _programs;
-        private readonly IStatsStore _stats;
+        private readonly IXpService _xp;
 
-        public ActiveRestService(IRepository<QuestCompletionRow> rows, IProgramService programs, IStatsStore stats)
+        public ActiveRestService(IRepository<QuestCompletionRow> rows, IProgramService programs, IXpService xp)
         {
             _rows = rows;
             _programs = programs;
-            _stats = stats;
+            _xp = xp;
         }
 
         public async Task<bool> IsDoneAsync(DateOnly date)
@@ -34,33 +34,16 @@ namespace Forge.Services.Implementations
             await _rows.UpdateAsync(row);
 
             var net = await _programs.ReconcileXpAsync(date);
-            await _stats.InitAsync();
-            var user = await _stats.GetUserStatsAsync();
-            var changed = false;
-            if (row.Completed && !row.XpGranted)
+            // ×1.2 while the perfect-week streak is alive; the exact amount is recorded and reclaimed.
+            var award = GameMath.Quests.WithMultiplier(GameMath.Quests.XpPerQuest, await _programs.MultiplierForAsync(date));
+            var (entry, delta) = XpLedger.Reconcile(row.Completed, new XpEntry(row.XpGranted, row.XpAwarded), award,
+                legacyAward: GameMath.Quests.XpPerQuest);
+            if (delta != 0)
             {
-                // ×1.2 while the perfect-week streak is alive; the exact amount is recorded.
-                var multiplier = await _programs.MultiplierForAsync(date);
-                row.XpAwarded = GameMath.Quests.WithMultiplier(GameMath.Quests.XpPerQuest, multiplier);
-                row.XpGranted = true;
-                user.Xp += row.XpAwarded;
-                net += row.XpAwarded;
-                changed = true;
-            }
-            else if (!row.Completed && row.XpGranted)
-            {
-                // Rows from before XpAwarded existed hold the base award.
-                var amount = row.XpAwarded > 0 ? row.XpAwarded : GameMath.Quests.XpPerQuest;
-                user.Xp = Math.Max(0, user.Xp - amount);
-                row.XpGranted = false;
-                row.XpAwarded = 0;
-                net -= amount;
-                changed = true;
-            }
-            if (changed)
-            {
+                (row.XpGranted, row.XpAwarded) = (entry.Granted, entry.Awarded);
                 await _rows.UpdateAsync(row);
-                await _stats.UpsertUserStatsAsync(user);
+                await _xp.ApplyAsync(delta);
+                net += delta;
             }
             return net;
         }

@@ -8,15 +8,15 @@ namespace Forge.Services.Implementations;
 public sealed class ConditioningWeekService : IConditioningWeekService
 {
     private readonly IRepository<ConditioningWeekRow> _repo;
-    private readonly IStatsStore _stats;
+    private readonly IXpService _xp;
     private bool _initialized;
 
     private static int WeeklyXpReward => GameMath.Quests.ConditioningWeeklyXp;
 
-    public ConditioningWeekService(IRepository<ConditioningWeekRow> repo, IStatsStore stats)
+    public ConditioningWeekService(IRepository<ConditioningWeekRow> repo, IXpService xp)
     {
         _repo = repo;
-        _stats = stats;
+        _xp = xp;
     }
 
     public async Task InitializeAsync(CancellationToken ct = default)
@@ -122,17 +122,14 @@ public sealed class ConditioningWeekService : IConditioningWeekService
 
     private async Task MaybeGrantWeeklyXpAsync(ConditioningWeekRow row, CancellationToken ct)
     {
-        if (row.XpGranted) return;
-        if (row.Minutes < row.GoalMinutes) return;
-
-        await _stats.InitAsync();
-        var user = await _stats.GetUserStatsAsync();
-        user.Xp += WeeklyXpReward;
-
-        row.XpGranted = true;
+        // The weekly bonus follows the shared rule: paid once when the goal is met. (Minutes only
+        // ever go up today, so it's never taken back; the rule would reclaim it if they could.)
+        var (entry, delta) = XpLedger.Reconcile(row.Minutes >= row.GoalMinutes && row.GoalMinutes > 0,
+            new XpEntry(row.XpGranted, row.XpGranted ? WeeklyXpReward : 0), WeeklyXpReward, legacyAward: WeeklyXpReward);
+        if (delta == 0) return;
+        row.XpGranted = entry.Granted;
         row.UpdatedUtcTicks = DateTime.UtcNow.Ticks;
-
         await _repo.InsertOrReplaceAsync(row);
-        await _stats.UpsertUserStatsAsync(user);
+        await _xp.ApplyAsync(delta);
     }
 }

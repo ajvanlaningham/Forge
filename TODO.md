@@ -294,8 +294,7 @@ Rework the program format before writing real content:
 - [x] Finishing a program session completes its program day via `ProgramService.CompleteDayAsync`
       — the same path as the checkbox, which no-ops if the day is already done today, so XP can't
       be double-awarded. Requires ≥1 working set and the session's day still being on offer.
-- [ ] Unit test the double-award guard (needs the service logic pulled into Forge.Core or a
-      repository fake — not yet)
+- [x] Unit test the double-award guard: the guard is `XpLedger` in Core now (XpLedgerTests)
 
 ### 8.6 Progress you can see
 - Session history (date, program day, duration, volume); per-exercise history with best-e1RM
@@ -337,8 +336,9 @@ Rework the program format before writing real content:
 - [x] Daily streak (`StreakMath`, tested): days with any completed quest or program day; today
       not done yet doesn't break it. Shown on Home with the best run.
 - [x] Weekly conditioning goal notifies when reached (the old `QuestsViewModel` TODO)
-- [ ] Consolidate XP awards behind one service (quests, program days, weigh-ins, conditioning
-      each still grant their own) and unit-test undo symmetry
+- [x] Consolidate XP awards behind one service (2026-11-11): `XpLedger` in Core decides every
+      grant/reclaim (tested: pay once, reclaim exactly, do-undo-do symmetry, never below zero);
+      `XpService` is the only writer. Weigh-ins now pay once per day (re-saving paid again before).
 - [x] ~~Test-window announcement~~ — superseded: tests appear on Today on their slotted days
 
 ## Later

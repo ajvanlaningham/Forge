@@ -10,9 +10,11 @@ namespace Forge.Services.Implementations
     {
         private readonly IRepository<WeightEntryRow> _repo;
         private readonly IStatsStore _stats;
+        private readonly IXpService _xp;
 
-        public WeightService(IRepository<WeightEntryRow> repo, IStatsStore stats)
+        public WeightService(IRepository<WeightEntryRow> repo, IStatsStore stats, IXpService xp)
         {
+            _xp = xp;
             _repo = repo;
             _stats = stats;
         }
@@ -37,11 +39,15 @@ namespace Forge.Services.Implementations
 
             await _repo.InsertOrReplaceAsync(row);
 
-            var user = await _stats.GetUserStatsAsync();
-            user.Xp += WeightMath.XpPerWeightLog;
-            await _stats.UpsertUserStatsAsync(user);
-
-            return new WeightLogResult(ToDomain(row), WeightMath.XpPerWeightLog);
+            // One award per day: logging is what earns it (Decision 2), so correcting today's
+            // weigh-in pays nothing more. A day logged before this rule counts as already paid.
+            var xp = 0;
+            if (existing is null)
+            {
+                xp = WeightMath.XpPerWeightLog;
+                await _xp.ApplyAsync(xp);
+            }
+            return new WeightLogResult(ToDomain(row), xp);
         }
 
         public async Task<WeightEntry?> GetLatestAsync()

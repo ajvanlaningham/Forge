@@ -71,6 +71,8 @@ namespace Forge
             // Stats
             builder.Services.AddSingleton<IStatsStore, StatsStore>();
             builder.Services.AddSingleton<IStatsService, StatsService>();
+            // Every XP change goes through one service (TODO 8.6: consolidated 2026-11-11).
+            builder.Services.AddSingleton<IXpService, XpService>();
 
             // Weight logging
             builder.Services.AddSingleton<IWeightService, WeightService>();
