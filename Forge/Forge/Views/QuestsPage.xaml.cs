@@ -47,7 +47,8 @@ namespace Forge.Views
         private async void OnDailyXpAwarded(object? sender, int xp)
         {
             var title = AppResources.QuestPage_XpDialog_Title;
-            var message = string.Format(AppResources.QuestPage_XpDialog_Message_Format, $"+{xp}");
+            // The format string already carries the "+" sign ("+{0} XP earned").
+            var message = string.Format(AppResources.QuestPage_XpDialog_Message_Format, xp);
             var ok = AppResources.Common_OK;
             
             await DisplayAlert(title, message, ok);

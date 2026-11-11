@@ -13,17 +13,37 @@ namespace Forge.Constants
     public static class GameMath
     {
         /// <summary>
-        /// XP required to advance one level: 21 quests per week at 50 XP each.
-        /// One level therefore equals one week of full adherence, which makes the
-        /// "retest every 4 levels" cadence land at roughly monthly.
+        /// XP required to advance one level: exactly one week of full adherence (see
+        /// <see cref="Quests.AdherentWeekXp"/>). That keeps "retest every 4 levels" roughly monthly.
         /// </summary>
-        public const int XpPerLevel = 1050;
+        public const int XpPerLevel = Quests.AdherentWeekXp;
 
         public static class Quests
         {
+            /// <summary>A daily quest: mobility, or the date-generated strength quest when no program is active.</summary>
             public const int XpPerQuest = 50;
-            public const int QuestsPerDay = 3;
-            public const int QuestsPerWeek = 21;
+
+            /// <summary>
+            /// A program day (a full training session) is substantially more work than a mobility
+            /// routine, so it earns three quests' worth.
+            /// </summary>
+            public const int XpPerProgramDay = 150;
+
+            /// <summary>Bonus for hitting the weekly conditioning-minutes goal.</summary>
+            public const int ConditioningWeeklyXp = XpPerQuest * 6;
+
+            public const int ProgramDaysPerWeek = 4;
+            public const int MobilityQuestsPerWeek = 7;
+
+            /// <summary>
+            /// A fully adherent week: every program day, daily mobility, and the conditioning goal.
+            /// 4 × 150 + 7 × 50 + 300 = 1250. Weigh-in XP is deliberately left out — it is slack
+            /// on top, not something a level should depend on (weight is its own track).
+            /// </summary>
+            public const int AdherentWeekXp =
+                ProgramDaysPerWeek * XpPerProgramDay
+                + MobilityQuestsPerWeek * XpPerQuest
+                + ConditioningWeeklyXp;
         }
 
         public static class Stats

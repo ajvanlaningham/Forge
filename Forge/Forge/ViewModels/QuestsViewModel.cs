@@ -1,4 +1,4 @@
-﻿using Forge.Models;
+using Forge.Models;
 using Forge.Resources.Strings;
 using Forge.Services.Interfaces;
 using System.Windows.Input;
@@ -144,6 +144,14 @@ namespace Forge.ViewModels
                 DayFocusDisplay = IsRecoveryDay
                     ? string.Format(AppResources.QuestPage_RecoveryHeader_Format, focusText) // "Recovery ({0})"
                     : FocusToString(Today?.BodyFocus ?? BodyZone.FullBody);
+
+                // With a program active the day's focus is the program day, and there are no
+                // weekday recovery days for lifting — the program decides what today is.
+                if (Today?.Strength is { IsProgramDay: true } programDay)
+                {
+                    IsRecoveryDay = false;
+                    DayFocusDisplay = $"{programDay.Tag} · {programDay.Title}";
+                }
 
                 // Seed completion state
                 IsStrengthCompleted = tS.Result;

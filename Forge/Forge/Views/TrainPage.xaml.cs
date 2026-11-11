@@ -1,20 +1,29 @@
-using Forge.Views.SubPages;
+using Forge.ViewModels;
 
 namespace Forge.Views;
 
 public partial class TrainPage : ContentPage
 {
-	public TrainPage()
-	{
-		InitializeComponent();
-	}
-    private async void OnOpenLibraryClicked(object sender, EventArgs e)
+    private readonly TrainViewModel _vm;
+
+    public TrainPage(TrainViewModel vm)
     {
-        await Shell.Current.GoToAsync(nameof(ExerciseLibraryPage));
+        InitializeComponent();
+        BindingContext = _vm = vm;
     }
 
-    private async void OnOpenInventoryClicked(object sender, EventArgs e)
+    protected override async void OnAppearing()
     {
-        await Shell.Current.GoToAsync(nameof(MyGearPage));
+        base.OnAppearing();
+        try
+        {
+            // Refresh every time: completing a quest elsewhere moves the program on.
+            await _vm.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Train refresh failed: {ex}");
+            await DisplayAlert("Error", "Couldn't load your program.", "OK");
+        }
     }
 }

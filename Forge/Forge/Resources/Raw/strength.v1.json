@@ -19,7 +19,9 @@
     "bodyZone": "upper",
     "movement": "pull",
     "modality": "bodyweight",
-    "equipment": [ "pullUpBar" ],
+    "equipment": [
+      "pullUpBar"
+    ],
     "action": "reps",
     "defaultReps": 6,
     "skill": "intermediate",
@@ -45,7 +47,9 @@
     "bodyZone": "lower",
     "movement": "squat",
     "modality": "bodyweight",
-    "equipment": [ "wall" ],
+    "equipment": [
+      "wall"
+    ],
     "action": "hold",
     "defaultSeconds": 45,
     "skill": "beginner",
@@ -58,7 +62,9 @@
     "bodyZone": "core",
     "movement": "antiRotation",
     "modality": "bodyweight",
-    "equipment": [ "mat" ],
+    "equipment": [
+      "mat"
+    ],
     "action": "hold",
     "defaultSeconds": 45,
     "skill": "beginner",
@@ -71,7 +77,9 @@
     "bodyZone": "lower",
     "movement": "hinge",
     "modality": "bodyweight",
-    "equipment": [ "mat" ],
+    "equipment": [
+      "mat"
+    ],
     "action": "reps",
     "defaultReps": 12,
     "skill": "beginner",
@@ -84,7 +92,9 @@
     "bodyZone": "lower",
     "movement": "squat",
     "modality": "kettlebell",
-    "equipment": [ "kettlebell" ],
+    "equipment": [
+      "kettlebell"
+    ],
     "action": "reps",
     "defaultReps": 10,
     "skill": "beginner",
@@ -97,7 +107,9 @@
     "bodyZone": "upper",
     "movement": "push",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell" ],
+    "equipment": [
+      "dumbbell"
+    ],
     "action": "reps",
     "defaultReps": 8,
     "skill": "beginner",
@@ -110,7 +122,9 @@
     "bodyZone": "upper",
     "movement": "pull",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell" ],
+    "equipment": [
+      "dumbbell"
+    ],
     "action": "reps",
     "defaultReps": 10,
     "skill": "beginner",
@@ -123,7 +137,9 @@
     "bodyZone": "lower",
     "movement": "hinge",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell" ],
+    "equipment": [
+      "dumbbell"
+    ],
     "action": "reps",
     "defaultReps": 8,
     "skill": "intermediate",
@@ -136,7 +152,10 @@
     "bodyZone": "fullBody",
     "movement": "lunge",
     "modality": "kettlebell",
-    "equipment": [ "kettlebell", "mat" ],
+    "equipment": [
+      "kettlebell",
+      "mat"
+    ],
     "action": "reps",
     "defaultReps": 3,
     "unilateral": true,
@@ -164,7 +183,9 @@
     "bodyZone": "core",
     "movement": "carry",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell" ],
+    "equipment": [
+      "dumbbell"
+    ],
     "action": "distance",
     "defaultDistance": 40,
     "unilateral": true,
@@ -178,7 +199,9 @@
     "bodyZone": "fullBody",
     "movement": "carry",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell" ],
+    "equipment": [
+      "dumbbell"
+    ],
     "action": "distance",
     "defaultDistance": 60,
     "skill": "beginner",
@@ -191,7 +214,9 @@
     "bodyZone": "core",
     "movement": "antiRotation",
     "modality": "bodyweight",
-    "equipment": [ "mat" ],
+    "equipment": [
+      "mat"
+    ],
     "action": "hold",
     "defaultSeconds": 30,
     "skill": "beginner",
@@ -204,7 +229,9 @@
     "bodyZone": "core",
     "movement": "antiRotation",
     "modality": "bodyweight",
-    "equipment": [ "mat" ],
+    "equipment": [
+      "mat"
+    ],
     "action": "reps",
     "defaultReps": 8,
     "unilateral": true,
@@ -218,7 +245,9 @@
     "bodyZone": "lower",
     "movement": "lunge",
     "modality": "bodyweight",
-    "equipment": [ "boxStep" ],
+    "equipment": [
+      "boxStep"
+    ],
     "action": "reps",
     "defaultReps": 10,
     "unilateral": true,
@@ -232,7 +261,10 @@
     "bodyZone": "upper",
     "movement": "push",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell", "mat" ],
+    "equipment": [
+      "dumbbell",
+      "mat"
+    ],
     "action": "reps",
     "defaultReps": 10,
     "skill": "beginner",
@@ -245,10 +277,227 @@
     "bodyZone": "upper",
     "movement": "pull",
     "modality": "dumbbell",
-    "equipment": [ "dumbbell", "bench" ],
+    "equipment": [
+      "dumbbell",
+      "bench"
+    ],
     "action": "reps",
     "defaultReps": 10,
     "unilateral": true,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Barbell Bench Press",
+    "description": "Horizontal barbell press from a flat bench.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "push",
+    "modality": "barbell",
+    "equipment": [
+      "barbell",
+      "bench"
+    ],
+    "action": "reps",
+    "defaultReps": 8,
+    "skill": "intermediate",
+    "isActive": true
+  },
+  {
+    "name": "Dumbbell Bench Press",
+    "description": "Horizontal dumbbell press from a flat bench.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "push",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell",
+      "bench"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Incline Dumbbell Press",
+    "description": "Dumbbell press on a bench set to roughly 30 degrees.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "push",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell",
+      "bench"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Cable Triceps Pushdown",
+    "description": "Elbow extension against a high cable, upper arms pinned.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "extension",
+    "modality": "cable",
+    "equipment": [
+      "cableMachine"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Dumbbell Triceps Extension",
+    "description": "Overhead elbow extension holding one dumbbell in both hands.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "extension",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Barbell Row",
+    "description": "Hip-hinged horizontal pull of a barbell to the lower ribs.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "barbell",
+    "equipment": [
+      "barbell"
+    ],
+    "action": "reps",
+    "defaultReps": 8,
+    "skill": "intermediate",
+    "isActive": true
+  },
+  {
+    "name": "Lat Pulldown",
+    "description": "Vertical pull of a cable bar to the upper chest.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "cable",
+    "equipment": [
+      "cableMachine"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Dumbbell Curl",
+    "description": "Elbow flexion with a dumbbell in each hand.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "flexion",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Cable Curl",
+    "description": "Elbow flexion against a low cable.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "flexion",
+    "modality": "cable",
+    "equipment": [
+      "cableMachine"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Barbell Back Squat",
+    "description": "Barbell on the upper back, squat to depth, from a rack.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "squat",
+    "modality": "barbell",
+    "equipment": [
+      "barbell",
+      "squatRack"
+    ],
+    "action": "reps",
+    "defaultReps": 6,
+    "skill": "intermediate",
+    "isActive": true
+  },
+  {
+    "name": "Leg Press",
+    "description": "Machine squat pattern pushing a sled away.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "squat",
+    "modality": "machine",
+    "equipment": [
+      "machine"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Barbell Deadlift",
+    "description": "Conventional deadlift from the floor.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "hinge",
+    "modality": "barbell",
+    "equipment": [
+      "barbell"
+    ],
+    "action": "reps",
+    "defaultReps": 5,
+    "skill": "intermediate",
+    "isActive": true
+  },
+  {
+    "name": "Dumbbell Calf Raise",
+    "description": "Standing heel raise holding dumbbells, full range.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "other",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 15,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Lying Leg Curl",
+    "description": "Machine knee flexion lying face down.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "kneeFlexion",
+    "modality": "machine",
+    "equipment": [
+      "machine"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
     "skill": "beginner",
     "isActive": true
   }

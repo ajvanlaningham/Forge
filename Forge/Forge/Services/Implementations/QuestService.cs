@@ -1,4 +1,4 @@
-﻿using Forge.Common;
+using Forge.Common;
 using Forge.Constants;
 using Forge.Data;
 using Forge.Models;
@@ -12,6 +12,7 @@ namespace Forge.Services.Implementations
         private readonly IRepository<ExerciseRow> _exerciseRepo;
         private readonly IRepository<QuestCompletionRow> _completionRepo;
         private readonly IStatsStore _stats;
+        private readonly IProgramService _programs;
         private bool _initialized;
 
         /// <summary>Days of assembled quests kept in memory either side of the requested date.</summary>
@@ -21,11 +22,13 @@ namespace Forge.Services.Implementations
 
         public QuestService(IRepository<ExerciseRow> exerciseRepo,
         IStatsStore stats,
-        IRepository<QuestCompletionRow> completionRepo)
+        IRepository<QuestCompletionRow> completionRepo,
+        IProgramService programs)
         {
             _exerciseRepo = exerciseRepo;
             _stats = stats;
             _completionRepo = completionRepo;
+            _programs = programs;
         }
 
         public async Task InitializeAsync()
@@ -58,21 +61,58 @@ namespace Forge.Services.Implementations
         {
             await InitializeAsync();
 
-            if (_cache.TryGetValue(date, out var cached))
-                return cached;
+            if (!_cache.TryGetValue(date, out var generated))
+            {
+                var allRows = await _exerciseRepo.GetAllAsync();
+                var active = allRows.Where(r => r.IsActive).ToList();
 
-            var allRows = await _exerciseRepo.GetAllAsync();
-            var active = allRows.Where(r => r.IsActive).ToList();
+                generated = AssembleDailyQuests(date, active);
+                _cache[date] = generated;
+                PruneCache(date);
+            }
 
-            var day = AssembleDailyQuests(date, active);
-            _cache[date] = day;
-            PruneCache(date);
-            return day;
+            // While a program is active, the Strength quest IS the next program day. It is never
+            // cached: which day is offered depends on completions, not just the date.
+            var programDay = await _programs.GetDayForDateAsync(date);
+            if (programDay is null) return generated;
+
+            return new DailyQuests
+            {
+                Date = generated.Date,
+                BodyFocus = generated.BodyFocus,
+                Strength = BuildProgramQuest(programDay),
+                Mobility = generated.Mobility,
+                Conditioning = generated.Conditioning
+            };
         }
+
+        private static Quest BuildProgramQuest(ProgramDayView view) => new()
+        {
+            Kind = QuestKind.Strength,
+            BodyFocus = BodyZone.FullBody,
+            IsProgramDay = true,
+            Title = view.Day.Name,
+            Tag = $"Day {view.DayNumber}/{view.DayCount}",
+            Notes = view.Program.Definition.Name,
+            Exercises = view.Day.Slots.Select(slot => new QuestExercise
+            {
+                Name = slot.Exercise,
+                Action = slot.IsTimed ? ActionType.Hold : ActionType.Reps,
+                Sets = slot.Sets,
+                RepsMin = slot.RepsMin,
+                RepsMax = slot.RepsMax,
+                Seconds = slot.Seconds
+            }).ToList()
+        };
 
         public async Task CompleteQuestAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
             await InitializeAsync();
+            if (kind == QuestKind.Strength && await _programs.GetActiveAsync() is not null)
+            {
+                await _programs.CompleteDayAsync(date);
+                return;
+            }
             var row = await GetOrCreateRowAsync(date, kind);
             if (!row.Completed)
             {
@@ -84,6 +124,8 @@ namespace Forge.Services.Implementations
         public async Task<bool> IsQuestCompletedAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
             await InitializeAsync();
+            if (kind == QuestKind.Strength && await _programs.GetDayForDateAsync(date) is { } day)
+                return day.CompletedOnDate;
             var row = await GetRowAsync(date, kind);
             return row?.Completed ?? false;
         }
@@ -91,6 +133,11 @@ namespace Forge.Services.Implementations
         public async Task UncompleteQuestAsync(DateOnly date, QuestKind kind, CancellationToken ct = default)
         {
             await InitializeAsync();
+            if (kind == QuestKind.Strength && await _programs.GetActiveAsync() is not null)
+            {
+                await _programs.UncompleteDayAsync(date);
+                return;
+            }
             var row = await GetRowAsync(date, kind);
             if (row != null && row.Completed)
             {
@@ -111,8 +158,13 @@ namespace Forge.Services.Implementations
         public async Task<int> TryAwardQuestXpAsync(DateOnly date, CancellationToken ct = default)
         {
             await InitializeAsync();
-            var kinds = new[] { QuestKind.Strength, QuestKind.Mobility };
-            int netDelta = 0;
+
+            // Program days carry their own (larger) award and their own completion rows.
+            var programActive = await _programs.GetActiveAsync() is not null;
+            var kinds = programActive
+                ? new[] { QuestKind.Mobility }
+                : new[] { QuestKind.Strength, QuestKind.Mobility };
+            int netDelta = await _programs.ReconcileXpAsync(date);
             
             await _stats.InitAsync();
             var user = await _stats.GetUserStatsAsync();
@@ -141,7 +193,7 @@ namespace Forge.Services.Implementations
             if (netDelta != 0)
                 await _stats.UpsertUserStatsAsync(user);
             
-            return netDelta; // +50, -50, or 0
+            return netDelta; // net of program-day (150) and daily-quest (50) awards
         }
 
         private DailyQuests AssembleDailyQuests(DateOnly date, List<ExerciseRow> active)
@@ -254,42 +306,20 @@ private static BodyZone GetBodyFocusForDate(DateOnly date)
         BodyZone focus,
         int max)
         {
-            // Primary: exact category + focus
-            var primary = pool
-                .Where(r => (ExerciseCategory)r.Category == category && (BodyZone)r.BodyZone == focus)
-                .OrderBy(r => r.Name)
+            // Priority: exact focus, then FullBody, then any focus — all within the category.
+            // Distinct by id: when the focus IS FullBody the first two tiers are the same set, and
+            // without de-duplication the quest listed the same exercise twice.
+            static int Tier(ExerciseRow r, BodyZone focus) =>
+                (BodyZone)r.BodyZone == focus ? 0 : (BodyZone)r.BodyZone == BodyZone.FullBody ? 1 : 2;
+
+            return pool
+                .Where(r => (ExerciseCategory)r.Category == category)
+                .DistinctBy(r => r.Id)
+                .OrderBy(r => Tier(r, focus))
+                .ThenBy(r => r.Name)
                 .ThenBy(r => r.Id)
                 .Take(max)
                 .ToList();
-
-            if (primary.Count >= max) return primary;
-
-            // Secondary: same category + FullBody
-            var need = max - primary.Count;
-            var secondary = pool
-                .Where(r => (ExerciseCategory)r.Category == category && (BodyZone)r.BodyZone == BodyZone.FullBody)
-                .OrderBy(r => r.Name)
-                .ThenBy(r => r.Id)
-                .Take(need)
-                .ToList();
-
-            primary.AddRange(secondary);
-            if (primary.Count >= max) return primary;
-
-            // Tertiary: same category, any focus (still within pool)
-            need = max - primary.Count;
-            var tertiary = pool
-                .Where(r => (ExerciseCategory)r.Category == category)
-                .OrderBy(r => r.Name)
-                .ThenBy(r => r.Id)
-                .Take(need)
-                .ToList();
-
-            foreach (var row in tertiary)
-                if (!primary.Any(p => p.Id == row.Id))
-                    primary.Add(row);
-
-            return primary;
         }
 
         private static Quest BuildQuest(QuestKind kind, BodyZone focus, IReadOnlyList<ExerciseRow> rows)

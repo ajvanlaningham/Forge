@@ -1,4 +1,4 @@
-﻿using Forge.Common;
+using Forge.Common;
 using Forge.Constants;
 using Forge.Data;
 using Forge.Models;
@@ -11,7 +11,7 @@ public sealed class ConditioningWeekService : IConditioningWeekService
     private readonly IStatsStore _stats;
     private bool _initialized;
 
-    private static int WeeklyXpReward => (GameMath.Quests.XpPerQuest * 6);
+    private static int WeeklyXpReward => GameMath.Quests.ConditioningWeeklyXp;
 
     public ConditioningWeekService(IRepository<ConditioningWeekRow> repo, IStatsStore stats)
     {

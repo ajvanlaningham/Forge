@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Forge.Models;
 
 namespace Forge.Converters
@@ -15,6 +15,15 @@ namespace Forge.Converters
 
             var name = qx.Name?.Trim();
             if (string.IsNullOrEmpty(name)) return string.Empty;
+
+            // Program prescription: "Barbell Row — 3 × 6–10" / "Plank — 3 × 45s"
+            if (qx.Sets is int sets)
+            {
+                var per = qx.RepsMin is int lo && qx.RepsMax is int hi
+                    ? (lo == hi ? $"{lo}" : $"{lo}–{hi}")
+                    : qx.Seconds is int sec ? $"{sec}s" : "";
+                return string.IsNullOrEmpty(per) ? $"{name} — {sets} sets" : $"{name} — {sets} × {per}";
+            }
 
             string details = qx.Action switch
             {

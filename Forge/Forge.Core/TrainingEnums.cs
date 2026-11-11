@@ -1,4 +1,4 @@
-﻿namespace Forge.Models
+namespace Forge.Models
 {
     public enum BodyZone
     {
@@ -37,7 +37,9 @@
         Barbell = 3,
         MachineBike = 4,
         Band = 5,
-        Mobility = 6
+        Mobility = 6,
+        Cable = 7,
+        Machine = 8
     }
 
     public enum ActionType
@@ -79,7 +81,11 @@
         RowMachine = 1 << 16,
         SkiErg = 1 << 17,
         WeightVest = 1 << 18,
-        SuspensionTrainer = 1 << 19
+        SuspensionTrainer = 1 << 19,
+        // Commercial-gym equipment (added for the Gym location and barbell/cable programs).
+        SquatRack = 1 << 20,
+        CableMachine = 1 << 21,
+        Machine = 1 << 22   // selectorized / plate-loaded machines (leg press, lat pulldown, ...)
     }
 
     public static class EquipmentGroups
@@ -93,6 +99,9 @@
             { Equipment.PullUpBar, "Strength" },
             { Equipment.DipStation, "Strength" },
             { Equipment.WeightVest, "Strength" },
+            { Equipment.SquatRack, "Strength" },
+            { Equipment.CableMachine, "Strength" },
+            { Equipment.Machine, "Strength" },
 
             { Equipment.Bike, "Conditioning" },
             { Equipment.RowMachine, "Conditioning" },

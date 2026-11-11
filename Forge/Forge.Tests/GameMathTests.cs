@@ -6,38 +6,39 @@ public class GameMathTests
 {
     // One level == 21 quests at 50 XP == one week of full adherence.
     [Fact]
-    public void XpPerLevel_IsAWeekOfQuests()
-        => Assert.Equal(GameMath.XpPerLevel, GameMath.Quests.QuestsPerWeek * GameMath.Quests.XpPerQuest);
+    public void XpPerLevel_IsOneAdherentWeek()
+        // 4 program days x 150 + 7 mobility x 50 + 300 conditioning bonus.
+        => Assert.Equal(1250, GameMath.XpPerLevel);
 
     [Theory]
     [InlineData(0, 1)]      // a brand new user starts at level 1, not 0
-    [InlineData(1049, 1)]   // one XP short of the boundary
-    [InlineData(1050, 2)]   // exactly on the boundary
-    [InlineData(1051, 2)]
-    [InlineData(2100, 3)]
+    [InlineData(1249, 1)]   // one XP short of the boundary
+    [InlineData(1250, 2)]   // exactly on the boundary
+    [InlineData(1251, 2)]
+    [InlineData(2500, 3)]
     public void LevelFromXp_CrossesAtTheBoundary(int xp, int expected)
         => Assert.Equal(expected, GameMath.LevelFromXp(xp));
 
     [Theory]
     [InlineData(0, 0)]
-    [InlineData(1049, 1049)]
-    [InlineData(1050, 0)]   // resets at the boundary
-    [InlineData(1051, 1)]
+    [InlineData(1249, 1249)]
+    [InlineData(1250, 0)]   // resets at the boundary
+    [InlineData(1251, 1)]
     public void XpIntoLevel_ResetsEachLevel(int xp, int expected)
         => Assert.Equal(expected, GameMath.XpIntoLevel(xp));
 
     [Theory]
-    [InlineData(0, 1050)]
-    [InlineData(1049, 1)]
-    [InlineData(1050, 1050)]
-    [InlineData(1051, 1049)]
+    [InlineData(0, 1250)]
+    [InlineData(1249, 1)]
+    [InlineData(1250, 1250)]
+    [InlineData(1251, 1249)]
     public void XpToNextLevel_CountsDownToTheBoundary(int xp, int expected)
         => Assert.Equal(expected, GameMath.XpToNextLevel(xp));
 
     [Theory]
     [InlineData(0, 0.0)]
-    [InlineData(525, 0.5)]
-    [InlineData(1050, 1.0)]
+    [InlineData(625, 0.5)]
+    [InlineData(1250, 1.0)]
     public void LevelProgress_IsTheFractionOfOneLevel(int xpIntoLevel, double expected)
         => Assert.Equal(expected, GameMath.LevelProgress(xpIntoLevel), 3);
 
@@ -53,7 +54,7 @@ public class GameMathTests
     [Fact]
     public void LevelProgress_ComposedWithXpIntoLevel_TracksWithinTheCurrentLevel()
     {
-        const int lifetimeXp = 1575; // level 2, halfway to level 3
+        const int lifetimeXp = 1875; // level 2, halfway to level 3
 
         Assert.Equal(2, GameMath.LevelFromXp(lifetimeXp));
         Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(lifetimeXp)), 3);
@@ -61,8 +62,8 @@ public class GameMathTests
     }
 
     /// <summary>
-    /// The design contract: 21 quests a week at 50 XP is exactly one level per week of full
-    /// adherence, which is what makes "retest every 4 levels" land at roughly monthly.
+    /// The design contract: a fully adherent week (every program day, daily mobility, the
+    /// conditioning goal) is exactly one level, which is what makes "retest every 4 levels" land at roughly monthly.
     /// </summary>
     [Theory]
     [InlineData(1, 2)]   // after one perfect week
@@ -73,7 +74,7 @@ public class GameMathTests
     [InlineData(52, 53)] // a year of perfect adherence
     public void AWeekOfPerfectAdherence_IsExactlyOneLevel(int weeks, int expectedLevel)
     {
-        var xp = weeks * GameMath.Quests.QuestsPerWeek * GameMath.Quests.XpPerQuest;
+        var xp = weeks * GameMath.Quests.AdherentWeekXp;
         Assert.Equal(expectedLevel, GameMath.LevelFromXp(xp));
         Assert.Equal(0, GameMath.XpIntoLevel(xp));
     }
@@ -81,13 +82,14 @@ public class GameMathTests
     [Fact]
     public void EveryFourthLevel_OpensATestWindow()
     {
-        // Walk a year one quest at a time and collect the XP totals where the level first
-        // becomes a multiple of 4. These are the retest points.
+        // Walk a year of perfect adherence one daily-quest-sized step at a time and collect the
+        // levels that are first reached on a multiple of 4. These are the retest points.
         var windows = new List<int>();
         var lastLevel = 1;
-        for (var quest = 1; quest <= GameMath.Quests.QuestsPerWeek * 52; quest++)
+        var steps = GameMath.Quests.AdherentWeekXp / GameMath.Quests.XpPerQuest * 52;
+        for (var step = 1; step <= steps; step++)
         {
-            var xp = quest * GameMath.Quests.XpPerQuest;
+            var xp = step * GameMath.Quests.XpPerQuest;
             var level = GameMath.LevelFromXp(xp);
             if (level != lastLevel && level % 4 == 0) windows.Add(level);
             lastLevel = level;
@@ -103,8 +105,8 @@ public class GameMathTests
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
-    [InlineData(1049)]
-    [InlineData(1050)]
+    [InlineData(1249)]
+    [InlineData(1250)]
     [InlineData(5_432)]
     [InlineData(1_000_000)]
     public void XpIntoLevel_AndXpToNextLevel_AlwaysSumToOneLevel(int xp)
@@ -122,8 +124,8 @@ public class GameMathTests
             var levelStart = level * GameMath.XpPerLevel;
 
             Assert.Equal(0.0, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart)), 3);
-            Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 525)), 3);
-            Assert.True(GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 1049)) > 0.99);
+            Assert.Equal(0.5, GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 625)), 3);
+            Assert.True(GameMath.LevelProgress(GameMath.XpIntoLevel(levelStart + 1249)) > 0.99);
         }
     }
 }

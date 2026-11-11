@@ -1,4 +1,4 @@
-﻿using Forge.Data;
+using Forge.Data;
 using Forge.Services.Implementations;
 using Forge.Services.Interfaces;
 using Forge.ViewModels;
@@ -47,6 +47,7 @@ namespace Forge
 
             //Exercise
             builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
+            builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<IQuestService, QuestService>();
             builder.Services.AddSingleton<IConditioningWeekService, ConditioningWeekService>();
 
@@ -66,6 +67,8 @@ namespace Forge
             // UI
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<TrainViewModel>();
+            builder.Services.AddTransient<TrainPage>();
             builder.Services.AddTransient<StatsViewModel>();
             builder.Services.AddTransient<StatsPage>();
             builder.Services.AddTransient<QuestsViewModel>();

@@ -1,4 +1,4 @@
-﻿namespace Forge.Models
+namespace Forge.Models
 {
     public enum QuestKind
     {
@@ -20,6 +20,11 @@
         public int? Seconds { get; init; }
         public double? Distance { get; init; }
         public int? Breaths { get; init; }
+
+        // Program prescription (set when the quest is a program day; null for generated quests).
+        public int? Sets { get; init; }
+        public int? RepsMin { get; init; }
+        public int? RepsMax { get; init; }
     }
 
     /// <summary>
@@ -34,6 +39,13 @@
         // Optional presentation
         public string? Title { get; init; }
         public string? Notes { get; init; }
+
+        /// <summary>Short badge text. Program days show e.g. "Day 2/4"; otherwise the body focus.</summary>
+        public string? Tag { get; init; }
+        public string BadgeText => Tag ?? BodyFocus.ToString();
+
+        /// <summary>True when this quest is a day of the active training program.</summary>
+        public bool IsProgramDay { get; init; }
     }
 
     public sealed class DailyQuests

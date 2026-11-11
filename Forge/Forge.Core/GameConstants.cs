@@ -32,8 +32,25 @@ namespace Forge.Constants
                 "recovery.v1.json"
             };
 
-            public const string LibraryVersion = "v1";
+            public const string LibraryVersion = "v2"; // v2: gym lifts for the PPL/Full program
             public const string ExSourceTag = "recovery";
+        }
+
+        /// <summary>
+        /// Training programs, read straight from the app package on demand (not seeded into SQLite,
+        /// so there is no version gate to forget). Keep every published version listed: history
+        /// rows point at a specific <c>id@version</c>, and an old version must stay loadable for
+        /// its history to display.
+        /// </summary>
+        public static class Programs
+        {
+            public static readonly string[] Files =
+            {
+                "programs/ppl-full.v1.json"
+            };
+
+            /// <summary>Program offered when none has been chosen yet.</summary>
+            public const string DefaultProgramId = "ppl-full";
         }
 
         /// <summary>
