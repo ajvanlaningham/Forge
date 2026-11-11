@@ -13,3 +13,5 @@ pull_up_bar 4
 dip_station 4
 squat_rack 4
 weight_vest 4
+cable_machine 4
+machine 4
