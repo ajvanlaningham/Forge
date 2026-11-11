@@ -173,6 +173,9 @@ Rework the program format before writing real content:
       thrust box ("Box step") and a pull-up bar; bench press swaps to floor press at home.
 - [x] Renamed to the quest scheme: Copper Helm · Hearth, in Dumbbell and Kettlebell versions
       (3-day and 4-day each); 10 kettlebell lifts added (library v4)
+- [x] Copper Helm v2: band-assisted pull-ups every week (Upper B / Full B), dead hang in active
+      rest; pull-up ladder in the library (band-assisted → negatives → pull-up). Active blocks
+      follow the latest version of their program (sessions keep their own prescriptions).
 - [ ] Copper Hammer · Anvil (strength) and Copper Boots · Bellows (conditioning) — rumours on the board
 
 ### 8.4 Training programs (the 4-day split)

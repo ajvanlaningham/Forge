@@ -32,7 +32,7 @@ namespace Forge.Constants
                 "recovery.v1.json"
             };
 
-            public const string LibraryVersion = "v5"; // v5: pair flags (two-implement exercises)
+            public const string LibraryVersion = "v6"; // v6: pull-up ladder (band-assisted, negatives, dead hang)
             public const string ExSourceTag = "recovery";
         }
 
@@ -49,7 +49,12 @@ namespace Forge.Constants
                 "programs/copper-helm-db-4day.v1.json",
                 "programs/copper-helm-db-3day.v1.json",
                 "programs/copper-helm-kb-4day.v1.json",
-                "programs/copper-helm-kb-3day.v1.json"
+                "programs/copper-helm-kb-3day.v1.json",
+                // v2: band-assisted pull-ups every week; dead hang in active rest.
+                "programs/copper-helm-db-4day.v2.json",
+                "programs/copper-helm-db-3day.v2.json",
+                "programs/copper-helm-kb-4day.v2.json",
+                "programs/copper-helm-kb-3day.v2.json"
             };
 
             /// <summary>Program offered when none has been chosen yet.</summary>

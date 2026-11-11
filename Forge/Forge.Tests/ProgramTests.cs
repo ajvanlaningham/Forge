@@ -293,7 +293,10 @@ public class ShippedProgramContentTests
     [Fact]
     public void VersionsOfAQuest_AgreeOnItsIdentity()
     {
-        foreach (var quest in GameConstants.Programs.Files.Select(Load).GroupBy(p => p.Quest))
+        // Only the latest version of each program counts (older ones stay loadable for history).
+        var latest = GameConstants.Programs.Files.Select(Load)
+            .GroupBy(p => p.Id).Select(g => g.OrderByDescending(p => p.Version).First());
+        foreach (var quest in latest.GroupBy(p => p.Quest))
         {
             var ids = quest.Select(p => (p.Metal, p.Item, p.Discipline)).Distinct().ToList();
             Assert.True(ids.Count == 1, $"quest '{quest.Key}' versions disagree on metal/item/discipline");

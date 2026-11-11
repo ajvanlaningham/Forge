@@ -81,7 +81,15 @@ namespace Forge.Services.Implementations
                 open = await OpenBlockAsync(def, DateOnly.FromDateTime(DateTime.Today));
             }
 
-            var definition = await GetProgramAsync(open.ProgramId, open.ProgramVersion) ?? await LatestAsync(open.ProgramId);
+            // An active block follows the latest version of its program: content fixes (e.g. the
+            // v2 pull-up ladder) reach a block already underway. History is unaffected — every
+            // logged session stores the prescription it was performed against.
+            var definition = await LatestAsync(open.ProgramId);
+            if (definition is not null && definition.Version != open.ProgramVersion)
+            {
+                open.ProgramVersion = definition.Version;
+                await _blocks.UpdateAsync(open);
+            }
             if (definition is null)
             {
                 // The block's program no longer ships (e.g. a retired placeholder). End it and fall

@@ -750,5 +750,51 @@
     "skill": "beginner",
     "isActive": true,
     "defaultReps": 8
+  },
+  {
+    "name": "Band-Assisted Pull-up",
+    "description": "Loop a band over the bar and under a knee or foot. Pick the band that lets you get about 5 clean reps; when every set reaches the top of the range, move to a lighter band.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "band",
+    "equipment": [
+      "pullUpBar",
+      "bands"
+    ],
+    "action": "reps",
+    "defaultReps": 6,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Pull-up Negative",
+    "description": "Jump or step up so your chin is over the bar, then lower yourself as slowly as you can (aim for 3–5 seconds). Builds the strength for your first full pull-up.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "bodyweight",
+    "equipment": [
+      "pullUpBar"
+    ],
+    "action": "reps",
+    "defaultReps": 3,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Dead Hang",
+    "description": "Hang from the bar with straight arms, shoulders active. Builds grip and opens the shoulders.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "bodyweight",
+    "equipment": [
+      "pullUpBar"
+    ],
+    "action": "hold",
+    "defaultSeconds": 20,
+    "skill": "beginner",
+    "isActive": true
   }
 ]
