@@ -66,9 +66,25 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
 - `adb connect` often fails the first 1–2 tries right after pairing (TLS handshake) → the script retries.
 - The deploy is **silent in MSBuild output** — `dotnet build -t:Run` prints only "Build succeeded" even on success. Verify the deploy via the device, not the log:
   ```bash
-  adb -s 100.125.64.95:<port> shell pidof com.companyname.forge          # running?
-  adb -s 100.125.64.95:<port> shell dumpsys package com.companyname.forge | grep lastUpdateTime
+  adb -s 100.125.64.95:<port> shell pidof io.github.ajvanlaningham.forge          # running?
+  adb -s 100.125.64.95:<port> shell dumpsys package io.github.ajvanlaningham.forge | grep -E 'versionCode|lastUpdateTime'
   ```
+- **Local deploys are release-signed when the keystore is present.** The phone runs CI release
+  builds, and a debug-signed build cannot install over one (signature mismatch → uninstall →
+  data loss). So when `~/.forge-signing/` exists, the script signs with the release key (password
+  passed via `env:`, never on a command line) and stamps `versionCode` with the latest CI build
+  number from `gh release list`. An equal versionCode reinstalls in place; the next CI build is +1
+  and still arrives as an in-app update. Without the keystore it falls back to debug signing.
+- Local builds are still **Debug**, so Android shows a "not 16 KB compatible" dialog on launch
+  (debuggable apps only; libSkiaSharp is the pinned 2.88.9 — see Charts below). Tap
+  *Don't Show Again*. CI release builds don't show it.
+- **Pairing vs connect port.** If only a pairing port + code is available, pair, then find the
+  connect port by probing the phone's 30000–49999 TCP range over the tailnet (one port answers).
+  Faster than a round trip to read it off the phone.
+- **Screenshots for QA:** the phone can report more than one display (e.g. when casting), and
+  `screencap` without `-d` then writes a warning instead of a PNG. List displays with
+  `adb shell dumpsys SurfaceFlinger --display-id` and capture the built-in one (`KM4-…`):
+  `adb -s <dev> exec-out screencap -d <display-id> -p > shot.png`.
 
 > `README.md` used to carry a stale Visual Studio / .NET 8 deployment section. It was corrected
 > and now points here. This file remains the source of truth for build and deploy; if the two ever

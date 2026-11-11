@@ -43,6 +43,34 @@ done
 adb devices | grep -q "$PHONE_IP:$PORT[[:space:]]*device" \
   || { echo "!! device $PHONE_IP:$PORT not connected — check the port on the phone" >&2; exit 1; }
 
+# The phone runs release-signed CI builds (installed via Settings > Check for updates).
+# A debug-signed build cannot install over those — Android rejects the signature
+# mismatch, and the only way round it is an uninstall that deletes the database. So when
+# the release keystore is present, sign local builds with it too, and stamp them with the
+# latest published CI build number: an equal versionCode reinstalls cleanly, and the next
+# CI build (+1) still arrives as an update. The password is read into the environment and
+# passed by name (env:), so it never appears on a command line or in the build log.
+SIGNING_DIR="${FORGE_SIGNING_DIR:-$HOME/.forge-signing}"
+SIGN_ARGS=()
+if [[ -f "$SIGNING_DIR/forge-release.keystore" && -f "$SIGNING_DIR/credentials.txt" ]]; then
+  FORGE_SIGN_PASS="$(awk '$1 == "ANDROID_KEYSTORE_PASSWORD" { print $2 }' "$SIGNING_DIR/credentials.txt")"
+  export FORGE_SIGN_PASS
+  [[ -n "$FORGE_SIGN_PASS" ]] || { echo "!! could not read the keystore password from $SIGNING_DIR/credentials.txt" >&2; exit 1; }
+  VERSION_CODE="$(gh release list --repo ajvanlaningham/Forge --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null | sed 's/^android-build-//')"
+  [[ "$VERSION_CODE" =~ ^[0-9]+$ ]] || { echo "!! could not read the latest CI build number (gh release list)" >&2; exit 1; }
+  echo ">> release-signing with $SIGNING_DIR, versionCode $VERSION_CODE (latest CI build)"
+  SIGN_ARGS=(
+    -p:AndroidKeyStore=true
+    -p:AndroidSigningKeyStore="$SIGNING_DIR/forge-release.keystore"
+    -p:AndroidSigningKeyAlias=forge
+    -p:AndroidSigningStorePass=env:FORGE_SIGN_PASS
+    -p:AndroidSigningKeyPass=env:FORGE_SIGN_PASS
+    -p:ApplicationVersion="$VERSION_CODE"
+  )
+else
+  echo ">> no release keystore at $SIGNING_DIR — debug-signed build (won't install over a CI build)"
+fi
+
 echo ">> build + install + launch (net9.0-android) on $PHONE_IP:$PORT"
-dotnet build "$CSPROJ" -f net9.0-android -t:Run -p:AdbTarget="-s $PHONE_IP:$PORT"
+dotnet build "$CSPROJ" -f net9.0-android -t:Run -p:AdbTarget="-s $PHONE_IP:$PORT" "${SIGN_ARGS[@]}"
 echo ">> done. App should be running on the device."
