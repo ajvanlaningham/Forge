@@ -85,6 +85,16 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     - **Chronicle**: looking back — session history, weigh-ins (Check-in), trends.
     - **Settings** is a cog in the top bar, not a tab.
     - **Guild** returns later as the multi-user / friends tab.
+22. **Forged items fit the hero** (agreed with the user 2026-11-11; amends 17 and 18). Each of
+    the 36 heroes has its own three pieces, taken from what it already wears and carries:
+    **Anvil** = the weapon in hand (the archmage's staff, the dwarf's axe), **Hearth** = the
+    defensive piece (shield, hat, hood, tome, wraps), **Bellows** = light gear (boots by default;
+    bracers or foot-wraps where the trope suits). 108 designs, each rendered in all 7 metals
+    (`art/gen_gear.py`); cloth pieces take the metal as trim, thread or gems. Forging records
+    **slot × metal**, not a specific item, so switching heroes re-skins what you've forged (a
+    Copper staff becomes a Copper axe). The quest board names **your hero's** item ("Copper
+    Staff · Anvil"). Wearing: each frozen sprite marks which pixels belong to which slot, and a
+    forged piece recolours them in its metal.
 21. **Guided sessions** (agreed with the user 2026-11-11). Start → a **briefing** (Home/Gym, the
     plan with swaps, weights to settle, a gather list, an estimate) → BEGIN. Then one set at a
     time, **hands-free**: a set runs on a timer (3 s/rep + 5 s setup, or the hold's time), logs its
