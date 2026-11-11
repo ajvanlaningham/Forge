@@ -1,3 +1,4 @@
+# frozen 2026-11-11: approved. Edit this file by hand; gen_characters.py skips it.
 #! 0 #161B22
 #! 1 #24272D
 #! 2 #4A3222
