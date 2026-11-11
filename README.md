@@ -139,7 +139,7 @@ logging, never for what the scale says.
 ## Roadmap
 
 See [`TODO.md`](TODO.md) for the full backlog: target outcome, scope, settled design decisions,
-epics and PBIs, and the sprint plan.
+what is done, the current push, and the remaining work.
 
 Headline items: daily weight tracking with a trend view, a working levelling loop, baseline stat
 testing on a monthly cadence, nutrition read from Health Connect rather than re-implemented, and
