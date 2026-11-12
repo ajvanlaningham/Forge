@@ -13,7 +13,9 @@ namespace Forge.Training
         ActionType Action,
         bool NeedsPair = false,
         /// <summary>Done one side at a time; the prescription is per side.</summary>
-        bool Unilateral = false);
+        bool Unilateral = false,
+        MovementPlane Plane = MovementPlane.None,
+        SkillLevel Skill = SkillLevel.Beginner);
 
     /// <summary>
     /// Finds substitutes when a program slot's exercise needs gear the current location doesn't
@@ -26,10 +28,12 @@ namespace Forge.Training
             => (e.Equipment & ~available) == Equipment.None;
 
         /// <summary>
-        /// Substitutes for <paramref name="target"/>, best first. Only exercises of the same category
-        /// and movement pattern that are doable with <paramref name="available"/> qualify — a swap
-        /// that trains something else isn't a swap. Ranking: same body zone, then same kind of
-        /// action (reps vs. timed), then a loaded modality over bodyweight, then name.
+        /// Substitutes for <paramref name="target"/>, best first. Only exercises of the same category,
+        /// movement pattern and body zone that are doable with <paramref name="available"/> qualify —
+        /// a swap that trains something else isn't a swap (a reverse crunch is "flexion" too, but no
+        /// curl). Ranking: same plane (a floor press for a bench press, not an overhead press), then
+        /// same kind of action (reps vs. timed), then a loaded modality over bodyweight, then the
+        /// plain lift over its harder variations (push-up before deficit push-up), then name.
         /// </summary>
         public static IReadOnlyList<ExerciseInfo> Candidates(
             ExerciseInfo target,
@@ -40,10 +44,12 @@ namespace Forge.Training
                 .Where(e => e.Name != target.Name
                             && e.Category == target.Category
                             && e.Movement == target.Movement
+                            && e.BodyZone == target.BodyZone
                             && IsAvailable(e, available))
-                .OrderBy(e => e.BodyZone == target.BodyZone ? 0 : 1)
+                .OrderBy(e => OtherPlane(e.Plane, target.Plane) ? 1 : 0)
                 .ThenBy(e => IsTimed(e.Action) == IsTimed(target.Action) ? 0 : 1)
                 .ThenBy(e => LoadRank(e.Modality))
+                .ThenBy(e => e.Skill)
                 .ThenBy(e => e.Name, StringComparer.Ordinal)
                 .ToList();
         }
@@ -66,6 +72,9 @@ namespace Forge.Training
                 ? prescribed
                 : Candidates(prescribed, library, available)
                     .FirstOrDefault(c => alreadyUsed is null || !alreadyUsed.Contains(c.Name));
+
+        private static bool OtherPlane(MovementPlane a, MovementPlane b)
+            => a != MovementPlane.None && b != MovementPlane.None && a != b;
 
         private static bool IsTimed(ActionType a) => a is ActionType.Hold or ActionType.Time;
 

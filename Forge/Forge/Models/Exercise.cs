@@ -19,6 +19,7 @@ namespace Forge.Models
 
         public BodyZone BodyZone { get; set; }
         public MovementPattern Movement { get; set; }
+        public MovementPlane Plane { get; set; }
         public Modality Modality { get; set; }
         public Equipment Equipment { get; set; }
 
@@ -63,6 +64,7 @@ namespace Forge.Models
 
         public int BodyZone { get; set; }
         public int Movement { get; set; }
+        public int Plane { get; set; }
         public int Modality { get; set; }
         public int Equipment { get; set; } // flags stored as int
 
@@ -90,6 +92,7 @@ namespace Forge.Models
             Description = Description,
             BodyZone = (BodyZone)BodyZone,
             Movement = (MovementPattern)Movement,
+            Plane = (MovementPlane)Plane,
             Modality = (Modality)Modality,
             Equipment = (Equipment)Equipment,
             Action = (ActionType)Action,
@@ -113,6 +116,7 @@ namespace Forge.Models
             Description = e.Description,
             BodyZone = (int)e.BodyZone,
             Movement = (int)e.Movement,
+            Plane = (int)e.Plane,
             Modality = (int)e.Modality,
             Equipment = (int)e.Equipment,
             Action = (int)e.Action,

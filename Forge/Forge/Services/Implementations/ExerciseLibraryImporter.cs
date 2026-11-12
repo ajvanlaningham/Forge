@@ -93,6 +93,7 @@ namespace Forge.Services.Implementations
 
             public BodyZone BodyZone { get; set; }
             public MovementPattern Movement { get; set; }
+            public MovementPlane Plane { get; set; }
             public Modality Modality { get; set; }
 
             public List<Equipment> Equipment { get; set; } = new();
@@ -119,6 +120,7 @@ namespace Forge.Services.Implementations
                     Technique = Technique,
                     BodyZone = BodyZone,
                     Movement = Movement,
+                    Plane = Plane,
                     Modality = Modality,
                     Equipment = flags,
                     Action = Action,

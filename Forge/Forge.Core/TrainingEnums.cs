@@ -29,6 +29,17 @@ namespace Forge.Models
 
     }
 
+    /// <summary>
+    /// Direction of a push or pull: a floor press and an overhead press are both pushes, but one
+    /// isn't a stand-in for the other. Ranks swaps; None for everything else.
+    /// </summary>
+    public enum MovementPlane
+    {
+        None = 0,
+        Horizontal = 1,
+        Vertical = 2
+    }
+
     public enum Modality
     {
         Bodyweight = 0,
