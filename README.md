@@ -48,9 +48,9 @@ The solution is `Forge/Forge.sln` and contains three projects:
 
 | Project | Target | Purpose |
 |---|---|---|
-| `Forge/Forge` | `net9.0-android` | The MAUI app |
-| `Forge/Forge.Core` | `net9.0` | Pure game logic and constants — no MAUI types |
-| `Forge/Forge.Tests` | `net9.0` | xUnit tests over `Forge.Core` |
+| `Forge/Forge` | `net10.0-android` | The MAUI app |
+| `Forge/Forge.Core` | `net10.0` | Pure game logic and constants — no MAUI types |
+| `Forge/Forge.Tests` | `net10.0` | xUnit tests over `Forge.Core` |
 
 `Forge.Core` exists so progression and date math can be unit-tested on the Linux build host
 without an emulator. Keep it free of MAUI dependencies.
@@ -78,8 +78,7 @@ Within the app project:
 ### Requirements
 
 - .NET SDK with the `maui-android` workload installed.
-  The app targets `net9.0-android`; it currently builds on the .NET 10 SDK (10.0.111) with the
-  `maui-android` workload, and needs the .NET 9 runtime present to run the tests.
+  The app targets `net10.0-android` (.NET 10 LTS, MAUI 10).
 - Android SDK, with `ANDROID_HOME` set and `adb` on `PATH`.
 - A physical Android device or emulator.
 
@@ -89,7 +88,7 @@ No Visual Studio is required. The project builds and deploys headlessly on Linux
 
 ```bash
 dotnet restore Forge/Forge/Forge.csproj
-dotnet build   Forge/Forge/Forge.csproj -f net9.0-android
+dotnet build   Forge/Forge/Forge.csproj -f net10.0-android
 ```
 
 ### Test

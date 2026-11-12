@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('osx'))">$(TargetFrameworks);net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('osx'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
 
 		<!-- Note for MacCatalyst:
 		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
@@ -21,11 +21,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<!-- XA0141: SkiaSharp.NativeAssets.Android 2.88.9's libSkiaSharp.so isn't built with
-		     16 KB page sizes, which Android 16 will require. Silenced until Microcharts.Maui
-		     ships a build against SkiaSharp 3.x — that upgrade needs .NET 10 and this repo
-		     is still on net9.0-android. -->
-		<NoWarn>$(NoWarn);XA0141</NoWarn>
 
 		<!-- Display name -->
 		<ApplicationTitle>Forge</ApplicationTitle>
@@ -79,15 +74,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
-		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
-		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
-		<!-- Bodyweight sparkline on WeightTrendCard. Microcharts.Maui 2.x targets
-		     .NET 8/9 MAUI and brings SkiaSharp.Views.Maui.Controls in transitively;
-		     we still list the SkiaSharp package explicitly so an upgrade to
-		     Microcharts cannot silently drop it. -->
-		<PackageReference Include="Microcharts.Maui" Version="1.0.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
 	</ItemGroup>
 	<!-- Health Connect (resting HR, sleep, steps, weight). Android-only; the shared code talks to
 	     IHealthData, so an iOS HealthKit source can slot in later. -->

@@ -53,7 +53,7 @@ namespace Forge.ViewModels
             {
                 if (_strava.IsConnected)
                 {
-                    if (!await Shell.Current.DisplayAlert("Disconnect Strava?",
+                    if (!await Shell.Current.DisplayAlertAsync("Disconnect Strava?",
                             "Activities already posted stay on Strava. New sessions won't be sent.", "Disconnect", "Keep")) return;
                     await _strava.DisconnectAsync();
                     await RefreshStravaAsync();

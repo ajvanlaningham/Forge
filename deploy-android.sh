@@ -75,9 +75,9 @@ fi
 # AndroidPreserveUserData: fast deployment falls back to a full reinstall whenever the build
 # configuration changes — including a new versionCode, i.e. after every CI release. Without this
 # that reinstall is uninstall + install, and silently deletes the SQLite database on the phone.
-BUILD_ARGS=(-f net9.0-android -p:AndroidPreserveUserData=true "${SIGN_ARGS[@]}")
+BUILD_ARGS=(-f net10.0-android -p:AndroidPreserveUserData=true "${SIGN_ARGS[@]}")
 PKG=io.github.ajvanlaningham.forge
-APK="$SCRIPT_DIR/Forge/Forge/bin/Debug/net9.0-android/$PKG-Signed.apk"
+APK="$SCRIPT_DIR/Forge/Forge/bin/Debug/net10.0-android/$PKG-Signed.apk"
 BUILD_TOOLS="$(ls -d "${ANDROID_HOME:-$HOME/android-sdk}"/build-tools/*/ | sort -V | tail -1)"
 # The release certificate (also recorded in AGENTS.md).
 RELEASE_CERT="ff47dbc7892001aaa091e16a1ad5072eed8fd3227f8d33f63b5242a41201739c"
@@ -95,11 +95,11 @@ apk_ok() {
   [[ "$cert" == "$RELEASE_CERT" && "$ver" == "$VERSION_CODE" ]] || { echo "   APK has cert ${cert:0:12}… versionCode ${ver:-?}"; return 1; }
 }
 
-echo ">> build (net9.0-android)"
+echo ">> build (net10.0-android)"
 dotnet build "$CSPROJ" "${BUILD_ARGS[@]}" -t:SignAndroidPackage -v:q -nologo
 if ! apk_ok; then
   echo ">> stale APK (wrong key or versionCode) — cleaning and rebuilding"
-  dotnet clean "$CSPROJ" -f net9.0-android -v:q -nologo
+  dotnet clean "$CSPROJ" -f net10.0-android -v:q -nologo
   dotnet build "$CSPROJ" "${BUILD_ARGS[@]}" -t:SignAndroidPackage -v:q -nologo
   apk_ok || { echo "!! APK still isn't release-signed with versionCode $VERSION_CODE — refusing to install (it would wipe the app's data)" >&2; exit 1; }
 fi

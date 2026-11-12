@@ -34,7 +34,7 @@ public partial class ActiveSessionPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Session load failed: {ex}");
-            await DisplayAlert("Error", "Couldn't load this session.", "OK");
+            await DisplayAlertAsync("Error", "Couldn't load this session.", "OK");
             await Shell.Current.GoToAsync("..");
         }
     }

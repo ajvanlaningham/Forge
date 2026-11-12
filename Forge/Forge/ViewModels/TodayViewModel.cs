@@ -304,7 +304,7 @@ namespace Forge.ViewModels
             Conditioning.Minutes = updated.Minutes;
             Conditioning.GoalMinutes = updated.GoalMinutes;
             if (!wasComplete && updated.Completed)
-                await Shell.Current.DisplayAlert("Weekly goal reached",
+                await Shell.Current.DisplayAlertAsync("Weekly goal reached",
                     $"{updated.Minutes} conditioning minutes this week. +{GameMath.Quests.ConditioningWeeklyXp} XP", "Nice");
         }
 
@@ -314,13 +314,13 @@ namespace Forge.ViewModels
             var last = UserSettings.LastLocation;
             var first = last == TrainingLocation.Gym ? "Gym" : "Home";
             var second = last == TrainingLocation.Gym ? "Home" : "Gym";
-            var pick = await Shell.Current.DisplayActionSheet("Where are you training?", "Cancel", null, first, second);
+            var pick = await Shell.Current.DisplayActionSheetAsync("Where are you training?", "Cancel", null, first, second);
             if (pick is not ("Gym" or "Home")) return;
             var location = pick == "Gym" ? TrainingLocation.Gym : TrainingLocation.Home;
 
             if (location == TrainingLocation.Home && await _training.GetEquipmentAsync(location) == Forge.Models.Equipment.None)
             {
-                var setUp = await Shell.Current.DisplayAlert("No home gear set up",
+                var setUp = await Shell.Current.DisplayAlertAsync("No home gear set up",
                     "Forge doesn't know what equipment you have at home, so every lift will swap to a bodyweight move. Set up your gear first?",
                     "Set up gear", "Start anyway");
                 if (setUp)

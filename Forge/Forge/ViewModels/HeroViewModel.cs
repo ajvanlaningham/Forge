@@ -65,7 +65,7 @@ namespace Forge.ViewModels
         /// <summary>A test outside its slotted day: still scored (or the baseline, if there isn't one yet).</summary>
         public ICommand TakeTestCommand { get; } = new Command(async () =>
         {
-            var pick = await Shell.Current.DisplayActionSheet("Take a stat test", "Cancel", null, "Strength", "Mobility", "Conditioning");
+            var pick = await Shell.Current.DisplayActionSheetAsync("Take a stat test", "Cancel", null, "Strength", "Mobility", "Conditioning");
             var kind = pick switch { "Strength" => "Strength", "Mobility" => "Dexterity", "Conditioning" => "Constitution", _ => null };
             if (kind is not null) await Shell.Current.GoToAsync($"{nameof(StatTestPage)}?kind={kind}&calibration=false");
         });
@@ -111,7 +111,7 @@ namespace Forge.ViewModels
                     DetailText = detail,
                     Trend = new Forge.ViewModels.Controls.Sparkline(scored.Select(t => (double)t.Score).ToList(), line, accent),
                     HasTrend = scored.Count >= 2,
-                    CompareCommand = new Command(async () => await Shell.Current.DisplayAlert("How this compares", CompareText(kind, last), "OK"))
+                    CompareCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("How this compares", CompareText(kind, last), "OK"))
                 });
             }
         }

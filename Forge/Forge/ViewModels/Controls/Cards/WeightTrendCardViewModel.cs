@@ -10,9 +10,7 @@ using Forge.Resources.Strings;
 using Forge.Services;
 using Forge.Services.Interfaces;
 
-using Microcharts;
-
-using SkColor = SkiaSharp.SKColor;
+using Forge.ViewModels.Controls;
 
 namespace Forge.ViewModels.Controls.Cards
 {
@@ -20,7 +18,7 @@ namespace Forge.ViewModels.Controls.Cards
     /// Backs <see cref="Forge.Controls.Cards.WeightTrendCard"/>. Reads the last
     /// <see cref="WeightMath.MovingAverageWindowDays"/> of logs from
     /// <see cref="IWeightService"/> and exposes the N-day average, today's raw value if any,
-    /// and a Microcharts <see cref="ChartEntry"/> list for the sparkline.
+    /// and a sparkline drawable.
     /// </summary>
     /// <remarks>
     /// The card is used on Home and on Check-in. Each host owns its own instance (transient
@@ -28,10 +26,8 @@ namespace Forge.ViewModels.Controls.Cards
     /// </remarks>
     public sealed class WeightTrendCardViewModel : BaseViewModel
     {
-        // Accent (#D4AF37) — the theme's gold trim. Kept in sync with Resources/Styles/Colors.xaml
-        // because Microcharts paints on the Skia surface, not through MAUI resources.
-        private static readonly SkColor AccentSk = new(0xD4, 0xAF, 0x37);
-        private static readonly SkColor SurfaceSk = new(0x16, 0x1B, 0x22);
+        // Accent (#D4AF37), the theme's gold trim. Kept in sync with Resources/Styles/Colors.xaml.
+        private static readonly Color Accent = Color.FromArgb("#D4AF37");
 
         private readonly IWeightService _weights;
 
@@ -117,27 +113,16 @@ namespace Forge.ViewModels.Controls.Cards
         /// <summary>Inverse for XAML visibility on the "not logged" CTA.</summary>
         public bool NeedsLogToday => !_hasLoggedToday;
 
-        private IEnumerable<ChartEntry> _sparklineEntries = System.Array.Empty<ChartEntry>();
+        private IDrawable _sparkline = Controls.Sparkline.Empty;
         /// <summary>
-        /// Points fed to Microcharts' LineChart. Missing days are dropped, never zero-filled —
-        /// a flat line at 0 for the days a user skipped would look like they logged 0 lb.
+        /// The recent weigh-ins as a line. Missing days are dropped, never zero-filled: a flat
+        /// line at 0 for the days a user skipped would look like they logged 0 lb. Rebuilt on
+        /// every refresh; a new instance is what makes the GraphicsView redraw.
         /// </summary>
-        public IEnumerable<ChartEntry> SparklineEntries
+        public IDrawable Sparkline
         {
-            get => _sparklineEntries;
-            private set => SetProperty(ref _sparklineEntries, value);
-        }
-
-        private LineChart _sparklineChart = BuildEmptyChart();
-        /// <summary>
-        /// Ready-to-render chart bound to the ChartView. Re-built on every refresh so the
-        /// visible line reflects the current entries (Microcharts doesn't observe changes to
-        /// the Entries collection after the chart is bound).
-        /// </summary>
-        public LineChart SparklineChart
-        {
-            get => _sparklineChart;
-            private set => SetProperty(ref _sparklineChart, value);
+            get => _sparkline;
+            private set => SetProperty(ref _sparkline, value);
         }
 
         public ICommand ToggleExpandedCommand { get; }
@@ -170,8 +155,7 @@ namespace Forge.ViewModels.Controls.Cards
                 AverageDisplay = AppResources.WeightTrendCard_Empty;
                 AverageLabelText = string.Empty;
                 RawDisplay = AppResources.WeightTrendCard_NotLoggedToday;
-                SparklineEntries = System.Array.Empty<ChartEntry>();
-                SparklineChart = BuildEmptyChart();
+                Sparkline = Controls.Sparkline.Empty;
                 return;
             }
 
@@ -196,31 +180,11 @@ namespace Forge.ViewModels.Controls.Cards
                     unitLabel)
                 : AppResources.WeightTrendCard_NotLoggedToday;
 
-            var entries = recent
+            Sparkline = new Controls.Sparkline(recent
                 .OrderBy(e => e.Date)
-                .Select(e => new ChartEntry((float)WeightMath.ToDisplay((double)e.Pounds, unit))
-                {
-                    Color = AccentSk,
-                })
-                .ToList();
-
-            SparklineEntries = entries;
-            SparklineChart = BuildChart(entries);
+                .Select(e => WeightMath.ToDisplay((double)e.Pounds, unit))
+                .ToList(), Accent, Accent, allDots: true);
         }
-
-        private static LineChart BuildEmptyChart() => BuildChart(System.Array.Empty<ChartEntry>());
-
-        private static LineChart BuildChart(IEnumerable<ChartEntry> entries) => new()
-        {
-            Entries = entries,
-            BackgroundColor = SurfaceSk,
-            LineMode = LineMode.Straight,
-            LineSize = 4,
-            PointMode = PointMode.Circle,
-            PointSize = 8,
-            LabelTextSize = 0,
-            Margin = 8,
-        };
     }
 
     /// <summary>Minimal synchronous ICommand for parameter-less UI hooks.</summary>

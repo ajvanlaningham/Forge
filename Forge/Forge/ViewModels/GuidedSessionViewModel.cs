@@ -524,7 +524,7 @@ namespace Forge.ViewModels
 
         private async Task MenuAsync()
         {
-            var choice = await Shell.Current.DisplayActionSheet("Session", "Cancel", null,
+            var choice = await Shell.Current.DisplayActionSheetAsync("Session", "Cancel", null,
                 "Skip this exercise", "End session now", "Discard session");
             switch (choice)
             {
@@ -537,11 +537,11 @@ namespace Forge.ViewModels
                     else ShowReady();
                     break;
                 case "End session now":
-                    if (await Shell.Current.DisplayAlert("End session?", "Sets logged so far are kept.", "End", "Keep going"))
+                    if (await Shell.Current.DisplayAlertAsync("End session?", "Sets logged so far are kept.", "End", "Keep going"))
                         await FinishAsync();
                     break;
                 case "Discard session":
-                    if (await Shell.Current.DisplayAlert("Discard session?", "It won't count toward history, progression or the quest.", "Discard", "Keep"))
+                    if (await Shell.Current.DisplayAlertAsync("Discard session?", "It won't count toward history, progression or the quest.", "Discard", "Keep"))
                     {
                         _alarm.Cancel();
                         await _training.DiscardAsync(SessionId);

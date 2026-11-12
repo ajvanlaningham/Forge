@@ -99,14 +99,14 @@ public sealed class ForgingPage : ContentPage
             }
         if (_result.Forged)
         {
-            await _anvil.FadeTo(0, 250);
-            await Task.WhenAll(_item.FadeTo(1, 400), _item.ScaleTo(1, 400, Easing.CubicOut));
+            await _anvil.FadeToAsync(0, 250);
+            await Task.WhenAll(_item.FadeToAsync(1, 400), _item.ScaleToAsync(1, 400, Easing.CubicOut));
         }
         else
         {
             _anvil.Source = "forge_0.png";
         }
-        await _reveal.FadeTo(1, 400);
+        await _reveal.FadeToAsync(1, 400);
     }
 
     private async Task CloseAsync(string route)

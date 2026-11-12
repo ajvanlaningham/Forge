@@ -30,7 +30,7 @@ public partial class GuidedSessionPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Guided session load failed: {ex}");
-            await DisplayAlert("Error", "Couldn't load this session.", "OK");
+            await DisplayAlertAsync("Error", "Couldn't load this session.", "OK");
             await Shell.Current.GoToAsync("..");
         }
     }

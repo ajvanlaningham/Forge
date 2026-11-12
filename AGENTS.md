@@ -3,15 +3,15 @@
 Guidance for AI agents working on this repo. Read this before building or deploying.
 
 ## What Forge is
-A **.NET MAUI** fitness/RPG app, **Android-first** (`net9.0-android`). MVVM, local **SQLite** (`sqlite-net-pcl`), DI configured in `MauiProgram.cs`. Solution `Forge/Forge.sln` holds three projects:
+A **.NET MAUI** fitness/RPG app, **Android-first** (`net10.0-android`). MVVM, local **SQLite** (`sqlite-net-pcl`), DI configured in `MauiProgram.cs`. Solution `Forge/Forge.sln` holds three projects:
 
 | Project | Target | Purpose |
 |---|---|---|
-| `Forge/Forge/Forge.csproj` | `net9.0-android` | the app |
-| `Forge/Forge.Core/Forge.Core.csproj` | `net9.0` | pure game logic + constants, **no MAUI types** |
-| `Forge/Forge.Tests/Forge.Tests.csproj` | `net9.0` | xUnit tests over `Forge.Core` |
+| `Forge/Forge/Forge.csproj` | `net10.0-android` | the app |
+| `Forge/Forge.Core/Forge.Core.csproj` | `net10.0` | pure game logic + constants, **no MAUI types** |
+| `Forge/Forge.Tests/Forge.Tests.csproj` | `net10.0` | xUnit tests over `Forge.Core` |
 
-`Forge.Core` is plain `net9.0` on purpose: it makes progression and date math testable on this
+`Forge.Core` is plain `net10.0` on purpose: it makes progression and date math testable on this
 headless Linux host with no emulator. Do not add a MAUI dependency to it — that breaks the tests.
 
 iOS/maccatalyst target frameworks are conditionally enabled **only when building on macOS** (see the `Condition="$([MSBuild]::IsOSPlatform('osx'))"` line in `Forge.csproj`) — this is deliberate so the project builds on the Linux build host without an Apple toolchain. Don't "fix" it by removing the condition.
@@ -22,27 +22,30 @@ The build host (asgard, Linux) already has: the `maui-android` dotnet workload, 
 ## Build & test
 ```bash
 dotnet restore Forge/Forge/Forge.csproj
-dotnet build   Forge/Forge/Forge.csproj -f net9.0-android
+dotnet build   Forge/Forge/Forge.csproj -f net10.0-android
 dotnet test    Forge/Forge.Tests/Forge.Tests.csproj
 ```
 Tests cover **pure logic only** — progression math, scoring, date/week helpers. They need no
 emulator and no Android SDK, so run them. Put new pure logic in `Forge.Core` and test it;
 "tests pass" is only a meaningful claim if `dotnet test` was actually run.
 
-Note the host SDK is .NET 10 (10.0.111) building a `net9.0-android` target via the
-`maui-android` workload. That is expected and works.
+Forge is on **.NET 10 (LTS, supported to Nov 2028)** with MAUI 10, moved from .NET 9 on
+2026-11-12 when .NET 9 left support. Stay on LTS releases; the next is .NET 12 (Nov 2027).
+Two dependencies are held back on purpose:
+- **Health Connect binding `1.1.0-alpha07`.** Newer bindings need AndroidX Lifecycle 2.11,
+  while MAUI 10 (through 10.0.130) pins 2.9; forcing it risks runtime breakage. Forge only uses
+  the stable read calls. Revisit when MAUI moves its AndroidX baseline.
+- **Android minimum 8.0 (API 26)**, which Health Connect requires.
 
 ### Building in the throwaway `/tmp/coder/repo` container
 
 The remote coder container is not asgard. It ships the .NET 10 SDK at
 `/usr/local/dotnet` **without** the `maui-android` workload, Android SDK, JDK, or `adb`,
 and `/usr/local/dotnet` is root-owned so `dotnet workload install` fails with
-"Inadequate permissions." The tests still run there — Forge.Tests targets net9.0 and the
-container only has a .NET 10 runtime, so pass `DOTNET_ROLL_FORWARD=Major` when invoking
-`dotnet test`, otherwise it aborts with "You must install or update .NET".
+"Inadequate permissions." The tests run there as-is (Forge.Tests targets net10.0).
 
 If a container-side Android build is actually needed (e.g. to satisfy a spec that says
-"`dotnet build ... -f net9.0-android` succeeds"), the workaround is:
+"`dotnet build ... -f net10.0-android` succeeds"), the workaround is:
 `cp -r /usr/local/dotnet /tmp/user-dotnet`, install `maui-android` into that copy,
 download Microsoft OpenJDK 21 + Android cmdline-tools into `/tmp`, accept the licenses,
 `sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"`, then build with
@@ -97,8 +100,8 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
 - **Inspecting the phone's database:** local builds are debuggable, so
   `adb shell run-as io.github.ajvanlaningham.forge cat files/forge.db3 > forge.db3` pulls it
   (journal mode is `delete`, so the single file is complete); `sqlite3` is in platform-tools.
-- Local builds are still **Debug**, so Android shows a "not 16 KB compatible" dialog on launch
-  (debuggable apps only; libSkiaSharp is the pinned 2.88.9 — see Charts below). Tap
+- Local builds are still **Debug**, so Android may show a "not 16 KB compatible" dialog on
+  launch (debuggable apps only; it lists the debug runtime's own libraries). Tap
   *Don't Show Again*. CI release builds don't show it.
 - **Pairing vs connect port.** If only a pairing port + code is available, pair, then find the
   connect port by probing the phone's 30000–49999 TCP range over the tailnet (one port answers).
@@ -126,10 +129,10 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
 - Exercise library seeding is gated on `GameConstants.Exercises.LibraryVersion` **alone**. Editing
   or adding a JSON file without bumping that version is a silent no-op on an existing install.
   `IExerciseLibraryImporter.ForceReseedAsync()` is the dev escape hatch.
-- **Charts**: Microcharts.Maui 1.0.1 is pinned to SkiaSharp 2.88.9 because 2.x of Microcharts
-  targets `net10.0` only. That SkiaSharp version raises `XA0141` about a missing 16 KB page
-  size in `libSkiaSharp.so`; the project silences `XA0141` in a `<NoWarn>` with an
-  explanatory comment. Revisit both when this repo moves to `net10.0-android`.
+- **Charts** are MAUI `GraphicsView` drawables: `Sparkline` (weight card, Hero stats) and
+  `LineChart` (exercise history) in `ViewModels/Controls`. Microcharts and SkiaSharp were
+  removed in the .NET 10 move (Microcharts was unmaintained and pinned SkiaSharp 2.x, which
+  wasn't 16 KB-page aligned). Bind a new drawable instance to redraw.
 - **DI on the card VMs**: reusable card view models (see `WeightTrendCardViewModel`) are
   registered `AddTransient` and injected into the page view models that host them. Each
   page holds its own instance so per-page UI state (expansion, animation) does not leak

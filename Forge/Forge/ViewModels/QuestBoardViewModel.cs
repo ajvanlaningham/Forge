@@ -144,7 +144,7 @@ namespace Forge.ViewModels
             if (versions.Count == 0) return;
 
             var labels = versions.Select(p => p.VersionName + (Fits(p, _homeGear) ? "  ✓ fits your gear" : "")).ToArray();
-            var pick = await Shell.Current.DisplayActionSheet($"{HeroQuest.Name(versions[0])} — choose your version", "Cancel", null, labels);
+            var pick = await Shell.Current.DisplayActionSheetAsync($"{HeroQuest.Name(versions[0])} — choose your version", "Cancel", null, labels);
             var index = Array.IndexOf(labels, pick);
             if (index < 0) return;
             var chosen = versions[index];
@@ -152,11 +152,11 @@ namespace Forge.ViewModels
             var current = (await _programs.GetActiveAsync())?.Definition;
             if (current?.Id == chosen.Id)
             {
-                await Shell.Current.DisplayAlert("Already underway", $"You're already on {HeroQuest.Name(chosen)} · {chosen.VersionName}.", "OK");
+                await Shell.Current.DisplayAlertAsync("Already underway", $"You're already on {HeroQuest.Name(chosen)} · {chosen.VersionName}.", "OK");
                 return;
             }
 
-            var ok = await Shell.Current.DisplayAlert("Accept this quest?",
+            var ok = await Shell.Current.DisplayAlertAsync("Accept this quest?",
                 $"Start {HeroQuest.Name(chosen)} · {chosen.VersionName} at week 1 (Kindling), today. Your current block ends; your workout history is kept.",
                 "Accept", "Not yet");
             if (!ok) return;

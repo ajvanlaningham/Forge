@@ -29,7 +29,7 @@ namespace Forge.Services
             }
             catch (Exception ex)
             {
-                await page.DisplayAlert("Restore", $"Couldn't open the file picker: {ex.Message}", "OK");
+                await page.DisplayAlertAsync("Restore", $"Couldn't open the file picker: {ex.Message}", "OK");
                 return;
             }
 
@@ -38,11 +38,11 @@ namespace Forge.Services
                 check = await backup.InspectAsync(stream, fileName);
             if (!check.Ok)
             {
-                await page.DisplayAlert("Can't restore that file", check.Message, "OK");
+                await page.DisplayAlertAsync("Can't restore that file", check.Message, "OK");
                 return;
             }
 
-            var go = await page.DisplayAlert("Replace your data?",
+            var go = await page.DisplayAlertAsync("Replace your data?",
                 $"{fileName}\n{check.Summary}\n\nEverything currently in Forge is replaced by this backup. " +
                 "Your current data is backed up first, so this can be undone by restoring that copy.",
                 "Restore", "Cancel");
@@ -51,12 +51,12 @@ namespace Forge.Services
             var result = await backup.RestoreAsync(check);
             if (!result.Success)
             {
-                await page.DisplayAlert("Restore failed", result.Message, "OK");
+                await page.DisplayAlertAsync("Restore failed", result.Message, "OK");
                 return;
             }
 
             UserSettings.OnboardingDone = true;   // a restored install is an existing user's
-            await page.DisplayAlert("Restored", result.Message + "\n\nForge will now close. Open it again to continue.", "Close Forge");
+            await page.DisplayAlertAsync("Restored", result.Message + "\n\nForge will now close. Open it again to continue.", "Close Forge");
             Application.Current?.Quit();
         }
     }

@@ -6,11 +6,9 @@ using Forge.ViewModels.Controls.Cards;
 using Forge.Views;
 using Forge.Views.SubPages;
 
-using Microcharts.Maui;
 
 using Microsoft.Extensions.Logging;
 
-using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace Forge
 {
@@ -21,10 +19,6 @@ namespace Forge
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                // Microcharts' ChartView is a SkiaSharp SKCanvasView; both handler
-                // registrations are required or the sparkline on WeightTrendCard renders blank.
-                .UseSkiaSharp()
-                .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

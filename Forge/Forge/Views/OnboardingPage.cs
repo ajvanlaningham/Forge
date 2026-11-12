@@ -103,7 +103,7 @@ public sealed class OnboardingPage : ContentPage
         var restore = new Button { Text = "Restore a backup", HeightRequest = 56, FontFamily = "PixelUI", FontSize = 22 };
         restore.Clicked += async (_, _) =>
         {
-            if (_preview) { await DisplayAlert("Preview", "In a real first run this opens the backup picker.", "OK"); return; }
+            if (_preview) { await DisplayAlertAsync("Preview", "In a real first run this opens the backup picker.", "OK"); return; }
             await RestoreFlow.RunAsync(this, _services.GetRequiredService<IBackupService>());
         };
         return new VerticalStackLayout
@@ -261,7 +261,7 @@ public sealed class OnboardingPage : ContentPage
     {
         if (_preview)
         {
-            await DisplayAlert("Preview", $"In a real first run this would start {programId} and save your choices. Nothing was changed.", "OK");
+            await DisplayAlertAsync("Preview", $"In a real first run this would start {programId} and save your choices. Nothing was changed.", "OK");
             _done();
             return;
         }
@@ -279,7 +279,7 @@ public sealed class OnboardingPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Couldn't start", ex.Message, "OK");
+            await DisplayAlertAsync("Couldn't start", ex.Message, "OK");
         }
     }
 

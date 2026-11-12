@@ -267,7 +267,7 @@ namespace Forge.ViewModels
             var doable = Library
                 .Where(e => e.Category == ExerciseCategory.Strength && ExerciseSwap.IsAvailable(e, AvailableEquipment))
                 .Select(e => e.Name).ToArray();
-            var pick = await Shell.Current.DisplayActionSheet("Add exercise", "Cancel", null, doable);
+            var pick = await Shell.Current.DisplayActionSheetAsync("Add exercise", "Cancel", null, doable);
             if (string.IsNullOrEmpty(pick) || pick == "Cancel") return;
             await _training.AddExerciseAsync(SessionId, pick);
             await ReloadAsync();
@@ -279,7 +279,7 @@ namespace Forge.ViewModels
             var message = logged == 0
                 ? "No working sets logged yet. Finish anyway? An empty session won't complete the program day."
                 : $"Finish and save {logged} working set{(logged == 1 ? "" : "s")}?";
-            if (!await Shell.Current.DisplayAlert("Finish session", message, "Finish", "Keep going")) return;
+            if (!await Shell.Current.DisplayAlertAsync("Finish session", message, "Finish", "Keep going")) return;
 
             StopClock();
             _alarm.Cancel();
@@ -290,7 +290,7 @@ namespace Forge.ViewModels
 
         private async Task DiscardAsync()
         {
-            if (!await Shell.Current.DisplayAlert("Discard session",
+            if (!await Shell.Current.DisplayAlertAsync("Discard session",
                     "Throw this session away? Nothing from it will count.", "Discard", "Keep it")) return;
             StopClock();
             _alarm.Cancel();
@@ -528,7 +528,7 @@ namespace Forge.ViewModels
 
         private async Task DeleteSetAsync(int setId)
         {
-            if (!await Shell.Current.DisplayAlert("Delete set", "Remove this set?", "Delete", "Cancel")) return;
+            if (!await Shell.Current.DisplayAlertAsync("Delete set", "Remove this set?", "Delete", "Cancel")) return;
             await _owner.Training.DeleteSetAsync(setId);
             await _owner.ReloadAsync();
         }
@@ -536,7 +536,7 @@ namespace Forge.ViewModels
         private async Task MenuAsync()
         {
             const string swap = "Swap exercise", skip = "Skip", unskip = "Un-skip", up = "Move up", down = "Move down", hist = "History";
-            var choice = await Shell.Current.DisplayActionSheet(Name, "Cancel", null, swap, IsSkipped ? unskip : skip, up, down, hist);
+            var choice = await Shell.Current.DisplayActionSheetAsync(Name, "Cancel", null, swap, IsSkipped ? unskip : skip, up, down, hist);
             switch (choice)
             {
                 case hist: await Forge.Views.ExerciseHistoryPage.OpenAsync(Name); break;
@@ -561,14 +561,14 @@ namespace Forge.ViewModels
             const string any = "Any exercise…";
             options.Add(any);
 
-            var pick = await Shell.Current.DisplayActionSheet($"Swap {Name}", "Cancel", null, options.ToArray());
+            var pick = await Shell.Current.DisplayActionSheetAsync($"Swap {Name}", "Cancel", null, options.ToArray());
             if (string.IsNullOrEmpty(pick) || pick == "Cancel") return;
             if (pick == any)
             {
                 var all = _owner.Library
                     .Where(e => e.Category == ExerciseCategory.Strength && ExerciseSwap.IsAvailable(e, _owner.AvailableEquipment) && e.Name != Name)
                     .Select(e => e.Name).ToArray();
-                pick = await Shell.Current.DisplayActionSheet("Swap to", "Cancel", null, all);
+                pick = await Shell.Current.DisplayActionSheetAsync("Swap to", "Cancel", null, all);
                 if (string.IsNullOrEmpty(pick) || pick == "Cancel") return;
             }
             if (pick.StartsWith("↩ ", StringComparison.Ordinal)) pick = pick[2..];

@@ -205,7 +205,7 @@ namespace Forge.ViewModels
             {
                 if (_location == TrainingLocation.Home && await _training.GetEquipmentAsync(_location) == Equipment.None)
                 {
-                    var setUp = await Shell.Current.DisplayAlert("No home gear set up",
+                    var setUp = await Shell.Current.DisplayAlertAsync("No home gear set up",
                         "Forge doesn't know what equipment you have at home, so every lift swaps to a bodyweight move. Set up your gear first?",
                         "Set up gear", "Start anyway");
                     if (setUp) { await Shell.Current.GoToAsync(nameof(MyGearPage)); return; }

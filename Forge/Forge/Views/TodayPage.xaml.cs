@@ -33,7 +33,7 @@ public partial class TodayPage : ContentPage
 
     private async void OnXpAwarded(object? sender, int xp)
     {
-        await DisplayAlert("Active rest", $"+{xp} XP", "OK");
+        await DisplayAlertAsync("Active rest", $"+{xp} XP", "OK");
         await CheckLevelUpAsync();
     }
 

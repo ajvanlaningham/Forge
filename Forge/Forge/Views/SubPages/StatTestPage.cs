@@ -165,7 +165,7 @@ public sealed class StatTestPage : ContentPage
         _save = async () =>
         {
             var bw = BodyweightLb();
-            if (bw <= 0) { await DisplayAlert("Bodyweight", "Enter your bodyweight: strength is scored relative to it.", "OK"); return; }
+            if (bw <= 0) { await DisplayAlertAsync("Bodyweight", "Enter your bodyweight: strength is scored relative to it.", "OK"); return; }
             var names = rows.Select(r => r.Name()).ToArray();
             if (UserSettings.TestLifts is null) UserSettings.TestLifts = names;
             var where = incline ?? inclinePicker?.SelectedItem as string ?? "Floor";
@@ -316,7 +316,7 @@ public sealed class StatTestPage : ContentPage
         {
             if (!pulseRow.IsVisible)
             {
-                if (!await DisplayAlert("Not finished", "Run the 3 minutes and the pulse count first, or enter a pulse you counted another way?", "Enter it", "Cancel")) return;
+                if (!await DisplayAlertAsync("Not finished", "Run the 3 minutes and the pulse count first, or enter a pulse you counted another way?", "Enter it", "Cancel")) return;
                 pulseRow.IsVisible = true;
                 return;
             }
@@ -340,7 +340,7 @@ public sealed class StatTestPage : ContentPage
         var message = outcome.Calibration ? "Practice run saved. The real baseline comes in Honing week."
             : outcome.IsBaseline ? $"Baseline set: {stat} {outcome.Score}. Every later test is measured against today."
             : $"{stat} {outcome.Score} ({(outcome.Change >= 0 ? "+" : "")}{outcome.Change}).";
-        await DisplayAlert(Title, message, "OK");
+        await DisplayAlertAsync(Title, message, "OK");
         await Navigation.PopAsync();
     }
 

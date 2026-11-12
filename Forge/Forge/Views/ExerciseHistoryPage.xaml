@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Forge.ViewModels"
-             xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="Forge.Views.ExerciseHistoryPage"
              x:DataType="vm:ExerciseHistoryViewModel"
              Title="{Binding Name}">
@@ -17,7 +16,7 @@
                     Stroke="{StaticResource Muted}" StrokeShape="RoundRectangle 8" Padding="8">
                 <VerticalStackLayout>
                     <Label Text="{Binding ChartCaption}" FontFamily="PixelUI" FontSize="16" TextColor="{StaticResource Muted}" />
-                    <charts:ChartView Chart="{Binding Chart}" HeightRequest="220" BackgroundColor="{StaticResource Surface}" />
+                    <GraphicsView Drawable="{Binding Chart}" HeightRequest="220" BackgroundColor="{StaticResource Surface}" />
                 </VerticalStackLayout>
             </Border>
 

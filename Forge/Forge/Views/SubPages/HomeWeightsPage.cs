@@ -260,17 +260,17 @@ public sealed class HomeWeightsPage : ContentPage
         var has = Implement switch { Equipment.Kettlebell => _hasKb, Equipment.Barbell => _hasBb, _ => _hasDb };
         if (has && Implement == Equipment.Dumbbell && !_db.Adjustable && !_db.Any)
         {
-            await DisplayAlert("Dumbbells", "Tap the dumbbells you own, or switch \"I have these\" off.", "OK");
+            await DisplayAlertAsync("Dumbbells", "Tap the dumbbells you own, or switch \"I have these\" off.", "OK");
             return;
         }
         if (has && Implement == Equipment.Dumbbell && _db.Adjustable && _db.Max <= _db.Min)
         {
-            await DisplayAlert("Dumbbells", "Heaviest must be more than lightest.", "OK");
+            await DisplayAlertAsync("Dumbbells", "Heaviest must be more than lightest.", "OK");
             return;
         }
         if (has && Implement == Equipment.Kettlebell && !_kb.Any)
         {
-            await DisplayAlert("Kettlebells", "Tap the bells you own, or switch \"I have these\" off.", "OK");
+            await DisplayAlertAsync("Kettlebells", "Tap the bells you own, or switch \"I have these\" off.", "OK");
             return;
         }
 

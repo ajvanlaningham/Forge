@@ -7,8 +7,6 @@ using Forge.Services;
 using Forge.Services.Interfaces;
 using Forge.Training;
 using Forge.Views;
-using Microcharts;
-using SkiaSharp;
 
 namespace Forge.ViewModels
 {
@@ -76,9 +74,8 @@ namespace Forge.ViewModels
     /// <summary>One exercise over time: best e1RM chart and every working set (PBI 8.6).</summary>
     public sealed class ExerciseHistoryViewModel : BaseViewModel
     {
-        private static readonly SKColor AccentSk = new(0xD4, 0xAF, 0x37);
-        private static readonly SKColor SurfaceSk = new(0x16, 0x1B, 0x22);
-        private static readonly SKColor LabelSk = new(0x9A, 0xA4, 0xB2);
+        private static readonly Color Accent = Color.FromArgb("#D4AF37");
+        private static readonly Color Label = Color.FromArgb("#9AA4B2");
 
         private readonly ITrainingService _training;
 
@@ -93,8 +90,8 @@ namespace Forge.ViewModels
         private string _chartCaption = "";
         public string ChartCaption { get => _chartCaption; private set => SetProperty(ref _chartCaption, value); }
 
-        private Chart? _chart;
-        public Chart? Chart { get => _chart; private set => SetProperty(ref _chart, value); }
+        private IDrawable? _chart;
+        public IDrawable? Chart { get => _chart; private set => SetProperty(ref _chart, value); }
 
         private bool _hasChart;
         public bool HasChart { get => _hasChart; private set => SetProperty(ref _hasChart, value); }
@@ -130,31 +127,10 @@ namespace Forge.ViewModels
             var lo = points.Count > 0 ? points.Min(p => p.Value) : 0;
             var hi = points.Count > 0 ? points.Max(p => p.Value) : 1;
             var pad = Math.Max(1, (hi - lo) * 0.25);
-            Chart = new LineChart
-            {
-                MinValue = (float)Math.Max(0, lo - pad),
-                MaxValue = (float)(hi + pad),
-                LineAreaAlpha = 24,
-                Entries = points.Select(p => new ChartEntry((float)p.Value)
-                {
-                    Color = AccentSk,
-                    Label = p.Date.ToString("M/d", CultureInfo.CurrentCulture),
-                    ValueLabel = p.Value.ToString("0", CultureInfo.CurrentCulture),
-                    ValueLabelColor = LabelSk,
-                    TextColor = LabelSk
-                }).ToList(),
-                BackgroundColor = SurfaceSk,
-                LabelColor = LabelSk,
-                LineMode = LineMode.Straight,
-                LineSize = 4,
-                PointMode = PointMode.Circle,
-                PointSize = 10,
-                LabelTextSize = 26,
-                ValueLabelTextSize = 26,
-                LabelOrientation = Orientation.Horizontal,
-                ValueLabelOrientation = Orientation.Horizontal,
-                Margin = 16
-            };
+            Chart = new Forge.ViewModels.Controls.LineChart(
+                points.Select(p => (p.Date.ToString("M/d", CultureInfo.CurrentCulture), p.Value,
+                    p.Value.ToString("0", CultureInfo.CurrentCulture))).ToList(),
+                Math.Max(0, lo - pad), hi + pad, Accent, Label);
 
             if (points.Count > 0)
             {

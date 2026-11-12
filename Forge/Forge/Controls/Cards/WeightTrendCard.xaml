@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:Forge.ViewModels.Controls.Cards"
     xmlns:res="clr-namespace:Forge.Resources.Strings"
-    xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
     x:DataType="vm:WeightTrendCardViewModel">
 
     <Frame Padding="16"
@@ -59,9 +58,9 @@
             </VerticalStackLayout>
 
             <!-- Sparkline: skips missing days (no zero-fill) -->
-            <charts:ChartView
+            <GraphicsView
                 HeightRequest="72"
-                Chart="{Binding SparklineChart}"
+                Drawable="{Binding Sparkline}"
                 BackgroundColor="{StaticResource Surface}"
                 IsVisible="{Binding HasData}" />
 

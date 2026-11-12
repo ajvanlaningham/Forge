@@ -23,7 +23,7 @@ public partial class BriefingPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Briefing load failed: {ex}");
-            await DisplayAlert("Can't start", ex.Message, "OK");
+            await DisplayAlertAsync("Can't start", ex.Message, "OK");
             await Shell.Current.GoToAsync("..");
         }
     }

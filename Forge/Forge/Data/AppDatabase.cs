@@ -10,7 +10,6 @@ namespace Forge.Data
 
         public AppDatabase()
         {
-            SQLitePCL.Batteries_V2.Init();
             Path = System.IO.Path.Combine(FileSystem.AppDataDirectory, GameConstants.Db.FileName);
             _connection = new SQLiteAsyncConnection(Path);
         }

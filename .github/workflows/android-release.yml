@@ -42,10 +42,10 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up .NET 9
+      - name: Set up .NET 10
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "9.0.x"
+          dotnet-version: "10.0.x"
 
       - name: Install MAUI Android workload
         run: dotnet workload install maui-android
@@ -70,7 +70,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           dotnet publish Forge/Forge/Forge.csproj \
-            -f net9.0-android \
+            -f net10.0-android \
             -c Release \
             -p:AndroidPackageFormat=apk \
             -p:ApplicationVersion=${{ github.run_number }} \
@@ -84,15 +84,15 @@ jobs:
         id: artifacts
         run: |
           set -euo pipefail
-          PUBDIR=Forge/Forge/bin/Release/net9.0-android/publish
+          PUBDIR=Forge/Forge/bin/Release/net10.0-android/publish
           SIGNED=$(find "$PUBDIR" -name '*-Signed.apk' 2>/dev/null | head -1)
           if [ -z "$SIGNED" ]; then
             # Some publish layouts drop the APK outside publish/.
-            SIGNED=$(find Forge/Forge/bin/Release/net9.0-android -name '*-Signed.apk' | head -1)
+            SIGNED=$(find Forge/Forge/bin/Release/net10.0-android -name '*-Signed.apk' | head -1)
           fi
           if [ -z "$SIGNED" ]; then
-            echo "::error::No release-signed APK found under bin/Release/net9.0-android" >&2
-            find Forge/Forge/bin/Release/net9.0-android -name '*.apk' >&2 || true
+            echo "::error::No release-signed APK found under bin/Release/net10.0-android" >&2
+            find Forge/Forge/bin/Release/net10.0-android -name '*.apk' >&2 || true
             exit 1
           fi
 
