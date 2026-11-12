@@ -11,7 +11,9 @@ namespace Forge.Training
         Modality Modality,
         Equipment Equipment,
         ActionType Action,
-        bool NeedsPair = false);
+        bool NeedsPair = false,
+        /// <summary>Done one side at a time; the prescription is per side.</summary>
+        bool Unilateral = false);
 
     /// <summary>
     /// Finds substitutes when a program slot's exercise needs gear the current location doesn't

@@ -24,6 +24,8 @@
             <Label Text="{Binding Caption}" FontFamily="PixelUI" FontSize="26" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
             <Label Text="{Binding ExerciseName}" FontFamily="PixelUI" FontSize="34" TextColor="{StaticResource OnBg}"
                    HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+            <Label Text="{Binding NotesText}" IsVisible="{Binding HasNotes}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}"
+                   HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
             <Label Text="{Binding LoadText}" FontFamily="GymNum" FontSize="56" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
             <Label Text="{Binding WorkText}" FontFamily="GymNum" FontSize="48" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
             <Button Text="START SET" Command="{Binding StartCommand}" HeightRequest="80" FontFamily="PixelUI" FontSize="30"
@@ -36,6 +38,8 @@
             <VerticalStackLayout Spacing="8" VerticalOptions="Center">
                 <Label Text="{Binding Caption}" FontFamily="PixelUI" FontSize="26" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
                 <Label Text="{Binding ExerciseName}" FontFamily="PixelUI" FontSize="36" TextColor="{StaticResource OnBg}"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                <Label Text="{Binding NotesText}" IsVisible="{Binding HasNotes}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}"
                        HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
                 <Label Text="{Binding LoadText}" FontFamily="GymNum" FontSize="64" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
                 <Label Text="{Binding WorkText}" FontFamily="GymNum" FontSize="64" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
@@ -65,6 +69,8 @@
                 <ProgressBar Progress="{Binding ClockProgress}" ProgressColor="{StaticResource Leaf}" HeightRequest="12" />
                 <Label Text="UP NEXT" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" Margin="0,14,0,0" />
                 <Label Text="{Binding ExerciseName}" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource OnBg}"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                <Label Text="{Binding NotesText}" IsVisible="{Binding HasNotes}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}"
                        HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
                 <Label HorizontalTextAlignment="Center">
                     <Label.FormattedText>

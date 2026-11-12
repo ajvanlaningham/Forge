@@ -86,6 +86,9 @@ namespace Forge.Models
         /// <summary>Superset group from the program slot; neighbours sharing one alternate sets.</summary>
         public string? Superset { get; set; }
 
+        /// <summary>The program slot's cue ("Free hand on the block"), shown in the guided session.</summary>
+        public string? Notes { get; set; }
+
         // What the briefing settled on before BEGIN: the guided session runs on these.
         public double? PlannedLoadLb { get; set; }
         public int? PlannedReps { get; set; }

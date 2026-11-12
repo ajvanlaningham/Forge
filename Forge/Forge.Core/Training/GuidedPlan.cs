@@ -8,6 +8,9 @@ namespace Forge.Training
     /// <param name="Warmups">Built-in warm-up sets before the first working set (0, 1 or 2).</param>
     public sealed record GuidedExercise(int Index, string? Superset, int Sets, int? RestSeconds, int Warmups);
 
+    /// <summary>The phase of a per-side set: work the right, switch, work the left.</summary>
+    public enum SetSide { Right, Switch, Left }
+
     /// <summary>One warm-up set: load, reps, and its share of the working load (for display).</summary>
     public sealed record WarmupSet(double LoadLb, int Reps, int Percent);
 
@@ -109,8 +112,26 @@ namespace Forge.Training
                && (step.SetNumber == step.SetsTotal || (repsMax is int hi && reps >= hi));
 
         /// <summary>How long a set takes: a hold's own time, or reps at a steady pace plus setup.</summary>
-        public static int SetSeconds(int? reps, int? seconds)
-            => seconds is int s ? s + SetupSeconds : (reps ?? 8) * SecondsPerRep + SetupSeconds;
+        /// <remarks>
+        /// A per-side exercise (split squats, one-arm rows, side planks) prescribes reps or seconds
+        /// for each side, so its set runs the work twice: right, then left, each with its own setup
+        /// (which doubles as the moment to switch sides).
+        /// </remarks>
+        public static int SetSeconds(int? reps, int? seconds, bool perSide = false)
+        {
+            var one = seconds is int s ? s + SetupSeconds : (reps ?? 8) * SecondsPerRep + SetupSeconds;
+            return perSide ? 2 * one : one;
+        }
+
+        /// <summary>
+        /// Where a per-side set is, <paramref name="elapsed"/> seconds in: the right side first,
+        /// then a switch (the left's setup), then the left. <paramref name="sideSeconds"/> is one
+        /// side's time, setup included.
+        /// </summary>
+        public static SetSide SideAt(int elapsed, int sideSeconds)
+            => elapsed < sideSeconds ? SetSide.Right
+             : elapsed < sideSeconds + SetupSeconds ? SetSide.Switch
+             : SetSide.Left;
 
         /// <summary>
         /// The warm-ups for a working load: about 50% × 8, then — when it lands on a weight of its

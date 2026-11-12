@@ -277,14 +277,13 @@
   },
   {
     "name": "One-arm Row",
-    "description": "Supported single-arm horizontal pull.",
+    "description": "Free hand (and knee, if you like) on a bench, box or chair; flat back, row the dumbbell to the hip.",
     "category": "strength",
     "bodyZone": "upper",
     "movement": "pull",
     "modality": "dumbbell",
     "equipment": [
-      "dumbbell",
-      "bench"
+      "dumbbell"
     ],
     "action": "reps",
     "defaultReps": 10,

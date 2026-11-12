@@ -37,6 +37,10 @@ namespace Forge.ViewModels
         private DateTime? _workEndsUtc;
         private int? _workPausedSeconds;
         private int _workTotal;
+        /// <summary>One side's time on a per-side set (0 otherwise): where right ends and the switch begins.</summary>
+        private int _sideSeconds;
+        private SetSide? _side;
+        private string _setCaption = "";
         private DateTime? _restEndsUtc;
         private int? _restPausedSeconds;
         private int _restTotal;
@@ -82,6 +86,10 @@ namespace Forge.ViewModels
         public string LoadText { get => _loadText; private set => SetProperty(ref _loadText, value); }
         private string _workText = "";
         public string WorkText { get => _workText; private set => SetProperty(ref _workText, value); }
+        private string _notesText = "";
+        /// <summary>The program's cue for this exercise ("Free hand on the block"), if any.</summary>
+        public string NotesText { get => _notesText; private set { if (SetProperty(ref _notesText, value)) OnPropertyChanged(nameof(HasNotes)); } }
+        public bool HasNotes => NotesText.Length > 0;
         private string _thenText = "";
         public string ThenText { get => _thenText; private set => SetProperty(ref _thenText, value); }
 
@@ -247,7 +255,7 @@ namespace Forge.ViewModels
             var e = _exercises[step.ExerciseIndex];
             var (lb, reps, secs) = Target(step);
             var set = step.IsWarmup ? $"warm-up {WarmupCaption(step).ToLowerInvariant()}" : $"set {step.SetNumber} of {step.SetsTotal}";
-            var work = secs is int s ? $"{s}s" : $"× {reps}";
+            var work = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info));
             return $"{e.Row.ExerciseName} · {set}\n{Label(lb, e)} {work}";
         }
 
@@ -267,7 +275,8 @@ namespace Forge.ViewModels
             ExerciseName = group is null ? e.Row.ExerciseName : $"{group} · {e.Row.ExerciseName}";
             Caption = step.IsWarmup ? $"WARM-UP {WarmupCaption(step)}" : $"SET {step.SetNumber} OF {step.SetsTotal}";
             LoadText = Label(lb, e);
-            WorkText = secs is int s ? $"{s} s" : $"× {reps}";
+            WorkText = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info));
+            NotesText = e.Row.Notes ?? "";
             StepText = $"Set {_pos + 1} of {_steps.Count}";
         }
 
@@ -295,7 +304,11 @@ namespace Forge.ViewModels
             var step = _steps[_pos];
             ShowStep(step);
             var (_, reps, secs) = Target(step);
-            _workTotal = GuidedPlan.SetSeconds(reps, secs);
+            var perSide = GuidedSupport.PerSide(_exercises[step.ExerciseIndex].Info);
+            _workTotal = GuidedPlan.SetSeconds(reps, secs, perSide);
+            _sideSeconds = perSide ? GuidedPlan.SetSeconds(reps, secs) : 0;
+            _side = null;
+            _setCaption = Caption;
             _workEndsUtc = DateTime.UtcNow.AddSeconds(_workTotal);
             _workPausedSeconds = null;
             IsPaused = false;
@@ -339,6 +352,7 @@ namespace Forge.ViewModels
         private void EnterRest(TrainingSessionRow row, int? total = null)
         {
             _workEndsUtc = null;
+            _sideSeconds = 0;
             ApplyRest(row, total);
             var next = _steps[_pos];
             NextText = Describe(next);
@@ -421,6 +435,21 @@ namespace Forge.ViewModels
                 var left = _workPausedSeconds ?? (int)Math.Ceiling(((_workEndsUtc ?? DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds);
                 ClockText = Format(Math.Max(0, left));
                 ClockProgress = 1.0 - (double)Math.Max(0, left) / _workTotal;
+                if (_sideSeconds > 0)
+                {
+                    var side = GuidedPlan.SideAt(_workTotal - Math.Max(0, left), _sideSeconds);
+                    if (side != _side)
+                    {
+                        if (side == SetSide.Switch) Buzz(300);
+                        _side = side;
+                        Caption = side switch
+                        {
+                            SetSide.Right => $"{_setCaption} · RIGHT",
+                            SetSide.Switch => "SWITCH SIDES",
+                            _ => $"{_setCaption} · LEFT"
+                        };
+                    }
+                }
                 if (left <= 0 && _workPausedSeconds is null) _ = CompleteSetAsync();
             }
             else if (Phase == GuidedPhase.Rest)

@@ -112,4 +112,23 @@ public class GuidedPlanTests
         var steps = GuidedPlan.Build(new[] { new GuidedExercise(0, null, 2, 90, Warmups: 2) }, 90);
         Assert.Equal("aw1 aw2 a1 a2", Order(steps));
     }
+
+    [Fact]
+    public void PerSide_RunsTheWorkTwice_EachWithItsOwnSetup()
+    {
+        Assert.Equal(2 * (10 * GuidedPlan.SecondsPerRep + GuidedPlan.SetupSeconds), GuidedPlan.SetSeconds(10, null, perSide: true));
+        Assert.Equal(2 * (30 + GuidedPlan.SetupSeconds), GuidedPlan.SetSeconds(null, 30, perSide: true));
+    }
+
+    [Fact]
+    public void PerSide_RightThenSwitchThenLeft()
+    {
+        var side = GuidedPlan.SetSeconds(10, null); // 35 s: one side, setup included
+        Assert.Equal(SetSide.Right, GuidedPlan.SideAt(0, side));
+        Assert.Equal(SetSide.Right, GuidedPlan.SideAt(side - 1, side));
+        Assert.Equal(SetSide.Switch, GuidedPlan.SideAt(side, side));
+        Assert.Equal(SetSide.Switch, GuidedPlan.SideAt(side + GuidedPlan.SetupSeconds - 1, side));
+        Assert.Equal(SetSide.Left, GuidedPlan.SideAt(side + GuidedPlan.SetupSeconds, side));
+        Assert.Equal(SetSide.Left, GuidedPlan.SideAt(2 * side, side)); // overtime (+10 s) stays on the left
+    }
 }

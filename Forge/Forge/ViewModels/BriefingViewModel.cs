@@ -189,7 +189,7 @@ namespace Forge.ViewModels
             GatherText = lines.Count > 0 ? string.Join("\n", lines) : "Nothing: bodyweight only.";
 
             var steps = Steps();
-            var minutes = GuidedSupport.EstimateMinutes(steps, i => (_plan.Exercises[i].PlannedReps, _plan.Exercises[i].PlannedSeconds));
+            var minutes = GuidedSupport.EstimateMinutes(steps, i => (_plan.Exercises[i].PlannedReps, _plan.Exercises[i].PlannedSeconds, GuidedSupport.PerSide(_plan.Exercises[i].Info)));
             EstimateText = $"About {minutes} min · {steps.Count} sets";
         }
 
