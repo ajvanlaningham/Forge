@@ -796,5 +796,258 @@
     "defaultSeconds": 20,
     "skill": "beginner",
     "isActive": true
+  },
+  {
+    "name": "Arnold Press",
+    "description": "Start with the dumbbells at your chin, palms facing you; rotate the palms forward as you press overhead.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "push",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true,
+    "pair": true
+  },
+  {
+    "name": "Deficit Push-up",
+    "description": "Hands on yoga blocks (or dumbbell handles) so the chest drops below hand level. Stop 1-2 reps short of failure.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "push",
+    "modality": "bodyweight",
+    "equipment": [],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Bench Dip",
+    "description": "Hands on the edge of a box or low bench behind you, legs out front; bend the elbows to about 90 degrees and press back up.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "extension",
+    "modality": "bodyweight",
+    "equipment": [
+      "boxStep"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Rear Delt Fly",
+    "description": "Hinge forward with a flat back and raise the dumbbells out to the sides, leading with the elbows.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true,
+    "pair": true
+  },
+  {
+    "name": "Hammer Curl",
+    "description": "Curl with the palms facing each other the whole way.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "flexion",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true,
+    "pair": true
+  },
+  {
+    "name": "Dumbbell Skull Crusher",
+    "description": "Lying on your back, arms straight up; bend only at the elbows to lower the dumbbells beside your head, then extend.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "extension",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell",
+      "mat"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true,
+    "pair": true
+  },
+  {
+    "name": "Renegade Row",
+    "description": "High plank on two dumbbells, feet wide; row one dumbbell without letting the hips twist, then the other. Plank shoulder taps are the easier version.",
+    "category": "strength",
+    "bodyZone": "upper",
+    "movement": "pull",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 8,
+    "unilateral": true,
+    "skill": "intermediate",
+    "isActive": true,
+    "pair": true
+  },
+  {
+    "name": "Reverse Crunch",
+    "description": "On your back, knees bent; curl the hips off the floor toward your chest, then lower slowly.",
+    "category": "strength",
+    "bodyZone": "core",
+    "movement": "flexion",
+    "modality": "bodyweight",
+    "equipment": [
+      "mat"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Side Plank",
+    "description": "On one forearm, body in a straight line from head to heels; keep the hips high.",
+    "category": "strength",
+    "bodyZone": "core",
+    "movement": "lateralFlexion",
+    "modality": "bodyweight",
+    "equipment": [
+      "mat"
+    ],
+    "action": "hold",
+    "defaultSeconds": 30,
+    "unilateral": true,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Heel-Elevated Goblet Squat",
+    "description": "Heels on a yoga block or plate, one dumbbell held at the chest; squat deep with an upright torso. Shifts the work to the quads.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "squat",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Sumo Goblet Squat",
+    "description": "Wide stance, toes out, one dumbbell hanging between the legs; squat straight down, knees tracking over the toes.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "squat",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Staggered-Stance Romanian Deadlift",
+    "description": "Back foot a half-step behind on its toes, most of the weight on the front leg; hinge with dumbbells as in a Romanian deadlift.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "hinge",
+    "modality": "dumbbell",
+    "equipment": [
+      "dumbbell"
+    ],
+    "action": "reps",
+    "defaultReps": 8,
+    "unilateral": true,
+    "skill": "beginner",
+    "isActive": true,
+    "pair": true
+  },
+  {
+    "name": "Feet-Elevated Hamstring Bridge",
+    "description": "On your back, heels on a box, knees only slightly bent; drive the hips up through the heels. Go single-leg when it gets easy.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "kneeFlexion",
+    "modality": "bodyweight",
+    "equipment": [
+      "boxStep",
+      "mat"
+    ],
+    "action": "reps",
+    "defaultReps": 10,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Single-Leg Calf Raise",
+    "description": "Ball of one foot on the edge of a step or block; lower the heel all the way, then rise as high as you can. Hold a dumbbell when bodyweight gets easy.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "other",
+    "modality": "bodyweight",
+    "equipment": [
+      "boxStep"
+    ],
+    "action": "reps",
+    "defaultReps": 12,
+    "unilateral": true,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Banded Lateral Walk",
+    "description": "Mini band above the knees or at the ankles, half squat; step sideways keeping tension on the band. Reps are steps per direction.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "other",
+    "modality": "band",
+    "equipment": [
+      "bands"
+    ],
+    "action": "reps",
+    "defaultReps": 15,
+    "unilateral": true,
+    "skill": "beginner",
+    "isActive": true
+  },
+  {
+    "name": "Banded Clamshell",
+    "description": "Lying on your side, mini band above the knees, knees bent; open the top knee without rolling the hips back. Fire hydrants work too.",
+    "category": "strength",
+    "bodyZone": "lower",
+    "movement": "other",
+    "modality": "band",
+    "equipment": [
+      "bands",
+      "mat"
+    ],
+    "action": "reps",
+    "defaultReps": 15,
+    "unilateral": true,
+    "skill": "beginner",
+    "isActive": true
   }
 ]

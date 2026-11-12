@@ -285,6 +285,24 @@ public class ShippedProgramContentTests
             Assert.True(Enum.TryParse<Equipment>(name, ignoreCase: true, out _), $"{file}: unknown equipment '{name}'");
     }
 
+    [Fact]
+    public void QuestsForgingTheSamePiece_AreToldApartOnTheBoard()
+    {
+        // The board titles a quest by the hero's item for its metal × discipline, so two quests
+        // sharing both would show as twins. All but one of them must carry an epithet.
+        var latest = GameConstants.Programs.Files.Select(Load)
+            .GroupBy(p => p.Id).Select(g => g.OrderByDescending(p => p.Version).First());
+        foreach (var piece in latest.GroupBy(p => (p.Metal, p.Discipline)))
+        {
+            var quests = piece.GroupBy(p => p.Quest).ToList();
+            var bare = quests.Count(q => q.Any(p => p.Epithet is null));
+            Assert.True(bare <= 1, $"{piece.Key.Metal} {piece.Key.Discipline}: {bare} quests without an epithet");
+            foreach (var q in quests.Where(q => q.Any(p => p.Epithet is not null)))
+                Assert.True(q.All(p => p.Epithet is not null && p.Description is not null),
+                    $"{q.Key}: every version needs the epithet and its own description");
+        }
+    }
+
     [Theory, MemberData(nameof(ProgramFiles))]
     public void EveryWeekResolves(string file)
     {

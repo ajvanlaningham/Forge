@@ -83,12 +83,12 @@ namespace Forge.ViewModels
                 Notices.Add(new QuestNotice
                 {
                     Id = quest.Key,
-                    Title = HeroQuest.Name(first),
+                    Title = first.Epithet is { } epithet ? $"{HeroQuest.Name(first)} · {epithet}" : HeroQuest.Name(first),
                     ItemSprite = HeroQuest.Sprite(first),
                     Discipline = $"{first.Discipline} · {first.Goal}",
                     Meta = $"{string.Join(" or ", days)} days a week · {first.Minutes ?? "?"} min",
                     Versions = "Versions: " + string.Join(" · ", implements),
-                    Description = Describe(first),
+                    Description = first.Epithet is not null && first.Description is { } own ? own : Describe(first),
                     Needs = fits ? null : "Needs gear you haven't marked in My Gear (the Gym has everything)",
                     Tier = $"{first.Metal} tier · forges the {HeroQuest.Name(first)}",
                     IsActive = isActive,

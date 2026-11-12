@@ -55,6 +55,14 @@ namespace Forge.Training
 
         public string? Description { get; init; }
 
+        /// <summary>
+        /// Optional subtitle for a quest that shares its metal and discipline with another (both
+        /// forge the same piece, so the board's hero-item title alone can't tell them apart),
+        /// e.g. "Four-Day Home Split". When set, the board shows it and this version's
+        /// <see cref="Description"/> instead of the discipline's generic blurb.
+        /// </summary>
+        public string? Epithet { get; init; }
+
         /// <summary>What the block is for: "Balanced", "Strength", "Conditioning".</summary>
         public string Goal { get; init; } = "Balanced";
 

@@ -32,7 +32,7 @@ namespace Forge.Constants
                 "recovery.v1.json"
             };
 
-            public const string LibraryVersion = "v7"; // v7: punching bag + heavy bag rounds
+            public const string LibraryVersion = "v8"; // v8: the Four-Day Home Split's exercises
             public const string ExSourceTag = "recovery";
         }
 
@@ -68,7 +68,10 @@ namespace Forge.Constants
                 "programs/copper-boots-db-4day.v1.json",
                 "programs/copper-boots-db-3day.v1.json",
                 "programs/copper-boots-kb-4day.v1.json",
-                "programs/copper-boots-kb-3day.v1.json"
+                "programs/copper-boots-kb-3day.v1.json",
+                // A second Hearth quest (2026-11-12): Miche's four-day dumbbell split, as written
+                // by them, with supersets added. Forges the same Copper Hearth piece as Copper Helm.
+                "programs/copper-split-db-4day.v1.json"
             };
 
             /// <summary>Program offered when none has been chosen yet.</summary>

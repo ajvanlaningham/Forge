@@ -1,0 +1,346 @@
+{
+  "id": "copper-split-db-4day",
+  "name": "Copper Shield",
+  "epithet": "Four-Day Home Split",
+  "quest": "copper-split",
+  "metal": "Copper",
+  "item": "Shield",
+  "discipline": "Hearth",
+  "goal": "Balanced",
+  "minutes": "45–55",
+  "difficulty": 2,
+  "version": 1,
+  "implement": "Dumbbell",
+  "family": "copper-split-dumbbell",
+  "description": "Upper / lower twice a week at home, 45–55 min; every major muscle group twice a week. Double progression: stay at a weight until every set hits the top of the range, then go up and start at the bottom. Leave 1–2 reps in the tank; the last set of raises, curls and band work can go to failure. Dumbbells, a knee-height block, a mat, two yoga blocks and a mini band.",
+  "equipment": [
+    "dumbbell",
+    "boxStep",
+    "mat",
+    "bands"
+  ],
+  "activeRest": {
+    "name": "Active rest",
+    "flow": [
+      {
+        "exercise": "Cat-Cow",
+        "sets": 1,
+        "repsMin": 8,
+        "repsMax": 8
+      },
+      {
+        "exercise": "World's Greatest Stretch",
+        "sets": 1,
+        "seconds": 30
+      },
+      {
+        "exercise": "90/90 Hip Switch",
+        "sets": 1,
+        "repsMin": 10,
+        "repsMax": 10
+      },
+      {
+        "exercise": "Deep Squat Hold",
+        "sets": 1,
+        "seconds": 60
+      },
+      {
+        "exercise": "Downward Dog",
+        "sets": 1,
+        "seconds": 30
+      },
+      {
+        "exercise": "Child's Pose",
+        "sets": 1,
+        "seconds": 45
+      }
+    ],
+    "alternatives": [
+      "Yoga, 20+ minutes",
+      "Walk or easy cardio, 20+ minutes"
+    ]
+  },
+  "days": [
+    {
+      "name": "Upper A — push",
+      "main": [
+        {
+          "exercise": "Dumbbell Floor Press",
+          "sets": 4,
+          "repsMin": 6,
+          "repsMax": 10,
+          "restSeconds": 120,
+          "notes": "Elbows touch the floor lightly each rep",
+          "superset": "A"
+        },
+        {
+          "exercise": "One-arm Row",
+          "sets": 4,
+          "repsMin": 8,
+          "repsMax": 10,
+          "restSeconds": 120,
+          "notes": "Per side. Free hand on the block",
+          "superset": "A"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Dumbbell Overhead Press",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "notes": "Standing",
+            "superset": "B"
+          },
+          {
+            "exercise": "Dumbbell Pullover",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "notes": "Lying on the mat",
+            "superset": "B"
+          },
+          {
+            "exercise": "Lateral Raise",
+            "sets": 3,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 75,
+            "notes": "Last set can go to failure",
+            "superset": "C"
+          },
+          {
+            "exercise": "Bench Dip",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 15,
+            "restSeconds": 75,
+            "notes": "On the block",
+            "superset": "C"
+          },
+          {
+            "exercise": "Dumbbell Curl",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "notes": "Palms up. Last set can go to failure",
+            "superset": "D"
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 15,
+            "restSeconds": 75,
+            "superset": "D"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower A — quads",
+      "main": [
+        {
+          "exercise": "Bulgarian Split Squat",
+          "sets": 4,
+          "repsMin": 8,
+          "repsMax": 10,
+          "restSeconds": 120,
+          "notes": "Per side. Back foot on the block",
+          "superset": "A"
+        },
+        {
+          "exercise": "Romanian Deadlift",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "superset": "A"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Heel-Elevated Goblet Squat",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "notes": "Heels on a yoga block laid flat",
+            "superset": "B"
+          },
+          {
+            "exercise": "Dead Bug",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 10,
+            "restSeconds": 75,
+            "notes": "Per side",
+            "superset": "B"
+          },
+          {
+            "exercise": "Banded Lateral Walk",
+            "sets": 3,
+            "repsMin": 15,
+            "repsMax": 20,
+            "restSeconds": 75,
+            "notes": "Steps per direction. Band above the knees or at the ankles",
+            "superset": "C"
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "sets": 3,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 75,
+            "notes": "Per side, off the edge of the block",
+            "superset": "C"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Upper B — pull",
+      "main": [
+        {
+          "exercise": "Bent-over Row",
+          "sets": 4,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "notes": "Two dumbbells",
+          "superset": "A"
+        },
+        {
+          "exercise": "Arnold Press",
+          "sets": 3,
+          "repsMin": 10,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "superset": "A"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Deficit Push-up",
+            "sets": 3,
+            "repsMin": 6,
+            "repsMax": 20,
+            "restSeconds": 75,
+            "notes": "As many as possible, stopping 1-2 reps short of failure. Hands on yoga blocks",
+            "superset": "B"
+          },
+          {
+            "exercise": "Rear Delt Fly",
+            "sets": 3,
+            "repsMin": 12,
+            "repsMax": 15,
+            "restSeconds": 75,
+            "notes": "Last set can go to failure",
+            "superset": "B"
+          },
+          {
+            "exercise": "Hammer Curl",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "notes": "Last set can go to failure",
+            "superset": "C"
+          },
+          {
+            "exercise": "Dumbbell Skull Crusher",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "notes": "Lying on the mat",
+            "superset": "C"
+          },
+          {
+            "exercise": "Renegade Row",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 10,
+            "restSeconds": 75,
+            "notes": "Per side. Or plank shoulder taps"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower B — glutes & hamstrings",
+      "main": [
+        {
+          "exercise": "Hip Thrust",
+          "sets": 4,
+          "repsMin": 8,
+          "repsMax": 12,
+          "restSeconds": 120,
+          "notes": "Upper back on the block, dumbbell on the hips, band above the knees",
+          "superset": "A"
+        },
+        {
+          "exercise": "Staggered-Stance Romanian Deadlift",
+          "sets": 3,
+          "repsMin": 8,
+          "repsMax": 10,
+          "restSeconds": 120,
+          "notes": "Per side",
+          "superset": "A"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Box Step-up",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 10,
+            "restSeconds": 75,
+            "notes": "Per side. Or reverse lunges",
+            "superset": "B"
+          },
+          {
+            "exercise": "Side Plank",
+            "sets": 3,
+            "seconds": 30,
+            "restSeconds": 75,
+            "notes": "Per side. Build to 45 seconds",
+            "superset": "B"
+          },
+          {
+            "exercise": "Sumo Goblet Squat",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "superset": "C"
+          },
+          {
+            "exercise": "Banded Clamshell",
+            "sets": 3,
+            "repsMin": 15,
+            "repsMax": 20,
+            "restSeconds": 75,
+            "notes": "Per side. Or fire hydrants; last set can go to failure",
+            "superset": "C"
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "sets": 3,
+            "repsMin": 10,
+            "repsMax": 12,
+            "restSeconds": 75,
+            "notes": "Heels on the block, knees only slightly bent; go single-leg when it gets easy"
+          }
+        ]
+      ]
+    }
+  ]
+}
