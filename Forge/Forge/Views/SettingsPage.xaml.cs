@@ -17,5 +17,6 @@ public partial class SettingsPage : ContentPage
         base.OnAppearing();
         // The daily backup runs in the background on launch; show its latest result.
         _vm.RefreshBackupStatus();
+        _ = _vm.RefreshStravaAsync();
     }
 }

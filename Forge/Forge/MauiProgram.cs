@@ -82,6 +82,7 @@ namespace Forge
 
             // In-app updates (Android delivery path; see TODO.md Epic 9)
             builder.Services.AddSingleton<IUpdateService, UpdateService>();
+            builder.Services.AddSingleton<IStravaService, StravaService>();
 
             // UI
             // The four tabs (Decision 20)

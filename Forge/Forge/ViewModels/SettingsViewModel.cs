@@ -16,6 +16,67 @@ namespace Forge.ViewModels
     {
         private readonly IUpdateService _updates;
         private readonly IBackupService _backup;
+        private readonly IStravaService _strava;
+
+        // --- Strava ---
+        private string _stravaStatus = "";
+        public string StravaStatus { get => _stravaStatus; private set => SetProperty(ref _stravaStatus, value); }
+
+        private string _stravaButtonText = "Connect Strava";
+        public string StravaButtonText { get => _stravaButtonText; private set => SetProperty(ref _stravaButtonText, value); }
+
+        public bool StravaAvailable => _strava.IsAvailable;
+
+        public ICommand StravaCommand { get; }
+
+        private bool _stravaBusy;
+
+        public async Task RefreshStravaAsync()
+        {
+            StravaButtonText = _strava.IsConnected ? "Disconnect Strava" : "Connect Strava";
+            if (!_strava.IsAvailable) { StravaStatus = "Not set up in this build."; return; }
+            if (!_strava.IsConnected) { StravaStatus = "Not connected."; return; }
+
+            var who = _strava.AthleteName is { Length: > 0 } n ? $"Connected as {n}." : "Connected.";
+            var pending = await _strava.PendingCountAsync();
+            var last = _strava.LastResult;
+            StravaStatus = who
+                + (pending > 0 ? $"\n{(pending == 1 ? "1 session" : $"{pending} sessions")} waiting to post." : "")
+                + (last.Length > 0 ? $"\n{last}" : "");
+        }
+
+        private async Task ToggleStravaAsync()
+        {
+            if (_stravaBusy) return;
+            _stravaBusy = true;
+            try
+            {
+                if (_strava.IsConnected)
+                {
+                    if (!await Shell.Current.DisplayAlert("Disconnect Strava?",
+                            "Activities already posted stay on Strava. New sessions won't be sent.", "Disconnect", "Keep")) return;
+                    await _strava.DisconnectAsync();
+                    await RefreshStravaAsync();
+                    return;
+                }
+                if (!await _strava.HasSecretAsync())
+                {
+                    var pasted = await Shell.Current.DisplayPromptAsync("Strava client secret",
+                        "Paste the Client Secret from the Forge app on strava.com/settings/api. It's saved on this phone only.",
+                        "Save", "Cancel", placeholder: "40 letters and digits", maxLength: 80);
+                    if (pasted is null) return;
+                    if (!await _strava.SaveSecretAsync(pasted))
+                    {
+                        StravaStatus = "That doesn't look like a client secret (40 letters and digits). Try again.";
+                        return;
+                    }
+                }
+                var message = await _strava.ConnectAsync();
+                await RefreshStravaAsync();
+                if (!_strava.IsConnected) StravaStatus = message;
+            }
+            finally { _stravaBusy = false; }
+        }
 
         private string _backupStatus = "";
         public string BackupStatus { get => _backupStatus; private set => SetProperty(ref _backupStatus, value); }
@@ -66,10 +127,12 @@ namespace Forge.ViewModels
                 : $"No backup yet · they go to {_backup.Location}";
         }
 
-        public SettingsViewModel(IUpdateService updates, IBackupService backup)
+        public SettingsViewModel(IUpdateService updates, IBackupService backup, IStravaService strava)
         {
             _updates = updates;
             _backup = backup;
+            _strava = strava;
+            StravaCommand = new Command(async () => await ToggleStravaAsync());
             BackUpNowCommand = new Command(async () =>
             {
                 if (IsBackingUp) return;

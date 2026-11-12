@@ -12,6 +12,12 @@
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
 		</provider>
 	</application>
+	<!-- Strava sign-in opens in a Custom Tab; Android 11+ hides browsers from apps that don't declare this. -->
+	<queries>
+		<intent>
+			<action android:name="android.support.customtabs.action.CustomTabsService" />
+		</intent>
+	</queries>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<!-- Lets the in-app Update button install the downloaded release APK. The OS still

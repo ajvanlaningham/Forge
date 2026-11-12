@@ -556,6 +556,7 @@ namespace Forge.ViewModels
             _alarm.Cancel();
             StopClock();
             var finished = await _training.FinishAsync(SessionId);
+            App.SyncStrava(); // post it to Strava when connected
             Ended?.Invoke(this, finished);
         }
 

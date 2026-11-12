@@ -212,6 +212,15 @@ Then add four repository secrets:
 
 The keystore itself must never be committed.
 
+### Strava credentials
+Strava has no PKCE, so its sign-in needs the API app's client secret, and the APKs are public
+downloads. So the secret is **never built in or committed**: each phone pastes it once (Settings →
+Strava → Connect asks for it) and keeps it in SecureStorage, out of backups. Only the client ID,
+which isn't secret, is in code (`StravaAuth.ClientId`). The API app (strava.com/settings/api) has
+Authorization Callback Domain `localhost`, matching `StravaAuth.RedirectUri`
+(`forgestrava://localhost/strava`). It starts in single-player mode (owner only); a second athlete
+needs the upgrade to 10 athletes on that page.
+
 ### Version numbering
 
 `versionCode` comes from `github.run_number`, so it increases by one per CI run and the app's

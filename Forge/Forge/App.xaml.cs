@@ -22,8 +22,8 @@ namespace Forge
             // Daily backup (PBI 10.1): on launch and whenever the app comes back to the
             // foreground, back up if today's copy doesn't exist yet. Fire-and-forget — it never
             // blocks startup and never shows UI; failures retry on the next foreground.
-            window.Created += (_, _) => BackUpIfDue();
-            window.Resumed += (_, _) => BackUpIfDue();
+            window.Created += (_, _) => { BackUpIfDue(); SyncStrava(); };
+            window.Resumed += (_, _) => { BackUpIfDue(); SyncStrava(); };
             return window;
         }
 
@@ -31,6 +31,13 @@ namespace Forge
         {
             var backup = IPlatformApplication.Current?.Services.GetService<Services.Interfaces.IBackupService>();
             if (backup is not null) _ = Task.Run(backup.BackUpIfDueAsync);
+        }
+
+        /// <summary>Posts any finished sessions still waiting for Strava (offline at the time, say).</summary>
+        public static void SyncStrava()
+        {
+            var strava = IPlatformApplication.Current?.Services.GetService<Services.Interfaces.IStravaService>();
+            if (strava is { IsConnected: true }) _ = Task.Run(strava.SyncAsync);
         }
     }
 }
