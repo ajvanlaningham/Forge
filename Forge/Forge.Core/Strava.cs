@@ -104,7 +104,7 @@ namespace Forge.Constants
         /// The client secret is never built in (the APKs are public downloads); each phone
         /// pastes it once and keeps it in secure storage. Strava has no PKCE, so a secret is needed.
         /// </summary>
-        public const string ClientId = "";
+        public const string ClientId = "296384";
         public const string AuthorizeEndpoint = "https://www.strava.com/oauth/mobile/authorize";
         public const string TokenEndpoint = "https://www.strava.com/oauth/token";
         public const string DeauthorizeEndpoint = "https://www.strava.com/oauth/deauthorize";
