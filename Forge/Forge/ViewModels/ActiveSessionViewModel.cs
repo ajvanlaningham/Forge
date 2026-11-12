@@ -285,6 +285,7 @@ namespace Forge.ViewModels
             _alarm.Cancel();
             var snap = await _training.FinishAsync(SessionId);
             App.SyncStrava(); // post it to Strava when connected
+            App.SyncGuild();  // and tell the guild a training day happened
             Ended?.Invoke(this, snap);
         }
 

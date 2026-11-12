@@ -76,6 +76,16 @@ namespace Forge.Constants
         }
 
         /// <summary>
+        /// The guild + encrypted-backup server (Decision 24): Forge.Server on the nidavellir LXC,
+        /// reached over Tailscale HTTPS. Tailnet-only until Funnel is switched on for it; the URL
+        /// is the same either way.
+        /// </summary>
+        public static class Nidavellir
+        {
+            public const string BaseUrl = "https://nidavellir.tail625ec6.ts.net/";
+        }
+
+        /// <summary>
         /// In-app update delivery. Builds are published as GitHub Releases by CI; the app reads
         /// them straight from the public Releases API.
         /// </summary>

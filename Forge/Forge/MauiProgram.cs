@@ -80,6 +80,10 @@ namespace Forge
             builder.Services.AddSingleton<IUpdateService, UpdateService>();
             builder.Services.AddSingleton<IStravaService, StravaService>();
             builder.Services.AddSingleton<IDailyCheckInService, DailyCheckInService>();
+            // Guild + encrypted off-phone backups on nidavellir (Decision 24).
+            builder.Services.AddSingleton<IGuildService, GuildService>();
+            builder.Services.AddSingleton<IOffsiteBackupService, OffsiteBackupService>();
+            builder.Services.AddTransient<GuildPage>();
 
             // UI
             // The four tabs (Decision 20)

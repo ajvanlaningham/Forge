@@ -215,6 +215,25 @@ Then add four repository secrets:
 
 The keystore itself must never be committed.
 
+### Nidavellir (guild + encrypted backup server)
+`Forge/Forge.Server` is a small ASP.NET minimal API (SQLite) for guilds and end-to-end encrypted
+backups (Decision 24). It runs on **nidavellir**, an unprivileged Debian 13 LXC (id 107) on the
+Proxmox host yggdrasil, as the `forge-server` systemd unit (user `forge`, data in
+`/var/lib/forge-server/nidavellir.db`, app in `/opt/forge-server`), listening on
+`127.0.0.1:5080`. `ssh nidavellir` works directly from asgard (key-only); `nidavellir.home`
+resolves via bifrost's Pi-hole. Deploy with `./deploy-server.sh` (tests, publish, copy,
+restart, health check); `--setup` is the one-time unit + `tailscale serve` step. It does **not**
+ship with the Android CI (server-only changes are path-ignored there).
+
+Reachability: `https://nidavellir.tail625ec6.ts.net` (`GameConstants.Nidavellir.BaseUrl`) is
+**tailnet-only** via `tailscale serve`. Making it public (needed once a guild member's phone isn't
+on this tailnet) is `ssh nidavellir tailscale funnel --bg 5080`, a deliberate human step.
+
+Contracts and rules live in `Forge.Core/Guild` (shared by app and server); the server is
+covered by in-process integration tests (`GuildServerTests`). The server never stores health
+data: member status is game state only, tokens are stored as SHA-256 hashes, and backups are
+AES-256-GCM ciphertext keyed from a recovery key only the user holds (`BackupCrypto`).
+
 ### Strava credentials
 Strava has no PKCE, so its sign-in needs the API app's client secret, and the APKs are public
 downloads. So the secret is **never built in or committed**: each phone pastes it once (Settings →

@@ -17,6 +17,9 @@ on:
       - "**.md"
       - "docs/**"
       - "art/**"
+      # The nidavellir server ships with deploy-server.sh, not as a phone update.
+      - "Forge/Forge.Server/**"
+      - "deploy-server.sh"
       - ".gitignore"
   workflow_dispatch:
 

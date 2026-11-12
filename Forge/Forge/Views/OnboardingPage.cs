@@ -103,8 +103,14 @@ public sealed class OnboardingPage : ContentPage
         var restore = new Button { Text = "Restore a backup", HeightRequest = 56, FontFamily = "PixelUI", FontSize = 22 };
         restore.Clicked += async (_, _) =>
         {
-            if (_preview) { await DisplayAlertAsync("Preview", "In a real first run this opens the backup picker.", "OK"); return; }
-            await RestoreFlow.RunAsync(this, _services.GetRequiredService<IBackupService>());
+            if (_preview) { await DisplayAlertAsync("Preview", "In a real first run this asks: a backup file, or nidavellir with your recovery key.", "OK"); return; }
+            var from = await DisplayActionSheetAsync("Restore from", "Cancel", null,
+                "A backup file (Download/Forge)", "Nidavellir (recovery key)");
+            if (from == "A backup file (Download/Forge)")
+                await RestoreFlow.RunAsync(this, _services.GetRequiredService<IBackupService>());
+            else if (from == "Nidavellir (recovery key)")
+                await RestoreFlow.RunOffsiteAsync(this, _services.GetRequiredService<IBackupService>(),
+                    _services.GetRequiredService<IOffsiteBackupService>());
         };
         return new VerticalStackLayout
         {

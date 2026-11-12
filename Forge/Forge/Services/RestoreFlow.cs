@@ -33,6 +33,33 @@ namespace Forge.Services
                 return;
             }
 
+            await RestoreStreamAsync(page, backup, stream, fileName);
+        }
+
+        /// <summary>
+        /// Restore from nidavellir (Decision 24): ask for the recovery key, download and decrypt,
+        /// then the same checks and confirmation as a file from the picker.
+        /// </summary>
+        public static async Task RunOffsiteAsync(Page page, IBackupService backup, Interfaces.IOffsiteBackupService offsite)
+        {
+            var key = await page.DisplayPromptAsync("Restore from nidavellir",
+                "Enter your recovery key (13 groups of 4, from your password manager).",
+                "Restore", "Cancel", placeholder: "XXXX-XXXX-…", maxLength: 80,
+                keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter));
+            if (string.IsNullOrWhiteSpace(key)) return;
+
+            var (path, error) = await offsite.DownloadAsync(key);
+            if (path is null)
+            {
+                await page.DisplayAlertAsync("Can't restore", error ?? "Something went wrong.", "OK");
+                return;
+            }
+            try { await RestoreStreamAsync(page, backup, File.OpenRead(path), "Backup from nidavellir"); }
+            finally { try { File.Delete(path); } catch { /* cache */ } }
+        }
+
+        private static async Task RestoreStreamAsync(Page page, IBackupService backup, Stream stream, string fileName)
+        {
             RestoreCheck check;
             await using (stream)
                 check = await backup.InspectAsync(stream, fileName);

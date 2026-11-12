@@ -150,6 +150,9 @@ namespace Forge.Services
         public static string HeroSprite(string race, string cls) => $"char_{race}_{cls}.png";
         public static string HeroSpriteFile => HeroSprite(HeroRace, HeroClass);
         public static string HeroTitle => $"{Label(Races, HeroRace)} {Label(Classes, HeroClass)}";
+        /// <summary>"Halfling Ranger" for any race/class ids (a guild member's, say); unknown ids fall back to the id.</summary>
+        public static string HeroTitleFor(string race, string cls) => $"{Label(Races, race)} {Label(Classes, cls)}";
+        public static bool IsHero(string race, string cls) => Races.Any(r => r.Id == race) && Classes.Any(c => c.Id == cls);
 
         private static string Valid(string id, (string Id, string Label)[] options, string fallback)
             => options.Any(o => o.Id == id) ? id : fallback;

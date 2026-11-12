@@ -18,6 +18,63 @@ namespace Forge.ViewModels
         private readonly IBackupService _backup;
         private readonly IStravaService _strava;
         private readonly IHealthData _health;
+        private readonly IOffsiteBackupService _offsite;
+
+        // --- encrypted off-phone backup (Decision 24) ---
+        private string _offsiteStatus = "";
+        public string OffsiteStatus { get => _offsiteStatus; private set => SetProperty(ref _offsiteStatus, value); }
+
+        private string _offsiteButtonText = "";
+        public string OffsiteButtonText { get => _offsiteButtonText; private set => SetProperty(ref _offsiteButtonText, value); }
+
+        private bool _offsiteOn;
+        public bool OffsiteOn { get => _offsiteOn; private set => SetProperty(ref _offsiteOn, value); }
+
+        public ICommand OffsiteCommand { get; }
+        public ICommand OffsiteNowCommand { get; }
+        public ICommand OffsiteOffCommand { get; }
+        public ICommand RestoreOffsiteCommand { get; }
+        private bool _offsiteBusy;
+
+        public void RefreshOffsite(string? message = null)
+        {
+            OffsiteOn = _offsite.IsSetUp;
+            OffsiteButtonText = OffsiteOn ? "Show recovery key" : "Set up off-phone backup";
+            var last = _offsite.LastUploadUtc is DateTime t ? $"Last off-phone backup: {t.ToLocalTime():ddd MMM d, h:mm tt}." : "No off-phone backup yet.";
+            OffsiteStatus = message ?? (OffsiteOn
+                ? last + (_offsite.LastResult.Length > 0 && !_offsite.LastResult.StartsWith("Backed up") ? $"\n{_offsite.LastResult}" : "")
+                : "Off.");
+        }
+
+        private async Task OffsiteAsync()
+        {
+            if (_offsiteBusy) return;
+            _offsiteBusy = true;
+            try
+            {
+                string? key;
+                if (_offsite.IsSetUp) key = await _offsite.RecoveryKeyAsync();
+                else
+                {
+                    if (!await Shell.Current.DisplayAlertAsync("Set up off-phone backup?",
+                            "Forge will make a recovery key. You'll need it to restore, and nobody can recover it for you, " +
+                            "so have your password manager ready.", "Make my key", "Cancel")) return;
+                    OffsiteStatus = "Encrypting and uploading…";
+                    key = await _offsite.SetUpAsync();
+                }
+                RefreshOffsite();
+                if (key is null) return;
+                var copy = await Shell.Current.DisplayAlertAsync("Your recovery key",
+                    $"{key}\n\nSave it in your password manager now. Without it, nobody can open your off-phone backup, including you.",
+                    "Copy key", "Done");
+                if (copy)
+                {
+                    await Clipboard.Default.SetTextAsync(key);
+                    OffsiteStatus = "Recovery key copied. Paste it into your password manager.";
+                }
+            }
+            finally { _offsiteBusy = false; }
+        }
 
         // --- Health Connect / Apple Health ---
         public string HealthTitle => _health.StoreName;
@@ -178,8 +235,25 @@ namespace Forge.ViewModels
                 : $"No backup yet · they go to {_backup.Location}";
         }
 
-        public SettingsViewModel(IUpdateService updates, IBackupService backup, IStravaService strava, IHealthData health)
+        public SettingsViewModel(IUpdateService updates, IBackupService backup, IStravaService strava, IHealthData health, IOffsiteBackupService offsite)
         {
+            _offsite = offsite;
+            OffsiteCommand = new Command(async () => await OffsiteAsync());
+            OffsiteNowCommand = new Command(async () =>
+            {
+                if (_offsiteBusy) return;
+                _offsiteBusy = true;
+                OffsiteStatus = "Encrypting and uploading…";
+                try { RefreshOffsite(await _offsite.UploadNowAsync()); }
+                finally { _offsiteBusy = false; }
+            });
+            OffsiteOffCommand = new Command(async () =>
+            {
+                if (!await Shell.Current.DisplayAlertAsync("Turn off off-phone backup?",
+                        "The encrypted copy on nidavellir is deleted. Backups in Download/Forge carry on.", "Turn off", "Keep")) return;
+                RefreshOffsite(await _offsite.TurnOffAsync());
+            });
+            RestoreOffsiteCommand = new Command(async () => await RestoreFlow.RunOffsiteAsync(Shell.Current.CurrentPage, _backup, _offsite));
             _health = health;
             HealthCommand = new Command(async () => await HealthAsync());
             _updates = updates;

@@ -9,8 +9,7 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Forge">
 
-    <!-- Four tabs (Decision 20). Settings is a cog in each tab's top bar; the Guild returns
-         later as the multi-user / friends tab. -->
+    <!-- Five tabs (Decisions 20, 24). Settings is a cog in each tab's top bar. -->
     <TabBar>
         <ShellContent Title="Today" ContentTemplate="{DataTemplate views:TodayPage}"
                       Route="today" Icon="{StaticResource IconToday}" />
@@ -20,5 +19,7 @@
                       Route="hero" Icon="{StaticResource IconHero}" />
         <ShellContent Title="Chronicle" ContentTemplate="{DataTemplate views:ChroniclePage}"
                       Route="chronicle" Icon="{StaticResource IconChronicle}" />
+        <ShellContent Title="Guild" ContentTemplate="{DataTemplate views:GuildPage}"
+                      Route="guild" Icon="{StaticResource IconGuild}" />
     </TabBar>
 </Shell>

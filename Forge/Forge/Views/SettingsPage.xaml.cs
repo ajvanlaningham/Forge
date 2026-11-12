@@ -19,5 +19,6 @@ public partial class SettingsPage : ContentPage
         _vm.RefreshBackupStatus();
         _ = _vm.RefreshStravaAsync();
         _ = _vm.RefreshHealthAsync();
+        _vm.RefreshOffsite();
     }
 }

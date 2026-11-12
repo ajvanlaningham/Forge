@@ -130,6 +130,12 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     keeps only its hash (no email, no social login, so no Sign in with Apple requirement). Forge
     stays offline-first and syncs on foreground; a down server only delays guild updates. Order:
     design → server + Android (tested with a second install) → iOS → Miche joins.
+    **Encrypted backups** ride on the same server: a 256-bit recovery key (shown once, kept in
+    a password manager) derives the backup's location, its write token and the AES-256-GCM key
+    via HKDF; the phone uploads ciphertext daily; restore needs only the key. **Built
+    2026-11-12:** `Forge.Server` on nidavellir (tailnet-only until Funnel), Guild tab, guild XP
+    via `GuildRewardRow`, Settings → off-phone backup, restore from nidavellir in Settings and
+    onboarding.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
@@ -442,8 +448,8 @@ Rework the program format before writing real content:
      Sign in with Apple + Google (Apple requires its own sign-in on iOS if any social login is
      offered), a small backend (e.g. Supabase/Postgres + auth), and a web dashboard. Health data
      on a server brings real privacy/security obligations — decide deliberately.
-- **Guild:** comes back as the multi-user / friends tab (Decision 20), designed in Decision 24;
-  server `nidavellir` (LXC on yggdrasil). Hidden until built.
+- **Guild:** built 2026-11-12 (Decision 24). Still open: Funnel (public access) before Miche
+  joins from outside the tailnet; worn gear on member sprites once heroes can wear gear.
 - **Food via MyFitnessPal:** MFP has no public API, but it writes nutrition to Health Connect /
   Apple Health; Forge reads it through `IHealthData`. Miche is the MFP user (iPhone), so this
   waits for the iOS build. Check first whether MFP's free tier writes nutrition there.
