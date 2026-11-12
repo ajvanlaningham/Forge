@@ -32,7 +32,7 @@ namespace Forge.Constants
                 "recovery.v1.json"
             };
 
-            public const string LibraryVersion = "v8"; // v8: Four-Day Home Split exercises; one-arm row needs no bench; push/pull planes
+            public const string LibraryVersion = "v9"; // v8: Four-Day Home Split exercises; v9: one-arm row needs no bench, push/pull planes
             public const string ExSourceTag = "recovery";
         }
 
