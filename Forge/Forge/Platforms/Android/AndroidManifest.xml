@@ -8,16 +8,32 @@
 		<!-- Hands the downloaded APK to the OS package installer (a different app) via a
 		     content:// URI. Authority matches UpdateService.InstallApkAsync:
 		     ${applicationId}.fileprovider. Paths are declared in Resources/xml/file_paths.xml. -->
+		<!-- Health Connect (Android 14+) opens this to show why Forge wants health data; it must
+		     point at the rationale activity, whose fixed name is set in HealthRationaleActivity.cs. -->
+		<activity-alias android:name="ViewPermissionUsageActivity" android:exported="true"
+		                android:targetActivity="io.github.ajvanlaningham.forge.HealthRationaleActivity"
+		                android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+				<category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+			</intent-filter>
+		</activity-alias>
 		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
 		</provider>
 	</application>
 	<!-- Strava sign-in opens in a Custom Tab; Android 11+ hides browsers from apps that don't declare this. -->
 	<queries>
+		<!-- Health Connect as a separate app (Android 13 and older). -->
+		<package android:name="com.google.android.apps.healthdata" />
 		<intent>
 			<action android:name="android.support.customtabs.action.CustomTabsService" />
 		</intent>
 	</queries>
+	<!-- Health Connect reads for the daily check-in (resting HR, sleep, steps). Read-only. -->
+	<uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
+	<uses-permission android:name="android.permission.health.READ_SLEEP" />
+	<uses-permission android:name="android.permission.health.READ_STEPS" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<!-- Lets the in-app Update button install the downloaded release APK. The OS still

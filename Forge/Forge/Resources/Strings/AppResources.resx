@@ -409,7 +409,7 @@
     <comment>New</comment>
   </data>
   <data name="CheckInPage_Placeholder" xml:space="preserve">
-    <value>Sleep, steps, and protein log will go here.</value>
+    <value>Protein and calories will go here.</value>
     <comment>New</comment>
   </data>
   <data name="SettingsPage_UnitsHeader" xml:space="preserve">

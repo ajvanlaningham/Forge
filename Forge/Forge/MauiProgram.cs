@@ -58,7 +58,9 @@ namespace Forge
 #if ANDROID
             builder.Services.AddSingleton<IRestAlarm, Forge.Platforms.Android.RestAlarm>();
             builder.Services.AddSingleton<IBackupSink, Forge.Platforms.Android.DownloadsBackupSink>();
+            builder.Services.AddSingleton<IHealthData, Forge.Platforms.Android.HealthConnectData>();
 #else
+            builder.Services.AddSingleton<IHealthData, NoHealthData>();
             builder.Services.AddSingleton<IRestAlarm, NoopRestAlarm>();
             builder.Services.AddSingleton<IBackupSink, AppDataBackupSink>();
 #endif
@@ -83,6 +85,7 @@ namespace Forge
             // In-app updates (Android delivery path; see TODO.md Epic 9)
             builder.Services.AddSingleton<IUpdateService, UpdateService>();
             builder.Services.AddSingleton<IStravaService, StravaService>();
+            builder.Services.AddSingleton<IDailyCheckInService, DailyCheckInService>();
 
             // UI
             // The four tabs (Decision 20)
