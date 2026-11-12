@@ -29,7 +29,7 @@ namespace Forge.ViewModels
             _daily = daily;
             _health = health;
             SaveRecoveryCommand = new AsyncRelayCommand(SaveRecoveryAsync, () => true);
-            HealthCommand = new AsyncRelayCommand(HealthAsync, () => true);
+
             WeightTrendCard = weightTrendCard;
 
             Title = AppResources.CheckInPage_Title;
@@ -176,14 +176,7 @@ namespace Forge.ViewModels
         private string _healthText = "";
         public string HealthText { get => _healthText; private set => SetProperty(ref _healthText, value); }
 
-        private string _healthButtonText = "";
-        public string HealthButtonText { get => _healthButtonText; private set => SetProperty(ref _healthButtonText, value); }
-
-        private bool _hasHealthButton;
-        public bool HasHealthButton { get => _hasHealthButton; private set => SetProperty(ref _hasHealthButton, value); }
-
         public ICommand SaveRecoveryCommand { get; }
-        public ICommand HealthCommand { get; }
 
         private bool _healthConnected;
 
@@ -219,43 +212,12 @@ namespace Forge.ViewModels
 
         private async Task RefreshHealthStatusAsync()
         {
-            _healthConnected = false;
-            switch (_health.Availability)
-            {
-                case HealthAvailability.Unsupported:
-                    HealthText = "Type these in. Watch data isn't available on this phone.";
-                    HasHealthButton = false;
-                    return;
-                case HealthAvailability.NeedsInstall:
-                    HealthText = $"{_health.StoreName} needs installing or updating before Forge can read your watch or phone data.";
-                    HealthButtonText = $"Get {_health.StoreName}";
-                    HasHealthButton = true;
-                    return;
-            }
-            _healthConnected = await _health.HasAnyPermissionAsync();
+            _healthConnected = _health.Availability == HealthAvailability.Available && await _health.HasAnyPermissionAsync();
             HealthText = _healthConnected
                 ? $"Filled from {_health.StoreName} when it has data. What you type always wins."
-                : $"Fill these from your watch or phone through {_health.StoreName}, or just type them.";
-            HealthButtonText = _healthConnected ? $"{_health.StoreName} settings" : $"Connect {_health.StoreName}";
-            HasHealthButton = true;
-        }
-
-        private async Task HealthAsync()
-        {
-            if (_health.Availability != HealthAvailability.Available || _healthConnected)
-            {
-                _health.OpenSettings();
-                return;
-            }
-            var granted = await _health.RequestPermissionsAsync();
-            if (!granted)
-            {
-                RecoveryStatus = $"Nothing was shared. You can still type these, or connect later.";
-                await RefreshHealthStatusAsync();
-                return;
-            }
-            await LoadRecoveryAsync(sync: true);
-            RecoveryStatus = $"Connected to {_health.StoreName}.";
+                : _health.Availability == HealthAvailability.Unsupported
+                    ? "Type these in."
+                    : $"Type these in, or connect {_health.StoreName} in Settings → Connections to fill them from your watch or phone.";
         }
 
         private async Task SaveRecoveryAsync()

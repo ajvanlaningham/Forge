@@ -17,6 +17,57 @@ namespace Forge.ViewModels
         private readonly IUpdateService _updates;
         private readonly IBackupService _backup;
         private readonly IStravaService _strava;
+        private readonly IHealthData _health;
+
+        // --- Health Connect / Apple Health ---
+        public string HealthTitle => _health.StoreName;
+
+        private string _healthStatus = "";
+        public string HealthStatus { get => _healthStatus; private set => SetProperty(ref _healthStatus, value); }
+
+        private string _healthButtonText = "";
+        public string HealthButtonText { get => _healthButtonText; private set => SetProperty(ref _healthButtonText, value); }
+
+        private bool _hasHealthButton;
+        public bool HasHealthButton { get => _hasHealthButton; private set => SetProperty(ref _hasHealthButton, value); }
+
+        public ICommand HealthCommand { get; }
+
+        private bool _healthConnected;
+
+        public async Task RefreshHealthAsync()
+        {
+            var name = _health.StoreName;
+            switch (_health.Availability)
+            {
+                case HealthAvailability.Unsupported:
+                    HealthStatus = "Not available on this phone. The check-in stays manual.";
+                    HasHealthButton = false;
+                    return;
+                case HealthAvailability.NeedsInstall:
+                    HealthStatus = $"{name} needs installing or updating.";
+                    HealthButtonText = $"Get {name}";
+                    HasHealthButton = true;
+                    return;
+            }
+            _healthConnected = await _health.HasAnyPermissionAsync();
+            HealthStatus = _healthConnected ? "Connected." : "Not connected.";
+            HealthButtonText = _healthConnected ? $"Manage in {name}" : $"Connect {name}";
+            HasHealthButton = true;
+        }
+
+        private async Task HealthAsync()
+        {
+            if (_health.Availability != HealthAvailability.Available || _healthConnected)
+            {
+                // Reviewing or revoking access happens in the store's own settings.
+                _health.OpenSettings();
+                return;
+            }
+            var granted = await _health.RequestPermissionsAsync();
+            await RefreshHealthAsync();
+            if (!granted) HealthStatus = "Nothing was shared. The check-in stays manual; connect any time.";
+        }
 
         // --- Strava ---
         private string _stravaStatus = "";
@@ -127,8 +178,10 @@ namespace Forge.ViewModels
                 : $"No backup yet · they go to {_backup.Location}";
         }
 
-        public SettingsViewModel(IUpdateService updates, IBackupService backup, IStravaService strava)
+        public SettingsViewModel(IUpdateService updates, IBackupService backup, IStravaService strava, IHealthData health)
         {
+            _health = health;
+            HealthCommand = new Command(async () => await HealthAsync());
             _updates = updates;
             _backup = backup;
             _strava = strava;
