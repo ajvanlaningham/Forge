@@ -116,13 +116,27 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     full rest after each round). Main loaded lifts get **built-in warm-ups**, shown with their
     percentage: about 50% × 8, and for heavier lifts a ramp set at about 75% × 4 when that lands
     on its own owned weight (none when nothing lighter than the working weight is owned). The list view stays as the logbook.
+24. **Guilds, on a server that holds game state only** (agreed with the user 2026-11-12). Small
+    private guilds (two to six people, invite code; no roles, discovery or kicking). **Shared:**
+    display name, hero look and worn gear, level, per day only *trained / active rest / nothing*,
+    streak counts, and quest progress (which quest, week, done). **Never shared:** weights, sets,
+    bodyweight, heart rate, sleep, steps, test results. **Mechanics:** a joint weekly quest (e.g.
+    the guild logs N training days; contributors earn bonus XP), a streak bonus while every member
+    is on a streak, and a shared reward when every member completes their block. Bonuses are
+    `XpLedger` entries like any other (pay once, undo reclaims). **Server:** a small .NET API +
+    SQLite in a dedicated LXC **`nidavellir`** on the Proxmox host yggdrasil, on the tailnet with
+    its own Tailscale Funnel; guild rules live in `Forge.Core` so the app and server share tested
+    code. **No accounts:** join with an invite code; each phone gets a secret token, the server
+    keeps only its hash (no email, no social login, so no Sign in with Apple requirement). Forge
+    stays offline-first and syncs on foreground; a down server only delays guild updates. Order:
+    design → server + Android (tested with a second install) → iOS → Miche joins.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
 fully-adherent week so test windows stay ~monthly (currently broken — see 8.4).
 
-**External dependencies:** Health Connect (no MAUI binding; blocks Epic 7). A wearable (not
-chosen). Release keystore at `~/.forge-signing/`, deliberately local-only (see `AGENTS.md`).
+**External dependencies:** Health Connect (done 2026-11-12, binding pinned to 1.1.0-alpha07 —
+see `AGENTS.md`). A wearable: likely a Bangle.js 2 via Gadgetbridge (user, 2026-11-12). Release keystore at `~/.forge-signing/`, deliberately local-only (see `AGENTS.md`).
 
 ## Done
 
@@ -428,7 +442,11 @@ Rework the program format before writing real content:
      Sign in with Apple + Google (Apple requires its own sign-in on iOS if any social login is
      offered), a small backend (e.g. Supabase/Postgres + auth), and a web dashboard. Health data
      on a server brings real privacy/security obligations — decide deliberately.
-- **Guild:** comes back as the multi-user / friends tab (Decision 20); hidden until then.
+- **Guild:** comes back as the multi-user / friends tab (Decision 20), designed in Decision 24;
+  server `nidavellir` (LXC on yggdrasil). Hidden until built.
+- **Food via MyFitnessPal:** MFP has no public API, but it writes nutrition to Health Connect /
+  Apple Health; Forge reads it through `IHealthData`. Miche is the MFP user (iPhone), so this
+  waits for the iOS build. Check first whether MFP's free tier writes nutrition there.
 - **Speed stat:** at lower bodyweight; adding a `StatKind` is cheaper before a year of history.
 - **BLE chest strap** (e.g. Polar H10) for in-workout HR via the standard BLE HR profile.
 - **Maintenance/recomposition** mode after goal weight.
