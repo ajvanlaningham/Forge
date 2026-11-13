@@ -359,6 +359,17 @@ public class ShippedProgramContentTests
     }
 
     [Fact]
+    public void EveryMoveAQuestUses_HasAHowToCue()
+    {
+        // The workout screen and the guided rest flow show how to do each move (2026-11-13).
+        var latest = GameConstants.Programs.Files.Select(Load)
+            .GroupBy(p => p.Id).Select(g => g.OrderByDescending(p => p.Version).First());
+        var missing = latest.SelectMany(AllSlots).Select(s => s.Exercise).Distinct()
+            .Where(n => !ExerciseCues.Has(n)).OrderBy(n => n).ToList();
+        Assert.True(missing.Count == 0, "No cue for: " + string.Join(", ", missing));
+    }
+
+    [Fact]
     public void DefaultProgramExists()
         => Assert.Contains(GameConstants.Programs.Files, f => Load(f).Id == GameConstants.Programs.DefaultProgramId);
 

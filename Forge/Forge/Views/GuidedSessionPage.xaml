@@ -129,7 +129,7 @@
                     </Label.FormattedText>
                 </Label>
                 <Label Text="{Binding NotesText}" IsVisible="{Binding HasNotes}" FontFamily="Body" FontSize="17" TextColor="{StaticResource Muted}"
-                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" MaxLines="2" />
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" MaxLines="3" />
             </VerticalStackLayout>
 
             <!-- After a hard set: did you get them all? -->

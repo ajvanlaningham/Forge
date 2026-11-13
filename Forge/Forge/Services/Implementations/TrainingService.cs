@@ -205,7 +205,7 @@ namespace Forge.Services.Implementations
                     SessionId = session.Id, Position = i, ExerciseName = slot.Exercise, SlotIndex = i,
                     TargetSets = ActiveRestRounds, RepsMin = slot.RepsMin, RepsMax = slot.RepsMax,
                     TargetSeconds = seconds, RestSeconds = 10, Superset = "R",
-                    Notes = slot.Notes ?? descriptions.GetValueOrDefault(slot.Exercise),
+                    Notes = slot.Notes ?? ExerciseCues.For(slot.Exercise) ?? descriptions.GetValueOrDefault(slot.Exercise),
                     PlannedLoadLb = 0, PlannedReps = slot.RepsMin, PlannedSeconds = seconds
                 });
             }

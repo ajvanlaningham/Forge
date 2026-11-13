@@ -316,7 +316,8 @@ namespace Forge.ViewModels
             Caption = step.IsWarmup ? $"WARM-UP {WarmupCaption(step)}" : $"SET {step.SetNumber} OF {step.SetsTotal}";
             LoadText = Label(lb, e);
             WorkText = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info), Suggested(e, step));
-            NotesText = e.Row.Notes ?? "";
+            // The program's own note (setup, e.g. "Back foot on the block"), else how to do the move.
+            NotesText = e.Row.Notes ?? ExerciseCues.For(e.Row.ExerciseName) ?? "";
             StepText = $"Set {_pos + 1} of {_steps.Count}";
         }
 
