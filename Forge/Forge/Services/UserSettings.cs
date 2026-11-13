@@ -11,6 +11,8 @@ namespace Forge.Services
     /// <see cref="GameConstants.Defaults"/> are starting points only.
     /// Weight targets (start / milestone / goal) land here with PBI 3.1.
     /// </remarks>
+    public enum ActiveRestStyle { Guided, Freestyle }
+
     public static class UserSettings
     {
         private const string WeeklyConditioningGoalKey = "Settings.WeeklyConditioningGoalMinutes";
@@ -51,6 +53,17 @@ namespace Forge.Services
         }
 
         /// <summary>Where the last session was done — the default for the next one.</summary>
+        /// <summary>
+        /// How a rest day is offered (side quests, 2026-11-13): <b>Guided</b> runs a short mobility
+        /// flow in the workout screen; <b>Freestyle</b> just logs your own practice (a seasoned
+        /// yogi doesn't need to be told what to do).
+        /// </summary>
+        public static ActiveRestStyle ActiveRestStyle
+        {
+            get => (ActiveRestStyle)Preferences.Get("Settings.ActiveRestStyle", (int)ActiveRestStyle.Guided);
+            set => Preferences.Set("Settings.ActiveRestStyle", (int)value);
+        }
+
         public static TrainingLocation LastLocation
         {
             get => (TrainingLocation)Preferences.Get(LastLocationKey, (int)TrainingLocation.Gym);

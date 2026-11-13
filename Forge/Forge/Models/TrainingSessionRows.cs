@@ -47,6 +47,9 @@ namespace Forge.Models
         /// <summary>Seconds left when the rest was paused. Null when not paused.</summary>
         public int? RestPausedSeconds { get; set; }
 
+        /// <summary>A guided active-rest flow (side quests, 2026-11-13): finishing it marks the day's rest done.</summary>
+        public bool IsActiveRest { get; set; }
+
         /// <summary>How the workout felt (Decision 28): a <c>Feel</c> as int, or null when not answered.</summary>
         public int? Feel { get; set; }
     }

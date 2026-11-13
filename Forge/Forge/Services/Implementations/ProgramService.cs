@@ -133,7 +133,7 @@ namespace Forge.Services.Implementations
 
         private async Task<List<DayCompletion>> TrainingAsync(int blockId)
             => (await _days.WhereAsync(r => r.BlockId == blockId && r.Completed))
-                .Select(r => new DayCompletion(r.DayIndex, ParseKey(r.DateKey))).ToList();
+                .Select(r => new DayCompletion(r.DayIndex, ParseKey(r.DateKey), r.Via)).ToList();
 
         /// <summary>Days with active rest done: the mobility / active-rest quest.</summary>
         private async Task<HashSet<DateOnly>> ActiveRestAsync()
@@ -175,7 +175,7 @@ namespace Forge.Services.Implementations
         public async Task<double> MultiplierForAsync(DateOnly date)
             => StreakMath.Multiplier(await ActiveDaysAsync(), date);
 
-        public async Task CompleteDayAsync(DateOnly date, int? sessionId = null)
+        public async Task CompleteDayAsync(DateOnly date, int? sessionId = null, string? via = null)
         {
             var view = await GetViewAsync(date);
             if (view?.Day is null || view.CompletedOnDate) return;
@@ -189,12 +189,13 @@ namespace Forge.Services.Implementations
                 existing.Completed = true;
                 existing.DayIndex = view.Day.DayIndex;
                 existing.SessionId = sessionId ?? existing.SessionId;
+                existing.Via = via;
                 await _days.UpdateAsync(existing);
                 return;
             }
             await _days.InsertAsync(new ProgramDayCompletionRow
             {
-                BlockId = blockId, DateKey = key, DayIndex = view.Day.DayIndex, Completed = true, SessionId = sessionId
+                BlockId = blockId, DateKey = key, DayIndex = view.Day.DayIndex, Completed = true, SessionId = sessionId, Via = via
             });
         }
 

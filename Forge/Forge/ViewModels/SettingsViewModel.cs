@@ -299,6 +299,17 @@ namespace Forge.ViewModels
         /// pounds — see <see cref="Forge.Constants.WeightMath"/> — so flipping this never
         /// touches persisted values, only what the UI shows.
         /// </summary>
+        /// <summary>Rest days: guided flow (off) or freestyle, your own practice (on).</summary>
+        public bool FreestyleRest
+        {
+            get => UserSettings.ActiveRestStyle == ActiveRestStyle.Freestyle;
+            set
+            {
+                UserSettings.ActiveRestStyle = value ? ActiveRestStyle.Freestyle : ActiveRestStyle.Guided;
+                OnPropertyChanged();
+            }
+        }
+
         public bool UseKilograms
         {
             get => _useKilograms;

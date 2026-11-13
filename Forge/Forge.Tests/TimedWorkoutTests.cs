@@ -119,3 +119,58 @@ public class TimedCircuitTests
         Assert.Equal(2 * both + 2 * side + 3 * 45, secs); // no rest after the last set
     }
 }
+
+/// <summary>Side quests (user, 2026-11-13): your own training counts.</summary>
+public class SideQuestTests
+{
+    [Theory]
+    [InlineData(180, Effort.Hard, SideQuestCounts.Training)]   // three hours of HEMA
+    [InlineData(45, Effort.Moderate, SideQuestCounts.Training)] // a gym class
+    [InlineData(60, Effort.Easy, SideQuestCounts.Rest)]         // a yoga practice
+    [InlineData(20, Effort.Hard, SideQuestCounts.Rest)]         // too short to replace a workout
+    public void Suggests_TrainingOrRest(int minutes, Effort effort, SideQuestCounts expected)
+        => Assert.Equal(expected, SideQuests.Suggest(minutes, effort));
+
+    [Fact]
+    public void StandsIn_AtMostTwiceAWeek_AndOnlyWhenADayIsOnOffer()
+    {
+        Assert.True(SideQuests.CanStandIn(true, 1));
+        Assert.False(SideQuests.CanStandIn(true, SideQuests.MaxTrainingPerWeek));
+        Assert.False(SideQuests.CanStandIn(false, 0));
+    }
+
+    [Theory]
+    [InlineData("HEMA", "sword")]
+    [InlineData("Longsword sparring", "sword")]
+    [InlineData("Yoga", "yoga")]
+    [InlineData("Gym class", "class")]
+    [InlineData("Boxing class", "fist")]
+    [InlineData("Ultimate frisbee", "sport")]
+    [InlineData("Knitting", "star")]
+    public void Icons(string activity, string icon) => Assert.Equal(icon, SideQuests.Icon(activity));
+
+    [Theory]
+    [InlineData(45, "45 min")]
+    [InlineData(60, "1 h")]
+    [InlineData(90, "1 h 30")]
+    [InlineData(180, "3 h")]
+    public void Durations(int minutes, string text) => Assert.Equal(text, SideQuests.Duration(minutes));
+
+    [Fact]
+    public void ADayFilledByASideQuest_CarriesItOntoTheMap()
+    {
+        var start = new DateOnly(2026, 11, 9);
+        var nodes = QuestMap.Build(start, 4, [new DayCompletion(0, start, "HEMA")], new HashSet<DateOnly>(), start);
+        Assert.Equal("HEMA", nodes[0].Via);
+        Assert.Equal(MapNodeState.Done, nodes[0].State);
+        Assert.Null(nodes[1].Via);
+    }
+
+    [Fact]
+    public void ABigHardDay_SuggestsRestTomorrow()
+    {
+        Assert.True(SideQuests.BigDay(180, Effort.Hard));
+        Assert.False(SideQuests.BigDay(180, Effort.Moderate));
+        Assert.False(SideQuests.BigDay(45, Effort.Hard));
+    }
+}

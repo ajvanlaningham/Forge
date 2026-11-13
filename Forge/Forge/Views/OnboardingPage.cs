@@ -26,6 +26,7 @@ public sealed class OnboardingPage : ContentPage
 
     // Choices, applied together at the end.
     private WeightUnit _unit = WeightUnit.Pounds;
+    private ActiveRestStyle _restStyle = ActiveRestStyle.Guided;
     private string _race = "construct";
     private string _class = "wizard";
     private Equipment _gear = Equipment.Wall;
@@ -133,9 +134,16 @@ public sealed class OnboardingPage : ContentPage
         var kg = Choice("Kilograms (kg)", _unit == WeightUnit.Kilograms);
         lb.Clicked += (_, _) => { _unit = WeightUnit.Pounds; Show(1); };
         kg.Clicked += (_, _) => { _unit = WeightUnit.Kilograms; Show(1); };
+        // Rest days, each person's way (side quests, 2026-11-13).
+        var guided = Choice("Guide me through it", _restStyle == ActiveRestStyle.Guided);
+        var free = Choice("I'll do my own thing", _restStyle == ActiveRestStyle.Freestyle);
+        guided.Clicked += (_, _) => { _restStyle = ActiveRestStyle.Guided; Show(1); };
+        free.Clicked += (_, _) => { _restStyle = ActiveRestStyle.Freestyle; Show(1); };
         var next = Primary("Next");
         next.Clicked += (_, _) => Show(2);
-        return Stack(Title("Which units do you lift in?"), lb, kg, Note("Change it any time in Settings."), next);
+        return Stack(Title("Which units do you lift in?"), lb, kg,
+            Title("And on rest days?"), guided, free,
+            Note("Guided runs a ten-minute mobility flow on the timer. Your own thing (yoga, a walk) you just log. Change either any time in Settings."), next);
     }
 
     private View Hero()
@@ -272,6 +280,7 @@ public sealed class OnboardingPage : ContentPage
         try
         {
             UserSettings.WeightUnit = _unit;
+            UserSettings.ActiveRestStyle = _restStyle;
             UserSettings.HeroRace = _race;
             UserSettings.HeroClass = _class;
             var inventory = _services.GetRequiredService<IInventoryService>();

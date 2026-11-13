@@ -218,6 +218,30 @@ def compass():
     return [''.join(r) for r in g]
 
 
+def crossed_swords():
+    """A side quest's stone icon for HEMA (2026-11-13): two cream blades crossed, gold guards."""
+    n = 16
+    g = [['.'] * n for _ in range(n)]
+
+    def put(x, y, c):
+        if 0 <= x < n and 0 <= y < n:
+            g[y][x] = c
+    for mirror in (False, True):
+        X = (lambda x: n - 1 - x) if mirror else (lambda x: x)
+        for t in range(9):                      # the blade, tip at the top
+            put(X(1 + t), 1 + t, 'G')
+        for k in range(-1, 2):                  # the guard, across the blade
+            put(X(10 + k), 10 - k, 'H')
+        put(X(11), 11, 'y'); put(X(12), 12, 'y')  # the grip
+        put(X(13), 13, 'H')                     # the pommel
+    for y in range(n):
+        for x in range(n):
+            if g[y][x] == '.' and any(0 <= x + a < n and 0 <= y + b < n and g[y + b][x + a] not in '.A'
+                                      for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                g[y][x] = 'A'
+    return [''.join(r) for r in g]
+
+
 def write(name, rows, colours=None):
     head = ''.join(f'#! {k} {v}\n' for k, v in (colours or {}).items())
     (OUT / f'{name}.txt').write_text(head + '\n'.join(rows) + '\n')
@@ -250,6 +274,7 @@ def main():
     write('map_chest', CHEST_SHUT.splitlines())
     write('map_chest_open', CHEST_OPEN.splitlines())
     write('map_compass', compass())
+    write('map_icon_sword', crossed_swords())
     write('scroll_knob', KNOB.splitlines())
     write('scroll_knob_r', [r[::-1] for r in KNOB.splitlines()])
     print('wrote map sprites')

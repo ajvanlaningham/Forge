@@ -194,6 +194,18 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     and cues kept, a short warm-up added, mains as a 4-round strength circuit, accessories as one
     circuit; 32–37 min a day (it was ~50, mostly rests).
 
+29. **Side quests: your own training counts** (user, 2026-11-13). "I trained my own way" logs an
+    activity (HEMA, a gym class, yoga…), minutes, Easy / Moderate / Hard, and what it counts as.
+    30+ min at Moderate or harder suggests a **training day**: it fills today's stone (its icon,
+    e.g. crossed swords) and counts toward the forging and the chest, **at most two a week**
+    (`SideQuests.MaxTrainingPerWeek`, the user isn't certain of two). Anything else is a **rest
+    day**. Either way it feeds the quest's own records, so XP is that day's (capped per day), and
+    the streak and guild follow. Nothing moves: a side quest fills today's stone, so workouts
+    don't pile up; after a big hard one the next card suggests rest, never enforces it. Rest days
+    follow each person's style (onboarding, Settings): **Guided**, a ~10-minute mobility flow on
+    the timer with each move's instructions, or **Freestyle**, which just logs your own practice
+    (Miche).
+
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
 fully-adherent week so test windows stay ~monthly (currently broken — see 8.4).

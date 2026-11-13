@@ -78,6 +78,13 @@
                 <Button Grid.Column="3" Text="+" Command="{Binding RestUpCommand}" WidthRequest="48" Padding="0" />
             </Grid>
             <Label Text="Used when a program doesn't set its own rest. Warm-ups rest at most a minute." FontSize="15" Opacity="0.7" />
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8" Margin="0,8,0,0">
+                <Label Text="Rest days" VerticalOptions="Center" />
+                <Label Grid.Column="1" Text="Guided" VerticalOptions="Center" />
+                <Switch Grid.Column="2" IsToggled="{Binding FreestyleRest}" VerticalOptions="Center" />
+                <Label Grid.Column="3" Text="Freestyle" VerticalOptions="Center" />
+            </Grid>
+            <Label Text="Guided runs a ten-minute mobility flow on the timer. Freestyle just logs your own practice, like yoga or a walk." FontSize="15" Opacity="0.7" />
             <Button Text="Gym equipment" Command="{Binding OpenGymEquipmentCommand}" />
             <Label Text="Home uses My gear on the Hero tab." FontSize="15" Opacity="0.7" />
 

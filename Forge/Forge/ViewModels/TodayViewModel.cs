@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows.Input;
 using Forge.Constants;
+using Forge.Models;
 using Forge.Services;
 using Forge.Services.Interfaces;
 using Forge.Training;
@@ -122,9 +123,10 @@ namespace Forge.ViewModels
 
         public TodayViewModel(IProgramService programs, ITrainingService training, IActiveRestService activeRest,
             IConditioningWeekService conditioning, IStatsService stats, IExerciseLibraryImporter importer, ProgressService progress,
-            IStatTestService tests)
+            IStatTestService tests, ISideQuestService sideQuests)
         {
             _tests = tests;
+            _sideQuests = sideQuests;
             TestCommand = new Command(async () =>
             {
                 if (_due is { } d)
@@ -145,6 +147,39 @@ namespace Forge.ViewModels
             Conditioning.HintText = "Minutes of cardio: bike, bag rounds, brisk walks.";
             Conditioning.ShowHint = true;
             Conditioning.AddMinutesCommand = new Command<object>(async p => await AddMinutesAsync(p));
+        }
+
+        // --- side quests (user, 2026-11-13) ---
+        private readonly ISideQuestService _sideQuests;
+
+        /// <summary>Today's side quest, if one was logged.</summary>
+        public SideQuestRow? TodaySideQuest { get; private set; }
+
+        /// <summary>Yesterday was a big, hard side quest: today's card suggests rest (never enforced).</summary>
+        public bool BigDayYesterday { get; private set; }
+
+        public Task<IReadOnlyList<SideQuestActivity>> SideQuestActivitiesAsync() => _sideQuests.RecentAsync();
+        public Task<bool> SideQuestCanStandInAsync() => _sideQuests.CanStandInAsync(_today);
+        public Task<SideQuestRow?> SideQuestOnAsync(DateOnly date) => _sideQuests.GetAsync(date);
+
+        public async Task LogSideQuestAsync(string activity, int minutes, Effort effort, SideQuestCounts counts, string? note)
+        {
+            var delta = await _sideQuests.LogAsync(_today, activity, minutes, effort, counts, note);
+            await RefreshAsync();
+            if (delta > 0) XpAwarded?.Invoke(this, delta);
+        }
+
+        public async Task UndoSideQuestAsync()
+        {
+            await _sideQuests.UndoAsync(_today);
+            await RefreshAsync();
+        }
+
+        /// <summary>The guided rest-day flow, in the workout screen.</summary>
+        public async Task StartActiveRestAsync()
+        {
+            var snap = await _training.StartActiveRestAsync(_today);
+            await Shell.Current.GoToAsync($"{nameof(GuidedSessionPage)}?sessionId={snap.Session.Id}");
         }
 
         /// <summary>Per-side and loaded flags for timing a day (Decision 28).</summary>
@@ -200,6 +235,9 @@ namespace Forge.ViewModels
                 }
 
                 ActiveRestDone = await _activeRest.IsDoneAsync(_today);
+                TodaySideQuest = await _sideQuests.GetAsync(_today);
+                var yesterday = await _sideQuests.GetAsync(_today.AddDays(-1));
+                BigDayYesterday = yesterday is not null && SideQuests.BigDay(yesterday.Minutes, (Effort)yesterday.Effort);
                 // Active rest is for days without training: hidden once today's training is done.
                 ShowActiveRest = view is null || !view.CompletedOnDate;
                 if (view?.Program.Definition.ActiveRest is { } rest)

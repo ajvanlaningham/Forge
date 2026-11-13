@@ -25,8 +25,10 @@ namespace Forge.Services.Implementations
             IRepository<ExerciseRow> library,
             IExerciseLibraryImporter importer,
             IInventoryService inventory,
-            IProgramService programs)
+            IProgramService programs,
+            IActiveRestService rest)
         {
+            _rest = rest;
             _sessions = sessions;
             _exercises = exercises;
             _sets = sets;
@@ -166,6 +168,58 @@ namespace Forge.Services.Implementations
                 Title = $"{ProgramDefinition.WeekName(week)} · {day.Name}" + (day.IsLight ? " (light)" : "")
             };
         }
+
+        private readonly IActiveRestService _rest;
+
+        /// <summary>Two easy rounds of the flow: about ten minutes.</summary>
+        private const int ActiveRestRounds = 2;
+
+        /// <summary>
+        /// A guided active rest (side quests, 2026-11-13): the quest's rest-day flow run in the workout
+        /// screen as a gentle circuit, each move on the clock with the library's description as its
+        /// instructions. Finishing it marks the day's active rest done; it never completes training.
+        /// </summary>
+        public async Task<SessionSnapshot> StartActiveRestAsync(DateOnly date)
+        {
+            var existing = await GetInProgressAsync();
+            if (existing is not null) return existing;
+
+            var program = await _programs.GetActiveAsync();
+            var flow = program?.Definition.ActiveRest.Flow is { Count: > 0 } f ? f : DefaultRestFlow;
+            var lib = await LibraryAsync();
+            var names = flow.Select(s => s.Exercise).ToHashSet(StringComparer.Ordinal);
+            var descriptions = (await _library.WhereAsync(r => r.IsActive))
+                .Where(r => names.Contains(r.Name)).GroupBy(r => r.Name).ToDictionary(g => g.Key, g => g.First().Description);
+
+            var session = NewSession(date, UserSettings.LastLocation);
+            session.Title = "Active rest";
+            session.IsActiveRest = true;
+            await _sessions.InsertAsync(session);
+            for (var i = 0; i < flow.Count; i++)
+            {
+                var slot = flow[i];
+                var perSide = lib.TryGetValue(slot.Exercise, out var info) && info.Unilateral;
+                var seconds = slot.Seconds ?? (perSide ? 30 : 40);
+                await _exercises.InsertAsync(new SessionExerciseRow
+                {
+                    SessionId = session.Id, Position = i, ExerciseName = slot.Exercise, SlotIndex = i,
+                    TargetSets = ActiveRestRounds, RepsMin = slot.RepsMin, RepsMax = slot.RepsMax,
+                    TargetSeconds = seconds, RestSeconds = 10, Superset = "R",
+                    Notes = slot.Notes ?? descriptions.GetValueOrDefault(slot.Exercise),
+                    PlannedLoadLb = 0, PlannedReps = slot.RepsMin, PlannedSeconds = seconds
+                });
+            }
+            return await SnapshotAsync(session);
+        }
+
+        private static readonly IReadOnlyList<ProgramSlot> DefaultRestFlow =
+        [
+            new ProgramSlot { Exercise = "Cat-Cow", RepsMin = 8, RepsMax = 8 },
+            new ProgramSlot { Exercise = "World's Greatest Stretch", Seconds = 30 },
+            new ProgramSlot { Exercise = "90/90 Hip Switch", RepsMin = 10, RepsMax = 10 },
+            new ProgramSlot { Exercise = "Deep Squat Hold", Seconds = 60 },
+            new ProgramSlot { Exercise = "Child's Pose", Seconds = 45 },
+        ];
 
         public async Task<SessionSnapshot> StartFromPlanAsync(SessionPlan plan)
         {
@@ -406,7 +460,10 @@ namespace Forge.Services.Implementations
                 row.RestPausedSeconds = null;
                 await _sessions.UpdateAsync(row);
 
-                await CompleteProgramDayAsync(row);
+                if (row.IsActiveRest)
+                    await _rest.SetDoneAsync(DateOnly.ParseExact(row.DateKey, "yyyy-MM-dd"), true);
+                else
+                    await CompleteProgramDayAsync(row);
             }
             return await SnapshotAsync(row);
         }

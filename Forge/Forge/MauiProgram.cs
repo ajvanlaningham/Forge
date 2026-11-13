@@ -50,6 +50,7 @@ namespace Forge
             builder.Services.AddSingleton<IExerciseLibraryService, ExerciseLibraryService>();
             builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<IActiveRestService, ActiveRestService>();
+            builder.Services.AddSingleton<ISideQuestService, SideQuestService>();
             builder.Services.AddSingleton<IForgeService, ForgeService>();
             builder.Services.AddSingleton<IStatTestService, StatTestService>();
             builder.Services.AddSingleton<ITrainingService, TrainingService>();

@@ -207,6 +207,7 @@ namespace Forge.ViewModels
             SessionId = sessionId;
             _dueTest = await _tests.DueTodayAsync(DateOnly.FromDateTime(DateTime.Today));
             await ReloadAsync();
+            if (_snap!.Session.IsActiveRest) { _dueTest = null; UpdateHealth(); } // a rest flow has no trial
             // Finished or discarded from the list view: nothing left to guide.
             if (_snap!.Session.EndedAtUtc is not null) { Ended?.Invoke(this, null); return; }
             try { await _alarm.EnsurePermissionAsync(); } catch { /* permission UI unavailable */ }
@@ -435,6 +436,7 @@ namespace Forge.ViewModels
         /// </summary>
         private async Task WrapUpAsync()
         {
+            if (_snap?.Session.IsActiveRest == true) { await FinishAsync(); return; }
             await LoadDueTestAsync();
             if (HasTest) Phase = GuidedPhase.Done;
             else await FinishAsync();
@@ -654,8 +656,14 @@ namespace Forge.ViewModels
             _alarm.Cancel();
             StopClock();
             var finished = await _training.FinishAsync(SessionId);
+            App.SyncGuild();  // tell the guild a training day (or a rest day) happened
+            if (finished.Session.IsActiveRest)
+            {
+                // A rest flow: back to the map, where the campfire is lit. No summary, no Strava post.
+                Ended?.Invoke(this, null);
+                return;
+            }
             App.SyncStrava(); // post it to Strava when connected
-            App.SyncGuild();  // and tell the guild a training day happened
             Ended?.Invoke(this, finished);
         }
 

@@ -28,7 +28,8 @@ namespace Forge.Training
     /// <summary>One stop on the quest map.</summary>
     /// <param name="DayIndex">The training day (0-based) for <see cref="MapNodeKind.Training"/>, else null.</param>
     /// <param name="DoneOn">When a training day was done.</param>
-    public sealed record MapNode(MapNodeKind Kind, int Week, int? DayIndex, MapNodeState State, DateOnly? DoneOn = null);
+    /// <param name="Via">A training day filled by a side quest ("HEMA"): its stone wears that activity's icon.</param>
+    public sealed record MapNode(MapNodeKind Kind, int Week, int? DayIndex, MapNodeState State, DateOnly? DoneOn = null, string? Via = null);
 
     /// <summary>
     /// The quest as a path (plan phase 4, 2026-11-13): for each of the four weeks its training days
@@ -48,16 +49,18 @@ namespace Forge.Training
             {
                 var (start, end) = BlockSchedule.WeekRange(blockStart, week);
                 var doneThisWeek = training.Where(c => c.Date >= start && c.Date <= end && c.Date <= today)
-                    .GroupBy(c => c.DayIndex).ToDictionary(g => g.Key, g => g.Min(c => c.Date));
+                    .GroupBy(c => c.DayIndex).ToDictionary(g => g.Key, g => g.OrderBy(c => c.Date).First());
 
                 for (var day = 0; day < trainingDays; day++)
                 {
                     MapNodeState state;
-                    if (doneThisWeek.TryGetValue(day, out var on)) state = MapNodeState.Done;
+                    if (doneThisWeek.TryGetValue(day, out var done)) state = MapNodeState.Done;
                     else if (week < currentWeek) state = MapNodeState.Passed;
                     else if (week == currentWeek && offer.TrainingDay == day && !offer.TrainingDoneToday) state = MapNodeState.Current;
                     else state = MapNodeState.Ahead;
-                    nodes.Add(new MapNode(MapNodeKind.Training, week, day, state, state == MapNodeState.Done ? on : null));
+                    nodes.Add(state == MapNodeState.Done
+                        ? new MapNode(MapNodeKind.Training, week, day, state, done.Date, done.Via)
+                        : new MapNode(MapNodeKind.Training, week, day, state));
                 }
 
                 // A chest opens once its week is over and was perfect; while the week runs it waits.

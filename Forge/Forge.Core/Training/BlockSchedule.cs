@@ -3,7 +3,8 @@ using Forge.Constants;
 namespace Forge.Training
 {
     /// <summary>A training day completed within a block: which day, and on what date.</summary>
-    public readonly record struct DayCompletion(int DayIndex, DateOnly Date);
+    /// <param name="Via">The side quest that filled this training day ("HEMA"), or null for the quest workout.</param>
+    public readonly record struct DayCompletion(int DayIndex, DateOnly Date, string? Via = null);
 
     /// <summary>What the block offers on a date.</summary>
     /// <param name="Week">1-based week of the block (1–4).</param>

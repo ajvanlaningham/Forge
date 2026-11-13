@@ -86,7 +86,7 @@
                     </VerticalStackLayout>
                 </Grid>
                 <Label Text="{Binding NotesText}" IsVisible="{Binding HasNotes}" FontFamily="Body" FontSize="18" TextColor="{StaticResource Muted}"
-                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" MaxLines="2" />
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" MaxLines="3" />
                 <Label Text="{Binding ThenText}" FontFamily="Body" FontSize="16" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
             <VerticalStackLayout Grid.Row="1" Spacing="2">

@@ -343,7 +343,8 @@ public sealed partial class MapPage : ContentPage
         var fire = new Image { Source = "map_campfire.png", WidthRequest = 80, HeightRequest = 60 };
         var label = new Label
         {
-            Text = done ? "REST DONE ✓" : "REST DAY", FontFamily = "Display", FontSize = 20,
+            Text = !done ? "REST DAY" : _vm.TodaySideQuest is { CountsAs: (int)SideQuestCounts.Rest } rq ? $"{rq.Activity.ToUpperInvariant()} ✓" : "REST DONE ✓",
+            FontFamily = "Display", FontSize = 20,
             TextColor = done ? InkSoft : Ink, HorizontalTextAlignment = TextAlignment.Center
         };
         var stack = new VerticalStackLayout
@@ -372,13 +373,18 @@ public sealed partial class MapPage : ContentPage
         var glyph = node.State == MapNodeState.Done ? GlyphCheck : DayGlyph(node.DayIndex ?? 0);
         var grid = new Grid { WidthRequest = 104, HeightRequest = 92 };
         grid.Add(new Image { Source = sprite, WidthRequest = 104, HeightRequest = 92, Aspect = Aspect.AspectFit });
-        grid.Add(new Label
-        {
-            Text = glyph, FontFamily = "FA", FontSize = 30, TranslationY = -10,
-            // Painted stones carry a cream glyph; the inked sketches of days ahead, an ink one.
-            TextColor = node.State is MapNodeState.Done or MapNodeState.Current ? Cream : InkSoft,
-            HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center
-        });
+        View mark = node.Via is { } via
+            ? SideQuestIcon(via, Cream) // filled by a side quest: its activity's icon instead of a check
+            : new Label
+            {
+                Text = glyph, FontFamily = "FA", FontSize = 30,
+                // Painted stones carry a cream glyph; the inked sketches of days ahead, an ink one.
+                TextColor = node.State is MapNodeState.Done or MapNodeState.Current ? Cream : InkSoft
+            };
+        mark.TranslationY = -10;
+        mark.HorizontalOptions = LayoutOptions.Center;
+        mark.VerticalOptions = LayoutOptions.Center;
+        grid.Add(mark);
         if (node.State == MapNodeState.Passed) grid.Opacity = 0.7;
         return grid;
     }
@@ -407,7 +413,7 @@ public sealed partial class MapPage : ContentPage
 
     // --- sheets ---------------------------------------------------------------------------------
 
-    private void ShowNodeSheet(MapNode node)
+    private async void ShowNodeSheet(MapNode node)
     {
         var q = _vm.Quest;
         if (q is null) return;
@@ -423,10 +429,27 @@ public sealed partial class MapPage : ContentPage
                 if (node.State == MapNodeState.Current)
                 {
                     body.Children.Add(Caption(meta));
+                    // After a big, hard side quest yesterday, suggest (never enforce) a rest day.
+                    if (_vm.BigDayYesterday && _vm.InProgressTitle is null)
+                        body.Children.Add(Pill("Big day yesterday. Rest day instead?", Color.FromArgb("#5FB97E")));
                     if (_vm.HasTest) body.Children.Add(Pill($"Then: {_vm.TestTitle}", _accent));
                     body.Children.Add(Primary(_vm.InProgressTitle is null ? "START" : "RESUME", async () => { CloseSheet(); await _vm.StartTodayAsync(); }));
                     if (_vm.InProgressTitle is null)
+                    {
+                        body.Children.Add(Link("I trained my own way", () => ShowSideQuestSheet(SideQuestCounts.Training)));
                         body.Children.Add(Link("Rest day instead", ShowRestSheet));
+                    }
+                }
+                else if (node.State == MapNodeState.Done && node.Via is not null)
+                {
+                    // Filled by a side quest: what it was, and (today) a way to take it back.
+                    body.Children.Add(Pill($"Side quest {node.DoneOn:dddd, MMM d}", Color.FromArgb("#5FB97E")));
+                    if (node.DoneOn is { } on && await _vm.SideQuestOnAsync(on) is { } sq) body.Children.Add(Caption(SideQuestLine(sq)));
+                    if (node.DoneOn == DateOnly.FromDateTime(DateTime.Today))
+                        body.Children.Add(Secondary("UNDO SIDE QUEST", async () => { CloseSheet(); await _vm.UndoSideQuestAsync(); }));
+                    body.Children.Add(Secondary("CLOSE", CloseSheet));
+                    OpenSheet(body);
+                    return;
                 }
                 else if (node.State == MapNodeState.Done)
                 {
@@ -511,27 +534,11 @@ public sealed partial class MapPage : ContentPage
         return $"{s.Sets} × " + (s.RepsMin == s.RepsMax ? $"{s.RepsMin}" : $"{s.RepsMin}–{s.RepsMax}") + side;
     }
 
-    private void ShowRestSheet()
-    {
-        var body = new VerticalStackLayout { Spacing = 12 };
-        body.Children.Add(Heading(_vm.ActiveRestDone ? "Rest done ✓" : "Active rest"));
-        body.Children.Add(Caption("A gentle flow, about ten minutes. It keeps your streak, and the ×1.2 XP bonus, alive."));
-        var moves = new VerticalStackLayout { Spacing = 4 };
-        foreach (var m in _vm.ActiveRestMoves) moves.Children.Add(new Label { Text = m, FontFamily = "Body", FontSize = 17, TextColor = _onBg });
-        if (_vm.ActiveRestAlternatives.Count > 0)
-            moves.Children.Add(new Label { Text = "Or: " + string.Join(" · ", _vm.ActiveRestAlternatives), FontFamily = "Body", FontSize = 16, TextColor = _muted });
-        body.Children.Add(moves);
-        if (_vm.ActiveRestDone)
-            body.Children.Add(Secondary("UNDO", async () => { CloseSheet(); await _vm.ToggleRestAsync(); }));
-        else
-            body.Children.Add(Primary("MARK DONE", async () => { CloseSheet(); await _vm.ToggleRestAsync(); }));
-        OpenSheet(body);
-    }
-
     private void ShowMoreSheet()
     {
         var body = new VerticalStackLayout { Spacing = 12 };
         body.Children.Add(Heading("More"));
+        body.Children.Add(Secondary("I TRAINED MY OWN WAY", () => ShowSideQuestSheet()));
         if (_vm.HasTest) body.Children.Add(Primary(_vm.TestTitle.ToUpperInvariant(), async () => { CloseSheet(); await _vm.TakeTestAsync(); }));
         body.Children.Add(Secondary("LOG CARDIO", ShowCardioSheet));
         body.Children.Add(Secondary("WEIGH IN", async () => { CloseSheet(); await Shell.Current.GoToAsync(nameof(CheckInPage)); }));

@@ -80,6 +80,9 @@ namespace Forge.Services.Interfaces
         /// <summary>Starts the session a briefing settled on (loads and targets included).</summary>
         Task<SessionSnapshot> StartFromPlanAsync(SessionPlan plan);
 
+        /// <summary>A guided active-rest flow; finishing it marks the day's active rest done.</summary>
+        Task<SessionSnapshot> StartActiveRestAsync(DateOnly date);
+
         /// <summary>Corrects a logged set (the guided session logs targets; the user fixes misses).</summary>
         Task UpdateSetAsync(int setId, double loadLb, int? reps, int? seconds);
 

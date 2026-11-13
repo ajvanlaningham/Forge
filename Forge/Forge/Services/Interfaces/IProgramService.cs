@@ -40,7 +40,7 @@ namespace Forge.Services.Interfaces
         Task<BlockView?> GetViewAsync(DateOnly date);
 
         /// <summary>Marks the training day offered for <paramref name="date"/> complete. No-op if none is offered or it's done.</summary>
-        Task CompleteDayAsync(DateOnly date, int? sessionId = null);
+        Task CompleteDayAsync(DateOnly date, int? sessionId = null, string? via = null);
 
         /// <summary>Un-completes the training day done on <paramref name="date"/>. XP is reclaimed by <see cref="ReconcileXpAsync"/>.</summary>
         Task UncompleteDayAsync(DateOnly date);

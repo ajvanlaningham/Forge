@@ -84,6 +84,7 @@ map_campfire 4
 map_chest 4
 map_chest_open 4
 map_compass 4
+map_icon_sword 4
 # The landscape (art/gen_mapscape.py): at 8x, shown at 3 dp per pixel, so near 1:1 on the phone
 map_s_* 8
 map_paper 8
