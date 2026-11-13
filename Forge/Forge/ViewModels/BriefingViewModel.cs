@@ -26,6 +26,9 @@ namespace Forge.ViewModels
         public bool IsTimed => Plan.Slot.IsTimed;
         public bool ShowLoad => GuidedSupport.IsLoaded(Plan.Info);
         public string? Note { get; init; }
+
+        /// <summary>A weighted lift with no history: the briefing asks which weight before BEGIN.</summary>
+        public bool IsFirstTime { get; init; }
         public bool HasNote => Note is not null;
 
         public string PrescriptionText
@@ -82,6 +85,10 @@ namespace Forge.ViewModels
         internal GearLoads Gear { get; private set; } = new();
 
         public ObservableCollection<BriefItem> Items { get; } = new();
+
+        /// <summary>Weighted lifts never done before (user, 2026-11-13): ask for the weights up front.</summary>
+        public ObservableCollection<BriefItem> FirstTime { get; } = new();
+        public bool HasFirstTime => FirstTime.Count > 0;
 
         private TrainingLocation _location = UserSettings.LastLocation;
         public bool AtHome => _location == TrainingLocation.Home;
@@ -140,6 +147,7 @@ namespace Forge.ViewModels
             var groups = _plan.Exercises.Select(e => e.Slot.Superset).ToList();
 
             Items.Clear();
+            FirstTime.Clear();
             for (var i = 0; i < _plan.Exercises.Count; i++)
             {
                 var p = _plan.Exercises[i];
@@ -160,8 +168,15 @@ namespace Forge.ViewModels
                 p.PlannedReps = p.Slot.IsTimed ? null : suggestion?.Reps ?? p.Slot.RepsMin;
                 p.PlannedSeconds = p.Slot.IsTimed ? suggestion?.Seconds ?? p.Slot.Seconds : null;
 
-                Items.Add(new BriefItem(this, p, loads) { GroupLabel = GuidedSupport.GroupLabel(groups, i), Note = note });
+                var item = new BriefItem(this, p, loads)
+                {
+                    GroupLabel = GuidedSupport.GroupLabel(groups, i), Note = note,
+                    IsFirstTime = suggestion is null && last is null && GuidedSupport.IsLoaded(p.Info)
+                };
+                Items.Add(item);
+                if (item.IsFirstTime) FirstTime.Add(item);
             }
+            OnPropertyChanged(nameof(HasFirstTime));
             Recompute();
         }
 

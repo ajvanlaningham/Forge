@@ -109,6 +109,15 @@ namespace Forge.ViewModels
         public string FoeText { get => _foeText; private set => SetProperty(ref _foeText, value); }
         private bool _isGetReady;
         public bool IsGetReady { get => _isGetReady; private set => SetProperty(ref _isGetReady, value); }
+
+        // The lead-in before the first set, and the last seconds of any rest, end in GO, not SKIP REST.
+        private string _restButton = "SKIP REST";
+        public string RestButtonText { get => _restButton; private set => SetProperty(ref _restButton, value); }
+
+        // A per-side set's change of side: shown big in the ring, not just as a caption.
+        private bool _isSwitching;
+        public bool IsSwitching { get => _isSwitching; private set { if (SetProperty(ref _isSwitching, value)) OnPropertyChanged(nameof(IsNotSwitching)); } }
+        public bool IsNotSwitching => !IsSwitching;
         private bool _isPaused;
         public bool IsPaused { get => _isPaused; private set { if (SetProperty(ref _isPaused, value)) OnPropertyChanged(nameof(PauseText)); } }
         public string PauseText => IsPaused ? "Resume" : "Pause";
@@ -407,9 +416,19 @@ namespace Forge.ViewModels
             _workEndsUtc = null;
             var working = _exercises.Sum(e => e.Sets.Count(s => !s.IsWarmup));
             DoneText = $"{working} working sets in {ElapsedText}.";
-            _ = LoadDueTestAsync();
             StepText = $"{_steps.Count} of {_steps.Count}";
-            Phase = GuidedPhase.Done;
+            _ = WrapUpAsync();
+        }
+
+        /// <summary>
+        /// The foe is down. The summary is the one celebration (user, 2026-11-13), so go straight
+        /// there, unless today's test follows: then this screen offers it before finishing.
+        /// </summary>
+        private async Task WrapUpAsync()
+        {
+            await LoadDueTestAsync();
+            if (HasTest) Phase = GuidedPhase.Done;
+            else await FinishAsync();
         }
 
         private async Task LoadDueTestAsync()
@@ -460,8 +479,9 @@ namespace Forge.ViewModels
                 ClockText = Format(Math.Max(0, left));
                 ClockProgress = 1.0 - (double)Math.Max(0, left) / _workTotal;
                 var exact = _workPausedSeconds ?? Math.Max(0, ((_workEndsUtc ?? DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds);
-                Ring = new Controls.RingTimer(exact / Math.Max(1, _workTotal), Accent,
+                Ring = new Controls.RingTimer(exact / Math.Max(1, _workTotal), _side == SetSide.Switch && _sideSeconds > 0 ? Leaf : Accent,
                     _sideSeconds > 0 ? (double)_sideSeconds / _workTotal : null);
+                IsSwitching = _sideSeconds > 0 && _side == SetSide.Switch;
                 if (_sideSeconds > 0)
                 {
                     var side = GuidedPlan.SideAt(_workTotal - Math.Max(0, left), _sideSeconds);
@@ -488,6 +508,8 @@ namespace Forge.ViewModels
                 Ring = new Controls.RingTimer(exactRest / Math.Max(1, _restTotal), left <= 10 ? Accent : Leaf);
                 IsGetReady = left <= GetReadySeconds;
                 Caption = IsGetReady ? "GET READY!" : "REST";
+                var leadIn = _exercises.All(x => x.Sets.Count == 0);
+                RestButtonText = leadIn || IsGetReady ? "GO" : "SKIP REST";
                 // 3-2-1, then go.
                 if (_restPausedSeconds is null && left is >= 1 and <= 3 && left != _lastBuzz)
                 {

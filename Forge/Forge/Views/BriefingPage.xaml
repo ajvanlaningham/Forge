@@ -7,7 +7,8 @@
              xmlns:vm="clr-namespace:Forge.ViewModels"
              x:Class="Forge.Views.BriefingPage"
              x:DataType="vm:BriefingViewModel"
-             Title="{Binding Title}">
+             Shell.TabBarIsVisible="False"
+             Title="">
     <Grid RowDefinitions="*,Auto">
         <ScrollView>
             <VerticalStackLayout Padding="16,12,16,20" Spacing="14">
@@ -50,6 +51,32 @@
                         </Button.Triggers>
                     </Button>
                 </Grid>
+
+                <!-- First time with a weighted lift: which weights? (user, 2026-11-13) -->
+                <Border IsVisible="{Binding HasFirstTime}" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Aether}"
+                        StrokeThickness="2" StrokeShape="RoundRectangle 12" Padding="14,12">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="FIRST TIME: PICK YOUR WEIGHTS" FontFamily="Display" FontSize="24" TextColor="{StaticResource Aether}" />
+                        <Label Text="Choose weights you could lift a few more times than asked. Forge remembers them and moves you up as you get stronger."
+                               FontFamily="Body" FontSize="17" TextColor="{StaticResource Muted}" />
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding FirstTime}" Spacing="8">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:BriefItem">
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                                        <VerticalStackLayout VerticalOptions="Center">
+                                            <Label Text="{Binding Name}" FontFamily="Display" FontSize="22" TextColor="{StaticResource OnBg}" LineBreakMode="WordWrap" />
+                                            <Label Text="{Binding PrescriptionText}" FontFamily="GymNum" FontSize="18" TextColor="{StaticResource Muted}" />
+                                        </VerticalStackLayout>
+                                        <Button Grid.Column="1" Text="−" Command="{Binding LoadDownCommand}" HeightRequest="56" WidthRequest="56" Padding="0" FontSize="28" />
+                                        <Label Grid.Column="2" Text="{Binding LoadText}" FontFamily="GymNum" FontSize="30" TextColor="{StaticResource Accent}"
+                                               WidthRequest="84" HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                                        <Button Grid.Column="3" Text="+" Command="{Binding LoadUpCommand}" HeightRequest="56" WidthRequest="56" Padding="0" FontSize="28" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
 
                 <!-- Gather -->
                 <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}" StrokeThickness="1"

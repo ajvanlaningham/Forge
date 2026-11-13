@@ -62,6 +62,15 @@ public sealed partial class MapPage
     };
 
     private readonly VerticalStackLayout _paper = new() { Spacing = 0, IsClippedToBounds = true };
+
+    // The hero walks the trail (user, 2026-11-13): it stands by today's stone (or the rest-day fire),
+    // and when that moves on, it walks there along the path the next time the map opens.
+    private readonly Image _walker = new()
+    {
+        WidthRequest = 64, HeightRequest = 64, HorizontalOptions = LayoutOptions.Start, VerticalOptions = LayoutOptions.Start, IsVisible = false
+    };
+    private int? _heroAt;
+    private bool _walking;
     private readonly HashSet<int> _namedWeeks = new();
     private bool _lakeDrawn;
 
@@ -71,6 +80,57 @@ public sealed partial class MapPage
         _trail.Lakes.Clear();
         _namedWeeks.Clear();
         _lakeDrawn = false;
+    }
+
+    /// <summary>
+    /// Puts the hero by its stone. If it stood further back on the same quest last time, it walks
+    /// the trail from there first, stop by stop, then steps aside of the stone.
+    /// </summary>
+    private async Task PlaceHeroAsync(bool walk = true)
+    {
+        await Task.Delay(150); // let the path lay out
+        if (_heroAt is not int target || target >= _trail.Points.Count || _scroll.Width <= 0 || _vm.Quest is null)
+        {
+            _walker.IsVisible = false;
+            return;
+        }
+        if (_walking) return;
+        _walker.Source = _vm.SpriteFile;
+        _walker.IsVisible = true;
+        var key = $"Map.HeroAt.{_vm.Quest.Id}";
+        var from = Preferences.Get(key, -1);
+        Preferences.Set(key, target);
+
+        Point Stand(int i, bool aside)
+        {
+            var p = _trail.Points[i];
+            var dx = aside ? (p.X > 0 ? -112 : 112) : 0;
+            return new Point(_scroll.Width / 2 + p.X + dx - 32, p.Y - (aside ? 28 : 58));
+        }
+
+        var end = Stand(target, true);
+        if (!walk || from < 0 || from >= target || target - from > 12)
+        {
+            _walker.TranslationX = end.X;
+            _walker.TranslationY = end.Y;
+            return;
+        }
+        _walking = true;
+        try
+        {
+            var start = Stand(from, true);
+            _walker.TranslationX = start.X;
+            _walker.TranslationY = start.Y;
+            await Task.Delay(400);
+            for (var i = from; i <= target; i++)
+            {
+                var at = Stand(i, false);
+                await _walker.TranslateToAsync(at.X, at.Y, 380, Easing.SinInOut);
+            }
+            await _walker.TranslateToAsync(end.X, end.Y, 260, Easing.CubicOut);
+        }
+        catch { /* torn down mid-walk */ }
+        finally { _walking = false; }
     }
 
     /// <summary>Tiles the paper texture down the whole map.</summary>

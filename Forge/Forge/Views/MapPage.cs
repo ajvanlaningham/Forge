@@ -117,12 +117,13 @@ public sealed partial class MapPage : ContentPage
         ribbon.Add(_band, 1);
 
         _trailView.Drawable = _trail;
-        _scroll.Content = new Grid { Children = { _paper, _trailView, _path } };
+        _scroll.Content = new Grid { Children = { _paper, _trailView, _path, _walker } };
+        _scroll.SizeChanged += (_, _) => _ = PlaceHeroAsync(walk: false);
         _scroll.BackgroundColor = MapGround;
         _scroll.Scrolled += (_, e) => UpdateBanner(e.ScrollY);
 
         // The sheet: a card rising from the bottom over a dimmed map; tap outside to close.
-        var dim = new BoxView { Color = Colors.Black, Opacity = 0.55 };
+        var dim = new BoxView { Color = Colors.Black, Opacity = 0.35 }; // the map stays visible behind a card
         var dimTap = new TapGestureRecognizer();
         dimTap.Tapped += (_, _) => CloseSheet();
         dim.GestureRecognizers.Add(dimTap);
@@ -184,6 +185,7 @@ public sealed partial class MapPage : ContentPage
         _currentView = null;
         _trail.Points.Clear();
         _trail.Regions.Clear();
+        _heroAt = null;
         ResetLandscape();
         _y = TopPad;
 
@@ -238,6 +240,7 @@ public sealed partial class MapPage : ContentPage
 
         UpdateBanner(0);
         _ = ScrollToCurrentAsync();
+        _ = PlaceHeroAsync();
     }
 
     /// <summary>
@@ -317,17 +320,13 @@ public sealed partial class MapPage : ContentPage
             };
             bubble.GestureRecognizers.Add(tap);
             row.Add(bubble);
-            // The hero waits beside today's stone.
-            row.Add(new Image
-            {
-                Source = _vm.SpriteFile, WidthRequest = 64, HeightRequest = 64, HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.End, TranslationX = x + (x > 0 ? -120 : 120), TranslationY = -6
-            });
+            _heroAt = _trail.Points.Count - 1; // the hero waits beside today's stone
             _currentView = row;
             _ = PulseAsync(visual);
         }
         else if (node.State == MapNodeState.Done && node.DoneOn == DateOnly.FromDateTime(DateTime.Today))
         {
+            _heroAt = _trail.Points.Count - 1; // and stays by it once it's done
             _currentView = row;
         }
         return row;
@@ -356,6 +355,7 @@ public sealed partial class MapPage : ContentPage
         var row = new Grid { HeightRequest = 120 };
         row.Add(stack);
         if (!done) _currentView = row;
+        _heroAt = _trail.Points.Count - 1; // a rest day: the hero sits by the fire
         return row;
     }
 

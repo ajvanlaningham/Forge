@@ -5,6 +5,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Forge.ViewModels"
              x:Class="Forge.Views.SessionSummaryPage"
+             Shell.TabBarIsVisible="False"
              x:DataType="vm:SessionSummaryViewModel"
              x:Name="Page"
              Title="Session complete">

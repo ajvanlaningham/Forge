@@ -207,6 +207,39 @@ see `AGENTS.md`). A wearable: likely a Bangle.js 2 via Gadgetbridge (user, 2026-
   entry pre-filled with last value; Home "log today" shortcut; `WeightTrendCard` (N-day avg,
   raw behind tap, 7-day sparkline via Microcharts) on Home and Check-in.
 
+## Workout walkthrough (2026-11-13)
+
+Claude ran a full session on the phone. Settled with the user:
+
+- **Autopilot is the design.** A started workout runs itself: a set left alone is logged as done
+  in full and the timeline moves on. DONE and SKIP REST are there for anyone who wants them; the
+  user should never have to put the weights down to touch the phone.
+- **No tab bar in a session** (briefing, guided, list, summary). Leaving early is ⋮ → End session
+  / Discard session.
+- **One celebration screen.** Without a test due, the last set goes straight to the summary.
+  On a test day the guided screen offers the test ("One trial left") before FINISH.
+- The overall "Set n of N" counter is gone; the health bar is one section per set (built).
+- The lead-in and the last seconds of a rest say GO; a side change fills the ring with
+  SWITCH SIDES (built).
+- **First session of a weighted lift asks for the weights** on the briefing (built). Still to do:
+  keep that starting weight as the lift's baseline and show its climb (Hero or Chronicle);
+  history already holds it, so it's a view, not new storage.
+- The hero walks the map: it stands by today's stone or the rest-day fire, and walks the trail
+  from where it was last time when that moves on (built; the walk itself shows on the next
+  training day).
+
+To discuss:
+
+- **Reps vs time.** Claude's proposal: main lifts keep rep targets on a steady tempo
+  (~3 s/rep + setup), auto-logged as done; accessories and conditioning become timed rounds
+  ("as many as you can in 40 s, steady pace"), which can't drift from their timing. One minutes
+  figure, computed from the real timeline, everywhere (today the stone says 30–40 from the
+  program's notes, the briefing ~15 from the content).
+- **Days are too thin.** Upper A is 10 working sets, ~15 min with real rests. Each day should
+  carry its warm-up, main work and finisher to fill its stated time, and a test day's test
+  should be the day's last block inside the health bar, not an offer at the end. A content pass,
+  done together with the timing reconcile.
+
 ## Current: Training Push (week of 2026-11-11)
 
 Bar: by end of week Forge holds its own against a finished workout app and the developer uses
