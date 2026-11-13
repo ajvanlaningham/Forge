@@ -591,7 +591,7 @@ namespace Forge.ViewModels
             if (_lastSet is null || _lastSetExercise is null) { LoggedText = ""; OnPropertyChanged(nameof(HasLogged)); return; }
             var work = _lastSet.Seconds is int s ? $"{s}s" : $"× {_lastSet.Reps}";
             OnPropertyChanged(nameof(ShowLogged));
-            LoggedText = $"Logged {_lastSetExercise.Row.ExerciseName}{(_lastSet.IsWarmup ? " warm-up" : "")}: {Label(_lastSet.LoadLb, _lastSetExercise)} {work}";
+            LoggedText = $"Logged {_lastSetExercise.Row.ExerciseName}{(_lastSet.IsWarmup ? " warm-up" : "")}: {$"{Label(_lastSet.LoadLb, _lastSetExercise)} {work}".Trim()}";
             OnPropertyChanged(nameof(HasLogged));
         }
 
