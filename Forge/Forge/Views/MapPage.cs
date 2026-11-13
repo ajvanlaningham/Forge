@@ -470,20 +470,42 @@ public sealed partial class MapPage : ContentPage
         {
             var plan = await _vm.PlanDayAsync(dayIndex, week);
             var list = new VerticalStackLayout { Spacing = 4 };
+            // Timed days (Decision 28) read as their blocks: warm-up, strength, accessories, finisher.
+            string? key = null;
             foreach (var e in plan.Exercises)
+            {
+                if (e.Slot.Superset is { } k && k != key && e.Slot.IsTimed)
+                {
+                    var name = k switch { "W" => "WARM-UP", "S" => "STRENGTH", "A" => "ACCESSORIES", "F" => "FINISHER", _ => $"CIRCUIT {k}" };
+                    var rounds = e.Slot.Sets == 1 ? "1 round" : $"{e.Slot.Sets} rounds";
+                    list.Children.Add(new Label
+                    {
+                        Text = $"{name} · {rounds}", FontFamily = "Display", FontSize = 18, TextColor = _accent,
+                        Margin = new Thickness(0, list.Children.Count == 0 ? 0 : 8, 0, 0)
+                    });
+                }
+                key = e.Slot.Superset;
+                var perSide = _vm.Traits(e.Name).PerSide;
                 list.Children.Add(new Label
                 {
-                    Text = $"{e.Name}  {SetsText(e.Slot)}", FontFamily = "Body", FontSize = 17,
-                    TextColor = e.IsMain ? _onBg : _muted
+                    Text = $"{e.Name}  {SetsText(e.Slot, perSide)}", FontFamily = "Body", FontSize = 17,
+                    TextColor = e.IsMain || e.Slot.IsTimed ? _onBg : _muted
                 });
+            }
             // After the heading and its first line, so the action stays at the bottom.
             body.Children.Insert(Math.Min(2, body.Children.Count), list);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Map plan failed: {ex.Message}"); }
     }
 
-    private static string SetsText(ProgramSlot s)
-        => $"{s.Sets} × " + (s.IsTimed ? $"{s.Seconds}s" : s.RepsMin == s.RepsMax ? $"{s.RepsMin}" : $"{s.RepsMin}–{s.RepsMax}");
+    /// <summary>"60 s · ~8", "30 s / side · ~5", "40 s"; counted sets as "3 × 8–12".</summary>
+    private static string SetsText(ProgramSlot s, bool perSide)
+    {
+        var side = perSide ? " / side" : "";
+        if (s.IsPaced) return $"{s.Seconds} s{side} · ~{s.RepsMin}";
+        if (s.IsTimed) return $"{s.Seconds} s{side}";
+        return $"{s.Sets} × " + (s.RepsMin == s.RepsMax ? $"{s.RepsMin}" : $"{s.RepsMin}–{s.RepsMax}") + side;
+    }
 
     private void ShowRestSheet()
     {
@@ -557,7 +579,7 @@ public sealed partial class MapPage : ContentPage
             {
                 var plan = await _vm.PlanDayAsync(i, _vm.CurrentWeek);
                 foreach (var e in plan.Exercises)
-                    day.Children.Add(new Label { Text = $"{e.Name}  {SetsText(e.Slot)}", FontFamily = "Body", FontSize = 17, TextColor = e.IsMain ? _onBg : _muted });
+                    day.Children.Add(new Label { Text = $"{e.Name}  {SetsText(e.Slot, _vm.Traits(e.Name).PerSide)}", FontFamily = "Body", FontSize = 17, TextColor = e.IsMain ? _onBg : _muted });
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Drawer plan failed: {ex.Message}"); }
             days.Children.Add(day);

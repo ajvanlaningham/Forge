@@ -45,6 +45,7 @@ public sealed class StatTestPage : ContentPage
         _training = training;
         _weights = weights;
         Content = new ScrollView { Content = _body };
+        Shell.SetTabBarIsVisible(this, false); // a test day's test is the session's last block
     }
 
     protected override void OnDisappearing()

@@ -205,6 +205,7 @@ namespace Forge.ViewModels
         public async Task LoadAsync(int sessionId)
         {
             SessionId = sessionId;
+            _dueTest = await _tests.DueTodayAsync(DateOnly.FromDateTime(DateTime.Today));
             await ReloadAsync();
             // Finished or discarded from the list view: nothing left to guide.
             if (_snap!.Session.EndedAtUtc is not null) { Ended?.Invoke(this, null); return; }
@@ -243,6 +244,9 @@ namespace Forge.ViewModels
             if (_snap is null) return;
             var progress = _snap.Exercises.OrderBy(e => e.Row.Position)
                 .Select(e => new ExerciseProgress(e.Row.TargetSets ?? 3, e.Sets.Count(x => !x.IsWarmup), e.Row.Skipped)).ToList();
+            // A test day's test is the day's last block (Decision 28): its parts are the foe's last
+            // sections, so the foe only falls once the trial is done (when it's no longer due).
+            if (TrialSections(_dueTest) is int trial and > 0) progress.Add(new ExerciseProgress(trial, 0, false));
             Health = new Controls.HealthBar(SessionProgress.Segments(progress));
             var left = SessionProgress.Remaining(progress);
             var foe = (_snap.Session.Title ?? "Session").Split(" · ").Last();
@@ -282,7 +286,7 @@ namespace Forge.ViewModels
             => e.IsTimed && !step.IsWarmup ? e.Row.PlannedReps ?? e.Row.RepsMin : null;
 
         private string Label(double lb, SessionExerciseSnapshot e)
-            => lb <= 0 && !GuidedSupport.IsLoaded(e.Info) ? "Bodyweight" : _gear.LoadLabel(lb, UserSettings.WeightUnit);
+            => lb <= 0 && !GuidedSupport.IsLoaded(e.Info) ? "" : _gear.LoadLabel(lb, UserSettings.WeightUnit); // bodyweight: nothing to gather
 
         private string Describe(GuidedStep step)
         {
@@ -290,7 +294,7 @@ namespace Forge.ViewModels
             var (lb, reps, secs) = Target(step);
             var set = step.IsWarmup ? $"warm-up {WarmupCaption(step).ToLowerInvariant()}" : $"set {step.SetNumber} of {step.SetsTotal}";
             var work = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info), Suggested(e, step));
-            return $"{e.Row.ExerciseName} · {set}\n{Label(lb, e)} {work}";
+            return $"{e.Row.ExerciseName} · {set}\n{$"{Label(lb, e)} {work}".Trim()}";
         }
 
         /// <summary>"1 OF 2 · 50%", or just "· 50%" for a single warm-up.</summary>
@@ -305,7 +309,8 @@ namespace Forge.ViewModels
         {
             var e = _exercises[step.ExerciseIndex];
             var (lb, reps, secs) = Target(step);
-            var group = GuidedSupport.GroupLabel(_exercises.Select(x => x.Row.Superset).ToList(), step.ExerciseIndex);
+            // Superset labels (A1, A2) help counted supersets; timed circuits read better without them.
+            var group = e.IsTimed ? null : GuidedSupport.GroupLabel(_exercises.Select(x => x.Row.Superset).ToList(), step.ExerciseIndex);
             ExerciseName = group is null ? e.Row.ExerciseName : $"{group} · {e.Row.ExerciseName}";
             Caption = step.IsWarmup ? $"WARM-UP {WarmupCaption(step)}" : $"SET {step.SetNumber} OF {step.SetsTotal}";
             LoadText = Label(lb, e);
@@ -435,6 +440,15 @@ namespace Forge.ViewModels
             else await FinishAsync();
         }
 
+        /// <summary>The trial's parts: three lifts and push-ups, three tape tests, or the step test and pulse.</summary>
+        private static int? TrialSections(DueTest? due) => due?.Kind switch
+        {
+            null => null,
+            StatKind.Strength => 4,
+            StatKind.Dexterity => 3,
+            _ => 2
+        };
+
         private async Task LoadDueTestAsync()
         {
             _dueTest = await _tests.DueTodayAsync(DateOnly.FromDateTime(DateTime.Today));
@@ -447,7 +461,7 @@ namespace Forge.ViewModels
                 _ => ("conditioning test", "three minutes on a step to a beat, then a one-minute pulse count. Take 5 minutes first so your pulse settles.")
             };
             TestText = $"{(due.Calibration ? "Practice run" : "Honing")}: the {name} is next. {char.ToUpperInvariant(what[0])}{what[1..]}";
-            TestButton = due.Calibration ? $"Do the practice {name}" : $"Take the {name}";
+            TestButton = "BEGIN THE TRIAL"; // the text above says which test, and whether it's a practice run
         }
 
         // ------------------------------------------------------------------ the clock

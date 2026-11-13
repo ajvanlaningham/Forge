@@ -66,11 +66,15 @@
 
         <!-- WORK: the set, running inside the ring -->
         <Grid Grid.Row="1" IsVisible="{Binding IsWork}" RowDefinitions="*,Auto">
-            <VerticalStackLayout Spacing="6" VerticalOptions="Center">
-                <Label Text="{Binding Caption}" FontFamily="Display" FontSize="28" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
-                <Label Text="{Binding ExerciseName}" FontFamily="Display" FontSize="34" TextColor="{StaticResource OnBg}"
-                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
-                <Grid HeightRequest="260" WidthRequest="260" HorizontalOptions="Center">
+            <!-- Work and rest share one layout (caption, a two-line name slot, the ring), anchored
+                 to the top, so the ring never jumps between phases (user, 2026-11-13). -->
+            <VerticalStackLayout Spacing="6" VerticalOptions="Start" Margin="0,12,0,0">
+                <Label Text="{Binding Caption}" FontFamily="Display" FontSize="28" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" MaxLines="1" />
+                <Grid HeightRequest="80">
+                    <Label Text="{Binding ExerciseName}" FontFamily="Display" FontSize="32" TextColor="{StaticResource OnBg}"
+                           HorizontalTextAlignment="Center" VerticalOptions="Center" LineBreakMode="WordWrap" MaxLines="2" />
+                </Grid>
+                <Grid HeightRequest="240" WidthRequest="240" HorizontalOptions="Center">
                     <GraphicsView Drawable="{Binding Ring}" />
                     <!-- Changing sides: the whole ring says so -->
                     <Label IsVisible="{Binding IsSwitching}" Text="SWITCH&#10;SIDES" FontFamily="Display" FontSize="46" TextColor="{StaticResource Leaf}"
@@ -96,8 +100,13 @@
 
         <!-- REST: the ring drains, then the next set starts on its own -->
         <Grid Grid.Row="1" IsVisible="{Binding IsRest}" RowDefinitions="*,Auto,Auto" RowSpacing="10">
-            <VerticalStackLayout Spacing="6" VerticalOptions="Center">
-                <Grid HeightRequest="230" WidthRequest="230" HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="6" VerticalOptions="Start" Margin="0,12,0,0">
+                <Label Text="UP NEXT" FontFamily="Display" FontSize="28" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" MaxLines="1" />
+                <Grid HeightRequest="80">
+                    <Label Text="{Binding ExerciseName}" FontFamily="Display" FontSize="32" TextColor="{StaticResource OnBg}"
+                           HorizontalTextAlignment="Center" VerticalOptions="Center" LineBreakMode="WordWrap" MaxLines="2" />
+                </Grid>
+                <Grid HeightRequest="240" WidthRequest="240" HorizontalOptions="Center">
                     <GraphicsView Drawable="{Binding Ring}" />
                     <VerticalStackLayout VerticalOptions="Center" Spacing="0">
                         <Label Text="{Binding Caption}" FontFamily="Display" FontSize="26" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center">
@@ -110,9 +119,6 @@
                         <Label Text="{Binding ClockText}" FontFamily="GymNum" FontSize="72" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Grid>
-                <Label Text="UP NEXT" FontFamily="Display" FontSize="20" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" Margin="0,6,0,0" />
-                <Label Text="{Binding ExerciseName}" FontFamily="Display" FontSize="30" TextColor="{StaticResource OnBg}"
-                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
                 <Label HorizontalTextAlignment="Center">
                     <Label.FormattedText>
                         <FormattedString>
@@ -165,21 +171,24 @@
             </VerticalStackLayout>
         </Grid>
 
-        <!-- DONE: only on a test day; otherwise the session goes straight to the summary -->
+        <!-- DONE: only on a test day, whose test is the day's final block; otherwise the session goes
+             straight to the summary. Saving the test brings you back here, and the session finishes. -->
         <Grid Grid.Row="1" IsVisible="{Binding IsDone}" RowDefinitions="*,Auto">
             <VerticalStackLayout Spacing="16" VerticalOptions="Center">
-                <Label Text="ONE TRIAL LEFT" FontFamily="Display" FontSize="40" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                <Label Text="THE FINAL TRIAL" FontFamily="Display" FontSize="40" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
                 <Label Text="{Binding DoneText}" FontFamily="Body" FontSize="20" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
                 <!-- On a test day the test is the session's last steps -->
                 <Border IsVisible="{Binding HasTest}" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}"
                         StrokeThickness="2" StrokeShape="RoundRectangle 12" Padding="14">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="{Binding TestText}" FontFamily="Body" FontSize="18" TextColor="{StaticResource OnBg}" />
-                        <Button Text="{Binding TestButton}" Command="{Binding TestCommand}" Style="{StaticResource SecondaryButton}" />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
-            <Button Grid.Row="1" Text="FINISH" Command="{Binding FinishCommand}" Style="{StaticResource Huge}" />
+            <VerticalStackLayout Grid.Row="1" Spacing="2">
+                <Button Text="{Binding TestButton}" Command="{Binding TestCommand}" Style="{StaticResource Huge}" FontSize="28" />
+                <Button Text="Finish without it today" Command="{Binding FinishCommand}" Style="{StaticResource Link}" />
+            </VerticalStackLayout>
         </Grid>
     </Grid>
 </ContentPage>
