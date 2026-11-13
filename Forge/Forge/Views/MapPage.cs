@@ -353,7 +353,7 @@ public sealed class MapPage : ContentPage
         {
             Source = set[index / 2 % set.Length], WidthRequest = 80, HeightRequest = 70, Opacity = 0.95,
             HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center,
-            TranslationX = side * (Swing + 70) * 0.9, InputTransparent = true
+            TranslationX = side * (Swing + 70) * 0.9
         });
     }
 
