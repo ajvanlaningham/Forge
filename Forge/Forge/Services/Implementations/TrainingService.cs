@@ -117,7 +117,19 @@ namespace Forge.Services.Implementations
             var view = await _programs.GetViewAsync(date)
                        ?? throw new InvalidOperationException("No active program");
             var day = view.Day ?? throw new InvalidOperationException("This week's training is already done");
+            return await PlanAsync(view.Program, day, view.Week, date, location);
+        }
 
+        public async Task<SessionPlan> PlanForDayAsync(int dayIndex, int week, TrainingLocation location)
+        {
+            var program = await _programs.GetActiveAsync() ?? throw new InvalidOperationException("No active program");
+            var day = program.Definition.Resolve(dayIndex, week);
+            return await PlanAsync(program, day, week, DateOnly.FromDateTime(DateTime.Today), location);
+        }
+
+        /// <summary>A day's exercises as they'll be done at <paramref name="location"/>: gear swaps applied.</summary>
+        private async Task<SessionPlan> PlanAsync(ActiveProgram program, ResolvedDay day, int week, DateOnly date, TrainingLocation location)
+        {
             var lib = await LibraryAsync();
             var available = await GetEquipmentAsync(location);
 
@@ -150,8 +162,8 @@ namespace Forge.Services.Implementations
 
             return new SessionPlan
             {
-                Date = date, Location = location, Program = view.Program, Day = day, Exercises = planned,
-                Title = $"{ProgramDefinition.WeekName(view.Week)} · {day.Name}" + (day.IsLight ? " (light)" : "")
+                Date = date, Location = location, Program = program, Day = day, Exercises = planned,
+                Title = $"{ProgramDefinition.WeekName(week)} · {day.Name}" + (day.IsLight ? " (light)" : "")
             };
         }
 

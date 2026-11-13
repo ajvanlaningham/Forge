@@ -51,6 +51,9 @@ namespace Forge.Services.Interfaces
         /// <summary>The XP multiplier in force on a date: ×1.2 while the daily streak is alive (yesterday counted).</summary>
         Task<double> MultiplierForAsync(DateOnly date);
 
+        /// <summary>The active quest as a path of nodes (plan phase 4); empty with no active quest.</summary>
+        Task<IReadOnlyList<MapNode>> GetMapAsync(DateOnly date);
+
         /// <summary>Every day that counts for the streak: a completed training day or active rest.</summary>
         Task<IReadOnlyList<DateOnly>> ActiveDaysAsync();
 

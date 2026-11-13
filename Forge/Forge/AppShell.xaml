@@ -9,12 +9,11 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Forge">
 
-    <!-- Five tabs (Decisions 20, 24). Settings is a cog in each tab's top bar. -->
+    <!-- Four tabs (Decisions 20, 24; plan phase 4 merged Today and Quest into the Map, 2026-11-13).
+         The quest board is a pushed page. Settings is a cog in each tab's top bar. -->
     <TabBar>
-        <ShellContent Title="Today" ContentTemplate="{DataTemplate views:TodayPage}"
-                      Route="today" Icon="{StaticResource IconToday}" />
-        <ShellContent Title="Quest" ContentTemplate="{DataTemplate views:QuestPage}"
-                      Route="quest" Icon="{StaticResource IconQuests}" />
+        <ShellContent Title="Map" ContentTemplate="{DataTemplate views:MapPage}"
+                      Route="today" Icon="{StaticResource IconMap}" />
         <ShellContent Title="Hero" ContentTemplate="{DataTemplate views:HeroPage}"
                       Route="hero" Icon="{StaticResource IconHero}" />
         <ShellContent Title="Chronicle" ContentTemplate="{DataTemplate views:ChroniclePage}"

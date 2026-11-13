@@ -16,6 +16,7 @@
     <!-- scroll -->
     <FontImageSource x:Key="IconGuild"    FontFamily="FA" Glyph="&#xF0C0;" Color="{DynamicResource OnBg}" Size="24" />
     <!-- users -->
+    <FontImageSource x:Key="IconMap"      FontFamily="FA" Glyph="&#xF279;" Color="{DynamicResource OnBg}" Size="24" />
     <FontImageSource x:Key="IconToday"    FontFamily="FA" Glyph="&#xF6E3;" Color="{DynamicResource OnBg}" Size="24" />
     <!-- hammer -->
     <FontImageSource x:Key="IconHero"     FontFamily="FA" Glyph="&#xF3ED;" Color="{DynamicResource OnBg}" Size="24" />

@@ -30,6 +30,21 @@ namespace Forge.ViewModels
 
         public event EventHandler<int>? XpAwarded;
 
+        /// <summary>Raised after every refresh, so the code-built map can redraw.</summary>
+        public event EventHandler? Refreshed;
+
+        // --- the map (plan phase 4) ---
+        public IReadOnlyList<MapNode> Nodes { get; private set; } = [];
+        public ProgramDefinition? Quest { get; private set; }
+        public int CurrentWeek { get; private set; } = 1;
+        public bool TrainingDoneToday { get; private set; }
+        public bool BlockComplete { get; private set; }
+        public string? InProgressTitle { get; private set; }
+        public int StreakDays { get; private set; }
+        public double Multiplier { get; private set; } = 1.0;
+        public IReadOnlyList<string> ActiveRestMoves { get; private set; } = [];
+        public IReadOnlyList<string> ActiveRestAlternatives { get; private set; } = [];
+
         // --- level strip ---
         private int _level = 1;
         public int Level { get => _level; private set { if (SetProperty(ref _level, value)) OnPropertyChanged(nameof(LevelText)); } }
@@ -154,6 +169,13 @@ namespace Forge.ViewModels
                 var open = await _training.GetInProgressAsync();
                 _inProgressId = open?.Session.Id;
                 _inProgressGuided = open?.Session.ProgramId is not null; // program sessions run guided
+                InProgressTitle = open?.Session.Title;
+                Nodes = await _programs.GetMapAsync(_today);
+                Quest = view?.Program.Definition;
+                CurrentWeek = view?.Week ?? 1;
+                TrainingDoneToday = view?.CompletedOnDate ?? false;
+                BlockComplete = view?.BlockComplete ?? false;
+                Multiplier = await _programs.MultiplierForAsync(_today);
                 CanStartOpen = open is null;
                 _planDay = false;
                 ApplyQuest(view, open?.Session.Title);
@@ -181,6 +203,8 @@ namespace Forge.ViewModels
                     ActiveRestTitle = rest.Name;
                     ActiveRestText = string.Join("\n", rest.Flow.Select(Describe))
                         + "\nOr: " + string.Join(" · ", rest.Alternatives);
+                    ActiveRestMoves = rest.Flow.Select(Describe).ToList();
+                    ActiveRestAlternatives = rest.Alternatives.ToList();
                 }
 
                 var week = await _conditioning.GetWeekProgressAsync(_today);
@@ -189,6 +213,7 @@ namespace Forge.ViewModels
                 Conditioning.WeekRangeText = $"{week.WeekStart:MMM d} – {week.WeekEnd:MMM d}";
 
                 var (current, longest) = await _progress.GetStreakAsync();
+                StreakDays = current;
                 var movement = current switch
                 {
                     0 => "No streak yet: train or do active rest to start one.",
@@ -203,7 +228,25 @@ namespace Forge.ViewModels
             {
                 IsBusy = false;
             }
+            Refreshed?.Invoke(this, EventArgs.Empty);
         }
+
+        /// <summary>Starts today's session from the map: the briefing, or resumes one already running.</summary>
+        public Task StartTodayAsync() => _inProgressId is not null
+            ? OpenSessionAsync(_inProgressId, _inProgressGuided)
+            : Shell.Current.GoToAsync(nameof(BriefingPage));
+
+        public Task<SessionPlan> PlanDayAsync(int dayIndex, int week) => _training.PlanForDayAsync(dayIndex, week, UserSettings.LastLocation);
+
+        public Task ToggleRestAsync() => ToggleActiveRestAsync();
+
+        public Task AddCardioAsync(int minutes) => AddMinutesAsync(minutes);
+
+        public Task StartOpenSessionAsync() => StartAsync(fromProgram: false);
+
+        public Task TakeTestAsync() => _due is { } d
+            ? Shell.Current.GoToAsync($"{nameof(StatTestPage)}?kind={d.Kind}&calibration={d.Calibration}")
+            : Task.CompletedTask;
 
         private void ApplyQuest(BlockView? view, string? inProgressTitle)
         {
@@ -224,7 +267,7 @@ namespace Forge.ViewModels
                 if (inProgressTitle is null)
                 {
                     ActionText = "Choose a quest";
-                    _action = () => Shell.Current.GoToAsync("//quest");
+                    _action = () => Shell.Current.GoToAsync(nameof(QuestPage));
                 }
                 return;
             }
@@ -242,7 +285,7 @@ namespace Forge.ViewModels
             if (view.BlockComplete)
             {
                 ActionText = "Choose your next quest";
-                _action = () => Shell.Current.GoToAsync("//quest");
+                _action = () => Shell.Current.GoToAsync(nameof(QuestPage));
             }
             else if (view.CompletedOnDate)
             {

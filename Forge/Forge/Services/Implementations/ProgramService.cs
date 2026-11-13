@@ -164,6 +164,14 @@ namespace Forge.Services.Implementations
                 .Concat(await ActiveRestAsync())
                 .Distinct().ToList();
 
+        public async Task<IReadOnlyList<MapNode>> GetMapAsync(DateOnly date)
+        {
+            var active = await GetActiveAsync();
+            if (active is null) return [];
+            return QuestMap.Build(active.StartedOn, active.Definition.TrainingDaysPerWeek,
+                await TrainingAsync(active.BlockId), await ActiveRestAsync(), date);
+        }
+
         public async Task<double> MultiplierForAsync(DateOnly date)
             => StreakMath.Multiplier(await ActiveDaysAsync(), date);
 

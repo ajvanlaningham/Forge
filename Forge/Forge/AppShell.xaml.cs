@@ -8,6 +8,7 @@ namespace Forge
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(QuestPage), typeof(QuestPage));
             Routing.RegisterRoute(nameof(ExerciseLibraryPage), typeof(ExerciseLibraryPage));
             Routing.RegisterRoute(nameof(MyGearPage), typeof(MyGearPage));
             Routing.RegisterRoute(nameof(ActiveSessionPage), typeof(ActiveSessionPage));

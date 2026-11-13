@@ -92,9 +92,7 @@ namespace Forge
             // UI
             // The four tabs (Decision 20)
             builder.Services.AddTransient<TodayViewModel>();
-            builder.Services.AddTransient<TodayPage>();
-            builder.Services.AddTransient<QuestBoardViewModel>();
-            builder.Services.AddTransient<CurrentQuestViewModel>();
+            builder.Services.AddTransient<MapPage>();
             builder.Services.AddTransient<QuestPage>();
             builder.Services.AddTransient<HeroViewModel>();
             builder.Services.AddTransient<HeroPage>();

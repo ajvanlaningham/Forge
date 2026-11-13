@@ -74,6 +74,9 @@ namespace Forge.Services.Interfaces
         /// </summary>
         Task<SessionPlan> PlanFromProgramAsync(DateOnly date, TrainingLocation location);
 
+        /// <summary>Any day of the active quest, as planned at <paramref name="location"/> (swaps applied): the map and its drawer.</summary>
+        Task<SessionPlan> PlanForDayAsync(int dayIndex, int week, TrainingLocation location);
+
         /// <summary>Starts the session a briefing settled on (loads and targets included).</summary>
         Task<SessionSnapshot> StartFromPlanAsync(SessionPlan plan);
 

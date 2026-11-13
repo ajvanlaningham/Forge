@@ -93,7 +93,7 @@ public sealed class ForgingPage : ContentPage
             await CloseAsync("//today");
         };
         var other = new Button { Text = "Choose another quest", HeightRequest = 56, FontFamily = "Display", FontSize = 22 };
-        other.Clicked += async (_, _) => await CloseAsync("//quest");
+        other.Clicked += async (_, _) => { await Navigation.PopModalAsync(); await Shell.Current.GoToAsync("//today"); await Shell.Current.GoToAsync(nameof(QuestPage)); };
         _reveal.Children.Add(again);
         _reveal.Children.Add(other);
     }
