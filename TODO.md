@@ -151,6 +151,19 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     discipline a piece was forged in. **Open:** which five slots (likely weapon, off-hand,
     head, body, feet), and drawing the two extra slots for the 36 heroes (Decision 22 drew
     three per hero).
+26. **Daily streak multiplier; a guild needs three** (agreed with the user 2026-11-13; replaces
+    15's multiplier, amends 24). **Streak:** a day counts if you trained or did active rest
+    (every day offers one, so planned rest never breaks it). While the streak is alive
+    (yesterday counted), today's XP is **×1.2**; a miss drops it to ×1.0 and takes nothing
+    away. It replaces the perfect-week ×1.2 instead of stacking; the perfect week stays a
+    visible moment (the chest on the map), not a multiplier. **Guild:** a guild is official at
+    **three members**; one or two members are a "pre-guild" (joined, visible to each other, no
+    bonuses). Guild bonuses need an official guild. The daily bonus (was "Hearth", every
+    member moved): on a day when **≥ 66%** of members trained or did active rest, each of them
+    earns bonus XP. **UX rule for celebrations:** one summary screen after a session (tiles +
+    week strip + Done; level-up is a banner on it), the perfect-week chest on the map, and the
+    forging screen at quest end. No login rewards, no post-session prompts, nothing to tap
+    through to get home.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
