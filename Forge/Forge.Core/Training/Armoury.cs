@@ -1,35 +1,32 @@
 namespace Forge.Training
 {
-    /// <summary>The three pieces every hero forges (Decision 22).</summary>
+    /// <summary>The five pieces every hero can forge (Decision 25, 2026-11-13).</summary>
     public enum GearSlot
     {
-        /// <summary>The defensive piece: shield, hat, hood, tome… (Hearth quests).</summary>
-        Hearth,
-        /// <summary>The weapon in hand (Anvil quests).</summary>
-        Anvil,
-        /// <summary>Light gear: boots, bracers, anklets… (Bellows quests).</summary>
-        Bellows
+        Head,
+        Body,
+        Weapon,
+        Feet,
+        Trinket
     }
 
-    /// <summary>A forged piece: a slot in a metal. Which item that is depends on the current hero.</summary>
-    public readonly record struct Forged(GearSlot Slot, string Metal);
+    /// <summary>
+    /// One forging spent: a slot raised to a metal. <paramref name="Form"/> is the chosen shape when a
+    /// slot offers several (a sword or a sword and shield); null means the hero's default.
+    /// </summary>
+    public readonly record struct Forged(GearSlot Slot, string Metal, string? Form = null);
 
     /// <summary>
-    /// The tier ladder and what's been forged on it (Decisions 17, 18, 22). Copper is always open;
-    /// forging all three slots in a metal opens the next one.
+    /// The metal ladder (Decision 25). Finishing a quest earns one forging; the player picks a slot
+    /// and it climbs one metal. Slots climb independently, with no tier gate and no discipline
+    /// attached, so any quest can raise any piece. Five slots × seven metals = 35 forgings.
     /// </summary>
     public static class Armoury
     {
         public static readonly string[] Metals = { "Copper", "Bronze", "Iron", "Steel", "Damascus", "Mithril", "Starmetal" };
-        public static readonly GearSlot[] Slots = { GearSlot.Hearth, GearSlot.Anvil, GearSlot.Bellows };
+        public static readonly GearSlot[] Slots = { GearSlot.Head, GearSlot.Body, GearSlot.Weapon, GearSlot.Feet, GearSlot.Trinket };
 
-        /// <summary>A quest's discipline decides which slot it forges.</summary>
-        public static GearSlot SlotFor(string discipline) => discipline switch
-        {
-            "Anvil" => GearSlot.Anvil,
-            "Bellows" => GearSlot.Bellows,
-            _ => GearSlot.Hearth
-        };
+        public static int MaxForgings => Slots.Length * Metals.Length;
 
         public static int TierOf(string metal)
         {
@@ -37,26 +34,34 @@ namespace Forge.Training
             return i < 0 ? 0 : i;
         }
 
-        /// <summary>Slots forged in a metal (each counted once, however many times it was forged).</summary>
-        public static IReadOnlySet<GearSlot> ForgedIn(IEnumerable<Forged> forged, string metal)
-            => forged.Where(f => TierOf(f.Metal) == TierOf(metal)).Select(f => f.Slot).ToHashSet();
+        /// <summary>How many times a slot has been forged: 0 is bare, 1 Copper … 7 Starmetal.</summary>
+        public static int Level(IEnumerable<Forged> forged, GearSlot slot)
+            => Math.Min(Metals.Length, forged.Count(f => f.Slot == slot));
 
-        /// <summary>The highest open tier: Copper, plus one for every metal with all three slots forged in order.</summary>
-        public static int OpenTier(IEnumerable<Forged> forged)
+        /// <summary>The slot's current metal, or null while it's bare.</summary>
+        public static string? MetalOf(IEnumerable<Forged> forged, GearSlot slot)
+            => Level(forged, slot) is var level and > 0 ? Metals[level - 1] : null;
+
+        /// <summary>What the next forging of a slot makes, or null at Starmetal.</summary>
+        public static string? NextMetal(IEnumerable<Forged> forged, GearSlot slot)
+            => Level(forged, slot) is var level && level < Metals.Length ? Metals[level] : null;
+
+        /// <summary>The form last chosen for a slot, or null for the default.</summary>
+        public static string? FormOf(IEnumerable<Forged> forged, GearSlot slot)
+            => forged.Where(f => f.Slot == slot).Select(f => f.Form).LastOrDefault();
+
+        /// <summary>The best metal anywhere on the hero, or null when nothing is forged.</summary>
+        public static string? BestMetal(IEnumerable<Forged> forged)
         {
             var list = forged.ToList();
-            var tier = 0;
-            while (tier < Metals.Length - 1 && ForgedIn(list, Metals[tier]).Count == Slots.Length)
-                tier++;
-            return tier;
+            var best = Slots.Max(s => Level(list, s));
+            return best > 0 ? Metals[best - 1] : null;
         }
-
-        /// <summary>The best metal a slot has been forged in, or null.</summary>
-        public static string? BestMetal(IEnumerable<Forged> forged, GearSlot slot)
-            => forged.Where(f => f.Slot == slot).OrderByDescending(f => TierOf(f.Metal)).Select(f => Metals[TierOf(f.Metal)]).FirstOrDefault();
 
         /// <summary>The file-name form of a metal ("copper").</summary>
         public static string Key(string metal) => Metals[TierOf(metal)].ToLowerInvariant();
         public static string Key(GearSlot slot) => slot.ToString().ToLowerInvariant();
+
+        public static string Label(GearSlot slot) => slot.ToString();
     }
 }

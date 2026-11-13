@@ -231,8 +231,8 @@ namespace Forge.ViewModels
 
             var def = view.Program.Definition;
             QuestLine = view.BlockComplete
-                ? $"{HeroQuest.Name(def)} · complete"
-                : $"{HeroQuest.Name(def)} · week {view.Week} of {ProgramDefinition.WeeksPerBlock}: {ProgramDefinition.WeekName(view.Week)}";
+                ? $"{def.Name} · complete"
+                : $"{def.Name} · week {view.Week} of {ProgramDefinition.WeeksPerBlock}: {ProgramDefinition.WeekName(view.Week)}";
             var done = view.DoneThisWeek.Count;
             Pips = string.Join(" ", Enumerable.Range(0, view.DayCount).Select(i => view.DoneThisWeek.Contains(i) ? "■" : "□"));
             PipsText = $"{done} of {view.DayCount} training days this week";

@@ -1,9 +1,8 @@
 {
   "id": "copper-boots-db-4day",
-  "name": "Copper Boots",
+  "name": "Second Wind",
+  "subtitle": "Conditioning circuits for heart and lungs",
   "quest": "copper-boots",
-  "metal": "Copper",
-  "item": "Boots",
   "discipline": "Bellows",
   "goal": "Conditioning",
   "minutes": "25–35",

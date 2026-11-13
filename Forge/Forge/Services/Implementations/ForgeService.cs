@@ -9,11 +9,14 @@ namespace Forge.Services.Implementations
     public sealed class ForgeService : IForgeService
     {
         private readonly IRepository<ForgeResultRow> _results;
+        private readonly IRepository<ForgingRow> _forgings;
         private readonly IProgramService _programs;
+        private readonly SemaphoreSlim _gate = new(1, 1);
 
-        public ForgeService(IRepository<ForgeResultRow> results, IProgramService programs)
+        public ForgeService(IRepository<ForgeResultRow> results, IRepository<ForgingRow> forgings, IProgramService programs)
         {
             _results = results;
+            _forgings = forgings;
             _programs = programs;
         }
 
@@ -31,8 +34,6 @@ namespace Forge.Services.Implementations
                     {
                         BlockId = blockId,
                         ProgramId = def.Id,
-                        Slot = (int)Armoury.SlotFor(def.Discipline),
-                        Metal = def.Metal,
                         Forged = Forging.Forges(done, def.TrainingDaysPerWeek),
                         DaysDone = done,
                         DaysNeeded = Forging.Needed(def.TrainingDaysPerWeek),
@@ -57,6 +58,32 @@ namespace Forge.Services.Implementations
             => _results.FirstOrDefaultAsync(r => r.BlockId == blockId);
 
         public async Task<IReadOnlyList<Forged>> GetForgedAsync()
-            => (await _results.WhereAsync(r => r.Forged)).Select(r => new Forged((GearSlot)r.Slot, r.Metal)).ToList();
+            => (await _forgings.GetAllAsync()).OrderBy(r => r.Id)
+                .Select(r => new Forged((GearSlot)r.Slot, r.Metal, r.Form)).ToList();
+
+        public async Task<IReadOnlyList<ForgeResultRow>> UnspentAsync()
+        {
+            var spent = (await _forgings.GetAllAsync()).Select(r => r.BlockId).ToHashSet();
+            return (await _results.WhereAsync(r => r.Forged)).Where(r => !spent.Contains(r.BlockId)).OrderBy(r => r.Id).ToList();
+        }
+
+        public async Task<string?> SpendAsync(int blockId, GearSlot slot, string? form = null)
+        {
+            await _gate.WaitAsync();
+            try
+            {
+                if (await _results.FirstOrDefaultAsync(r => r.BlockId == blockId && r.Forged) is null) return null;
+                if (await _forgings.FirstOrDefaultAsync(r => r.BlockId == blockId) is not null) return null;
+                var metal = Armoury.NextMetal(await GetForgedAsync(), slot);
+                if (metal is null) return null;
+                await _forgings.InsertAsync(new ForgingRow
+                {
+                    BlockId = blockId, Slot = (int)slot, Metal = metal, Form = form,
+                    DateKey = WeekMath.DateKey(DateOnly.FromDateTime(DateTime.Today))
+                });
+                return metal;
+            }
+            finally { _gate.Release(); }
+        }
     }
 }

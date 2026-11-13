@@ -1,9 +1,8 @@
 {
   "id": "copper-helm-db-4day",
-  "name": "Copper Helm",
+  "name": "Foundations",
+  "subtitle": "Balanced upper/lower strength, heavy and light days",
   "quest": "copper-helm",
-  "metal": "Copper",
-  "item": "Helm",
   "discipline": "Hearth",
   "goal": "Balanced",
   "minutes": "30–40",

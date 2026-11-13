@@ -91,14 +91,14 @@ namespace Forge.ViewModels
             }
 
             var def = view.Program.Definition;
-            ProgramName = $"{HeroQuest.Name(def)} · {def.Discipline}";
+            ProgramName = def.Name;
             ProgramDescription = def.Description;
             IsBlockComplete = view.BlockComplete;
             var (wStart, wEnd) = BlockSchedule.WeekRange(view.Program.StartedOn, view.Week);
             var result = view.BlockComplete ? await _forge.GetResultAsync(view.Program.BlockId) : null;
             WeekText = view.BlockComplete
-                ? result is null ? $"The {HeroQuest.Name(def)} is ready to forge"
-                  : result.Forged ? $"Forged: the {HeroQuest.Name(def)}"
+                ? result is null ? "Quest complete: ready for the forge"
+                  : result.Forged ? "Quest complete: a forging earned"
                   : "The metal cooled. Try again or choose the next quest."
                 : $"Week {view.Week} of {ProgramDefinition.WeeksPerBlock} · {ProgramDefinition.WeekName(view.Week)}";
             BlockText = $"{def.VersionName} · this week {wStart:MMM d}–{wEnd:MMM d}";
@@ -112,8 +112,8 @@ namespace Forge.ViewModels
             var done = await _programs.CompletedDaysInBlockAsync(view.Program.BlockId);
             ForgeProgress = Math.Min(1.0, (double)done / needed);
             ForgeText = done >= needed
-                ? $"Forge meter: {done} of {total} days · enough to forge the {HeroQuest.Name(def)} at the block's end"
-                : $"Forge meter: {done} of {total} days · {needed} needed to forge the {HeroQuest.Name(def)}";
+                ? $"Forge meter: {done} of {total} days · a forging is yours at the quest's end"
+                : $"Forge meter: {done} of {total} days · {needed} earn a forging";
 
             for (var i = 0; i < def.Days.Count; i++)
             {

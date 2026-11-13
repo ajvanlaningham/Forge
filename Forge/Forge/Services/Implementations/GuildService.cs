@@ -1,3 +1,4 @@
+using Forge.Training;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
@@ -98,7 +99,9 @@ namespace Forge.Services.Implementations
             var level = GameMath.LevelFromXp((await _stats.GetUserStatsAsync()).Xp);
             var view = await _programs.GetViewAsync(today);
             var forgedDates = (await _forged.WhereAsync(r => r.Forged)).Select(r => r.DateKey).Where(k => k.Length == 10).ToList();
-            var gear = (await _forge.GetForgedAsync()).Select(f => new GearMark((int)f.Slot, f.Metal)).Take(GuildLimits.MaxGear).ToList();
+            var forged = await _forge.GetForgedAsync();
+            var gear = Armoury.Slots.Select(s => (Slot: s, Metal: Armoury.MetalOf(forged, s)))
+                .Where(g => g.Metal is not null).Select(g => new GearMark((int)g.Slot, g.Metal!)).ToList();
             var (streak, _) = await _progress.GetStreakAsync();
 
             var name = DisplayName.Length > 0 ? DisplayName : UserSettings.HeroTitle;
@@ -106,7 +109,7 @@ namespace Forge.Services.Implementations
                 name[..Math.Min(name.Length, GuildLimits.MaxNameLength)],
                 UserSettings.HeroRace, UserSettings.HeroClass, level,
                 view?.DayCount ?? 0,
-                view is null ? null : HeroQuest.Name(view.Program.Definition),
+                view?.Program.Definition.Name,
                 view?.Week ?? 0,
                 streak,
                 marks.OrderBy(kv => kv.Key, StringComparer.Ordinal).Select(kv => new DayMark(kv.Key, kv.Value)).ToList(),

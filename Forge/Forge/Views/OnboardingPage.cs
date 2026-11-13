@@ -228,8 +228,6 @@ public sealed class OnboardingPage : ContentPage
         days.Add(four, 1);
 
         // The quest, as the board will show it, named for the hero.
-        var slot = Armoury.SlotFor(_discipline);
-        var item = HeroGear.Name(_race, _class, slot);
         var programId = FirstQuest.ProgramId(_discipline, _gear.HasFlag(Equipment.Dumbbell), _gear.HasFlag(Equipment.Kettlebell), _days);
         var implement = programId.Contains("-kb-") ? "Kettlebell" : "Dumbbell";
         var notice = new Border
@@ -241,7 +239,7 @@ public sealed class OnboardingPage : ContentPage
                 ColumnDefinitions = { new(GridLength.Auto), new(GridLength.Star) }, ColumnSpacing = 12,
                 Children =
                 {
-                    new Image { Source = HeroGear.Sprite(_race, _class, slot, "Copper"), WidthRequest = 56, HeightRequest = 56 },
+                    new Image { Source = HeroGear.Sprite(_race, _class, GearSlot.Weapon, "Copper"), WidthRequest = 56, HeightRequest = 56 },
                 }
             }
         };
@@ -250,9 +248,9 @@ public sealed class OnboardingPage : ContentPage
             Spacing = 2,
             Children =
             {
-                new Label { Text = $"Copper {item}", FontFamily = "FantasyH", FontSize = 24, TextColor = Color.FromArgb("#2B1D14") },
+                new Label { Text = FirstQuest.Title(_discipline), FontFamily = "FantasyH", FontSize = 24, TextColor = Color.FromArgb("#2B1D14") },
                 new Label { Text = $"{_discipline} · {implement} · {_days}-day", FontFamily = "Body", FontSize = 19, TextColor = Color.FromArgb("#8E2A2A") },
-                new Label { Text = "Four weeks. Train 75% of the days and it's forged.", FontFamily = "Body", FontSize = 17, TextColor = Color.FromArgb("#5A4330") }
+                new Label { Text = "Four weeks. Train 75% of the days to earn a forging.", FontFamily = "Body", FontSize = 17, TextColor = Color.FromArgb("#5A4330") }
             }
         };
         ((Grid)notice.Content).Add(noticeText, 1);

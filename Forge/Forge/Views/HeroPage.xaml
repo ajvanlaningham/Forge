@@ -59,10 +59,10 @@
                         StrokeShape="RoundRectangle 10" Padding="14">
                     <VerticalStackLayout Spacing="10">
                         <!-- This tier's three items: lit when forged, faint until then -->
-                        <Grid ColumnDefinitions="*,*,*" BindableLayout.ItemsSource="{Binding Rack}">
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="12" BindableLayout.ItemsSource="{Binding Rack}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="vm:RackItem">
-                                    <VerticalStackLayout Grid.Column="{Binding Column}" Spacing="2">
+                                    <VerticalStackLayout Grid.Column="{Binding Column}" Grid.Row="{Binding Row}" Spacing="2">
                                         <Image Source="{Binding Sprite}" HeightRequest="60" Opacity="{Binding Opacity}" Aspect="AspectFit" />
                                         <Label Text="{Binding Name}" FontFamily="Body" FontSize="17" HorizontalTextAlignment="Center"
                                                TextColor="{StaticResource Muted}" />

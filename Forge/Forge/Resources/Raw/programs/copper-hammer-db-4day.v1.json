@@ -1,9 +1,8 @@
 {
   "id": "copper-hammer-db-4day",
-  "name": "Copper Hammer",
+  "name": "Iron Will",
+  "subtitle": "Strength-focused lifting: fewer reps, heavier sets",
   "quest": "copper-hammer",
-  "metal": "Copper",
-  "item": "Hammer",
   "discipline": "Anvil",
   "goal": "Strength",
   "minutes": "30–40",

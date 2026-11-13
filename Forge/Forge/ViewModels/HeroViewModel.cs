@@ -15,7 +15,7 @@ namespace Forge.ViewModels
     /// Pack (real equipment) and, later, condition (injuries) and skins.
     /// </summary>
     /// <summary>One item on the Armoury rack: lit when forged, faint until then.</summary>
-    public sealed record RackItem(string Name, string Sprite, double Opacity, int Column);
+    public sealed record RackItem(string Name, string? Sprite, double Opacity, int Column, int Row);
 
     /// <summary>One stat's test history on the Hero tab: latest score, change, trend, raw results.</summary>
     public sealed class StatHistoryItem
@@ -161,36 +161,29 @@ namespace Forge.ViewModels
             StreakText = $"Moved {current} day{(current == 1 ? "" : "s")} in a row · best {Math.Max(current, longest)}";
 
             var view = await _programs.GetViewAsync(DateOnly.FromDateTime(DateTime.Today));
-            // The rack: the open tier's three pieces for this hero (Decision 22). A forged piece shows in
-            // the best metal it's been forged in; an unforged one is faint, and the one in the fire a
-            // little brighter.
+            // The rack (Decision 25): five slots, each in the metal it has reached. A bare slot shows
+            // faintly in Copper, the metal its first forging will make.
             var forged = await _forge.GetForgedAsync();
-            var tier = Armoury.OpenTier(forged);
-            var tierMetal = Armoury.Metals[tier];
-            var inFire = view is null ? (GearSlot?)null : HeroQuest.Slot(view.Program.Definition);
             Rack.Clear();
-            var col = 0;
-            foreach (var slot in Armoury.Slots)
+            for (var i = 0; i < Armoury.Slots.Length; i++)
             {
-                var best = Armoury.BestMetal(forged, slot);
-                var metal = best ?? tierMetal;
-                var opacity = best is not null ? 1.0 : slot == inFire ? 0.55 : 0.22;
-                Rack.Add(new RackItem($"{metal} {HeroQuest.ItemName(slot)}", HeroQuest.Sprite(slot, metal), opacity, col++));
+                var slot = Armoury.Slots[i];
+                var metal = Armoury.MetalOf(forged, slot);
+                Rack.Add(new RackItem(metal is null ? $"{Armoury.Label(slot)}: bare" : $"{metal} {HeroQuest.ItemName(slot)}",
+                    HeroQuest.Sprite(slot, metal ?? "Copper"), metal is null ? 0.22 : 1.0, i % 3, i / 3));
             }
-            var doneInTier = Armoury.ForgedIn(forged, tierMetal).Count;
-            var next = tier + 1 < Armoury.Metals.Length ? Armoury.Metals[tier + 1] : null;
-            var tierLine = next is null
-                ? $"{tierMetal} tier: {doneInTier} of 3 forged."
-                : $"{tierMetal} tier: {doneInTier} of 3 forged. Forge all three to open {next}.";
-
-            if (view is null)
-                ArmouryText = $"{tierLine}\nAccept a quest to put something in the fire.";
-            else
+            var spent = forged.Count;
+            var unspent = (await _forge.UnspentAsync()).Count;
+            var lines = new List<string> { $"{spent} of {Armoury.MaxForgings} forgings. Every quest you finish earns one, for any slot." };
+            if (unspent > 0) lines.Add($"{unspent} forging{(unspent == 1 ? "" : "s")} ready to spend.");
+            if (view is not null)
             {
                 var def = view.Program.Definition;
                 var done = await _programs.CompletedDaysInBlockAsync(view.Program.BlockId);
-                ArmouryText = $"{tierLine}\nIn the fire: the {HeroQuest.Name(def)} · {done} of {Forging.Needed(def.TrainingDaysPerWeek)} training days needed.";
+                lines.Add($"{def.Name}: {done} of {Forging.Needed(def.TrainingDaysPerWeek)} training days for the next forging.");
             }
+            else lines.Add("Accept a quest to earn your next forging.");
+            ArmouryText = string.Join("\n", lines);
 
             await _inventory.InitializeAsync();
             var owned = await _inventory.GetOwnedFlagsAsync();

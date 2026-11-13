@@ -2,53 +2,70 @@ using Forge.Training;
 
 namespace Forge.Tests;
 
+/// <summary>Decision 25: one quest, one forging; five slots climb the metal ladder independently.</summary>
 public class ArmouryTests
 {
     [Fact]
-    public void Disciplines_ForgeTheirSlots()
+    public void FiveSlots_SevenMetals()
     {
-        Assert.Equal(GearSlot.Hearth, Armoury.SlotFor("Hearth"));
-        Assert.Equal(GearSlot.Anvil, Armoury.SlotFor("Anvil"));
-        Assert.Equal(GearSlot.Bellows, Armoury.SlotFor("Bellows"));
+        Assert.Equal(5, Armoury.Slots.Length);
+        Assert.Equal(35, Armoury.MaxForgings);
     }
 
     [Fact]
-    public void Copper_IsAlwaysOpen_AndThreeSlotsOpenTheNextTier()
+    public void ABareSlot_ForgesCopperFirst()
     {
-        Assert.Equal(0, Armoury.OpenTier([]));
-        var two = new[] { new Forged(GearSlot.Hearth, "Copper"), new Forged(GearSlot.Anvil, "copper"), new Forged(GearSlot.Anvil, "Copper") };
-        Assert.Equal(0, Armoury.OpenTier(two));                     // the same slot twice is still two slots
-        var three = two.Append(new Forged(GearSlot.Bellows, "Copper"));
-        Assert.Equal(1, Armoury.OpenTier(three));                   // Bronze opens
-        Assert.Equal("Bronze", Armoury.Metals[Armoury.OpenTier(three)]);
+        Assert.Null(Armoury.MetalOf([], GearSlot.Head));
+        Assert.Equal("Copper", Armoury.NextMetal([], GearSlot.Head));
     }
 
     [Fact]
-    public void Tiers_OpenInOrder()
+    public void EachForging_RaisesItsSlotOneMetal_AndNoOther()
     {
-        // All three in Bronze but not Copper doesn't skip ahead.
-        var bronze = Armoury.Slots.Select(s => new Forged(s, "Bronze"));
-        Assert.Equal(0, Armoury.OpenTier(bronze));
+        var forged = new[] { new Forged(GearSlot.Weapon, "Copper"), new Forged(GearSlot.Weapon, "Bronze"), new Forged(GearSlot.Feet, "Copper") };
+        Assert.Equal("Bronze", Armoury.MetalOf(forged, GearSlot.Weapon));
+        Assert.Equal("Iron", Armoury.NextMetal(forged, GearSlot.Weapon));
+        Assert.Equal("Bronze", Armoury.NextMetal(forged, GearSlot.Feet));
+        Assert.Equal("Copper", Armoury.NextMetal(forged, GearSlot.Body)); // no tier gate: any slot, any time
     }
 
     [Fact]
-    public void BestMetal_IsTheHighestForged()
+    public void Starmetal_IsTheTop()
     {
-        var forged = new[] { new Forged(GearSlot.Anvil, "Copper"), new Forged(GearSlot.Anvil, "Iron"), new Forged(GearSlot.Hearth, "Bronze") };
-        Assert.Equal("Iron", Armoury.BestMetal(forged, GearSlot.Anvil));
-        Assert.Null(Armoury.BestMetal(forged, GearSlot.Bellows));
+        var all = Armoury.Metals.Select(m => new Forged(GearSlot.Trinket, m)).ToList();
+        Assert.Equal("Starmetal", Armoury.MetalOf(all, GearSlot.Trinket));
+        Assert.Null(Armoury.NextMetal(all, GearSlot.Trinket));
+        Assert.Equal(7, Armoury.Level(all.Append(new Forged(GearSlot.Trinket, "Starmetal")), GearSlot.Trinket));
+    }
+
+    [Fact]
+    public void BestMetal_AndForms()
+    {
+        Assert.Null(Armoury.BestMetal([]));
+        var forged = new[] { new Forged(GearSlot.Head, "Copper", "hood"), new Forged(GearSlot.Body, "Copper"), new Forged(GearSlot.Body, "Bronze") };
+        Assert.Equal("Bronze", Armoury.BestMetal(forged));
+        Assert.Equal("hood", Armoury.FormOf(forged, GearSlot.Head));
+    }
+
+    [Fact]
+    public void Keys_AreLowercase()
+    {
         Assert.Equal("iron", Armoury.Key("Iron"));
+        Assert.Equal("weapon", Armoury.Key(GearSlot.Weapon));
     }
 
     [Fact]
-    public void EveryHero_HasANameForEverySlot()
+    public void EveryHero_HasANameForEveryDrawnPiece()
     {
         string[] races = ["human", "elf", "dwarf", "orc", "halfling", "construct"];
         string[] classes = ["wizard", "warrior", "rogue", "ranger", "cleric", "monk"];
-        var missing = (from r in races from c in classes from s in Armoury.Slots
-                       where !HeroGear.Names.ContainsKey($"{r}_{c}_{Armoury.Key(s)}") select $"{r}_{c}_{s}").ToList();
+        string[] drawn = ["anvil", "hearth", "bellows"]; // Decision 22's art, borrowed until the five-slot set is drawn
+        var missing = (from r in races from c in classes from k in drawn
+                       where !HeroGear.Names.ContainsKey($"{r}_{c}_{k}") select $"{r}_{c}_{k}").ToList();
         Assert.True(missing.Count == 0, "Missing gear names: " + string.Join(", ", missing));
-        Assert.Equal("Archmage's Staff", HeroGear.Name("human", "wizard", GearSlot.Anvil));
-        Assert.Equal("gear_human_wizard_anvil_copper.png", HeroGear.Sprite("human", "wizard", GearSlot.Anvil, "Copper"));
+        Assert.Equal("Archmage's Staff", HeroGear.Name("human", "wizard", GearSlot.Weapon));
+        Assert.Equal("gear_human_wizard_anvil_copper.png", HeroGear.Sprite("human", "wizard", GearSlot.Weapon, "Copper"));
+        Assert.Null(HeroGear.Sprite("human", "wizard", GearSlot.Body, "Copper"));
+        Assert.Equal("Armour", HeroGear.Name("human", "wizard", GearSlot.Body));
     }
 }

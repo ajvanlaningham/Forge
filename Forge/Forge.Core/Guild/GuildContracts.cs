@@ -61,7 +61,7 @@ namespace Forge.Guild
             if ((m.QuestName?.Length ?? 0) > 80 || m.QuestWeek is < 0 or > 8) return "quest";
             if (m.Days.Count > MaxDays || m.Days.Any(d => !DateOnly.TryParseExact(d.Date, "yyyy-MM-dd", out _) || !Enum.IsDefined(d.Kind))) return "days";
             if (m.ForgedDates.Count > MaxForged || m.ForgedDates.Any(d => !DateOnly.TryParseExact(d, "yyyy-MM-dd", out _))) return "forged";
-            if (m.Gear.Count > MaxGear || m.Gear.Any(g => g.Slot is < 0 or > 2 || g.Metal.Length is 0 or > 16)) return "gear";
+            if (m.Gear.Count > MaxGear || m.Gear.Any(g => g.Slot is < 0 or > 4 || g.Metal.Length is 0 or > 16)) return "gear";
             return null;
         }
     }

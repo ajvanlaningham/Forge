@@ -106,7 +106,7 @@ public class BlockScheduleTests
 public class ProgramDefinitionTests
 {
     private const string Minimal = """
-        { "id": "x", "name": "X", "quest": "copper-helm", "item": "Helm",
+        { "id": "x", "name": "Foundations", "subtitle": "Balanced", "quest": "copper-helm",
           "days": [
             { "name": "A", "main": [ { "exercise": "Goblet Squat", "sets": 3, "repsMin": 8, "repsMax": 12 } ],
               "accessories": [ [ { "exercise": "Plank", "sets": 2, "seconds": 30 } ],
@@ -156,7 +156,7 @@ public class ProgramDefinitionTests
     }
 
     [Theory]
-    [InlineData("""{ "id": "x", "name": "X", "quest": "q", "item": "Helm", "days": [] }""")]          // no days
+    [InlineData("""{ "id": "x", "name": "X", "subtitle": "S", "quest": "q", "days": [] }""")]          // no days
     [InlineData("""{ "id": "x", "name": "X", "days": [ {"name":"A","main":[]}, {"name":"B","main":[]}, {"name":"C","main":[]} ] }""")] // no mains
     [InlineData("{ not json")]
     public void RejectsBadPrograms(string json)
@@ -166,7 +166,8 @@ public class ProgramDefinitionTests
     public void NamesComeFromTheQuest()
     {
         var p = ProgramParser.Parse(Minimal);
-        Assert.Equal("Copper Helm", p.QuestName);
+        Assert.Equal("Foundations", p.Name);
+        Assert.Equal("Balanced", p.Subtitle);
         Assert.Equal("Dumbbell · 3-day", p.VersionName);
         Assert.Equal(new[] { "Kindling", "Tempering", "Quenching", "Honing" }, Enumerable.Range(1, 4).Select(ProgramDefinition.WeekName));
     }
@@ -228,7 +229,7 @@ public class ShippedProgramContentTests
         var split = new List<ProgramSlot> { day.Main[1], day.Main[0], day.Main[2] }; // A, -, A
         var broken = new ProgramDefinition
         {
-            Id = p.Id, Name = p.Name, Version = p.Version, Quest = p.Quest, Item = p.Item,
+            Id = p.Id, Name = p.Name, Version = p.Version, Quest = p.Quest, Subtitle = p.Subtitle,
             Discipline = p.Discipline, Implement = p.Implement,
             Days = p.Days.Select((d, i) => i == 0 ? new ProgramDay { Name = d.Name, Main = split, Accessories = d.Accessories } : d).ToList()
         };
@@ -262,21 +263,14 @@ public class ShippedProgramContentTests
     }
 
     [Fact]
-    public void QuestsForgingTheSamePiece_AreToldApartOnTheBoard()
+    public void Quests_HaveTheirOwnNames()
     {
-        // The board titles a quest by the hero's item for its metal × discipline, so two quests
-        // sharing both would show as twins. All but one of them must carry an epithet.
+        // Decision 25: a quest is named for its plan (title + subtitle), so no two quests may share a title.
         var latest = GameConstants.Programs.Files.Select(Load)
-            .GroupBy(p => p.Id).Select(g => g.OrderByDescending(p => p.Version).First());
-        foreach (var piece in latest.GroupBy(p => (p.Metal, p.Discipline)))
-        {
-            var quests = piece.GroupBy(p => p.Quest).ToList();
-            var bare = quests.Count(q => q.Any(p => p.Epithet is null));
-            Assert.True(bare <= 1, $"{piece.Key.Metal} {piece.Key.Discipline}: {bare} quests without an epithet");
-            foreach (var q in quests.Where(q => q.Any(p => p.Epithet is not null)))
-                Assert.True(q.All(p => p.Epithet is not null && p.Description is not null),
-                    $"{q.Key}: every version needs the epithet and its own description");
-        }
+            .GroupBy(p => p.Id).Select(g => g.OrderByDescending(p => p.Version).First()).ToList();
+        foreach (var byName in latest.GroupBy(p => p.Name))
+            Assert.True(byName.Select(p => p.Quest).Distinct().Count() == 1, $"'{byName.Key}' names more than one quest");
+        Assert.All(latest, p => Assert.False(string.IsNullOrWhiteSpace(p.Subtitle)));
     }
 
     [Theory, MemberData(nameof(ProgramFiles))]
@@ -308,8 +302,8 @@ public class ShippedProgramContentTests
             .GroupBy(p => p.Id).Select(g => g.OrderByDescending(p => p.Version).First());
         foreach (var quest in latest.GroupBy(p => p.Quest))
         {
-            var ids = quest.Select(p => (p.Metal, p.Item, p.Discipline)).Distinct().ToList();
-            Assert.True(ids.Count == 1, $"quest '{quest.Key}' versions disagree on metal/item/discipline");
+            var ids = quest.Select(p => (p.Name, p.Subtitle, p.Discipline)).Distinct().ToList();
+            Assert.True(ids.Count == 1, $"quest '{quest.Key}' versions disagree on title/subtitle/discipline");
             var versions = quest.Select(p => p.VersionName).ToList();
             Assert.True(versions.Count == versions.Distinct().Count(), $"quest '{quest.Key}' has duplicate versions");
         }

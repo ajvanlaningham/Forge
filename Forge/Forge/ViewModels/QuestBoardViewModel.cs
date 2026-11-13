@@ -83,41 +83,20 @@ namespace Forge.ViewModels
                 Notices.Add(new QuestNotice
                 {
                     Id = quest.Key,
-                    Title = first.Epithet is { } epithet ? $"{HeroQuest.Name(first)} · {epithet}" : HeroQuest.Name(first),
-                    ItemSprite = HeroQuest.Sprite(first),
+                    Title = first.Name,
+                    ItemSprite = null,
                     Discipline = $"{first.Discipline} · {first.Goal}",
                     Meta = $"{string.Join(" or ", days)} days a week · {first.Minutes ?? "?"} min",
                     Versions = "Versions: " + string.Join(" · ", implements),
-                    Description = first.Epithet is not null && first.Description is { } own ? own : Describe(first),
+                    Description = first.Description ?? Describe(first),
                     Needs = fits ? null : "Needs gear you haven't marked in My Gear (the Gym has everything)",
-                    Tier = $"{first.Metal} tier · forges the {HeroQuest.Name(first)}",
+                    Tier = first.Subtitle,
                     IsActive = isActive,
                     ActiveText = isActive && view is not null
                         ? view.BlockComplete
                             ? $"Completed · {active!.VersionName}"
                             : $"Underway · {active!.VersionName} · week {view.Week}: {ProgramDefinition.WeekName(view.Week)}"
                         : null,
-                    Tilt = Tilts[i++ % Tilts.Length]
-                });
-            }
-
-            // The next tier, sealed: what it takes to open it (Decisions 18, 22).
-            var forged = await _forge.GetForgedAsync();
-            var open = Armoury.OpenTier(forged);
-            if (open + 1 < Armoury.Metals.Length)
-            {
-                var metal = Armoury.Metals[open];
-                var next = Armoury.Metals[open + 1];
-                var have = Armoury.ForgedIn(forged, metal);
-                var pieces = string.Join(", ", Armoury.Slots.Select(sl => (have.Contains(sl) ? "✓ " : "") + $"{metal} {HeroQuest.ItemName(sl)}"));
-                Notices.Add(new QuestNotice
-                {
-                    Id = "",
-                    Title = $"{next} tier",
-                    Discipline = "Hearth · Anvil · Bellows",
-                    Meta = "Sealed",
-                    Description = $"Forge all three {metal} pieces to break the seal: {pieces}. {have.Count} of 3 forged.",
-                    IsRumour = true,
                     Tilt = Tilts[i++ % Tilts.Length]
                 });
             }
@@ -144,7 +123,7 @@ namespace Forge.ViewModels
             if (versions.Count == 0) return;
 
             var labels = versions.Select(p => p.VersionName + (Fits(p, _homeGear) ? "  ✓ fits your gear" : "")).ToArray();
-            var pick = await Shell.Current.DisplayActionSheetAsync($"{HeroQuest.Name(versions[0])} — choose your version", "Cancel", null, labels);
+            var pick = await Shell.Current.DisplayActionSheetAsync($"{versions[0].Name} — choose your version", "Cancel", null, labels);
             var index = Array.IndexOf(labels, pick);
             if (index < 0) return;
             var chosen = versions[index];
@@ -152,12 +131,12 @@ namespace Forge.ViewModels
             var current = (await _programs.GetActiveAsync())?.Definition;
             if (current?.Id == chosen.Id)
             {
-                await Shell.Current.DisplayAlertAsync("Already underway", $"You're already on {HeroQuest.Name(chosen)} · {chosen.VersionName}.", "OK");
+                await Shell.Current.DisplayAlertAsync("Already underway", $"You're already on {chosen.Name} · {chosen.VersionName}.", "OK");
                 return;
             }
 
             var ok = await Shell.Current.DisplayAlertAsync("Accept this quest?",
-                $"Start {HeroQuest.Name(chosen)} · {chosen.VersionName} at week 1 (Kindling), today. Your current block ends; your workout history is kept.",
+                $"Start {chosen.Name} · {chosen.VersionName} at week 1 (Kindling), today. Your current block ends; your workout history is kept.",
                 "Accept", "Not yet");
             if (!ok) return;
 

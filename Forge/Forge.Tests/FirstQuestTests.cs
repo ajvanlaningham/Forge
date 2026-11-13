@@ -22,4 +22,15 @@ public class FirstQuestTests
                 foreach (var days in new[] { 3, 4 })
                     Assert.Contains(FirstQuest.ProgramId(d, db, kb, days), shipped);
     }
+
+    [Theory]
+    [InlineData("Hearth")]
+    [InlineData("Anvil")]
+    [InlineData("Bellows")]
+    public void Title_MatchesTheShippedProgram(string discipline)
+    {
+        var file = Path.Combine(AppContext.BaseDirectory, "Raw", "programs", FirstQuest.ProgramId(discipline, true, false, 4) + ".v1.json");
+        var program = ProgramParser.Parse(File.ReadAllText(file));
+        Assert.Equal(FirstQuest.Title(discipline), program.Name);
+    }
 }

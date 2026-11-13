@@ -4,9 +4,9 @@ using Forge.Training;
 namespace Forge.Services.Interfaces
 {
     /// <summary>
-    /// The end of a quest (Decision 18): when a block's four weeks are up, judge it once: 75% of its
-    /// training days forges the quest's piece, otherwise the metal cools. Forged pieces fill the
-    /// Armoury and open the next tier (Decision 22: slot × metal, re-skinned to the current hero).
+    /// The end of a quest (Decisions 18, 25): when a block's four weeks are up, judge it once: 75% of
+    /// its training days earns one forging, otherwise the metal cools. The player spends a forging on
+    /// any of the five slots, raising it one metal (slot × metal, re-skinned to the current hero).
     /// </summary>
     public interface IForgeService
     {
@@ -18,7 +18,17 @@ namespace Forge.Services.Interfaces
         /// <summary>The result for a block, once judged.</summary>
         Task<ForgeResultRow?> GetResultAsync(int blockId);
 
-        /// <summary>Every forged piece (not the cooled attempts).</summary>
+        /// <summary>Every forging spent, oldest first.</summary>
         Task<IReadOnlyList<Forged>> GetForgedAsync();
+
+        /// <summary>Passed blocks whose forging hasn't been spent yet, oldest first.</summary>
+        Task<IReadOnlyList<ForgeResultRow>> UnspentAsync();
+
+        /// <summary>
+        /// Spends the forging earned by <paramref name="blockId"/> on <paramref name="slot"/>. Returns
+        /// the metal reached, or null if there's nothing to spend (not passed, already spent, or the
+        /// slot is at Starmetal).
+        /// </summary>
+        Task<string?> SpendAsync(int blockId, GearSlot slot, string? form = null);
     }
 }

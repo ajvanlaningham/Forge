@@ -3,8 +3,9 @@ using SQLite;
 namespace Forge.Models
 {
     /// <summary>
-    /// How a block ended at the forge (Decision 18): judged once, at the end of the block. Records
-    /// the slot and metal, not the item, so a forged piece re-skins when the hero changes (Decision 22).
+    /// How a block ended at the forge: judged once, at the end of the block. Since Decision 25 a pass
+    /// earns one forging, spent separately (<see cref="ForgingRow"/>); Slot and Metal are legacy
+    /// columns from the metal × item quests and are no longer written.
     /// </summary>
     [Table("ForgeResult")]
     public sealed class ForgeResultRow
@@ -24,7 +25,7 @@ namespace Forge.Models
         /// <summary>"Copper"…"Starmetal".</summary>
         public string Metal { get; set; } = "Copper";
 
-        /// <summary>True when the block made the 75%: the piece is forged. False: the metal cooled.</summary>
+        /// <summary>True when the block made the 75%: a forging is earned. False: the metal cooled.</summary>
         public bool Forged { get; set; }
 
         public int DaysDone { get; set; }

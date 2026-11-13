@@ -52,7 +52,7 @@ public partial class TodayPage : ContentPage
             if (await forge.JudgeIfDueAsync(DateOnly.FromDateTime(DateTime.Today)) is { } result)
             {
                 await forge.MarkSeenAsync(result.Id);
-                await Navigation.PushModalAsync(new ForgingPage(result, programs));
+                await Navigation.PushModalAsync(new ForgingPage(result, programs, forge));
             }
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Forge judgment failed: {ex}"); }

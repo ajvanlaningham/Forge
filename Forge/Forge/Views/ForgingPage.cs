@@ -6,9 +6,10 @@ using Forge.Training;
 namespace Forge.Views;
 
 /// <summary>
-/// The end of a quest (Decision 18): the hammer strikes, then the piece is revealed, forged in
-/// its metal, or the metal has cooled (said kindly: the training still counted). Shown once per
-/// judged block, from Today.
+/// The end of a quest (Decisions 18, 25): the one big celebration. The hammer strikes; a passed
+/// quest earns a forging and the player picks which of the five slots climbs one metal. A missed
+/// one says kindly that the metal cooled (the training still counted). Shown once per judged
+/// block; a forging not spent here waits on the Hero tab.
 /// </summary>
 public sealed class ForgingPage : ContentPage
 {
@@ -16,71 +17,32 @@ public sealed class ForgingPage : ContentPage
 
     private readonly ForgeResultRow _result;
     private readonly IProgramService _programs;
-    private readonly Image _anvil = new() { WidthRequest = 200, HeightRequest = 200, Source = "forge_0.png" };
-    private readonly Image _item = new() { WidthRequest = 180, HeightRequest = 180, Opacity = 0, Scale = 0.6 };
-    private readonly VerticalStackLayout _reveal = new() { Spacing = 12, Opacity = 0 };
+    private readonly IForgeService _forge;
+    private readonly Image _anvil = new() { WidthRequest = 180, HeightRequest = 180, Source = "forge_0.png" };
+    private readonly VerticalStackLayout _reveal = new() { Spacing = 16, Opacity = 0 };
+    private readonly Color _accent, _muted, _onBg, _bg, _surface;
     private bool _played;
 
-    public ForgingPage(ForgeResultRow result, IProgramService programs)
+    public ForgingPage(ForgeResultRow result, IProgramService programs, IForgeService forge)
     {
         _result = result;
         _programs = programs;
+        _forge = forge;
         var res = Application.Current!.Resources;
-        var accent = (Color)res["Accent"];
-        var muted = (Color)res["Muted"];
-        var onBg = (Color)res["OnBg"];
-        BackgroundColor = (Color)res["Bg"];
-
-        var slot = (GearSlot)result.Slot;
-        var name = $"{result.Metal} {HeroQuest.ItemName(slot)}";
-        _item.Source = HeroQuest.Sprite(slot, result.Metal);
-
-        var title = new Label
-        {
-            Text = result.Forged ? "FORGED" : "THE METAL COOLED",
-            FontFamily = "Display", FontSize = 22, TextColor = result.Forged ? accent : muted,
-            HorizontalTextAlignment = TextAlignment.Center
-        };
-        var item = new Label
-        {
-            Text = name, FontFamily = "Display", FontSize = 34, TextColor = onBg, HorizontalTextAlignment = TextAlignment.Center
-        };
-        var body = new Label
-        {
-            Text = result.Forged
-                ? $"{result.DaysDone} of {result.DaysTotal} training days. It's yours, and it's on the Armoury rack."
-                : $"{result.DaysDone} of {result.DaysTotal} training days; {result.DaysNeeded} forge it. Every session still counted toward your level and your lifts. The forge is ready when you are.",
-            FontFamily = "Body", FontSize = 21, TextColor = muted, HorizontalTextAlignment = TextAlignment.Center
-        };
-        _reveal.Children.Add(title);
-        _reveal.Children.Add(item);
-        _reveal.Children.Add(body);
-        if (!result.Forged) _item.Opacity = 0;
-
-        var primary = new Button
-        {
-            Text = result.Forged ? "To the Armoury" : "Try this quest again",
-            HeightRequest = 60, FontFamily = "Display", FontSize = 24, BackgroundColor = accent, TextColor = (Color)res["Bg"]
-        };
-        primary.Clicked += async (_, _) =>
-        {
-            if (!result.Forged && await _programs.GetActiveAsync() is { } active)
-                await _programs.StartProgramAsync(active.Definition.Id, DateOnly.FromDateTime(DateTime.Today));
-            await CloseAsync(result.Forged ? "//hero" : "//today");
-        };
-        var secondary = new Button { Text = "Choose the next quest", HeightRequest = 52, FontFamily = "Display", FontSize = 20 };
-        secondary.Clicked += async (_, _) => await CloseAsync("//quest");
-        _reveal.Children.Add(primary);
-        _reveal.Children.Add(secondary);
+        _accent = (Color)res["Accent"];
+        _muted = (Color)res["Muted"];
+        _onBg = (Color)res["OnBg"];
+        _bg = (Color)res["Bg"];
+        _surface = (Color)res["Surface"];
+        BackgroundColor = _bg;
 
         Content = new ScrollView
         {
             Content = new VerticalStackLayout
             {
-                Padding = new Thickness(24, 40),
+                Padding = new Thickness(20, 32),
                 Spacing = 18,
-                VerticalOptions = LayoutOptions.Center,
-                Children = { new Grid { Children = { _anvil, _item } }, _reveal }
+                Children = { _anvil, _reveal }
             }
         };
     }
@@ -97,16 +59,120 @@ public sealed class ForgingPage : ContentPage
                 if (frame == "forge_2.png") Buzz(n == 2 ? 300 : 60);
                 await Task.Delay(ms);
             }
-        if (_result.Forged)
-        {
-            await _anvil.FadeToAsync(0, 250);
-            await Task.WhenAll(_item.FadeToAsync(1, 400), _item.ScaleToAsync(1, 400, Easing.CubicOut));
-        }
-        else
-        {
-            _anvil.Source = "forge_0.png";
-        }
+        _anvil.Source = "forge_0.png";
+        if (_result.Forged) await ShowChoiceAsync();
+        else ShowCooled();
         await _reveal.FadeToAsync(1, 400);
+    }
+
+    private Label Title(string text, Color color) => new()
+    {
+        Text = text, FontFamily = "Display", FontSize = 34, TextColor = color, HorizontalTextAlignment = TextAlignment.Center
+    };
+
+    private Label Line(string text) => new()
+    {
+        Text = text, FontFamily = "Body", FontSize = 18, TextColor = _muted, HorizontalTextAlignment = TextAlignment.Center
+    };
+
+    private Button Primary(string text) => new()
+    {
+        Text = text, HeightRequest = 64, CornerRadius = 14, FontFamily = "Display", FontSize = 28,
+        BackgroundColor = _accent, TextColor = _bg
+    };
+
+    private void ShowCooled()
+    {
+        _reveal.Children.Add(Title("THE METAL COOLED", _muted));
+        _reveal.Children.Add(Line($"{_result.DaysDone} of {_result.DaysTotal} training days; {_result.DaysNeeded} earn a forging. Every session still counted toward your level and your lifts."));
+        var again = Primary("TRY AGAIN");
+        again.Clicked += async (_, _) =>
+        {
+            if (await _programs.GetActiveAsync() is { } active)
+                await _programs.StartProgramAsync(active.Definition.Id, DateOnly.FromDateTime(DateTime.Today));
+            await CloseAsync("//today");
+        };
+        var other = new Button { Text = "Choose another quest", HeightRequest = 56, FontFamily = "Display", FontSize = 22 };
+        other.Clicked += async (_, _) => await CloseAsync("//quest");
+        _reveal.Children.Add(again);
+        _reveal.Children.Add(other);
+    }
+
+    /// <summary>Five big tiles: each slot's current metal and what this forging would make it.</summary>
+    private async Task ShowChoiceAsync()
+    {
+        _reveal.Children.Add(Title("A FORGING EARNED", _accent));
+        _reveal.Children.Add(Line($"{_result.DaysDone} of {_result.DaysTotal} training days. Choose a piece to raise one metal."));
+
+        var forged = await _forge.GetForgedAsync();
+        var grid = new Grid { ColumnDefinitions = { new(GridLength.Star), new(GridLength.Star) }, ColumnSpacing = 12, RowSpacing = 12 };
+        for (var i = 0; i < Armoury.Slots.Length; i++)
+        {
+            var slot = Armoury.Slots[i];
+            var now = Armoury.MetalOf(forged, slot);
+            var next = Armoury.NextMetal(forged, slot);
+            var tile = Tile(slot, now, next);
+            if (i / 2 >= grid.RowDefinitions.Count) grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            grid.Add(tile, i % 2, i / 2);
+        }
+        _reveal.Children.Add(grid);
+
+        var later = new Button { Text = "Decide later", HeightRequest = 56, FontFamily = "Display", FontSize = 22 };
+        later.Clicked += async (_, _) => await CloseAsync("//hero");
+        _reveal.Children.Add(later);
+    }
+
+    private View Tile(GearSlot slot, string? now, string? next)
+    {
+        var sprite = HeroQuest.Sprite(slot, next ?? now ?? "Copper");
+        var stack = new VerticalStackLayout { Spacing = 4, HorizontalOptions = LayoutOptions.Center };
+        if (sprite is not null) stack.Children.Add(new Image { Source = sprite, HeightRequest = 64, WidthRequest = 64 });
+        stack.Children.Add(new Label { Text = Armoury.Label(slot), FontFamily = "Display", FontSize = 26, TextColor = _onBg, HorizontalTextAlignment = TextAlignment.Center });
+        stack.Children.Add(new Label
+        {
+            Text = next is null ? $"{now}: maxed" : now is null ? $"bare → {next}" : $"{now} → {next}",
+            FontFamily = "Body", FontSize = 16, TextColor = next is null ? _muted : _accent, HorizontalTextAlignment = TextAlignment.Center
+        });
+        var border = new Border
+        {
+            Content = stack, Padding = new Thickness(8, 14), BackgroundColor = _surface,
+            Stroke = next is null ? _muted : _accent, StrokeThickness = 2,
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 14 },
+            Opacity = next is null ? 0.5 : 1
+        };
+        if (next is not null)
+        {
+            var tap = new TapGestureRecognizer();
+            tap.Tapped += async (_, _) => await SpendAsync(slot);
+            border.GestureRecognizers.Add(tap);
+        }
+        return border;
+    }
+
+    private async Task SpendAsync(GearSlot slot)
+    {
+        var metal = await _forge.SpendAsync(_result.BlockId, slot);
+        if (metal is null) return;
+        Buzz(300);
+        await _reveal.FadeToAsync(0, 200);
+        _reveal.Children.Clear();
+        var sprite = HeroQuest.Sprite(slot, metal);
+        if (sprite is not null)
+        {
+            _anvil.Source = sprite;
+            _anvil.Scale = 0.6;
+            _ = _anvil.ScaleToAsync(1, 400, Easing.CubicOut);
+        }
+        _reveal.Children.Add(Title("FORGED", _accent));
+        _reveal.Children.Add(new Label
+        {
+            Text = $"{metal} {HeroQuest.ItemName(slot)}", FontFamily = "Display", FontSize = 30, TextColor = _onBg,
+            HorizontalTextAlignment = TextAlignment.Center
+        });
+        var done = Primary("DONE");
+        done.Clicked += async (_, _) => await CloseAsync("//hero");
+        _reveal.Children.Add(done);
+        await _reveal.FadeToAsync(1, 300);
     }
 
     private async Task CloseAsync(string route)

@@ -1,10 +1,8 @@
 {
   "id": "copper-split-db-4day",
-  "name": "Copper Shield",
-  "epithet": "Four-Day Home Split",
+  "name": "The Fourfold Path",
+  "subtitle": "Four-day upper/lower dumbbell supersets",
   "quest": "copper-split",
-  "metal": "Copper",
-  "item": "Shield",
   "discipline": "Hearth",
   "goal": "Balanced",
   "minutes": "45–55",

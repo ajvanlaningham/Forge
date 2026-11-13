@@ -29,23 +29,19 @@ namespace Forge.Training
         /// <summary>Programs sharing main lifts with different schedules (e.g. a 3-day and a 4-day).</summary>
         public string? Family { get; init; }
 
-        // --- The quest this program is a version of (naming scheme, 2026-11-11) ---------------
-        // A quest is the identity — "Copper Helm · Hearth" — and forges one item. It comes in
-        // versions: implement (kettlebell / dumbbell / gym) × schedule (3 or 4 days).
+        // --- The quest this program is a version of (Decision 25, 2026-11-13) ---------------------
+        // A quest is a named plan: a fantasy title ("Iron Will") with a plain subtitle saying what it
+        // trains ("Strength-focused full-body lifting"). It no longer carries a metal or an item:
+        // finishing any quest earns one forging, spent on any slot. Versions are implement
+        // (kettlebell / dumbbell / gym) × schedule (3 or 4 days) and share the title and subtitle.
 
-        /// <summary>Quest id shared by all its versions, e.g. <c>copper-helm</c>.</summary>
+        /// <summary>Quest id shared by all its versions, e.g. <c>copper-helm</c> (ids predate the rename and stay stable).</summary>
         public string Quest { get; init; } = "";
-        /// <summary>The tier, as a metal: Copper, Bronze, Iron, Steel, Damascus, Mithril, Starmetal.</summary>
-        public string Metal { get; init; } = "Copper";
-        /// <summary>What finishing the block forges: Helm, Hammer, Boots…</summary>
-        public string Item { get; init; } = "";
-        /// <summary>Hearth (balanced), Anvil (strength), Bellows (conditioning).</summary>
+        /// <summary>Hearth (balanced), Anvil (strength), Bellows (conditioning): a label only, with no gating.</summary>
         public string Discipline { get; init; } = "Hearth";
         /// <summary>Kettlebell, Dumbbell, or Gym.</summary>
         public string Implement { get; init; } = "Dumbbell";
 
-        /// <summary>"Copper Helm".</summary>
-        public string QuestName => $"{Metal} {Item}";
         /// <summary>"Kettlebell · 4-day".</summary>
         public string VersionName => $"{Implement} · {TrainingDaysPerWeek}-day";
 
@@ -55,13 +51,8 @@ namespace Forge.Training
 
         public string? Description { get; init; }
 
-        /// <summary>
-        /// Optional subtitle for a quest that shares its metal and discipline with another (both
-        /// forge the same piece, so the board's hero-item title alone can't tell them apart),
-        /// e.g. "Four-Day Home Split". When set, the board shows it and this version's
-        /// <see cref="Description"/> instead of the discipline's generic blurb.
-        /// </summary>
-        public string? Epithet { get; init; }
+        /// <summary>What the quest trains, in plain words: "Strength-focused full-body lifting".</summary>
+        public string Subtitle { get; init; } = "";
 
         /// <summary>What the block is for: "Balanced", "Strength", "Conditioning".</summary>
         public string Goal { get; init; } = "Balanced";
@@ -199,7 +190,7 @@ namespace Forge.Training
             if (p.Version < 1) errors.Add("version must be >= 1");
             if (p.Days.Count is < 3 or > 4) errors.Add("a block has 3 or 4 training days");
             if (string.IsNullOrWhiteSpace(p.Quest)) errors.Add("missing quest");
-            if (string.IsNullOrWhiteSpace(p.Item)) errors.Add("missing item");
+            if (string.IsNullOrWhiteSpace(p.Subtitle)) errors.Add("missing subtitle");
             if (p.Discipline is not ("Hearth" or "Anvil" or "Bellows")) errors.Add($"unknown discipline '{p.Discipline}'");
             if (p.Implement is not ("Kettlebell" or "Dumbbell" or "Gym")) errors.Add($"unknown implement '{p.Implement}'");
 

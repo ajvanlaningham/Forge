@@ -150,7 +150,13 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     come later without touching forging. Optional, later: a cosmetic rune or tint marking the
     discipline a piece was forged in. **Open:** which five slots (likely weapon, off-hand,
     head, body, feet), and drawing the two extra slots for the 36 heroes (Decision 22 drew
-    three per hero).
+    three per hero). **Slots decided** (user, 2026-11-13): Head / Body / Weapon / Feet / Trinket.
+    **Quest names** (2026-11-13): fantasy title + plain subtitle shared by every version:
+    Foundations (copper-helm), Iron Will (copper-hammer), Second Wind (copper-boots), The
+    Fourfold Path (copper-split, Miche's). **Model built 2026-11-13:** `Armoury` (five slots),
+    `ForgingRow` (spent forgings), `ForgeService.SpendAsync`, slot choice on `ForgingPage`.
+    Until the five-slot art is drawn, Weapon/Feet/Head borrow the anvil/bellows/hearth sprites
+    and Body/Trinket show no art.
 26. **Daily streak multiplier; a guild needs three** (agreed with the user 2026-11-13; replaces
     15's multiplier, amends 24). **Streak:** a day counts if you trained or did active rest
     (every day offers one, so planned rest never breaks it). While the streak is alive

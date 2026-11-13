@@ -1,7 +1,7 @@
 namespace Forge.Training
 {
     /// <summary>
-    /// The first quest suggested at onboarding: the Copper quest of the chosen discipline, in the
+    /// The first quest suggested at onboarding: the starter quest of the chosen discipline, in the
     /// version that fits the gear (dumbbells → Dumbbell; kettlebells only → Kettlebell; neither →
     /// Dumbbell, whose swaps fall back to bodyweight moves) and the days per week chosen.
     /// </summary>
@@ -14,5 +14,13 @@ namespace Forge.Training
             var days = daysPerWeek <= 3 ? "3day" : "4day";
             return $"{quest}-{implement}-{days}";
         }
+
+        /// <summary>The starter quest's title, as its program files name it (checked by FirstQuestTests).</summary>
+        public static string Title(string discipline) => discipline switch
+        {
+            "Anvil" => "Iron Will",
+            "Bellows" => "Second Wind",
+            _ => "Foundations"
+        };
     }
 }

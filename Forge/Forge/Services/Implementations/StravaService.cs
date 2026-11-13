@@ -286,7 +286,7 @@ namespace Forge.Services.Implementations
             string? quest = null;
             if (row.ProgramId is not null && row.ProgramVersion is int v
                 && await _programs.GetProgramAsync(row.ProgramId, v) is { } def)
-                quest = $"Quest: {HeroQuest.Name(def)}";
+                quest = $"Quest: {def.Name}";
 
             var form = new Dictionary<string, string>
             {
