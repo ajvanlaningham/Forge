@@ -49,6 +49,38 @@
                     <Label Text="{Binding WeekText}" FontFamily="Body" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
+                <!-- How did that feel? One optional tap (Decision 28) -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="HOW DID THAT FEEL?" FontFamily="Display" FontSize="24" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                        <Button Text="EASY" Command="{Binding FeelCommand}" CommandParameter="Easy" FontFamily="Display" FontSize="24" HeightRequest="60">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsEasy}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Leaf}" />
+                                    <Setter Property="TextColor" Value="{StaticResource Bg}" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Button Grid.Column="1" Text="RIGHT" Command="{Binding FeelCommand}" CommandParameter="Right" FontFamily="Display" FontSize="24" HeightRequest="60">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsRight}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                                    <Setter Property="TextColor" Value="{StaticResource Bg}" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Button Grid.Column="2" Text="HARD" Command="{Binding FeelCommand}" CommandParameter="Hard" FontFamily="Display" FontSize="24" HeightRequest="60">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsHard}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Danger}" />
+                                    <Setter Property="TextColor" Value="{StaticResource Bg}" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </Grid>
+                    <Label Text="{Binding FeelNote}" FontFamily="Body" FontSize="16" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
                 <Button Text="{Binding DetailsText}" Command="{Binding ToggleDetailsCommand}" Style="{StaticResource SecondaryButton}" />
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}" Spacing="8" IsVisible="{Binding ShowDetails}">
                     <BindableLayout.ItemTemplate>

@@ -1,3 +1,4 @@
+using Forge.ViewModels;
 using Forge.Models;
 using Forge.Services;
 using Forge.Services.Interfaces;
@@ -26,6 +27,7 @@ public sealed class QuestPage : ContentPage
 
     private readonly IProgramService _programs;
     private readonly ITrainingService _training;
+    private Func<string, MoveTraits> _traits = _ => default;
     private readonly VerticalStackLayout _body = new() { Padding = new Thickness(14, 18, 14, 40), Spacing = 22 };
     private Equipment _homeGear;
 
@@ -56,6 +58,7 @@ public sealed class QuestPage : ContentPage
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
         var catalog = await _programs.GetProgramsAsync();
+        _traits = await GuidedSupport.TraitsAsync(_training);
         var view = await _programs.GetViewAsync(today);
         var active = view?.Program.Definition;
         _homeGear = await _training.GetEquipmentAsync(TrainingLocation.Home);
@@ -209,7 +212,7 @@ public sealed class QuestPage : ContentPage
             {
                 ScrollTitle(first.Name),
                 Text(first.Subtitle, InkSoft),
-                Text($"{string.Join(" or ", days)} days a week · {first.Minutes ?? "?"} min · {Discipline(first)}", Wax, size: 16)
+                Text($"{string.Join(" or ", days)} days a week · {DayTiming.Range(first, _traits)} min · {Discipline(first)}", Wax, size: 16)
             }
         };
 

@@ -495,6 +495,32 @@ namespace Forge.Services.Implementations
             return result;
         }
 
+        public async Task<PacedLast?> GetPacedLastAsync(string exerciseName)
+        {
+            var finished = (await _sessions.WhereAsync(s => s.Status == (int)SessionStatus.Finished)).ToDictionary(s => s.Id);
+            if (finished.Count == 0) return null;
+            var exercises = (await _exercises.WhereAsync(e => e.ExerciseName == exerciseName && !e.Skipped))
+                .Where(e => finished.ContainsKey(e.SessionId))
+                .OrderByDescending(e => finished[e.SessionId].StartedAtUtc);
+            foreach (var ex in exercises)
+            {
+                var working = await _sets.WhereAsync(s => s.SessionExerciseId == ex.Id && !s.IsWarmup);
+                if (working.Count == 0) continue;
+                var session = finished[ex.SessionId];
+                var reps = ex.PlannedReps ?? ex.RepsMin ?? 0;
+                return new PacedLast(working.Max(s => s.LoadLb), reps, session.Feel is int f ? (Feel)f : null);
+            }
+            return null;
+        }
+
+        public async Task SetFeelAsync(int sessionId, Feel? feel)
+        {
+            var row = await _sessions.GetByIdAsync(sessionId);
+            if (row is null) return;
+            row.Feel = feel is Feel f ? (int)f : null;
+            await _sessions.UpdateAsync(row);
+        }
+
         public async Task<IReadOnlyList<ExerciseHistoryEntry>> GetExerciseHistoryAsync(string exerciseName)
         {
             var finished = (await _sessions.WhereAsync(s => s.Status == (int)SessionStatus.Finished)).ToDictionary(s => s.Id);

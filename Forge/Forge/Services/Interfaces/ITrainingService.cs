@@ -121,6 +121,15 @@ namespace Forge.Services.Interfaces
         Task<IReadOnlyList<IReadOnlyList<WorkSet>>> GetRecentWorkingSetsAsync(string exerciseName, int? excludingSessionId = null, int sessions = 4);
 
         /// <summary>Exercises doable at a location, for substitutes and "add exercise".</summary>
+        /// <summary>
+        /// A paced move's last weight and suggested reps, with how that workout felt (Decision 28);
+        /// null if it has never been done in a finished session.
+        /// </summary>
+        Task<PacedLast?> GetPacedLastAsync(string exerciseName);
+
+        /// <summary>Records the after-workout Easy / Right / Hard tap (null clears it).</summary>
+        Task SetFeelAsync(int sessionId, Feel? feel);
+
         Task<IReadOnlyList<ExerciseInfo>> GetLibraryAsync(ExerciseCategory? category = null);
 
         /// <summary>Equipment available at a location.</summary>

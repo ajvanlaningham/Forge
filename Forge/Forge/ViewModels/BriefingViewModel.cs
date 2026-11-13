@@ -36,6 +36,8 @@ namespace Forge.ViewModels
             get
             {
                 var s = Plan.Slot;
+                // Decision 28: a paced move shows its clock and a suggested rep target.
+                if (s.IsPaced) return $"{s.Sets} × {Plan.PlannedSeconds ?? s.Seconds}s · ~{Plan.PlannedReps ?? s.RepsMin}";
                 var per = s.IsTimed ? $"{Plan.PlannedSeconds ?? s.Seconds}s"
                     : $"{Plan.PlannedReps ?? s.RepsMin}" + (s.RepsMin != s.RepsMax ? $"  ({s.RepsMin}–{s.RepsMax})" : "");
                 return $"{s.Sets} × {per}";
@@ -152,26 +154,42 @@ namespace Forge.ViewModels
             {
                 var p = _plan.Exercises[i];
                 var loads = Gear.For(p.Info?.Modality ?? Modality.Bodyweight, unit, p.Info?.NeedsPair ?? false);
-                var history = await _training.GetRecentWorkingSetsAsync(p.Name);
                 var rx = new Prescription(p.Slot.Sets, p.Slot.RepsMin, p.Slot.RepsMax, p.Slot.Seconds);
-                var suggestion = Progression.Suggest(rx, history, loads, unit);
-                var last = history.FirstOrDefault(h => h.Count > 0);
+                Suggestion? suggestion;
+                bool done;
+                double? lastLoad;
+                if (rx.IsPaced)
+                {
+                    // Timed, reps suggested: progressed by how the last workout felt (Decision 28).
+                    var paced = await _training.GetPacedLastAsync(p.Name);
+                    suggestion = Progression.Paced(rx, paced, loads, unit, GuidedSupport.PerSide(p.Info));
+                    done = paced is not null;
+                    lastLoad = paced?.LoadLb;
+                }
+                else
+                {
+                    var history = await _training.GetRecentWorkingSetsAsync(p.Name);
+                    suggestion = Progression.Suggest(rx, history, loads, unit);
+                    var lastSets = history.FirstOrDefault(h => h.Count > 0);
+                    done = lastSets is not null;
+                    lastLoad = lastSets?.Max(s => s.LoadLb);
+                }
 
                 string? note;
                 if (suggestion is not null) note = suggestion.Reason;
                 else if (GuidedSupport.IsLoaded(p.Info)) note = "First time: pick a weight you could lift a few more times than asked.";
                 else note = null;
 
-                var load = suggestion?.LoadLb ?? last?.Max(s => s.LoadLb)
+                var load = suggestion?.LoadLb ?? lastLoad
                            ?? (GuidedSupport.IsLoaded(p.Info) ? loads.Next(0) ?? 0 : 0);
                 p.PlannedLoadLb = load > 0 ? loads.Snap(load) : 0;
-                p.PlannedReps = p.Slot.IsTimed ? null : suggestion?.Reps ?? p.Slot.RepsMin;
+                p.PlannedReps = p.Slot.RepsMin is null ? null : suggestion?.Reps ?? p.Slot.RepsMin;
                 p.PlannedSeconds = p.Slot.IsTimed ? suggestion?.Seconds ?? p.Slot.Seconds : null;
 
                 var item = new BriefItem(this, p, loads)
                 {
                     GroupLabel = GuidedSupport.GroupLabel(groups, i), Note = note,
-                    IsFirstTime = suggestion is null && last is null && GuidedSupport.IsLoaded(p.Info)
+                    IsFirstTime = !done && GuidedSupport.IsLoaded(p.Info)
                 };
                 Items.Add(item);
                 if (item.IsFirstTime) FirstTime.Add(item);
@@ -224,7 +242,7 @@ namespace Forge.ViewModels
 
         private IReadOnlyList<GuidedStep> Steps()
             => GuidedPlan.Build(Items.Select((it, i) => new GuidedExercise(i, it.Plan.Slot.Superset, it.Plan.Slot.Sets,
-                it.Plan.Slot.RestSeconds, it.Warmups.Count)).ToList(), UserSettings.DefaultRestSeconds);
+                it.Plan.Slot.RestSeconds, it.Warmups.Count, it.Plan.Slot.IsTimed)).ToList(), UserSettings.DefaultRestSeconds);
 
         private async Task BeginAsync()
         {

@@ -147,6 +147,9 @@ namespace Forge.ViewModels
             Conditioning.AddMinutesCommand = new Command<object>(async p => await AddMinutesAsync(p));
         }
 
+        /// <summary>Per-side and loaded flags for timing a day (Decision 28).</summary>
+        public Func<string, MoveTraits> Traits { get; private set; } = _ => default;
+
         public async Task RefreshAsync()
         {
             if (IsBusy) return;
@@ -154,6 +157,7 @@ namespace Forge.ViewModels
             try
             {
                 await _importer.EnsureSeededAsync(GameConstants.Exercises.LibraryFiles, GameConstants.Exercises.LibraryVersion);
+                Traits = await GuidedSupport.TraitsAsync(_training);
                 _today = DateOnly.FromDateTime(DateTime.Today);
                 DateText = _today.ToString("dddd, MMM d", CultureInfo.CurrentCulture);
                 SpriteFile = UserSettings.HeroSpriteFile;

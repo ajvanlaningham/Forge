@@ -43,6 +43,8 @@ public class ContrastTests
     [InlineData("Gray300", "Gray600")]    // disabled button
     [InlineData("Bg", "Aether")]          // the level-up banner
     [InlineData("Leaf", "Surface")]       // intro and summary tiles
+    [InlineData("Bg", "Leaf")]            // the chosen EASY on the summary
+    [InlineData("Bg", "Danger")]          // the chosen HARD
     [InlineData("Ink", "Parchment")]      // the map and the quest scrolls
     [InlineData("InkSoft", "Parchment")]
     public void TextColours_PassAA(string fg, string bg)

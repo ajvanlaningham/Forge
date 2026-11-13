@@ -58,15 +58,39 @@ namespace Forge.ViewModels
         public string DetailsText => ShowDetails ? "HIDE DETAILS" : "SEE EVERY SET";
         public ICommand ToggleDetailsCommand => new Command(() => ShowDetails = !ShowDetails);
 
+        // How did that feel? (Decision 28) One optional tap; it moves the next suggested weight and reps.
+        private int _sessionId;
+        private Feel? _feel;
+        public Feel? Feel { get => _feel; private set { if (SetProperty(ref _feel, value)) { OnPropertyChanged(nameof(IsEasy)); OnPropertyChanged(nameof(IsRight)); OnPropertyChanged(nameof(IsHard)); OnPropertyChanged(nameof(FeelNote)); } } }
+        public bool IsEasy => Feel == Training.Feel.Easy;
+        public bool IsRight => Feel == Training.Feel.Right;
+        public bool IsHard => Feel == Training.Feel.Hard;
+        public string FeelNote => Feel switch
+        {
+            Training.Feel.Easy => "Next time: a little more.",
+            Training.Feel.Hard => "Next time: a little less.",
+            Training.Feel.Right => "Next time: the same.",
+            _ => "Optional: it tunes your next suggested weights and reps."
+        };
+        public ICommand FeelCommand { get; }
+
         public SessionSummaryViewModel(ITrainingService training, IProgramService programs)
         {
             _training = training;
             _programs = programs;
+            FeelCommand = new Command<string>(async f =>
+            {
+                var picked = Enum.Parse<Feel>(f);
+                Feel = Feel == picked ? null : picked; // tap again to clear
+                await _training.SetFeelAsync(_sessionId, Feel);
+            });
         }
 
         public async Task LoadAsync(int sessionId)
         {
+            _sessionId = sessionId;
             var snap = await _training.GetSessionAsync(sessionId);
+            Feel = snap.Session.Feel is int f ? (Feel)f : null;
             var unit = UserSettings.WeightUnit;
             var u = WeightMath.UnitLabel(unit);
 

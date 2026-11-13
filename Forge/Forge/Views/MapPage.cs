@@ -417,7 +417,7 @@ public sealed partial class MapPage : ContentPage
             {
                 var day = q.Resolve(node.DayIndex ?? 0, node.Week);
                 body.Children.Add(Heading(day.Name + (day.IsLight ? " (light)" : "")));
-                var meta = $"{week} · {day.Slots.Count} exercises · {q.Minutes ?? "?"} min";
+                var meta = $"{week} · {day.Slots.Count} exercises · {DayTiming.Minutes(day, _vm.Traits)} min";
                 if (node.State == MapNodeState.Current)
                 {
                     body.Children.Add(Caption(meta));
@@ -540,7 +540,7 @@ public sealed partial class MapPage : ContentPage
         if (q is null) return;
         var body = new VerticalStackLayout { Spacing = 14 };
         body.Children.Add(new Label { Text = q.Name, FontFamily = "FantasyH", FontSize = 30, TextColor = _accent });
-        body.Children.Add(Caption($"{q.Subtitle}\n{q.VersionName} · {q.Minutes ?? "?"} min"));
+        body.Children.Add(Caption($"{q.Subtitle}\n{q.VersionName} · {DayTiming.Range(q, _vm.Traits)} min"));
         var scroll = new ScrollView { MaximumHeightRequest = DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density * 0.38 };
         var days = new VerticalStackLayout { Spacing = 16 };
         scroll.Content = days;

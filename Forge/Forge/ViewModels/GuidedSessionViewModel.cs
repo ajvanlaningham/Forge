@@ -231,7 +231,7 @@ namespace Forge.ViewModels
             Title = _snap.Session.Title ?? "Session";
             _exercises = _snap.Exercises.Where(e => !e.Row.Skipped).OrderBy(e => e.Row.Position).ToList();
             _steps = GuidedPlan.Build(_exercises.Select((e, i) => new GuidedExercise(i, e.Row.Superset, e.Row.TargetSets ?? 3,
-                e.Row.RestSeconds, WarmupsFor(e).Count)).ToList(),
+                e.Row.RestSeconds, WarmupsFor(e).Count, e.IsTimed)).ToList(),
                 UserSettings.DefaultRestSeconds);
             _pos = GuidedPlan.Position(_steps, i => (_exercises[i].Sets.Count(s => s.IsWarmup), _exercises[i].Sets.Count(s => !s.IsWarmup)));
             StepText = $"Set {Math.Min(_pos + 1, _steps.Count)} of {_steps.Count}";
@@ -277,6 +277,10 @@ namespace Forge.ViewModels
                 : (working, e.Row.PlannedReps ?? e.Row.RepsMin ?? 8, null);
         }
 
+        /// <summary>A paced set's suggested reps (Decision 28), shown but never counted.</summary>
+        private static int? Suggested(SessionExerciseSnapshot e, GuidedStep step)
+            => e.IsTimed && !step.IsWarmup ? e.Row.PlannedReps ?? e.Row.RepsMin : null;
+
         private string Label(double lb, SessionExerciseSnapshot e)
             => lb <= 0 && !GuidedSupport.IsLoaded(e.Info) ? "Bodyweight" : _gear.LoadLabel(lb, UserSettings.WeightUnit);
 
@@ -285,7 +289,7 @@ namespace Forge.ViewModels
             var e = _exercises[step.ExerciseIndex];
             var (lb, reps, secs) = Target(step);
             var set = step.IsWarmup ? $"warm-up {WarmupCaption(step).ToLowerInvariant()}" : $"set {step.SetNumber} of {step.SetsTotal}";
-            var work = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info));
+            var work = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info), Suggested(e, step));
             return $"{e.Row.ExerciseName} · {set}\n{Label(lb, e)} {work}";
         }
 
@@ -305,7 +309,7 @@ namespace Forge.ViewModels
             ExerciseName = group is null ? e.Row.ExerciseName : $"{group} · {e.Row.ExerciseName}";
             Caption = step.IsWarmup ? $"WARM-UP {WarmupCaption(step)}" : $"SET {step.SetNumber} OF {step.SetsTotal}";
             LoadText = Label(lb, e);
-            WorkText = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info));
+            WorkText = GuidedSupport.WorkLabel(reps, secs, GuidedSupport.PerSide(e.Info), Suggested(e, step));
             NotesText = e.Row.Notes ?? "";
             StepText = $"Set {_pos + 1} of {_steps.Count}";
         }
