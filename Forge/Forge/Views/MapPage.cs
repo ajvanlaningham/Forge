@@ -123,7 +123,9 @@ public sealed partial class MapPage : ContentPage
         _scroll.Scrolled += (_, e) => UpdateBanner(e.ScrollY);
 
         // The sheet: a card rising from the bottom over a dimmed map; tap outside to close.
-        var dim = new BoxView { Color = Colors.Black, Opacity = 0.35 }; // the map stays visible behind a card
+        // The map stays visible behind a card: a translucent colour, not view opacity (which drew
+        // the dim on its own layer, over a blank grey instead of the map).
+        var dim = new ContentView { BackgroundColor = Color.FromRgba(0, 0, 0, 0.3) };
         var dimTap = new TapGestureRecognizer();
         dimTap.Tapped += (_, _) => CloseSheet();
         dim.GestureRecognizers.Add(dimTap);
@@ -493,7 +495,9 @@ public sealed partial class MapPage : ContentPage
                 });
             }
             // After the heading and its first line, so the action stays at the bottom.
-            body.Children.Insert(Math.Min(2, body.Children.Count), list);
+            // Capped and scrollable, so a long day doesn't hide the map behind the card.
+            var scroll = new ScrollView { Content = list, MaximumHeightRequest = 250 };
+            body.Children.Insert(Math.Min(2, body.Children.Count), scroll);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Map plan failed: {ex.Message}"); }
     }
