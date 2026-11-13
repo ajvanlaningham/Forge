@@ -83,11 +83,10 @@ map_stone_* 4
 map_campfire 4
 map_chest 4
 map_chest_open 4
-map_pine 4
-map_peak 4
-map_waves 4
-map_embers 4
 map_compass 4
+# The landscape (art/gen_mapscape.py): at 8x, shown at 3 dp per pixel, so near 1:1 on the phone
+map_s_* 8
+map_paper 8
 map_ribbon_* 4
 scroll_knob 4
 scroll_knob_r 4

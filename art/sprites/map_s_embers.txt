@@ -1,0 +1,14 @@
+#! I #E09145
+#! H #E0C045
+#! B #7A5A44
+#! D #A8805C
+........w.............
+.......wHw.....w......
+......wHIHw...wIw...w.
+.....wwwIw.....w...wHw
+....wBBBBBw..wwww...w.
+...wBDDBBBBwwBBBBw....
+..wBDDBBBIBBwBDBBBw...
+..wBBBBIIBBBBBBDBBBw..
+.wBBBBBBBBBBBBBBBBBBw.
+..wwwwwwwwwwwwwwwwww..

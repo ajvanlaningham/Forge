@@ -1,0 +1,28 @@
+#! 5 #9C8F74
+#! 6 #7C705A
+#! G #EEE8D6
+#! x #4A3222
+#! T #B99A5B
+#! U #8E7442
+#! H #E0C045
+#! L #9A958A
+#! K #BDB8AC
+.............ww...
+............wKLw..
+............wLKw..
+............wKw...
+...........wKLw...
+.......wwwww65w...
+......wTTUTw65w...
+.....wTTUTTT65w...
+....wTTUTTTUT5w...
+...wTTUTTTUTTTw...
+..wTTUTTTUTTTUTw..
+.wTTUTTTUTTTUTTTw.
+wUUUUUUUUUUUUUUUUw
+.wGGGGGGGGGGGKKKw.
+.wGGGxxGGGHHGKKKw.
+.wGGGxxGGGHHGKKKw.
+.wGGGxxGGGGGGKKKw.
+.wGGGxxGGGGGGKKKw.
+..wwwwwwwwwwwwww..

@@ -1,0 +1,17 @@
+#! 5 #9C8F74
+#! 6 #7C705A
+#! y #6E4E33
+#! x #4A3222
+#! z #8C6844
+.w....w....w....w....w....w.
+wxwwwwxwwwwxwwwwxwwwwxwwwwxw
+wxxxxxxxxxxxxxxxxxxxxxxxxxxw
+wxwwwwxwwwwxwwwwxwwwwxwwwwxw
+wzzzzzzzzzzzzzzzzzzzzzzzzzzw
+wyyyyyyyyyyyyyyyyyyyyyyyyyyw
+w555555555wwwwwwww666666666w
+w555555www........www666666w
+w55555w..............w66666w
+w5555w................w6666w
+w555w..................w666w
+.www....................www.

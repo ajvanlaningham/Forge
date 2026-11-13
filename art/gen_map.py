@@ -214,20 +214,6 @@ def compass():
     return [''.join(r) for r in g]
 
 
-def ribbon_tail(colour, light, dark, right=False):
-    """A swallow-tailed ribbon end for the week banner, 12 x 18."""
-    rows = []
-    for y in range(18):
-        notch = 6 - abs(y - 9) * 6 // 9   # the V cut into the tail
-        row = ''
-        for x in range(12):
-            if x < notch: row += '.'
-            elif x == notch or y in (0, 17): row += 'A'
-            else: row += '2' if y == 1 else '3' if y >= 15 else '1'
-        rows.append(row[::-1] if right else row)
-    return rows
-
-
 def write(name, rows, colours=None):
     head = ''.join(f'#! {k} {v}\n' for k, v in (colours or {}).items())
     (OUT / f'{name}.txt').write_text(head + '\n'.join(rows) + '\n')
@@ -240,18 +226,9 @@ def main():
     write('map_campfire', CAMPFIRE.splitlines())
     write('map_chest', CHEST_SHUT.splitlines())
     write('map_chest_open', CHEST_OPEN.splitlines())
-    write('map_pine', PINE.splitlines())
-    write('map_peak', PEAK.splitlines())
-    write('map_waves', WAVES.splitlines(), {'1': '#2A6496', '2': '#5A93C4', '3': '#9CC4E4'})
-    write('map_embers', EMBERS.splitlines(), {'B': '#7A5A44', 'D': '#A8805C'})  # warm, lit rocks: grey vanished on the map
     write('map_compass', compass())
     write('scroll_knob', KNOB.splitlines())
     write('scroll_knob_r', [r[::-1] for r in KNOB.splitlines()])
-    for w in range(1, 5):
-        face, light, dark = STONES[f'map_stone_w{w}']
-        cols = {'1': face, '2': light, '3': dark}
-        write(f'map_ribbon_w{w}_l', ribbon_tail(face, light, dark), cols)
-        write(f'map_ribbon_w{w}_r', ribbon_tail(face, light, dark, right=True), cols)
     print('wrote map sprites')
 
 
