@@ -212,31 +212,29 @@ internal sealed class BannerDrawable : IDrawable
     public Color Light { get; set; } = Colors.Pink;
     public Color Dark { get; set; } = Colors.DarkRed;
 
-    // The top corners curve down, in pixel steps: how far the pen line is inset on each of the top
-    // rows (in 4 dp pixels). The cloth inside follows a pixel inside it.
-    private static readonly int[] Corner = { 4, 2, 1, 1 };
-
-    private static int Outline(int row) => row >= 0 && row < Corner.Length ? Corner[row] : 0;
-
-    private static int Cloth(int row) => Math.Max(Outline(row) + 1, Math.Max(Outline(row - 1), Outline(row + 1)));
+    // The corners curve, in pixel steps: how far the pen line is inset on each row from the top
+    // (and, more gently, from the bottom), in 4 dp pixels. The cloth follows a pixel inside it.
+    private static readonly int[] TopCorner = { 4, 2, 1, 1 };
+    private static readonly int[] BottomCorner = { 2, 1 };
 
     public void Draw(ICanvas canvas, RectF r)
     {
         const float p = 4;
-        void Row(Color colour, int row, int inset, float height = p)
+        var rows = (int)MathF.Round(r.Height / p);
+        int Outline(int row) => row < 0 || row >= rows ? int.MaxValue / 2
+            : row < TopCorner.Length ? TopCorner[row]
+            : rows - 1 - row < BottomCorner.Length ? BottomCorner[rows - 1 - row] : 0;
+        int Cloth(int row) => Math.Max(Outline(row) + 1, Math.Max(Outline(row - 1), Outline(row + 1)));
+        void Row(Color colour, int row, int inset)
         {
             canvas.FillColor = colour;
-            canvas.FillRectangle(r.X + inset * p, r.Y + row * p, r.Width - 2 * inset * p, height);
+            canvas.FillRectangle(r.X + inset * p, r.Y + row * p, r.Width - 2 * inset * p, p);
         }
 
-        // Pen line: the curved top rows, then straight down.
-        for (var row = 0; row < Corner.Length; row++) Row(Colors.Black, row, Outline(row));
-        Row(Colors.Black, Corner.Length, 0, r.Height - Corner.Length * p);
-        // Cloth, a pixel inside the line; the lit top edge follows the curve.
-        for (var row = 1; row <= Corner.Length; row++) Row(row == 1 ? Light : Face, row, Cloth(row));
-        canvas.FillColor = Face;
-        canvas.FillRectangle(r.X + p, r.Y + (Corner.Length + 1) * p, r.Width - 2 * p, r.Height - (Corner.Length + 3) * p);
-        Row(Dark, (int)(r.Height / p) - 2, 1);
+        for (var row = 0; row < rows; row++) Row(Colors.Black, row, Outline(row));
+        // The lit top edge and the shaded bottom edge follow the curves.
+        for (var row = 1; row < rows - 1; row++)
+            Row(row == 1 ? Light : row == rows - 2 ? Dark : Face, row, Cloth(row));
         // Running stitches along both edges.
         canvas.FillColor = Light.WithAlpha(0.75f);
         for (var x = r.X + 4 * p; x < r.Right - 5 * p; x += 3 * p)
