@@ -48,6 +48,23 @@ namespace Forge.ViewModels
         private string _streakText = "";
         public string StreakText { get => _streakText; private set => SetProperty(ref _streakText, value); }
 
+        // The overview tiles (plan phase 6): streak, quests finished, forgings, best metal.
+        private string _streakTile = "0", _questsTile = "0", _forgingsTile = "0", _bestMetalTile = "—";
+        public string StreakTile { get => _streakTile; private set => SetProperty(ref _streakTile, value); }
+        public string QuestsTile { get => _questsTile; private set => SetProperty(ref _questsTile, value); }
+        public string ForgingsTile { get => _forgingsTile; private set => SetProperty(ref _forgingsTile, value); }
+        public string BestMetalTile { get => _bestMetalTile; private set => SetProperty(ref _bestMetalTile, value); }
+
+        /// <summary>A forging earned but not spent ("decide later"): the Hero tab offers it.</summary>
+        private Forge.Models.ForgeResultRow? _unspent;
+        private bool _hasUnspent;
+        public bool HasUnspent { get => _hasUnspent; private set => SetProperty(ref _hasUnspent, value); }
+        public ICommand SpendCommand => new Command(async () =>
+        {
+            if (_unspent is { } r)
+                await Shell.Current.Navigation.PushModalAsync(new Forge.Views.ForgingPage(r, _programs, _forge));
+        });
+
         private bool _packEmpty;
         public bool PackEmpty { get => _packEmpty; private set => SetProperty(ref _packEmpty, value); }
 
@@ -173,7 +190,14 @@ namespace Forge.ViewModels
                     HeroQuest.Sprite(slot, metal ?? "Copper"), metal is null ? 0.22 : 1.0, i % 3, i / 3));
             }
             var spent = forged.Count;
-            var unspent = (await _forge.UnspentAsync()).Count;
+            var unspentRows = await _forge.UnspentAsync();
+            var unspent = unspentRows.Count;
+            _unspent = unspentRows.FirstOrDefault();
+            HasUnspent = _unspent is not null;
+            StreakTile = $"{current}";
+            ForgingsTile = $"{spent}/{Armoury.MaxForgings}";
+            QuestsTile = $"{spent + unspent}";
+            BestMetalTile = Armoury.BestMetal(forged) ?? "—";
             var lines = new List<string> { $"{spent} of {Armoury.MaxForgings} forgings. Every quest you finish earns one, for any slot." };
             if (unspent > 0) lines.Add($"{unspent} forging{(unspent == 1 ? "" : "s")} ready to spend.");
             if (view is not null)

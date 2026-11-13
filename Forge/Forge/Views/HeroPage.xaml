@@ -22,8 +22,34 @@
                        HorizontalTextAlignment="Center" />
                 <Label Text="tap to change" FontSize="15" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
-            <Label Text="{Binding StreakText}" FontFamily="Body" FontSize="20" TextColor="{StaticResource Accent}"
-                   HorizontalTextAlignment="Center" />
+            <!-- Overview: four tiles -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="6,8">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding StreakTile}" FontFamily="GymNum" FontSize="40" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                        <Label Text="DAY STREAK" FontFamily="Display" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Leaf}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="6,8">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding QuestsTile}" FontFamily="GymNum" FontSize="40" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center" />
+                        <Label Text="QUESTS DONE" FontFamily="Display" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Danger}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="6,8">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding ForgingsTile}" FontFamily="GymNum" FontSize="40" TextColor="{StaticResource Danger}" HorizontalTextAlignment="Center" />
+                        <Label Text="FORGINGS" FontFamily="Display" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="1" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Aether}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="6,8">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding BestMetalTile}" FontFamily="GymNum" FontSize="40" TextColor="{StaticResource Aether}" HorizontalTextAlignment="Center" />
+                        <Label Text="BEST METAL" FontFamily="Display" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+            <Button Text="SPEND YOUR FORGING" Command="{Binding SpendCommand}" IsVisible="{Binding HasUnspent}" Style="{StaticResource PrimaryButton}" />
 
             <cards:StatCard x:Name="Stats" />
             <!-- Stat tests: latest score, change, trend, the raw results -->

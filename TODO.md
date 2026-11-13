@@ -172,6 +172,15 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     through to get home. **Built 2026-11-13** (rules + Guild page); the map/summary parts ship with
     the map plan.
 
+27. **The map replaces Today and Quest** (user, 2026-11-13; amends 20). Tabs: Map · Hero ·
+    Chronicle · Guild. Home is the active quest as a winding path (`QuestMap`): week-coloured
+    stones, a chest per week (perfect week), the anvil at the end, today's stone with one START,
+    a campfire on rest days; fantasy-map dressing (ink trail, scenery, compass, ribbon banner) so
+    it isn't a Duolingo copy. Details behind taps: stone card, the banner's book, the ＋ sheet. The
+    quest board is a pushed page of rolled scrolls (yours under a wax seal). Workout: a draining
+    ring timer and the day's foe health bar; one big action per phase. Legibility rules in
+    AGENTS.md.
+
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
 fully-adherent week so test windows stay ~monthly (currently broken — see 8.4).
