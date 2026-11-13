@@ -16,6 +16,8 @@ public class GuildRulesTests
     private static Dictionary<DateOnly, GuildDayKind> Trained(params int[] offsets)
         => offsets.ToDictionary(o => Mon.AddDays(o), _ => GuildDayKind.Trained);
 
+    private static GuildMember Idle(string id, DateOnly? joined = null) => M(id, joined ?? Mon, 3, new());
+
     [Fact]
     public void WeeklyGoal_Is75PercentOfTargets_RoundedUp()
     {
@@ -28,50 +30,78 @@ public class GuildRulesTests
     {
         var a = M("a", Mon, 4, Trained(0, 1, 3, 5));
         var b = M("b", Mon, 3, Trained(0, 2));
-        Assert.True(GuildRules.WeeklyQuestMet(new[] { a, b }, Mon));     // 6 of 6
-        var b2 = M("b", Mon, 3, Trained(0));
-        Assert.False(GuildRules.WeeklyQuestMet(new[] { a, b2 }, Mon));   // 5 of 6
+        var c = M("c", Mon, 3, Trained(1, 2, 4));
+        Assert.True(GuildRules.WeeklyQuestMet(new[] { a, b, c }, Mon));     // 9 of ceil(7.5) = 8
+        var c2 = M("c", Mon, 3, Trained(1));
+        Assert.False(GuildRules.WeeklyQuestMet(new[] { a, b, c2 }, Mon));   // 7 of 8
     }
 
     [Fact]
     public void WeeklyQuest_PaysOnlyThoseWhoTrained()
     {
-        var a = M("a", Mon, 3, Trained(0, 1, 2, 3, 4));
-        var b = M("b", Mon, 3, new());
-        var members = new[] { a, b };
-        Assert.True(GuildRules.WeeklyQuestMet(members, Mon)); // 5 ≥ ceil(4.5)
+        var a = M("a", Mon, 3, Trained(0, 1, 2, 3, 4, 5, 6));
+        var members = new[] { a, Idle("b"), Idle("c") };
+        Assert.True(GuildRules.WeeklyQuestMet(members, Mon)); // 7 ≥ ceil(6.75)
         Assert.Contains(GuildRules.RewardsFor(members, "a", Mon.AddDays(6)), r => r.Key == "week:2026-11-09" && r.Earned);
         Assert.Contains(GuildRules.RewardsFor(members, "b", Mon.AddDays(6)), r => r.Key == "week:2026-11-09" && !r.Earned);
     }
 
-    [Fact]
-    public void AGuildOfOne_EarnsNothing()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void APreGuild_EarnsNothing(int size)
     {
-        var a = M("a", Mon, 1, Trained(0, 1, 2, 3, 4, 5, 6), Mon.AddDays(3));
-        Assert.All(GuildRules.RewardsFor(new[] { a }, "a", Mon.AddDays(6)), r => Assert.False(r.Earned));
-        Assert.Equal(0, GuildRules.Banners(new[] { a }));
+        // Everyone trains every day and forges: still nothing until a third member joins (Decision 26).
+        var members = Enumerable.Range(0, size)
+            .Select(i => M($"m{i}", Mon, 1, Trained(0, 1, 2, 3, 4, 5, 6), Mon.AddDays(3))).ToArray();
+        Assert.False(GuildRules.IsOfficial(size));
+        Assert.All(GuildRules.RewardsFor(members, "m0", Mon.AddDays(6)), r => Assert.False(r.Earned));
+        Assert.Equal(0, GuildRules.Banners(members));
     }
 
     [Fact]
-    public void Hearth_LitWhenEveryoneMoved_RestCounts()
+    public void Campfire_LitWhenTwoThirdsMoved_RestCounts()
     {
         var a = M("a", Mon, 3, new() { [Mon] = GuildDayKind.Trained, [Mon.AddDays(1)] = GuildDayKind.Trained });
         var b = M("b", Mon, 3, new() { [Mon] = GuildDayKind.ActiveRest });
-        Assert.True(GuildRules.HearthLit(new[] { a, b }, Mon));
-        Assert.False(GuildRules.HearthLit(new[] { a, b }, Mon.AddDays(1)));
+        var members = new[] { a, b, Idle("c") };
+        Assert.True(GuildRules.CampfireLit(members, Mon));               // 2 of 3
+        Assert.False(GuildRules.CampfireLit(members, Mon.AddDays(1)));   // 1 of 3
+        Assert.Equal((2, 3), GuildRules.Campfire(members, Mon));
+    }
+
+    [Fact]
+    public void Campfire_PaysOnlyThoseWhoMoved()
+    {
+        var a = M("a", Mon, 3, Trained(0));
+        var b = M("b", Mon, 3, Trained(0));
+        var members = new[] { a, b, Idle("c") };
+        Assert.Contains(GuildRules.RewardsFor(members, "a", Mon), r => r.Key == "hearth:2026-11-09" && r.Earned);
+        Assert.Contains(GuildRules.RewardsFor(members, "c", Mon), r => r.Key == "hearth:2026-11-09" && !r.Earned);
+    }
+
+    [Fact]
+    public void Campfire_SixMembers_NeedsFour()
+    {
+        var movers = Enumerable.Range(0, 4).Select(i => M($"m{i}", Mon, 3, Trained(0)));
+        var idle = Enumerable.Range(4, 2).Select(i => Idle($"m{i}"));
+        Assert.True(GuildRules.CampfireLit(movers.Concat(idle).ToArray(), Mon));
+        var three = Enumerable.Range(0, 3).Select(i => M($"m{i}", Mon, 3, Trained(0)));
+        var rest = Enumerable.Range(3, 3).Select(i => Idle($"m{i}"));
+        Assert.False(GuildRules.CampfireLit(three.Concat(rest).ToArray(), Mon));
     }
 
     [Fact]
     public void BeforeJoining_DaysDontCount()
     {
         var a = M("a", Mon, 3, Trained(0, 1, 2));
-        var late = M("b", Mon.AddDays(2), 3, Trained(0, 1, 2)); // joined Wednesday
-        var members = new[] { a, late };
-        Assert.False(GuildRules.HearthLit(members, Mon.AddDays(1)) && late.On(Mon.AddDays(1)) != GuildDayKind.None);
+        var b = M("b", Mon, 3, Trained(0, 1, 2));
+        var late = M("c", Mon.AddDays(2), 3, Trained(0, 1, 2)); // joined Wednesday
+        var members = new[] { a, b, late };
         Assert.Equal(GuildDayKind.None, late.On(Mon));
-        // Monday only had member a in the guild: one member can't light the hearth.
-        Assert.False(GuildRules.HearthLit(members, Mon));
-        Assert.True(GuildRules.HearthLit(members, Mon.AddDays(2)));
+        // Monday only had two members: a pre-guild, so no campfire however much they moved.
+        Assert.False(GuildRules.CampfireLit(members, Mon));
+        Assert.True(GuildRules.CampfireLit(members, Mon.AddDays(2)));
     }
 
     [Fact]
@@ -79,8 +109,9 @@ public class GuildRulesTests
     {
         var a = M("a", Mon, 3, new(), Mon.AddDays(-30), Mon.AddDays(1), Mon.AddDays(5));
         var b = M("b", Mon, 3, new(), Mon.AddDays(4));
-        Assert.Equal(1, GuildRules.Banners(new[] { a, b })); // a's pre-guild forge doesn't count
-        var rewards = GuildRules.RewardsFor(new[] { a, b }, "b", Mon.AddDays(6));
+        var c = M("c", Mon, 3, new(), Mon.AddDays(2), Mon.AddDays(6));
+        Assert.Equal(1, GuildRules.Banners(new[] { a, b, c })); // a's pre-guild forge doesn't count
+        var rewards = GuildRules.RewardsFor(new[] { a, b, c }, "b", Mon.AddDays(6));
         Assert.Single(rewards, r => r.Key.StartsWith("banner:") && r.Earned);
     }
 

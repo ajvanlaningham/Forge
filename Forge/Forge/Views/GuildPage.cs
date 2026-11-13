@@ -7,7 +7,7 @@ namespace Forge.Views;
 
 /// <summary>
 /// The Guild tab (Decisions 20 and 24): found or join a guild, then see the joint weekly quest,
-/// the hearth (everyone moved today), banners (everyone forged another quest) and each member.
+/// the campfire (two thirds moved today), banners (everyone forged another quest) and each member.
 /// Built in code, like the onboarding screens.
 /// </summary>
 public sealed class GuildPage : ContentPage
@@ -111,7 +111,7 @@ public sealed class GuildPage : ContentPage
     private void RenderLobby()
     {
         _body.Children.Add(Heading("The Guild Hall", 26));
-        _body.Children.Add(Text("Train alongside friends. A guild shares a joint weekly quest, a hearth that's lit on days everyone moves, and banners for every quest you all forge. Each brings bonus XP."));
+        _body.Children.Add(Text("Train alongside friends. A guild shares a joint weekly quest, a campfire that's lit on days two thirds of you move, and banners for every quest you all forge. A guild becomes official, and starts earning bonus XP, at three members."));
 
         var name = new Entry
         {
@@ -120,7 +120,7 @@ public sealed class GuildPage : ContentPage
             MaxLength = GuildLimits.MaxNameLength,
             FontFamily = "Body",
         };
-        _body.Children.Add(Card(Text("Your name in the guild", 13, Muted), name));
+        _body.Children.Add(Card(Text("Your name in the guild", 15, Muted), name));
 
         _body.Children.Add(Primary("Found a guild", async () =>
         {
@@ -141,7 +141,7 @@ public sealed class GuildPage : ContentPage
 
         _body.Children.Add(Text(
             "What the guild sees: your name, your hero and level, which days you trained or rested, your streak, and your quest. " +
-            "Never your weights, sets, bodyweight, heart rate, sleep or steps.", 13, Muted));
+            "Never your weights, sets, bodyweight, heart rate, sleep or steps.", 15, Muted));
     }
 
     private async Task RunAsync(Func<Task<string?>> act)
@@ -167,7 +167,7 @@ public sealed class GuildPage : ContentPage
 
         _body.Children.Add(Heading(_guild.GuildName ?? "Your guild", 26));
         var invite = new HorizontalStackLayout { Spacing = 10 };
-        invite.Children.Add(Text($"Invite code: {_guild.InviteCode}", 16, Muted));
+        invite.Children.Add(Text($"Invite code: {_guild.InviteCode}", 17, Muted));
         var share = new Button { Text = "Share", FontFamily = "Display", FontSize = 15, Padding = new Thickness(10, 0), HeightRequest = 34, BackgroundColor = Colors.Transparent, BorderColor = Accent, BorderWidth = 1, TextColor = Accent };
         share.Clicked += async (_, _) => await Share.Default.RequestAsync(new ShareTextRequest
         {
@@ -177,37 +177,43 @@ public sealed class GuildPage : ContentPage
         invite.Children.Add(share);
         _body.Children.Add(invite);
 
-        if (members.Count < 2)
-            _body.Children.Add(Card(Text("A guild of one earns nothing extra. Share the invite code: bonuses start when a second member joins.", 15)));
+        if (!GuildRules.IsOfficial(members.Count))
+        {
+            var missing = GuildRules.OfficialSize - members.Count;
+            _body.Children.Add(Card(
+                Text("PRE-GUILD", 15, Muted),
+                Text(missing == 1 ? "1 more member makes it official." : $"{missing} more members make it official.", 20, Accent),
+                Text("Bonuses start at three members. Share the invite code.", 17)));
+        }
 
         // Joint weekly quest
         var goal = GuildRules.WeeklyGoal(members, today);
         var done = GuildRules.TrainedDays(members, today);
         var met = GuildRules.WeeklyQuestMet(members, today);
         _body.Children.Add(Card(
-            Text("THIS WEEK'S JOINT QUEST", 13, Muted),
+            Text("THIS WEEK'S JOINT QUEST", 15, Muted),
             Text(met ? $"Complete! {done} training days together." : $"Train {goal} days together: {done} so far", 18),
             new ProgressBar { Progress = goal == 0 ? 0 : Math.Min(1, done / (double)goal), ProgressColor = Accent, HeightRequest = 10 },
-            Text(met ? $"+{GuildRules.WeeklyQuestXp} XP to everyone who trained this week." : $"+{GuildRules.WeeklyQuestXp} XP each for those who train, when the guild gets there.", 13, Muted)));
+            Text(met ? $"+{GuildRules.WeeklyQuestXp} XP to everyone who trained this week." : $"+{GuildRules.WeeklyQuestXp} XP each for those who train, when the guild gets there.", 15, Muted)));
 
-        // Hearth
-        var lit = GuildRules.HearthLit(members, today);
+        // Campfire (Decision 26): two thirds of the guild moved today.
+        var lit = GuildRules.CampfireLit(members, today);
         var moved = members.Where(m => m.MemberOn(today)).Select(m => (m.Status.Name, Moved: m.On(today) != GuildDayKind.None)).ToList();
         _body.Children.Add(Card(
-            Text("THE HEARTH", 13, Muted),
-            Text(lit ? "Lit: everyone moved today." : $"{moved.Count(m => m.Moved)} of {moved.Count} have moved today.", 18, lit ? Accent : null),
-            Text(string.Join("   ", moved.Select(m => $"{(m.Moved ? "■" : "□")} {m.Name}")), 15),
-            Text($"+{GuildRules.HearthXp} XP each on every day the hearth is lit. Training or active rest both count.", 13, Muted)));
+            Text("THE CAMPFIRE", 15, Muted),
+            Text(lit ? "Lit! Two thirds of you moved today." : $"{moved.Count(m => m.Moved)} of {moved.Count} have moved today.", 20, lit ? Accent : null),
+            Text(string.Join("   ", moved.Select(m => $"{(m.Moved ? "■" : "□")} {m.Name}")), 17),
+            Text($"+{GuildRules.CampfireXp} XP to each of you who moved, on days two thirds of the guild did. Training or active rest both count.", 15, Muted)));
 
         // Banners
         var banners = GuildRules.Banners(members);
         var next = banners + 1;
         _body.Children.Add(Card(
-            Text("BANNERS", 13, Muted),
+            Text("BANNERS", 15, Muted),
             Text(banners == 0 ? "No banners yet." : $"{banners} banner{(banners == 1 ? "" : "s")} raised.", 18),
             Text($"Banner {next} rises when everyone has forged {next} quest{(next == 1 ? "" : "s")} since joining: " +
                  string.Join(", ", members.Select(m => $"{m.Status.Name} {m.ForgedSinceJoining}/{next}")), 15),
-            Text($"+{GuildRules.BannerXp} XP each per banner.", 13, Muted)));
+            Text($"+{GuildRules.BannerXp} XP each per banner.", 15, Muted)));
 
         // Members
         _body.Children.Add(Heading("Members", 20));
@@ -258,10 +264,10 @@ public sealed class GuildPage : ContentPage
 
         var info = new VerticalStackLayout { Spacing = 2 };
         info.Children.Add(Text(isMe ? $"{s.Name} (you)" : s.Name, 18, isMe ? Accent : null));
-        info.Children.Add(Text($"Lv {s.Level} · {UserSettings.HeroTitleFor(s.Race, s.Class)}", 14, Muted));
-        if (!string.IsNullOrEmpty(s.QuestName)) info.Children.Add(Text($"{s.QuestName} · week {s.QuestWeek}", 14));
+        info.Children.Add(Text($"Lv {s.Level} · {UserSettings.HeroTitleFor(s.Race, s.Class)}", 15, Muted));
+        if (!string.IsNullOrEmpty(s.QuestName)) info.Children.Add(Text($"{s.QuestName} · week {s.QuestWeek}", 15));
         info.Children.Add(week);
-        info.Children.Add(Text(s.Streak > 0 ? $"Streak {s.Streak} day{(s.Streak == 1 ? "" : "s")} · {GuildRules.TrainedDays(m, today)} training this week" : $"{GuildRules.TrainedDays(m, today)} training days this week", 13, Muted));
+        info.Children.Add(Text(s.Streak > 0 ? $"Streak {s.Streak} day{(s.Streak == 1 ? "" : "s")} · {GuildRules.TrainedDays(m, today)} training this week" : $"{GuildRules.TrainedDays(m, today)} training days this week", 15, Muted));
 
         var grid = new Grid { ColumnDefinitions = { new ColumnDefinition(GridLength.Auto), new ColumnDefinition(GridLength.Star) }, ColumnSpacing = 14 };
         grid.Add(sprite, 0, 0);

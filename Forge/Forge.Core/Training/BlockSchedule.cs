@@ -51,8 +51,9 @@ namespace Forge.Training
         }
 
         /// <summary>
-        /// A perfect week (Decision 15): every day of it has movement — a training day or active
-        /// rest — and all the week's training days were done.
+        /// A perfect week (Decisions 15, 26): every day of it has movement — a training day or active
+        /// rest — and all the week's training days were done. It earns the chest on the map; since
+        /// Decision 26 it no longer sets an XP multiplier (the daily streak does).
         /// </summary>
         public static bool IsPerfectWeek(DateOnly blockStart, int week, int trainingDays,
             IReadOnlyCollection<DayCompletion> training, IReadOnlySet<DateOnly> activeRest)
@@ -65,25 +66,5 @@ namespace Forge.Training
                 if (!moved.Contains(d) && !activeRest.Contains(d)) return false;
             return true;
         }
-
-        /// <summary>
-        /// Consecutive perfect weeks ending with the week before <paramref name="date"/>'s week —
-        /// the streak that sets this week's XP multiplier. Only finished weeks count.
-        /// </summary>
-        public static int PerfectWeekStreak(DateOnly blockStart, int trainingDays,
-            IReadOnlyCollection<DayCompletion> training, IReadOnlySet<DateOnly> activeRest, DateOnly date)
-        {
-            var current = (date.DayNumber - blockStart.DayNumber) / 7 + 1; // may exceed 4 past the block
-            var streak = 0;
-            for (var w = Math.Min(current - 1, ProgramDefinition.WeeksPerBlock); w >= 1; w--)
-            {
-                if (!IsPerfectWeek(blockStart, w, trainingDays, training, activeRest)) break;
-                streak++;
-            }
-            return streak;
-        }
-
-        /// <summary>XP multiplier for a date: ×1.2 while the perfect-week streak is alive, else ×1.</summary>
-        public static double Multiplier(int perfectWeekStreak) => perfectWeekStreak > 0 ? GameMath.Quests.PerfectWeekMultiplier : 1.0;
     }
 }

@@ -13,7 +13,6 @@ namespace Forge.Services.Interfaces
         bool CompletedOnDate,
         bool BlockComplete,
         IReadOnlySet<int> DoneThisWeek,
-        int PerfectWeekStreak,
         double Multiplier)
     {
         public int DayCount => Program.Definition.TrainingDaysPerWeek;
@@ -23,7 +22,7 @@ namespace Forge.Services.Interfaces
 
     /// <summary>
     /// Training programs as 4-week blocks: the catalog shipped in the app package, the active
-    /// block, which training day is up, and the perfect-week multiplier. The training day <i>is</i>
+    /// block, which training day is up, and the daily-streak multiplier (Decision 26). The training day <i>is</i>
     /// the Strength quest while a program is active; active rest replaces the mobility quest.
     /// </summary>
     public interface IProgramService
@@ -49,8 +48,11 @@ namespace Forge.Services.Interfaces
         /// <summary>Grants (× multiplier) or reclaims (exactly) training-day XP for <paramref name="date"/>. Returns the net delta.</summary>
         Task<int> ReconcileXpAsync(DateOnly date);
 
-        /// <summary>The XP multiplier in force on a date: ×1.2 while the perfect-week streak is alive.</summary>
+        /// <summary>The XP multiplier in force on a date: ×1.2 while the daily streak is alive (yesterday counted).</summary>
         Task<double> MultiplierForAsync(DateOnly date);
+
+        /// <summary>Every day that counts for the streak: a completed training day or active rest.</summary>
+        Task<IReadOnlyList<DateOnly>> ActiveDaysAsync();
 
         /// <summary>The training day a session completed and the XP it earned, or null.</summary>
         Task<(int DayIndex, int Xp)?> DayCompletedBySessionAsync(int sessionId);

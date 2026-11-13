@@ -30,14 +30,15 @@ namespace Forge.Guild
     public sealed record GuildReward(string Key, bool Earned, int Xp);
 
     /// <summary>
-    /// The guild's three shared goals (Decision 24). All of them need at least two members:
-    /// a guild of one earns nothing extra.
+    /// The guild's three shared goals (Decisions 24, 26). A guild is official at
+    /// <see cref="OfficialSize"/> members; with fewer it's a pre-guild that earns nothing extra.
     /// <list type="bullet">
     /// <item><b>Joint weekly quest:</b> the guild logs training days adding up to 75% of everyone's
     /// weekly targets (the same 75% forging uses). Members who trained that week earn
     /// <see cref="WeeklyQuestXp"/>.</item>
-    /// <item><b>Hearth:</b> a day every member moved (trained or active rest). Everyone earns
-    /// <see cref="HearthXp"/>; it's the streak bonus, counted per day so undo works.</item>
+    /// <item><b>Campfire:</b> a day at least two thirds of the members moved (trained or active
+    /// rest). Each member who moved that day earns <see cref="CampfireXp"/>; counted per day so
+    /// undo works.</item>
     /// <item><b>Banners:</b> one each time every member has forged another quest since joining.
     /// Everyone earns <see cref="BannerXp"/> per banner.</item>
     /// </list>
@@ -45,9 +46,15 @@ namespace Forge.Guild
     public static class GuildRules
     {
         public const int WeeklyQuestXp = 100;
-        public const int HearthXp = 15;
+        public const int CampfireXp = 15;
         public const int BannerXp = 200;
         public const double WeeklyShare = 0.75;
+        /// <summary>A guild becomes official, and starts earning bonuses, at three members (Decision 26).</summary>
+        public const int OfficialSize = 3;
+        /// <summary>Share of members who must move for the campfire to be lit (Decision 26): 2 of 3, 4 of 6.</summary>
+        public const double CampfireShare = 2.0 / 3.0;
+
+        public static bool IsOfficial(int members) => members >= OfficialSize;
 
         /// <summary>Members who belonged to the guild on that day.</summary>
         private static List<GuildMember> On(IEnumerable<GuildMember> members, DateOnly day)
@@ -73,18 +80,26 @@ namespace Forge.Guild
         }
 
         public static bool WeeklyQuestMet(IReadOnlyCollection<GuildMember> members, DateOnly anyDay)
-            => On(members, WeekMath.SundayOf(anyDay)).Count >= 2
+            => IsOfficial(On(members, WeekMath.SundayOf(anyDay)).Count)
                && TrainedDays(members, anyDay) >= WeeklyGoal(members, anyDay);
 
-        /// <summary>Every member of that day moved, and there were at least two of them.</summary>
-        public static bool HearthLit(IEnumerable<GuildMember> members, DateOnly day)
+        /// <summary>How many of that day's members moved, out of how many.</summary>
+        public static (int Moved, int Members) Campfire(IEnumerable<GuildMember> members, DateOnly day)
         {
             var present = On(members, day);
-            return present.Count >= 2 && present.All(m => m.On(day) != GuildDayKind.None);
+            return (present.Count(m => m.On(day) != GuildDayKind.None), present.Count);
+        }
+
+        /// <summary>An official guild, and at least two thirds of that day's members moved.</summary>
+        public static bool CampfireLit(IEnumerable<GuildMember> members, DateOnly day)
+        {
+            var (moved, count) = Campfire(members, day);
+            // Small epsilon: 2 of 3 is exactly 0.666…, which must count.
+            return IsOfficial(count) && moved >= count * CampfireShare - 1e-9;
         }
 
         public static int Banners(IReadOnlyCollection<GuildMember> members)
-            => members.Count < 2 ? 0 : members.Min(m => m.ForgedSinceJoining);
+            => !IsOfficial(members.Count) ? 0 : members.Min(m => m.ForgedSinceJoining);
 
         /// <summary>
         /// The bonuses one player has earned (or no longer has) within the last <paramref name="windowDays"/>.
@@ -100,7 +115,9 @@ namespace Forge.Guild
             if (from < me.JoinedOn) from = me.JoinedOn;
 
             for (var day = from; day <= today; day = day.AddDays(1))
-                rewards.Add(new GuildReward($"hearth:{WeekMath.DateKey(day)}", HearthLit(members, day), HearthXp));
+                // Key kept as "hearth:" so rows paid before the rename still reconcile.
+                rewards.Add(new GuildReward($"hearth:{WeekMath.DateKey(day)}",
+                    CampfireLit(members, day) && me.On(day) != GuildDayKind.None, CampfireXp));
 
             for (var monday = WeekMath.MondayOf(from); monday <= today; monday = monday.AddDays(7))
             {

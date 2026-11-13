@@ -101,30 +101,6 @@ public class BlockScheduleTests
         r.Add(dropped.Date);
         Assert.False(BlockSchedule.IsPerfectWeek(Start, 1, 4, t, r));
     }
-
-    [Fact]
-    public void Streak_CountsFinishedPerfectWeeks_AndSetsTheMultiplier()
-    {
-        var (t1, r1) = PerfectWeek(1, 3);
-        var (t2, r2) = PerfectWeek(2, 3);
-        var training = t1.Concat(t2).ToList();
-        var rest = r1.Concat(r2).ToHashSet();
-
-        Assert.Equal(0, BlockSchedule.PerfectWeekStreak(Start, 3, training, rest, Start.AddDays(3)));  // week 1 not finished
-        Assert.Equal(1, BlockSchedule.PerfectWeekStreak(Start, 3, training, rest, Start.AddDays(10))); // in week 2
-        Assert.Equal(2, BlockSchedule.PerfectWeekStreak(Start, 3, training, rest, Start.AddDays(15))); // in week 3
-        Assert.Equal(1.2, BlockSchedule.Multiplier(2));
-        Assert.Equal(1.0, BlockSchedule.Multiplier(0));
-    }
-
-    [Fact]
-    public void AMiss_ResetsTheStreak()
-    {
-        var (t1, r1) = PerfectWeek(1, 3);
-        var (t3, r3) = PerfectWeek(3, 3); // week 2 empty
-        Assert.Equal(1, BlockSchedule.PerfectWeekStreak(Start, 3, t1.Concat(t3).ToList(), r1.Concat(r3).ToHashSet(), Start.AddDays(22)));
-        Assert.Equal(0, BlockSchedule.PerfectWeekStreak(Start, 3, t1, r1, Start.AddDays(15)));
-    }
 }
 
 public class ProgramDefinitionTests

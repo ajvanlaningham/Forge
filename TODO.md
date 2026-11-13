@@ -163,7 +163,8 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     earns bonus XP. **UX rule for celebrations:** one summary screen after a session (tiles +
     week strip + Done; level-up is a banner on it), the perfect-week chest on the map, and the
     forging screen at quest end. No login rewards, no post-session prompts, nothing to tap
-    through to get home.
+    through to get home. **Built 2026-11-13** (rules + Guild page); the map/summary parts ship with
+    the map plan.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per

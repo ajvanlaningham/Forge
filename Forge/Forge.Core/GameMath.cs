@@ -33,8 +33,8 @@ namespace Forge.Constants
             /// <summary>Bonus for hitting the weekly conditioning-minutes goal.</summary>
             public const int ConditioningWeeklyXp = XpPerQuest * 6;
 
-            /// <summary>×1.2 on XP while the perfect-week streak is alive (Decision 15).</summary>
-            public const double PerfectWeekMultiplier = 1.2;
+            /// <summary>×1.2 on XP while the daily streak is alive (Decision 26; replaced the perfect-week multiplier).</summary>
+            public const double StreakMultiplier = 1.2;
 
             /// <summary>A fully adherent week: 800 from training + active rest, + 300 conditioning = 1100.</summary>
             public const int AdherentWeekXp = WeekBudgetXp + ConditioningWeeklyXp;
@@ -49,7 +49,7 @@ namespace Forge.Constants
                 return (WeekBudgetXp - (7 - trainingDays) * XpPerQuest) / trainingDays;
             }
 
-            /// <summary>Applies the perfect-week multiplier, rounding to a whole XP.</summary>
+            /// <summary>Applies the streak multiplier, rounding to a whole XP.</summary>
             public static int WithMultiplier(int baseXp, double multiplier) => (int)Math.Round(baseXp * multiplier);
         }
 

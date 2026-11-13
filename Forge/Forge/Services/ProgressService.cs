@@ -14,30 +14,21 @@ namespace Forge.Services
     {
         private const string LastCelebratedKey = "Progress.LastCelebratedLevel";
 
-        private readonly IRepository<QuestCompletionRow> _quests;
-        private readonly IRepository<ProgramDayCompletionRow> _programDays;
+        private readonly IProgramService _programs;
         private readonly IStatsStore _stats;
         private bool _showing;
 
-        public ProgressService(
-            IRepository<QuestCompletionRow> quests,
-            IRepository<ProgramDayCompletionRow> programDays,
-            IStatsStore stats)
+        public ProgressService(IProgramService programs, IStatsStore stats)
         {
-            _quests = quests;
-            _programDays = programDays;
+            _programs = programs;
             _stats = stats;
         }
 
-        /// <summary>Current and longest streak of days with at least one completed quest.</summary>
+        /// <summary>Current and longest daily streak: days you trained or did active rest.</summary>
         public async Task<(int Current, int Longest)> GetStreakAsync()
         {
-            var keys = (await _quests.WhereAsync(r => r.Completed)).Select(r => r.DateKey)
-                .Concat((await _programDays.WhereAsync(r => r.Completed)).Select(r => r.DateKey));
-            var days = keys
-                .Select(k => DateOnly.TryParseExact(k, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d) ? d : (DateOnly?)null)
-                .OfType<DateOnly>()
-                .ToList();
+            // Same days the XP multiplier reads (Decision 26), so the flame and the ×1.2 agree.
+            var days = await _programs.ActiveDaysAsync();
             var today = DateOnly.FromDateTime(DateTime.Today);
             return (StreakMath.Current(days, today), StreakMath.Longest(days));
         }

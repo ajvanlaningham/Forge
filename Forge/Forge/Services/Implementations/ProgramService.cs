@@ -147,19 +147,25 @@ namespace Forge.Services.Implementations
             var def = active.Definition;
 
             var training = await TrainingAsync(active.BlockId);
-            var rest = await ActiveRestAsync();
             var offer = BlockSchedule.OfferFor(active.StartedOn, def.TrainingDaysPerWeek, training, date);
             var (wStart, wEnd) = BlockSchedule.WeekRange(active.StartedOn, offer.Week);
             var doneThisWeek = training.Where(c => c.Date >= wStart && c.Date <= wEnd).Select(c => c.DayIndex).ToHashSet();
-            var streak = BlockSchedule.PerfectWeekStreak(active.StartedOn, def.TrainingDaysPerWeek, training, rest, date);
-
             var day = offer.TrainingDay is int i ? def.Resolve(i, offer.Week) : null;
             return new BlockView(active, offer.Week, day, offer.TrainingDoneToday, offer.BlockComplete,
-                doneThisWeek, streak, BlockSchedule.Multiplier(streak));
+                doneThisWeek, await MultiplierForAsync(date));
         }
 
+        /// <summary>
+        /// Days that count for the daily streak (Decision 26): a completed training day in any block,
+        /// or active rest. Shared by the streak display and the XP multiplier so they never disagree.
+        /// </summary>
+        public async Task<IReadOnlyList<DateOnly>> ActiveDaysAsync()
+            => (await _days.WhereAsync(r => r.Completed)).Select(r => ParseKey(r.DateKey))
+                .Concat(await ActiveRestAsync())
+                .Distinct().ToList();
+
         public async Task<double> MultiplierForAsync(DateOnly date)
-            => (await GetViewAsync(date))?.Multiplier ?? 1.0;
+            => StreakMath.Multiplier(await ActiveDaysAsync(), date);
 
         public async Task CompleteDayAsync(DateOnly date, int? sessionId = null)
         {

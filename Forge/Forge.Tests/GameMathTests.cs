@@ -22,7 +22,7 @@ public class GameMathTests
     }
 
     [Fact]
-    public void PerfectWeekMultiplier_RoundsToWholeXp()
+    public void StreakMultiplier_RoundsToWholeXp()
     {
         Assert.Equal(194, GameMath.Quests.WithMultiplier(162, 1.2));
         Assert.Equal(60, GameMath.Quests.WithMultiplier(50, 1.2));

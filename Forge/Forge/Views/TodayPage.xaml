@@ -63,7 +63,7 @@
                     Stroke="{StaticResource Leaf}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="14">
                 <VerticalStackLayout Spacing="6">
                     <Label Text="{Binding ActiveRestTitle}" FontFamily="Display" FontSize="24" TextColor="{StaticResource Leaf}" />
-                    <Label Text="Not training today? Move a little. It keeps your streak and your perfect week."
+                    <Label Text="Not training today? Move a little. It keeps your streak, and the ×1.2 XP bonus, alive."
                            FontSize="15" TextColor="{StaticResource Muted}" />
                     <Label Text="{Binding ActiveRestText}" FontSize="15" TextColor="{StaticResource OnBg}" />
                     <Button Text="{Binding ActiveRestButton}" Command="{Binding ToggleActiveRestCommand}" Margin="0,4,0,0" />

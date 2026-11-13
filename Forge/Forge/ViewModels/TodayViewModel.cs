@@ -195,8 +195,8 @@ namespace Forge.ViewModels
                     1 => $"Moved 1 day in a row · best {Math.Max(1, longest)}",
                     _ => $"Moved {current} days in a row · best {longest}"
                 };
-                StreakText = view is { PerfectWeekStreak: > 0 }
-                    ? $"{movement}\nPerfect weeks: {view.PerfectWeekStreak} · ×{view.Multiplier:0.0} XP this week"
+                StreakText = view is { Multiplier: > 1.0 }
+                    ? $"{movement}\nStreak bonus: ×{view.Multiplier:0.0} XP today"
                     : movement;
             }
             finally

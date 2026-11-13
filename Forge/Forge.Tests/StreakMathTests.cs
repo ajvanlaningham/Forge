@@ -30,4 +30,21 @@ public class StreakMathTests
     [Fact]
     public void Longest_FindsTheBestRun()
         => Assert.Equal(4, StreakMath.Longest(Days(0, 1, 5, 6, 7, 8, 10)));
+
+    // --- Decision 26: the streak multiplier ---
+
+    [Fact]
+    public void Multiplier_NeedsYesterday()
+    {
+        Assert.Equal(1.2, StreakMath.Multiplier(Days(1), Today));
+        Assert.Equal(1.2, StreakMath.Multiplier(Days(1, 2, 3), Today));
+    }
+
+    [Fact]
+    public void Multiplier_TodaysOwnWorkDoesntCount()
+        => Assert.Equal(1.0, StreakMath.Multiplier(Days(0), Today));
+
+    [Fact]
+    public void Multiplier_AMissResetsIt_WithoutTakingAnything()
+        => Assert.Equal(1.0, StreakMath.Multiplier(Days(0, 2, 3), Today));
 }
