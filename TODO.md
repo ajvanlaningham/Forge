@@ -180,6 +180,18 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     quest board is a pushed page of rolled scrolls (yours under a wax seal). Workout: a draining
     ring timer and the day's foe health bar; one big action per phase. Legibility rules in
     AGENTS.md.
+28. **Workouts are timed; reps are suggested** (user, 2026-11-13). Every move is work-on /
+    rest-off on the clock, kettlebell-class style (e.g. 60–75 s on / 45 s off), in circuits so
+    each muscle still rests two or three minutes between its turns; no 2-minute rests. A move may
+    show a *suggested* rep target as pacing ("60 s · aim for ~10"), never counted. A started
+    workout runs itself and logs each round as completed with its weight (autopilot, see the
+    2026-11-13 walkthrough). After the workout, one optional tap: **Easy / Right / Hard**, which
+    moves the next suggested weight and rep target up, holds them, or eases them back. Every
+    day lands in **30–40 minutes** (warm-up, strength circuit, accessory circuit, finisher), and
+    the minutes shown anywhere are computed from that timeline, never from a program's notes.
+    Baseline tests are the exception: counted reps, no time limit, protocols frozen.
+    The Fourfold Path (Miche's) is converted only after the user talks it over with Miche: in
+    this format its work fits in ~30–35 min, where today it reaches ~50 mostly through rests.
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
@@ -228,17 +240,9 @@ Claude ran a full session on the phone. Settled with the user:
   from where it was last time when that moves on (built; the walk itself shows on the next
   training day).
 
-To discuss:
-
-- **Reps vs time.** Claude's proposal: main lifts keep rep targets on a steady tempo
-  (~3 s/rep + setup), auto-logged as done; accessories and conditioning become timed rounds
-  ("as many as you can in 40 s, steady pace"), which can't drift from their timing. One minutes
-  figure, computed from the real timeline, everywhere (today the stone says 30–40 from the
-  program's notes, the briefing ~15 from the content).
-- **Days are too thin.** Upper A is 10 working sets, ~15 min with real rests. Each day should
-  carry its warm-up, main work and finisher to fill its stated time, and a test day's test
-  should be the day's last block inside the health bar, not an offer at the end. A content pass,
-  done together with the timing reconcile.
+Settled since as **Decision 28** (timed workouts, suggested reps, Easy / Right / Hard, 30–40 min
+days). Next: the engine work for it, then the content pass that fills each day to its time
+(Foundations' days are ~18 min of content today) and puts a test day's test inside the day.
 
 ## Current: Training Push (week of 2026-11-11)
 
