@@ -7,15 +7,15 @@
              Title="{Binding Name}">
     <ScrollView>
         <VerticalStackLayout Padding="16,12" Spacing="10">
-            <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="30" TextColor="{StaticResource Accent}" />
-            <Label Text="{Binding Headline}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource OnBg}" />
+            <Label Text="{Binding Name}" FontFamily="Display" FontSize="30" TextColor="{StaticResource Accent}" />
+            <Label Text="{Binding Headline}" FontFamily="Body" FontSize="20" TextColor="{StaticResource OnBg}" />
             <Label Text="Not logged in a finished session yet." IsVisible="{Binding IsEmpty}"
-                   FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" />
+                   FontFamily="Body" FontSize="18" TextColor="{StaticResource Muted}" />
 
             <Border IsVisible="{Binding HasChart}" BackgroundColor="{StaticResource Surface}"
                     Stroke="{StaticResource Muted}" StrokeShape="RoundRectangle 8" Padding="8">
                 <VerticalStackLayout>
-                    <Label Text="{Binding ChartCaption}" FontFamily="PixelUI" FontSize="16" TextColor="{StaticResource Muted}" />
+                    <Label Text="{Binding ChartCaption}" FontFamily="Body" FontSize="17" TextColor="{StaticResource Muted}" />
                     <GraphicsView Drawable="{Binding Chart}" HeightRequest="220" BackgroundColor="{StaticResource Surface}" />
                 </VerticalStackLayout>
             </Border>
@@ -27,8 +27,8 @@
                                 StrokeShape="RoundRectangle 8" Padding="12,8">
                             <VerticalStackLayout>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Text="{Binding DateText}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Accent}" />
-                                    <Label Grid.Column="1" Text="{Binding BestText}" FontFamily="PixelUI" FontSize="16"
+                                    <Label Text="{Binding DateText}" FontFamily="Body" FontSize="18" TextColor="{StaticResource Accent}" />
+                                    <Label Grid.Column="1" Text="{Binding BestText}" FontFamily="Body" FontSize="17"
                                            TextColor="{StaticResource Muted}" />
                                 </Grid>
                                 <Label Text="{Binding SetsText}" FontFamily="GymNum" FontSize="24" TextColor="{StaticResource OnBg}" />

@@ -20,7 +20,7 @@
 
     <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="12">
         <Label Text="Tap gear you have at home. Dumbbells, kettlebells and the barbell ask which weights."
-               FontSize="16"
+               FontSize="17"
                Margin="2,0,0,4" />
 
         <CollectionView Grid.Row="1"
@@ -66,7 +66,7 @@
 
                             <Label Grid.Row="1"
                                Text="{Binding DisplayName}"
-                               FontSize="14"
+                               FontSize="15"
                                HorizontalTextAlignment="Center"
                                VerticalTextAlignment="Center">
                                 <Label.Triggers>
@@ -79,7 +79,7 @@
                             
                             <!-- What's owned, for weighted gear -->
                             <Label Grid.Row="2" Text="{Binding Summary}" IsVisible="{Binding HasSummary}"
-                                   FontFamily="GymNum" FontSize="13" TextColor="{DynamicResource Accent}"
+                                   FontFamily="GymNum" FontSize="15" TextColor="{DynamicResource Accent}"
                                    HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" />
 
                             <!-- Owned strip -->

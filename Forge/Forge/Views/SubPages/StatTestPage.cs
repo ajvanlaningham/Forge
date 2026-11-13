@@ -85,7 +85,7 @@ public sealed class StatTestPage : ContentPage
         }
         var save = new Button
         {
-            Text = Calibration ? "Save practice run" : "Save result", HeightRequest = 60, FontFamily = "PixelUI", FontSize = 24,
+            Text = Calibration ? "Save practice run" : "Save result", HeightRequest = 60, FontFamily = "Display", FontSize = 24,
             BackgroundColor = _accent, TextColor = _bg, Margin = new Thickness(0, 8, 0, 0)
         };
         save.Clicked += async (_, _) => { if (_save is not null) await _save(); };
@@ -142,7 +142,7 @@ public sealed class StatTestPage : ContentPage
             var start = today ?? history.FirstOrDefault(h => h.Count > 0)?.Max(s => s.LoadLb) ?? loads.Next(0) ?? 0;
             var load = new NumberField(WeightMath.ToDisplay(start, _unit), step: 0, min: 0, max: 1000, unit: WeightMath.UnitLabel(_unit), loads: loads, unitOf: _unit);
             var reps = new NumberField(8, step: 1, min: 0, max: 40, unit: "reps");
-            var title = new Label { Text = name(), FontFamily = "PixelUI", FontSize = 24, TextColor = _accent };
+            var title = new Label { Text = name(), FontFamily = "Display", FontSize = 24, TextColor = _accent };
             if (pickers.Count == 3) pickers[index].SelectedIndexChanged += (_, _) => title.Text = name();
             _body.Add(Card(title, Row("Weight", load), Row("Reps", reps)));
             rows.Add((name, load, reps));
@@ -251,10 +251,10 @@ public sealed class StatTestPage : ContentPage
         _body.Add(Row("Resting", resting));
 
         _body.Add(Header("The test"));
-        var cue = new Label { Text = "Ready", FontFamily = "PixelH", FontSize = 34, TextColor = _accent, HorizontalTextAlignment = TextAlignment.Center };
+        var cue = new Label { Text = "Ready", FontFamily = "Display", FontSize = 34, TextColor = _accent, HorizontalTextAlignment = TextAlignment.Center };
         var clock = new Label { Text = "3:00", FontFamily = "GymNum", FontSize = 64, TextColor = _onBg, HorizontalTextAlignment = TextAlignment.Center };
-        var hint = new Label { Text = "Up with one foot, up with the other, down, down. One step per beat.", FontFamily = "PixelUI", FontSize = 19, TextColor = _muted, HorizontalTextAlignment = TextAlignment.Center };
-        var start = new Button { Text = "Start the 3 minutes", HeightRequest = 60, FontFamily = "PixelUI", FontSize = 22 };
+        var hint = new Label { Text = "Up with one foot, up with the other, down, down. One step per beat.", FontFamily = "Body", FontSize = 19, TextColor = _muted, HorizontalTextAlignment = TextAlignment.Center };
+        var start = new Button { Text = "Start the 3 minutes", HeightRequest = 60, FontFamily = "Display", FontSize = 22 };
         var pulse = new NumberField(100, step: 1, min: 30, max: 220, unit: "beats");
         var pulseRow = Row("Pulse in 1 minute", pulse);
         pulseRow.IsVisible = false;
@@ -360,14 +360,14 @@ public sealed class StatTestPage : ContentPage
 
     // ------------------------------------------------------------------ building blocks
 
-    private View Header(string text) => new Label { Text = text, FontFamily = "PixelUI", FontSize = 26, TextColor = _accent, Margin = new Thickness(0, 6, 0, 0) };
-    private View Note(string text) => new Label { Text = text, FontSize = 14, TextColor = _muted };
-    private View Small(string text) => new Label { Text = text, FontFamily = "PixelUI", FontSize = 18, TextColor = _muted };
+    private View Header(string text) => new Label { Text = text, FontFamily = "Display", FontSize = 26, TextColor = _accent, Margin = new Thickness(0, 6, 0, 0) };
+    private View Note(string text) => new Label { Text = text, FontSize = 15, TextColor = _muted };
+    private View Small(string text) => new Label { Text = text, FontFamily = "Body", FontSize = 18, TextColor = _muted };
 
     private Grid Row(string label, View field)
     {
         var g = new Grid { ColumnDefinitions = { new(GridLength.Star), new(GridLength.Auto) }, ColumnSpacing = 8 };
-        g.Add(new Label { Text = label, FontFamily = "PixelUI", FontSize = 21, TextColor = _onBg, VerticalOptions = LayoutOptions.Center });
+        g.Add(new Label { Text = label, FontFamily = "Body", FontSize = 21, TextColor = _onBg, VerticalOptions = LayoutOptions.Center });
         g.Add(field, 1);
         return g;
     }
@@ -420,7 +420,7 @@ public sealed class StatTestPage : ContentPage
             Children.Add(minus);
             Children.Add(_entry);
             Children.Add(plus);
-            Children.Add(new Label { Text = unit, FontFamily = "PixelUI", FontSize = 18, TextColor = (Color)res["Muted"], VerticalOptions = LayoutOptions.Center });
+            Children.Add(new Label { Text = unit, FontFamily = "Body", FontSize = 18, TextColor = (Color)res["Muted"], VerticalOptions = LayoutOptions.Center });
             Set(value);
         }
 

@@ -86,10 +86,10 @@ public sealed class OnboardingPage : ContentPage
         if (step > 0)
         {
             var nav = new Grid { ColumnDefinitions = { new(GridLength.Auto), new(GridLength.Star) } };
-            var back = new Button { Text = "‹ Back", FontFamily = "PixelUI", FontSize = 20, BackgroundColor = Colors.Transparent, TextColor = _muted, BorderWidth = 0, Padding = 0 };
+            var back = new Button { Text = "‹ Back", FontFamily = "Display", FontSize = 20, BackgroundColor = Colors.Transparent, TextColor = _muted, BorderWidth = 0, Padding = 0 };
             back.Clicked += (_, _) => Show(_step - 1);
             nav.Add(back);
-            nav.Add(new Label { Text = $"{step} of 4", FontFamily = "PixelUI", FontSize = 20, TextColor = _muted, HorizontalTextAlignment = TextAlignment.End, VerticalOptions = LayoutOptions.Center }, 1);
+            nav.Add(new Label { Text = $"{step} of 4", FontFamily = "Body", FontSize = 20, TextColor = _muted, HorizontalTextAlignment = TextAlignment.End, VerticalOptions = LayoutOptions.Center }, 1);
             stack.Add(nav);
         }
         stack.Add(body);
@@ -100,7 +100,7 @@ public sealed class OnboardingPage : ContentPage
     {
         var fresh = Primary("Start fresh");
         fresh.Clicked += (_, _) => Show(1);
-        var restore = new Button { Text = "Restore a backup", HeightRequest = 56, FontFamily = "PixelUI", FontSize = 22 };
+        var restore = new Button { Text = "Restore a backup", HeightRequest = 56, FontFamily = "Display", FontSize = 22 };
         restore.Clicked += async (_, _) =>
         {
             if (_preview) { await DisplayAlertAsync("Preview", "In a real first run this asks: a backup file, or nidavellir with your recovery key.", "OK"); return; }
@@ -118,7 +118,7 @@ public sealed class OnboardingPage : ContentPage
             Children =
             {
                 new Image { Source = "forge_2.png", WidthRequest = 220, HeightRequest = 220, HorizontalOptions = LayoutOptions.Center },
-                new Label { Text = "FITNESS FORGE", FontFamily = "PixelH", FontSize = 24, TextColor = _accent, HorizontalTextAlignment = TextAlignment.Center },
+                new Label { Text = "FITNESS FORGE", FontFamily = "Display", FontSize = 24, TextColor = _accent, HorizontalTextAlignment = TextAlignment.Center },
                 Body("Train at home, a quest at a time. Four weeks at the forge, and the piece you forge is yours. Every session moves you on."),
                 fresh,
                 restore,
@@ -144,7 +144,7 @@ public sealed class OnboardingPage : ContentPage
         var name = new Label
         {
             Text = $"{Label(UserSettings.Races, _race)} {Label(UserSettings.Classes, _class)}",
-            FontFamily = "PixelUI", FontSize = 28, TextColor = _accent, HorizontalTextAlignment = TextAlignment.Center
+            FontFamily = "Body", FontSize = 28, TextColor = _accent, HorizontalTextAlignment = TextAlignment.Center
         };
         var races = Chips(UserSettings.Races, () => _race, id => { _race = id; Show(2); });
         var classes = Chips(UserSettings.Classes, () => _class, id => { _class = id; Show(2); });
@@ -172,7 +172,7 @@ public sealed class OnboardingPage : ContentPage
                     Children =
                     {
                         new Image { Source = item.SpriteSource, HeightRequest = 36, Opacity = on ? 1 : 0.45 },
-                        new Label { Text = item.DisplayName, FontSize = 13, HorizontalTextAlignment = TextAlignment.Center, TextColor = on ? _onBg : _muted }
+                        new Label { Text = item.DisplayName, FontSize = 15, HorizontalTextAlignment = TextAlignment.Center, TextColor = on ? _onBg : _muted }
                     }
                 }
             };
@@ -208,8 +208,8 @@ public sealed class OnboardingPage : ContentPage
                     Spacing = 2,
                     Children =
                     {
-                        new Label { Text = $"{label} · {id}", FontFamily = "PixelUI", FontSize = 24, TextColor = on ? _accent : _onBg },
-                        new Label { Text = about, FontSize = 14, TextColor = _muted }
+                        new Label { Text = $"{label} · {id}", FontFamily = "Body", FontSize = 24, TextColor = on ? _accent : _onBg },
+                        new Label { Text = about, FontSize = 15, TextColor = _muted }
                     }
                 }
             };
@@ -251,8 +251,8 @@ public sealed class OnboardingPage : ContentPage
             Children =
             {
                 new Label { Text = $"Copper {item}", FontFamily = "FantasyH", FontSize = 24, TextColor = Color.FromArgb("#2B1D14") },
-                new Label { Text = $"{_discipline} · {implement} · {_days}-day", FontFamily = "PixelUI", FontSize = 19, TextColor = Color.FromArgb("#8E2A2A") },
-                new Label { Text = "Four weeks. Train 75% of the days and it's forged.", FontFamily = "PixelUI", FontSize = 17, TextColor = Color.FromArgb("#5A4330") }
+                new Label { Text = $"{_discipline} · {implement} · {_days}-day", FontFamily = "Body", FontSize = 19, TextColor = Color.FromArgb("#8E2A2A") },
+                new Label { Text = "Four weeks. Train 75% of the days and it's forged.", FontFamily = "Body", FontSize = 17, TextColor = Color.FromArgb("#5A4330") }
             }
         };
         ((Grid)notice.Content).Add(noticeText, 1);
@@ -300,19 +300,19 @@ public sealed class OnboardingPage : ContentPage
         return s;
     }
 
-    private View Title(string text) => new Label { Text = text, FontFamily = "PixelUI", FontSize = 32, TextColor = _accent };
-    private View Body(string text) => new Label { Text = text, FontFamily = "PixelUI", FontSize = 21, TextColor = _onBg };
-    private View Small(string text) => new Label { Text = text, FontFamily = "PixelUI", FontSize = 20, TextColor = _muted };
-    private View Note(string text) => new Label { Text = text, FontSize = 13, TextColor = _muted };
+    private View Title(string text) => new Label { Text = text, FontFamily = "Display", FontSize = 32, TextColor = _accent };
+    private View Body(string text) => new Label { Text = text, FontFamily = "Body", FontSize = 21, TextColor = _onBg };
+    private View Small(string text) => new Label { Text = text, FontFamily = "Body", FontSize = 20, TextColor = _muted };
+    private View Note(string text) => new Label { Text = text, FontSize = 15, TextColor = _muted };
 
     private Button Primary(string text) => new()
     {
-        Text = text, HeightRequest = 64, FontFamily = "PixelUI", FontSize = 26, BackgroundColor = _accent, TextColor = _bg
+        Text = text, HeightRequest = 64, FontFamily = "Body", FontSize = 26, BackgroundColor = _accent, TextColor = _bg
     };
 
     private Button Choice(string text, bool on) => new()
     {
-        Text = text, HeightRequest = 56, FontFamily = "PixelUI", FontSize = 22,
+        Text = text, HeightRequest = 56, FontFamily = "Body", FontSize = 22,
         BackgroundColor = on ? _accent : _surface, TextColor = on ? _bg : _onBg
     };
 
@@ -324,7 +324,7 @@ public sealed class OnboardingPage : ContentPage
             var on = id == selected();
             var b = new Button
             {
-                Text = label, FontFamily = "PixelUI", FontSize = 19, Margin = new Thickness(0, 0, 6, 6), Padding = new Thickness(12, 2), HeightRequest = 44,
+                Text = label, FontFamily = "Display", FontSize = 19, Margin = new Thickness(0, 0, 6, 6), Padding = new Thickness(12, 2), HeightRequest = 44,
                 BackgroundColor = on ? _accent : _surface, TextColor = on ? _bg : _onBg
             };
             b.Clicked += (_, _) => pick(id);

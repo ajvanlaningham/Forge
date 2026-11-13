@@ -14,7 +14,7 @@
                  the user saves. -->
             <controls:WeightTrendCard BindingContext="{Binding WeightTrendCard}" />
 
-            <Label Text="{x:Static res:AppResources.CheckInPage_WeightHeader}"
+            <Label FontFamily="Display" Text="{x:Static res:AppResources.CheckInPage_WeightHeader}"
                    FontSize="22"
                    FontAttributes="Bold" />
 
@@ -40,32 +40,32 @@
             <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
 
             <!-- Recovery (PBI 3.4): typed, or filled from Health Connect. Same date as above. -->
-            <Label Text="Recovery" FontSize="22" FontAttributes="Bold" />
-            <Label Text="{Binding RecoveryDateText}" FontSize="13" Opacity="0.7" />
+            <Label FontFamily="Display" Text="Recovery" FontSize="22" FontAttributes="Bold" />
+            <Label Text="{Binding RecoveryDateText}" FontSize="15" Opacity="0.7" />
 
             <Grid ColumnDefinitions="*,120" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="2">
                 <Label Text="Resting heart rate (bpm)" VerticalOptions="Center" />
                 <Entry Grid.Column="1" Text="{Binding RestingHrText}" Keyboard="Numeric" Placeholder="—" HorizontalTextAlignment="End" />
-                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding RestingHrSourceText}" FontSize="12" Opacity="0.6" HorizontalTextAlignment="End" />
+                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding RestingHrSourceText}" FontSize="15" Opacity="0.6" HorizontalTextAlignment="End" />
 
                 <Label Grid.Row="2" Text="Sleep (h:mm)" VerticalOptions="Center" />
                 <Entry Grid.Row="2" Grid.Column="1" Text="{Binding SleepText}" Keyboard="Text" Placeholder="7:30" HorizontalTextAlignment="End" />
-                <Label Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding SleepSourceText}" FontSize="12" Opacity="0.6" HorizontalTextAlignment="End" />
+                <Label Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding SleepSourceText}" FontSize="15" Opacity="0.6" HorizontalTextAlignment="End" />
 
                 <Label Grid.Row="4" Text="Steps" VerticalOptions="Center" />
                 <Entry Grid.Row="4" Grid.Column="1" Text="{Binding StepsText}" Keyboard="Numeric" Placeholder="—" HorizontalTextAlignment="End" />
-                <Label Grid.Row="5" Grid.ColumnSpan="2" Text="{Binding StepsSourceText}" FontSize="12" Opacity="0.6" HorizontalTextAlignment="End" />
+                <Label Grid.Row="5" Grid.ColumnSpan="2" Text="{Binding StepsSourceText}" FontSize="15" Opacity="0.6" HorizontalTextAlignment="End" />
             </Grid>
 
             <Button Text="Save recovery" Command="{Binding SaveRecoveryCommand}" HorizontalOptions="Fill" />
             <Label Text="{Binding RecoveryStatus}" IsVisible="{Binding HasRecoveryStatus}" />
 
-            <Label Text="{Binding HealthText}" FontSize="13" Opacity="0.7" Margin="0,8,0,0" />
+            <Label Text="{Binding HealthText}" FontSize="15" Opacity="0.7" Margin="0,8,0,0" />
 
             <BoxView HeightRequest="1" Opacity="0.2" Margin="0,8" />
 
             <Label Text="{Binding PlaceholderText}"
-                   FontSize="12"
+                   FontSize="15"
                    Opacity="0.7" />
 
         </VerticalStackLayout>

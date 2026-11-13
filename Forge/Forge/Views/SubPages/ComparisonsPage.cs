@@ -45,11 +45,11 @@ public sealed class ComparisonsPage : ContentPage
                 Children =
                 {
                     new Label { Text = "Fitness norms were collected separately for women and men, by age. If you'd like a test result placed against them, pick the set that fits your body best, and add your birth year. Or skip it: your scores only ever compare you with yourself.", FontSize = 15, TextColor = muted },
-                    new Label { Text = "Norms", FontFamily = "PixelUI", FontSize = 22, TextColor = onBg },
+                    new Label { Text = "Norms", FontFamily = "Display", FontSize = 22, TextColor = onBg },
                     picker,
-                    new Label { Text = "Birth year", FontFamily = "PixelUI", FontSize = 22, TextColor = onBg },
+                    new Label { Text = "Birth year", FontFamily = "Display", FontSize = 22, TextColor = onBg },
                     year,
-                    new Label { Text = "Used only to pick the right row of a norms table. It stays on this phone.", FontSize = 13, TextColor = muted }
+                    new Label { Text = "Used only to pick the right row of a norms table. It stays on this phone.", FontSize = 15, TextColor = muted }
                 }
             }
         };

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -29,10 +29,10 @@
         <Setter Property="BorderColor" Value="{StaticResource Accent}" />
         <Setter Property="BorderWidth" Value="2" />
         <Setter Property="CornerRadius" Value="4"/>
-        <Setter Property="FontFamily" Value="PixelUI"/>
-        <Setter Property="FontSize" Value="18"/>
-        <Setter Property="Padding" Value="14,10"/>
-        <Setter Property="MinimumHeightRequest" Value="44"/>
+        <Setter Property="FontFamily" Value="Display"/>
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="MinimumHeightRequest" Value="52"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -40,7 +40,7 @@
                     <VisualState x:Name="Normal" />
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{StaticResource Gray500}" />
+                            <Setter Property="TextColor" Value="{StaticResource Gray300}" />
                             <Setter Property="BackgroundColor" Value="{StaticResource Gray600}" />
                             <Setter Property="BorderColor" Value="{StaticResource Gray500}" />
                         </VisualState.Setters>
@@ -72,8 +72,8 @@
     <Style TargetType="DatePicker">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PixelUI"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Body"/>
+        <Setter Property="FontSize" Value="17"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -93,8 +93,8 @@
     <Style TargetType="Editor">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PixelUI"/>
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Body"/>
+        <Setter Property="FontSize" Value="17" />
         <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
@@ -115,8 +115,8 @@
     <Style TargetType="Entry">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PixelUI"/>
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Body"/>
+        <Setter Property="FontSize" Value="17" />
         <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
@@ -166,15 +166,15 @@
     <Style TargetType="Label">
         <Setter Property="TextColor" Value="{StaticResource OnBg}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PixelUI" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Body" />
+        <Setter Property="FontSize" Value="17" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal" />
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{StaticResource Gray600}" />
+                            <Setter Property="TextColor" Value="{StaticResource Muted}" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -186,18 +186,57 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
     </Style>
 
-    <Style TargetType="Label" x:Key="Headline">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MidnightBlue}, Dark={StaticResource White}}" />
-        <Setter Property="FontSize" Value="32" />
-        <Setter Property="HorizontalOptions" Value="Center" />
-        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    <!-- Type scale (2026-11-13, legibility pass). Jersey 15 ("Display") for titles, numbers and
+         buttons; Nunito ("Body") for sentences. Nothing below 15. -->
+    <Style TargetType="Label" x:Key="Title">
+        <Setter Property="FontFamily" Value="Display" />
+        <Setter Property="FontSize" Value="30" />
+        <Setter Property="TextColor" Value="{StaticResource OnBg}" />
+    </Style>
+    <Style TargetType="Label" x:Key="Heading">
+        <Setter Property="FontFamily" Value="Display" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="TextColor" Value="{StaticResource OnBg}" />
+    </Style>
+    <Style TargetType="Label" x:Key="BodyText">
+        <Setter Property="FontFamily" Value="Body" />
+        <Setter Property="FontSize" Value="17" />
+    </Style>
+    <Style TargetType="Label" x:Key="Caption">
+        <Setter Property="FontFamily" Value="Body" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="TextColor" Value="{StaticResource Muted}" />
+    </Style>
+    <Style TargetType="Label" x:Key="BigNumber">
+        <Setter Property="FontFamily" Value="Display" />
+        <Setter Property="FontSize" Value="44" />
+        <Setter Property="TextColor" Value="{StaticResource OnBg}" />
     </Style>
 
-    <Style TargetType="Label" x:Key="SubHeadline">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MidnightBlue}, Dark={StaticResource White}}" />
-        <Setter Property="FontSize" Value="24" />
-        <Setter Property="HorizontalOptions" Value="Center" />
-        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    <!-- The one obvious action on a screen: full width, tall, gold, with a darker bottom edge. -->
+    <Style TargetType="Button" x:Key="PrimaryButton">
+        <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+        <Setter Property="TextColor" Value="{StaticResource Bg}" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="FontFamily" Value="Display" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="HeightRequest" Value="64" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="Shadow">
+            <Shadow Brush="{StaticResource PrimaryDark}" Offset="0,5" Radius="0" Opacity="1" />
+        </Setter>
+    </Style>
+    <Style TargetType="Button" x:Key="SecondaryButton">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource OnBg}" />
+        <Setter Property="BorderColor" Value="{StaticResource Muted}" />
+        <Setter Property="BorderWidth" Value="2" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="FontFamily" Value="Display" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="HeightRequest" Value="56" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
     </Style>
 
     <Style TargetType="ListView">
@@ -209,8 +248,8 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PixelUI"/>
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Body"/>
+        <Setter Property="FontSize" Value="17" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -247,8 +286,8 @@
     <Style TargetType="RadioButton">
         <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
-        <Setter Property="FontFamily" Value="PixelUI"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Body"/>
+        <Setter Property="FontSize" Value="17"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -274,8 +313,8 @@
         <Setter Property="PlaceholderColor" Value="{StaticResource Gray500}" />
         <Setter Property="CancelButtonColor" Value="{StaticResource Gray500}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PixelUI" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Body" />
+        <Setter Property="FontSize" Value="17" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -297,8 +336,8 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="PlaceholderColor" Value="{StaticResource Gray500}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PixelUI" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Body" />
+        <Setter Property="FontSize" Value="17" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -377,8 +416,8 @@
     <Style TargetType="TimePicker">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent"/>
-        <Setter Property="FontFamily" Value="PixelUI"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Body"/>
+        <Setter Property="FontSize" Value="17"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">

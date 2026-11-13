@@ -31,7 +31,7 @@
                         Spacing="0"
                         HorizontalOptions="Center"
                         VerticalOptions="Center">
-                        <Label 
+                        <Label FontFamily="Display" 
                             Text="{Binding Level}"
                             FontSize="28"
                             FontAttributes="Bold"
@@ -39,7 +39,7 @@
                             HorizontalOptions="Center" />
                         <Label 
                             Text="{x:Static res:AppResources.StatCard_lvl}"
-                            FontSize="10"
+                            FontSize="15"
                             TextColor="White"
                             Opacity="0.85"
                             HorizontalOptions="Center" />
@@ -54,24 +54,20 @@
                     CornerRadius="12"
                     HasShadow="False"
                     BackgroundColor="{AppThemeBinding Light=#F3F4F6, Dark=#1F2430}">
-                    <!-- Overlay the label on top of the bar -->
-                    <Grid>
+                    <!-- Label above the bar: overlaid text was unreadable once fonts grew. -->
+                    <VerticalStackLayout Spacing="8" VerticalOptions="Center">
+                        <Label
+                            Text="{Binding XpLabel}"
+                            FontFamily="Display"
+                            FontSize="22"
+                            TextColor="{StaticResource Accent}"
+                            HorizontalOptions="Center" />
                         <ProgressBar
                             Progress="{Binding XpProgress}"
                             HeightRequest="10"
-                            VerticalOptions="Center"
                             ProgressColor="{StaticResource Aether}"
                             BackgroundColor="{AppThemeBinding Light=#E5E7EB, Dark=#2A3140}" />
-                        <!--Progress="{Binding XpProgress}" Insert above!-->
-
-                        <Label
-                            Text="{Binding XpLabel}"
-                            FontSize="14"
-                            TextColor="{StaticResource Accent}"
-                            FontAttributes="Bold"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center" />
-                    </Grid>
+                    </VerticalStackLayout>
                 </Frame>
             </Grid>
 
@@ -84,7 +80,7 @@
                     HorizontalOptions="Center">
                     <Label 
                         Text="Strength"
-                        FontSize="16" 
+                        FontSize="17" 
                         TextColor="{StaticResource Muted}" />
                     <Label 
                         Text="{Binding Strength}"
@@ -98,7 +94,7 @@
                     HorizontalOptions="Center">
                     <Label
                         Text="Dexterity"
-                        FontSize="16" 
+                        FontSize="17" 
                         TextColor="{StaticResource Muted}" />
                     <Label
                         Text="{Binding Dexterity}"
@@ -112,7 +108,7 @@
                     HorizontalOptions="Center">
                     <Label 
                         Text="Constitution" 
-                        FontSize="16" 
+                        FontSize="17" 
                         TextColor="{StaticResource Muted}" />
                     <Label
                         Text="{Binding Constitution}"

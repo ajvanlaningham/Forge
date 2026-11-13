@@ -26,8 +26,8 @@ public sealed class LevelUpPage : ContentPage
                 VerticalOptions = LayoutOptions.Center,
                 Children =
                 {
-                    new Label { Text = level.ToString(), FontFamily = "PixelH", FontSize = 56, TextColor = Colors.Black, HorizontalTextAlignment = TextAlignment.Center },
-                    new Label { Text = "LVL", FontFamily = "PixelUI", FontSize = 22, TextColor = Colors.Black, HorizontalTextAlignment = TextAlignment.Center }
+                    new Label { Text = level.ToString(), FontFamily = "Display", FontSize = 56, TextColor = Colors.Black, HorizontalTextAlignment = TextAlignment.Center },
+                    new Label { Text = "LVL", FontFamily = "Display", FontSize = 22, TextColor = Colors.Black, HorizontalTextAlignment = TextAlignment.Center }
                 }
             }
         };
@@ -35,7 +35,7 @@ public sealed class LevelUpPage : ContentPage
         var ok = new Button
         {
             Text = "Onward",
-            FontFamily = "PixelUI",
+            FontFamily = "Display",
             FontSize = 24,
             HeightRequest = 60,
             BackgroundColor = accent,
@@ -51,12 +51,12 @@ public sealed class LevelUpPage : ContentPage
             VerticalOptions = LayoutOptions.Center,
             Children =
             {
-                new Label { Text = "LEVEL UP", FontFamily = "PixelH", FontSize = 26, TextColor = accent, HorizontalTextAlignment = TextAlignment.Center },
+                new Label { Text = "LEVEL UP", FontFamily = "Display", FontSize = 26, TextColor = accent, HorizontalTextAlignment = TextAlignment.Center },
                 badge,
                 new Label
                 {
                     Text = "A week of showing up, forged into something that stays.",
-                    FontFamily = "PixelUI", FontSize = 24, TextColor = onBg, HorizontalTextAlignment = TextAlignment.Center
+                    FontFamily = "Display", FontSize = 24, TextColor = onBg, HorizontalTextAlignment = TextAlignment.Center
                 }
             }
         };

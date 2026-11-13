@@ -18,7 +18,7 @@
                 <Label
                     Grid.Column="1"
                     Text="{Binding WeekRangeText}"
-                    FontSize="12"
+                    FontSize="15"
                     Opacity="0.7"
                     VerticalTextAlignment="Center" />
             </Grid>
@@ -31,11 +31,11 @@
                 <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto">
                     <Label
                         Text="{Binding ProgressLabel}"
-                        FontSize="14" />
+                        FontSize="15" />
                     <Label
                         Grid.Column="1"
                         Text="{Binding CompletedStatusText}"
-                        FontSize="12"
+                        FontSize="15"
                         FontAttributes="Bold"
                         Opacity="0.8" />
                 </Grid>
@@ -60,7 +60,7 @@
             <!-- Optional notes / hint -->
             <Label
                 Text="{Binding HintText}"
-                FontSize="12"
+                FontSize="15"
                 Opacity="0.6"
                 IsVisible="{Binding ShowHint}" />
         </VerticalStackLayout>

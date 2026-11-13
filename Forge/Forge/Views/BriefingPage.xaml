@@ -10,11 +10,11 @@
     <Grid RowDefinitions="*,Auto">
         <ScrollView>
             <VerticalStackLayout Padding="16,12,16,20" Spacing="14">
-                <Label Text="{Binding Subtitle}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Muted}" />
+                <Label Text="{Binding Subtitle}" FontFamily="Body" FontSize="20" TextColor="{StaticResource Muted}" />
 
                 <!-- Where -->
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                    <Button Text="Home" Command="{Binding HomeCommand}" FontFamily="PixelUI" FontSize="22" HeightRequest="52">
+                    <Button Text="Home" Command="{Binding HomeCommand}" FontFamily="Display" FontSize="22" HeightRequest="52">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding AtHome}" Value="True">
                                 <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
@@ -22,7 +22,7 @@
                             </DataTrigger>
                         </Button.Triggers>
                     </Button>
-                    <Button Grid.Column="1" Text="Gym" Command="{Binding GymCommand}" FontFamily="PixelUI" FontSize="22" HeightRequest="52">
+                    <Button Grid.Column="1" Text="Gym" Command="{Binding GymCommand}" FontFamily="Display" FontSize="22" HeightRequest="52">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding AtGym}" Value="True">
                                 <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
@@ -36,8 +36,8 @@
                 <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}" StrokeThickness="1"
                         StrokeShape="RoundRectangle 10" Padding="14,10">
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Gather" FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Accent}" />
-                        <Label Text="{Binding GatherText}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource OnBg}" />
+                        <Label Text="Gather" FontFamily="Display" FontSize="24" TextColor="{StaticResource Accent}" />
+                        <Label Text="{Binding GatherText}" FontFamily="Body" FontSize="20" TextColor="{StaticResource OnBg}" />
                     </VerticalStackLayout>
                 </Border>
 
@@ -50,15 +50,15 @@
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <VerticalStackLayout Spacing="2">
                                         <HorizontalStackLayout Spacing="8">
-                                            <Label Text="{Binding GroupLabel}" IsVisible="{Binding HasGroup}" FontFamily="PixelUI" FontSize="20"
+                                            <Label Text="{Binding GroupLabel}" IsVisible="{Binding HasGroup}" FontFamily="Body" FontSize="20"
                                                    TextColor="{StaticResource Accent}" VerticalOptions="Center" />
-                                            <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}"
+                                            <Label Text="{Binding Name}" FontFamily="Display" FontSize="22" TextColor="{StaticResource OnBg}"
                                                    LineBreakMode="WordWrap" VerticalOptions="Center" />
                                         </HorizontalStackLayout>
-                                        <Label Text="{Binding SwapText}" IsVisible="{Binding HasSwap}" FontSize="12" TextColor="{StaticResource Muted}" />
+                                        <Label Text="{Binding SwapText}" IsVisible="{Binding HasSwap}" FontSize="15" TextColor="{StaticResource Muted}" />
                                         <Label Text="{Binding PrescriptionText}" FontFamily="GymNum" FontSize="20" TextColor="{StaticResource OnBg}" />
-                                        <Label Text="{Binding WarmupText}" IsVisible="{Binding Warmup}" FontSize="13" TextColor="{StaticResource Leaf}" />
-                                        <Label Text="{Binding Note}" IsVisible="{Binding HasNote}" FontSize="12" TextColor="{StaticResource Muted}" />
+                                        <Label Text="{Binding WarmupText}" IsVisible="{Binding Warmup}" FontSize="15" TextColor="{StaticResource Leaf}" />
+                                        <Label Text="{Binding Note}" IsVisible="{Binding HasNote}" FontSize="15" TextColor="{StaticResource Muted}" />
                                     </VerticalStackLayout>
                                     <!-- Weight -->
                                     <VerticalStackLayout Grid.Column="1" Spacing="2" IsVisible="{Binding ShowLoad}" VerticalOptions="Center">
@@ -77,9 +77,9 @@
 
         <!-- Begin -->
         <VerticalStackLayout Grid.Row="1" Padding="16,8,16,14" Spacing="4" BackgroundColor="{StaticResource Bg}">
-            <Label Text="{Binding EstimateText}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}"
+            <Label Text="{Binding EstimateText}" FontFamily="Body" FontSize="18" TextColor="{StaticResource Muted}"
                    HorizontalTextAlignment="Center" />
-            <Button Text="BEGIN" Command="{Binding BeginCommand}" HeightRequest="68" FontFamily="PixelUI" FontSize="30"
+            <Button Text="BEGIN" Command="{Binding BeginCommand}" HeightRequest="68" FontFamily="Display" FontSize="30"
                     BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
         </VerticalStackLayout>
     </Grid>

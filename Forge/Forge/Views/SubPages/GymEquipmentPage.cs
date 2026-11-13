@@ -16,7 +16,7 @@ public sealed class GymEquipmentPage : ContentPage
         list.Add(new Label
         {
             Text = "What the gym has. Exercises needing anything switched off are swapped when you train at the Gym.",
-            FontSize = 14,
+            FontSize = 15,
             Opacity = 0.75,
             Margin = new Thickness(0, 0, 0, 8)
         });

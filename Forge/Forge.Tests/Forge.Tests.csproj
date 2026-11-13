@@ -23,6 +23,7 @@
   <ItemGroup>
     <!-- Shipped content (exercise library + programs), so tests can validate it as data. -->
     <None Include="..\Forge\Resources\Raw\**\*.json" LinkBase="Raw" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Forge\Resources\Styles\Colors.xaml" Link="Styles\Colors.xaml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

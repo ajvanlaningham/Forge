@@ -68,7 +68,7 @@ public sealed class HomeWeightsPage : ContentPage
             ? new BarbellGear { Unit = WeightUnit.Kilograms, Bar = 20, Max = 100, Step = 2.5 }
             : new BarbellGear { Unit = WeightUnit.Pounds, Bar = 45, Max = 225, Step = 5 });
 
-        var save = new Button { Text = "Save", HeightRequest = 56, FontFamily = "PixelUI", FontSize = 22, BackgroundColor = _accent, TextColor = Colors.Black };
+        var save = new Button { Text = "Save", HeightRequest = 56, FontFamily = "Display", FontSize = 22, BackgroundColor = _accent, TextColor = Colors.Black };
         save.Clicked += async (_, _) => await SaveAsync();
 
         var (title, intro, section) = Implement switch
@@ -101,8 +101,8 @@ public sealed class HomeWeightsPage : ContentPage
         var sw = new Switch { IsToggled = on, OnColor = _accent, VerticalOptions = LayoutOptions.Center };
         sw.Toggled += (_, e) => toggled(e.Value);
         var head = new Grid { ColumnDefinitions = { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Auto) }, ColumnSpacing = 8 };
-        head.Add(new Label { Text = title, FontFamily = "PixelUI", FontSize = 26, TextColor = _accent, VerticalOptions = LayoutOptions.Center });
-        head.Add(new Label { Text = "I have these", FontSize = 14, TextColor = _muted, VerticalOptions = LayoutOptions.Center }, 1);
+        head.Add(new Label { Text = title, FontFamily = "Display", FontSize = 26, TextColor = _accent, VerticalOptions = LayoutOptions.Center });
+        head.Add(new Label { Text = "I have these", FontSize = 15, TextColor = _muted, VerticalOptions = LayoutOptions.Center }, 1);
         head.Add(sw, 2);
         return new Border
         {
@@ -136,7 +136,7 @@ public sealed class HomeWeightsPage : ContentPage
         }
         else
         {
-            _dbBody.Add(new Label { Text = "Tap once for one dumbbell, twice for a pair, again to clear. Mix pounds and kilos freely.", FontSize = 14, TextColor = _muted });
+            _dbBody.Add(new Label { Text = "Tap once for one dumbbell, twice for a pair, again to clear. Mix pounds and kilos freely.", FontSize = 15, TextColor = _muted });
             _dbBody.Add(Chips(GearLoads.StandardDumbbellsLb, _db.Lb, "lb"));
             _dbBody.Add(Chips(GearLoads.StandardDumbbellsKg, _db.Kg, "kg"));
         }
@@ -210,7 +210,7 @@ public sealed class HomeWeightsPage : ContentPage
             Paint();
             flex.Add(b);
         }
-        return new VerticalStackLayout { Spacing = 2, Children = { new Label { Text = unit, FontFamily = "PixelUI", FontSize = 18, TextColor = _accent }, flex } };
+        return new VerticalStackLayout { Spacing = 2, Children = { new Label { Text = unit, FontFamily = "Body", FontSize = 18, TextColor = _accent }, flex } };
     }
 
     private View Segmented(string[] labels, int selected, Action<int> picked)

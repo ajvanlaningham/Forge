@@ -129,6 +129,13 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
 - Exercise library seeding is gated on `GameConstants.Exercises.LibraryVersion` **alone**. Editing
   or adding a JSON file without bumping that version is a silent no-op on an existing install.
   `IExerciseLibraryImporter.ForceReseedAsync()` is the dev escape hatch.
+- **Legibility first** (Miche's review, 2026-11-13). Fonts: `Display` (Jersey 15) for titles,
+  numbers and buttons; `Body`/`BodyBold` (Nunito) for sentences; `FantasyH` only for quest titles
+  and banners. VT323 and Press Start 2P are retired. Nothing below 15sp; body text 17. Use the
+  named styles in `Styles.xaml` (`Title`, `Heading`, `BodyText`, `Caption`, `BigNumber`,
+  `PrimaryButton`, `SecondaryButton`). Each screen has one primary action; details go behind a
+  tap. Text colours must pass WCAG AA: `ContrastTests` reads `Colors.xaml`, so add any new
+  text/background pair there.
 - **Charts** are MAUI `GraphicsView` drawables: `Sparkline` (weight card, Hero stats) and
   `LineChart` (exercise history) in `ViewModels/Controls`. Microcharts and SkiaSharp were
   removed in the .NET 10 move (Microcharts was unmaintained and pinned SkiaSharp 2.x, which

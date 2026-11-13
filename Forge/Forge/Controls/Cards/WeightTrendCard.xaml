@@ -23,13 +23,13 @@
             <Grid ColumnDefinitions="*,Auto">
                 <Label
                     Text="{Binding Title}"
-                    FontSize="16"
+                    FontSize="17"
                     TextColor="{StaticResource Accent}" />
                 <Label
                     Grid.Column="1"
                     Text="▾"
-                    FontFamily="PixelUI"
-                    FontSize="16"
+                    FontFamily="Body"
+                    FontSize="17"
                     TextColor="{StaticResource Muted}"
                     Rotation="0">
                     <Label.Triggers>
@@ -46,13 +46,13 @@
             <VerticalStackLayout Spacing="2">
                 <Label
                     Text="{Binding AverageDisplay}"
-                    FontFamily="PixelH"
+                    FontFamily="Display"
                     FontSize="26"
                     TextColor="{StaticResource OnBg}" />
                 <Label
                     Text="{Binding AverageLabelText}"
-                    FontFamily="PixelUI"
-                    FontSize="12"
+                    FontFamily="Body"
+                    FontSize="15"
                     TextColor="{StaticResource Muted}"
                     IsVisible="{Binding HasData}" />
             </VerticalStackLayout>
@@ -72,13 +72,13 @@
                          Opacity="0.3" />
                 <Label
                     Text="{Binding RawDisplay}"
-                    FontFamily="PixelUI"
-                    FontSize="14"
+                    FontFamily="Body"
+                    FontSize="15"
                     TextColor="{StaticResource OnBg}" />
                 <Label
                     Text="{x:Static res:AppResources.WeightTrendCard_GoLogCta}"
-                    FontFamily="PixelUI"
-                    FontSize="14"
+                    FontFamily="Body"
+                    FontSize="15"
                     TextColor="{StaticResource Accent}"
                     TextDecorations="Underline"
                     IsVisible="{Binding NeedsLogToday}">

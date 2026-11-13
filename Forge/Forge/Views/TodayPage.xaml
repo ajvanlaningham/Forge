@@ -21,8 +21,8 @@
                     <Image Source="{Binding SpriteFile}" HeightRequest="64" WidthRequest="48" Aspect="AspectFit" />
                     <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding LevelText}" FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Accent}" />
-                            <Label Grid.Column="1" Text="{Binding XpText}" FontFamily="PixelUI" FontSize="18"
+                            <Label Text="{Binding LevelText}" FontFamily="Display" FontSize="24" TextColor="{StaticResource Accent}" />
+                            <Label Grid.Column="1" Text="{Binding XpText}" FontFamily="Body" FontSize="18"
                                    TextColor="{StaticResource Muted}" VerticalOptions="Center" />
                         </Grid>
                         <ProgressBar Progress="{Binding XpProgress}" ProgressColor="{StaticResource Aether}" HeightRequest="8" />
@@ -32,28 +32,28 @@
 
             <!-- Where you are -->
             <VerticalStackLayout Spacing="2">
-                <Label Text="{Binding DateText}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Muted}" />
-                <Label Text="{Binding QuestLine}" FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource OnBg}" LineBreakMode="WordWrap" />
+                <Label Text="{Binding DateText}" FontFamily="Body" FontSize="20" TextColor="{StaticResource Muted}" />
+                <Label Text="{Binding QuestLine}" FontFamily="Display" FontSize="24" TextColor="{StaticResource OnBg}" LineBreakMode="WordWrap" />
                 <HorizontalStackLayout Spacing="10">
-                    <Label Text="{Binding Pips}" FontSize="22" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
-                    <Label Text="{Binding PipsText}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" VerticalOptions="Center" />
+                    <Label FontFamily="Display" Text="{Binding Pips}" FontSize="22" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
+                    <Label Text="{Binding PipsText}" FontFamily="Body" FontSize="18" TextColor="{StaticResource Muted}" VerticalOptions="Center" />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 
             <!-- The one action -->
             <Button Text="{Binding ActionText}" Command="{Binding ActionCommand}" IsVisible="{Binding HasAction}"
-                    HeightRequest="72" FontFamily="PixelUI" FontSize="26" LineBreakMode="WordWrap"
+                    HeightRequest="72" FontFamily="Display" FontSize="26" LineBreakMode="WordWrap"
                     BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
             <Label Text="{Binding StatusText}" IsVisible="{Binding HasStatus}"
-                   FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center" />
-            <Label Text="{Binding PlanText}" IsVisible="{Binding HasPlan}" FontSize="14" TextColor="{StaticResource Muted}" />
+                   FontFamily="Display" FontSize="24" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding PlanText}" IsVisible="{Binding HasPlan}" FontSize="15" TextColor="{StaticResource Muted}" />
 
             <!-- A stat test on its slotted day -->
             <Border IsVisible="{Binding HasTest}" BackgroundColor="{StaticResource Surface}"
                     Stroke="{StaticResource Accent}" StrokeThickness="2" StrokeShape="RoundRectangle 10" Padding="14">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="{Binding TestTitle}" FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Accent}" />
-                    <Label Text="{Binding TestText}" FontSize="14" TextColor="{StaticResource OnBg}" />
+                    <Label Text="{Binding TestTitle}" FontFamily="Display" FontSize="24" TextColor="{StaticResource Accent}" />
+                    <Label Text="{Binding TestText}" FontSize="15" TextColor="{StaticResource OnBg}" />
                     <Button Text="Take the test" Command="{Binding TestCommand}" Margin="0,4,0,0" />
                 </VerticalStackLayout>
             </Border>
@@ -62,10 +62,10 @@
             <Border IsVisible="{Binding ShowActiveRest}" BackgroundColor="{StaticResource Surface}"
                     Stroke="{StaticResource Leaf}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="14">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="{Binding ActiveRestTitle}" FontFamily="PixelUI" FontSize="24" TextColor="{StaticResource Leaf}" />
+                    <Label Text="{Binding ActiveRestTitle}" FontFamily="Display" FontSize="24" TextColor="{StaticResource Leaf}" />
                     <Label Text="Not training today? Move a little. It keeps your streak and your perfect week."
-                           FontSize="13" TextColor="{StaticResource Muted}" />
-                    <Label Text="{Binding ActiveRestText}" FontSize="14" TextColor="{StaticResource OnBg}" />
+                           FontSize="15" TextColor="{StaticResource Muted}" />
+                    <Label Text="{Binding ActiveRestText}" FontSize="15" TextColor="{StaticResource OnBg}" />
                     <Button Text="{Binding ActiveRestButton}" Command="{Binding ToggleActiveRestCommand}" Margin="0,4,0,0" />
                 </VerticalStackLayout>
             </Border>
@@ -73,7 +73,7 @@
             <!-- Weekly conditioning -->
             <cards:WeeklyConditioningCard x:Name="ConditioningCard" />
 
-            <Label Text="{Binding StreakText}" FontFamily="PixelUI" FontSize="20"
+            <Label Text="{Binding StreakText}" FontFamily="Body" FontSize="20"
                    TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
 
             <Button Text="Start an open session" Command="{Binding StartOpenCommand}" IsVisible="{Binding CanStartOpen}" />

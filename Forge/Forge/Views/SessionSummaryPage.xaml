@@ -8,10 +8,10 @@
              Title="Session complete">
     <ScrollView>
         <VerticalStackLayout Padding="20,16" Spacing="12">
-            <Label Text="SESSION COMPLETE" FontFamily="PixelH" FontSize="18" TextColor="{StaticResource Accent}" />
-            <Label Text="{Binding Heading}" FontFamily="PixelUI" FontSize="30" TextColor="{StaticResource OnBg}" />
-            <Label Text="{Binding Stats}" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Muted}" />
-            <Label Text="{Binding XpText}" IsVisible="{Binding HasXp}" FontFamily="PixelUI" FontSize="20"
+            <Label Text="SESSION COMPLETE" FontFamily="Display" FontSize="18" TextColor="{StaticResource Accent}" />
+            <Label Text="{Binding Heading}" FontFamily="Display" FontSize="30" TextColor="{StaticResource OnBg}" />
+            <Label Text="{Binding Stats}" FontFamily="Body" FontSize="18" TextColor="{StaticResource Muted}" />
+            <Label Text="{Binding XpText}" IsVisible="{Binding HasXp}" FontFamily="Body" FontSize="20"
                    TextColor="{StaticResource Accent}" />
 
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}" Spacing="8" Margin="0,8,0,0">
@@ -25,11 +25,11 @@
                                     CommandParameter="{Binding Name}" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout>
-                                <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource OnBg}" />
+                                <Label Text="{Binding Name}" FontFamily="Display" FontSize="22" TextColor="{StaticResource OnBg}" />
                                 <Label Text="{Binding Detail}" FontFamily="GymNum" FontSize="22" TextColor="{StaticResource Muted}" />
-                                <Label Text="{Binding Records}" IsVisible="{Binding HasRecords}" FontFamily="PixelUI" FontSize="17"
+                                <Label Text="{Binding Records}" IsVisible="{Binding HasRecords}" FontFamily="Body" FontSize="17"
                                        TextColor="{StaticResource OnBg}" />
-                                <Label Text="{Binding Next}" IsVisible="{Binding HasNext}" FontFamily="PixelUI" FontSize="18"
+                                <Label Text="{Binding Next}" IsVisible="{Binding HasNext}" FontFamily="Body" FontSize="18"
                                        TextColor="{StaticResource Accent}" />
                             </VerticalStackLayout>
                         </Border>

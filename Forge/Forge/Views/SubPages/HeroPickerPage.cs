@@ -13,10 +13,10 @@ public sealed class HeroPickerPage : ContentPage
     private string _class = UserSettings.HeroClass;
 
     private readonly Image _preview = new() { HeightRequest = 230, Aspect = Aspect.AspectFit, HorizontalOptions = LayoutOptions.Center };
-    private readonly Label _name = new() { FontFamily = "PixelUI", FontSize = 30, HorizontalTextAlignment = TextAlignment.Center };
+    private readonly Label _name = new() { FontFamily = "Body", FontSize = 30, HorizontalTextAlignment = TextAlignment.Center };
     private readonly Grid _raceGrid = Tiles();
     private readonly Grid _classGrid = Tiles();
-    private readonly Button _save = new() { HeightRequest = 64, FontFamily = "PixelUI", FontSize = 24 };
+    private readonly Button _save = new() { HeightRequest = 64, FontFamily = "Body", FontSize = 24 };
 
     private readonly Color _accent = (Color)Application.Current!.Resources["Accent"];
     private readonly Color _surface = (Color)Application.Current.Resources["Surface"];
@@ -64,7 +64,7 @@ public sealed class HeroPickerPage : ContentPage
 
     private View Header(string text) => new Label
     {
-        Text = text, FontFamily = "PixelUI", FontSize = 26, TextColor = _accent, Margin = new Thickness(2, 8, 0, 0)
+        Text = text, FontFamily = "Display", FontSize = 26, TextColor = _accent, Margin = new Thickness(2, 8, 0, 0)
     };
 
     private void Render()
@@ -99,7 +99,7 @@ public sealed class HeroPickerPage : ContentPage
                     Children =
                     {
                         new Image { Source = sprite(id), HeightRequest = 84, Aspect = Aspect.AspectFit },
-                        new Label { Text = label, FontFamily = "PixelUI", FontSize = 19, HorizontalTextAlignment = TextAlignment.Center,
+                        new Label { Text = label, FontFamily = "Body", FontSize = 19, HorizontalTextAlignment = TextAlignment.Center,
                                     TextColor = on ? _accent : (Color)Application.Current!.Resources["OnBg"] }
                     }
                 }

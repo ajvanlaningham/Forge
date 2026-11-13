@@ -23,8 +23,12 @@ namespace Forge
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                    fonts.AddFont("VT323-Regular.ttf", "PixelUI");     // readable retro UI
-                    fonts.AddFont("PressStart2P-Regular.ttf", "PixelH");// chunky heading
+                    // Legibility pass (2026-11-13): Nunito for sentences, Jersey 15 for titles,
+                    // numbers and buttons. VT323 and Press Start 2P were retired. Both SIL OFL 1.1,
+                    // licences in Resources/FontLicenses/.
+                    fonts.AddFont("Nunito-Regular.ttf", "Body");       // static instance, weight 600
+                    fonts.AddFont("Nunito-Bold.ttf", "BodyBold");      // static instance, weight 800
+                    fonts.AddFont("Jersey15-Regular.ttf", "Display");
                     fonts.AddFont("MedievalSharp-Regular.ttf", "FantasyH");//Fantasy heading
                     fonts.AddFont("fa-solid-900.otf", "FA"); //Font Awesome
                     // In-gym numerals: legible at arm's length, still gamified. SIL OFL 1.1 —

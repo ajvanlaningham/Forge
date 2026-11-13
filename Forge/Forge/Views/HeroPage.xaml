@@ -18,11 +18,11 @@
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="{Binding SpriteFile}" HeightRequest="200" Aspect="AspectFit" HorizontalOptions="Center"
                        SemanticProperties.Description="Your character" />
-                <Label Text="{Binding HeroTitle}" FontFamily="PixelUI" FontSize="26" TextColor="{StaticResource OnBg}"
+                <Label Text="{Binding HeroTitle}" FontFamily="Display" FontSize="26" TextColor="{StaticResource OnBg}"
                        HorizontalTextAlignment="Center" />
-                <Label Text="tap to change" FontSize="12" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                <Label Text="tap to change" FontSize="15" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
-            <Label Text="{Binding StreakText}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Accent}"
+            <Label Text="{Binding StreakText}" FontFamily="Body" FontSize="20" TextColor="{StaticResource Accent}"
                    HorizontalTextAlignment="Center" />
 
             <cards:StatCard x:Name="Stats" />
@@ -37,12 +37,12 @@
                             </Border.GestureRecognizers>
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10">
                                 <VerticalStackLayout Spacing="2">
-                                    <Label Text="{Binding Label}" FontFamily="PixelUI" FontSize="21" TextColor="{StaticResource Accent}" />
-                                    <Label Text="{Binding DetailText}" FontSize="13" TextColor="{StaticResource Muted}" />
+                                    <Label Text="{Binding Label}" FontFamily="Body" FontSize="21" TextColor="{StaticResource Accent}" />
+                                    <Label Text="{Binding DetailText}" FontSize="15" TextColor="{StaticResource Muted}" />
                                 </VerticalStackLayout>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" HorizontalOptions="End">
                                     <Label Text="{Binding ScoreText}" FontFamily="GymNum" FontSize="34" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="End" />
-                                    <Label Text="{Binding ChangeText}" FontFamily="PixelUI" FontSize="16" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="End" />
+                                    <Label Text="{Binding ChangeText}" FontFamily="Body" FontSize="17" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="End" />
                                 </VerticalStackLayout>
                                 <GraphicsView Grid.Row="1" Grid.ColumnSpan="2" Drawable="{Binding Trend}" IsVisible="{Binding HasTrend}" HeightRequest="36" Margin="0,4,0,0" />
                             </Grid>
@@ -54,7 +54,7 @@
 
             <!-- Armoury: forged items -->
             <VerticalStackLayout Spacing="6">
-                <Label Text="Armoury" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" />
+                <Label Text="Armoury" FontFamily="Display" FontSize="28" TextColor="{StaticResource Accent}" />
                 <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}" StrokeThickness="1"
                         StrokeShape="RoundRectangle 10" Padding="14">
                     <VerticalStackLayout Spacing="10">
@@ -64,13 +64,13 @@
                                 <DataTemplate x:DataType="vm:RackItem">
                                     <VerticalStackLayout Grid.Column="{Binding Column}" Spacing="2">
                                         <Image Source="{Binding Sprite}" HeightRequest="60" Opacity="{Binding Opacity}" Aspect="AspectFit" />
-                                        <Label Text="{Binding Name}" FontFamily="PixelUI" FontSize="16" HorizontalTextAlignment="Center"
+                                        <Label Text="{Binding Name}" FontFamily="Body" FontSize="17" HorizontalTextAlignment="Center"
                                                TextColor="{StaticResource Muted}" />
                                     </VerticalStackLayout>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </Grid>
-                        <Label Text="{Binding ArmouryText}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource OnBg}" />
+                        <Label Text="{Binding ArmouryText}" FontFamily="Body" FontSize="19" TextColor="{StaticResource OnBg}" />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
@@ -78,12 +78,12 @@
             <!-- Pack: real equipment -->
             <VerticalStackLayout Spacing="6">
                 <Grid ColumnDefinitions="*,Auto">
-                    <Label Text="Pack" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
+                    <Label Text="Pack" FontFamily="Display" FontSize="28" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
                     <Button Grid.Column="1" Text="Edit gear" Command="{Binding EditPackCommand}" />
                 </Grid>
-                <Label Text="The gear you own at home. Quests and swaps use it." FontSize="13" TextColor="{StaticResource Muted}" />
+                <Label Text="The gear you own at home. Quests and swaps use it." FontSize="15" TextColor="{StaticResource Muted}" />
                 <Label Text="Nothing yet. Tap Edit gear to add what you have." IsVisible="{Binding PackEmpty}"
-                       FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource Muted}" />
+                       FontFamily="Body" FontSize="19" TextColor="{StaticResource Muted}" />
                 <FlexLayout BindableLayout.ItemsSource="{Binding Pack}" Wrap="Wrap" JustifyContent="Start">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:GearItem">
@@ -91,9 +91,9 @@
                                     Stroke="{StaticResource Accent}" StrokeThickness="1" StrokeShape="RoundRectangle 8">
                                 <VerticalStackLayout Spacing="2">
                                     <Image Source="{Binding SpriteSource}" HeightRequest="36" WidthRequest="36" Aspect="AspectFit" />
-                                    <Label Text="{Binding DisplayName}" FontSize="13" HorizontalTextAlignment="Center"
+                                    <Label Text="{Binding DisplayName}" FontSize="15" HorizontalTextAlignment="Center"
                                            LineBreakMode="TailTruncation" TextColor="{StaticResource OnBg}" />
-                                    <Label Text="{Binding Summary}" IsVisible="{Binding HasSummary}" FontFamily="GymNum" FontSize="12"
+                                    <Label Text="{Binding Summary}" IsVisible="{Binding HasSummary}" FontFamily="GymNum" FontSize="15"
                                            TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" />
                                 </VerticalStackLayout>
                             </Border>
@@ -104,9 +104,9 @@
 
             <!-- Condition: injuries and limitations (backlog) -->
             <VerticalStackLayout Spacing="4">
-                <Label Text="Condition" FontFamily="PixelUI" FontSize="28" TextColor="{StaticResource Accent}" />
+                <Label Text="Condition" FontFamily="Display" FontSize="28" TextColor="{StaticResource Accent}" />
                 <Label Text="Injuries and limitations will live here as status effects. Not built yet."
-                       FontSize="13" TextColor="{StaticResource Muted}" />
+                       FontSize="15" TextColor="{StaticResource Muted}" />
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

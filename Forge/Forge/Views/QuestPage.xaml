@@ -37,21 +37,21 @@
                             <Shadow Brush="Black" Offset="4,6" Radius="0" Opacity="0.45" />
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="YOUR QUEST" FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}" />
+                            <Label Text="YOUR QUEST" FontFamily="Body" FontSize="18" TextColor="{StaticResource Wax}" />
                             <Label Text="{Binding ProgramName}" FontFamily="FantasyH" FontSize="26"
                                    TextColor="{StaticResource Ink}" Margin="0,0,56,0" LineBreakMode="WordWrap" />
-                            <Label Text="{Binding WeekText}" FontFamily="PixelUI" FontSize="22" TextColor="{StaticResource Ink}" />
-                            <Label Text="{Binding BlockText}" FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource InkSoft}" />
+                            <Label Text="{Binding WeekText}" FontFamily="Display" FontSize="22" TextColor="{StaticResource Ink}" />
+                            <Label Text="{Binding BlockText}" FontFamily="Body" FontSize="17" TextColor="{StaticResource InkSoft}" />
                             <Label Text="{Binding WeekNote}" IsVisible="{Binding HasWeekNote}"
-                                   FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}" />
-                            <Label Text="{Binding ProgramDescription}" FontFamily="PixelUI" FontSize="17"
+                                   FontFamily="Body" FontSize="18" TextColor="{StaticResource Wax}" />
+                            <Label Text="{Binding ProgramDescription}" FontFamily="Body" FontSize="17"
                                    TextColor="{StaticResource InkSoft}" IsVisible="{Binding HasProgram, Converter={StaticResource InvertBool}}" />
 
                             <!-- Forge meter -->
                             <ProgressBar Progress="{Binding ForgeProgress}" ProgressColor="{StaticResource Wax}"
                                          BackgroundColor="{StaticResource ParchmentShade}" HeightRequest="10" Margin="0,6,0,0"
                                          IsVisible="{Binding HasProgram}" />
-                            <Label Text="{Binding ForgeText}" FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource InkSoft}"
+                            <Label Text="{Binding ForgeText}" FontFamily="Body" FontSize="17" TextColor="{StaticResource InkSoft}"
                                    IsVisible="{Binding HasProgram}" />
 
                             <BoxView HeightRequest="2" Color="{StaticResource ParchmentShade}" Margin="0,4" />
@@ -72,11 +72,11 @@
                                             </Border.Triggers>
                                             <VerticalStackLayout Spacing="2">
                                                 <Grid ColumnDefinitions="*,Auto">
-                                                    <Label Text="{Binding Header}" FontFamily="PixelUI" FontSize="21" TextColor="{StaticResource Ink}" />
+                                                    <Label Text="{Binding Header}" FontFamily="Body" FontSize="21" TextColor="{StaticResource Ink}" />
                                                     <Label Grid.Column="1" Text="{Binding StatusText}" IsVisible="{Binding HasStatus}"
-                                                           FontFamily="PixelUI" FontSize="16" TextColor="{StaticResource Wax}" VerticalOptions="Center" />
+                                                           FontFamily="Body" FontSize="17" TextColor="{StaticResource Wax}" VerticalOptions="Center" />
                                                 </Grid>
-                                                <Label Text="{Binding Summary}" FontSize="13" TextColor="{StaticResource InkSoft}" />
+                                                <Label Text="{Binding Summary}" FontSize="15" TextColor="{StaticResource InkSoft}" />
                                             </VerticalStackLayout>
                                         </Border>
                                     </DataTemplate>
@@ -85,10 +85,10 @@
 
                             <VerticalStackLayout Spacing="8" Margin="0,8,0,0">
                                 <Button Text="Repeat this block" Command="{Binding RepeatBlockCommand}" IsVisible="{Binding IsBlockComplete}"
-                                        FontFamily="PixelUI" FontSize="18" BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
+                                        FontFamily="Display" FontSize="18" BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
                                         BorderColor="Black" BorderWidth="2" CornerRadius="4" />
                                 <Button Text="Exercise library" Command="{Binding OpenLibraryCommand}"
-                                        FontFamily="PixelUI" FontSize="18" BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
+                                        FontFamily="Display" FontSize="18" BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
                                         BorderColor="Black" BorderWidth="2" CornerRadius="4" />
                             </VerticalStackLayout>
                         </VerticalStackLayout>
@@ -108,7 +108,7 @@
                         <Label Text="Quest Board" FontFamily="FantasyH" FontSize="34" TextColor="#E6E1CF"
                                HorizontalTextAlignment="Center" />
                         <Label Text="Accept a quest. Four weeks at the forge, and the item is yours. Switching ends the current block."
-                               FontFamily="PixelUI" FontSize="17" TextColor="#B8A37A" HorizontalTextAlignment="Center" />
+                               FontFamily="Body" FontSize="17" TextColor="#B8A37A" HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Border>
 
@@ -130,30 +130,30 @@
                                     </Border.Triggers>
                                     <VerticalStackLayout Spacing="6">
                                         <Label Text="{Binding ActiveText}" IsVisible="{Binding HasActiveText}"
-                                               FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Wax}"
+                                               FontFamily="Body" FontSize="18" TextColor="{StaticResource Wax}"
                                                Margin="0,0,64,0" LineBreakMode="WordWrap" />
                                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" Margin="0,0,56,0">
                                             <Image Source="{Binding ItemSprite}" IsVisible="{Binding HasItem}" WidthRequest="48" HeightRequest="48" VerticalOptions="Center" />
                                             <Label Grid.Column="1" Text="{Binding Title}" FontFamily="FantasyH" FontSize="24"
                                                    TextColor="{StaticResource Ink}" LineBreakMode="WordWrap" VerticalOptions="Center" />
                                         </Grid>
-                                        <Label Text="{Binding Discipline}" FontFamily="PixelUI" FontSize="20" TextColor="{StaticResource Wax}" />
-                                        <Label Text="{Binding Meta}" FontFamily="PixelUI" FontSize="19" TextColor="{StaticResource InkSoft}" />
+                                        <Label Text="{Binding Discipline}" FontFamily="Body" FontSize="20" TextColor="{StaticResource Wax}" />
+                                        <Label Text="{Binding Meta}" FontFamily="Body" FontSize="19" TextColor="{StaticResource InkSoft}" />
                                         <BoxView HeightRequest="2" Color="{StaticResource ParchmentShade}" Margin="0,2" />
                                         <Label Text="{Binding Description}" IsVisible="{Binding HasDescription}"
-                                               FontFamily="PixelUI" FontSize="18" TextColor="{StaticResource Ink}" />
+                                               FontFamily="Body" FontSize="18" TextColor="{StaticResource Ink}" />
                                         <Label Text="{Binding Versions}" IsVisible="{Binding HasVersions}"
-                                               FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource InkSoft}" />
+                                               FontFamily="Body" FontSize="17" TextColor="{StaticResource InkSoft}" />
                                         <Label Text="{Binding Needs}" IsVisible="{Binding HasNeeds}"
-                                               FontFamily="PixelUI" FontSize="17" TextColor="{StaticResource Wax}" />
+                                               FontFamily="Body" FontSize="17" TextColor="{StaticResource Wax}" />
                                         <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0">
-                                            <Label Text="{Binding Tier}" FontFamily="PixelUI" FontSize="17" LineBreakMode="WordWrap"
+                                            <Label Text="{Binding Tier}" FontFamily="Body" FontSize="17" LineBreakMode="WordWrap"
                                                    TextColor="{StaticResource InkSoft}" VerticalOptions="Center" />
                                             <Button Grid.Column="1" Text="{Binding ButtonText}" IsVisible="{Binding IsRumour, Converter={StaticResource InvertBool}}"
                                                     IsEnabled="{Binding CanAccept}"
                                                     Command="{Binding Source={x:Reference Page}, Path=BindingContext.AcceptCommand}"
                                                     CommandParameter="{Binding Id}"
-                                                    FontFamily="PixelUI" FontSize="20" HeightRequest="48" Padding="16,0"
+                                                    FontFamily="Display" FontSize="20" HeightRequest="48" Padding="16,0"
                                                     BackgroundColor="{StaticResource WoodDark}" TextColor="#E6E1CF"
                                                     BorderColor="Black" BorderWidth="2" CornerRadius="4" />
                                         </Grid>

@@ -38,19 +38,19 @@ public sealed class ForgingPage : ContentPage
         var title = new Label
         {
             Text = result.Forged ? "FORGED" : "THE METAL COOLED",
-            FontFamily = "PixelH", FontSize = 22, TextColor = result.Forged ? accent : muted,
+            FontFamily = "Display", FontSize = 22, TextColor = result.Forged ? accent : muted,
             HorizontalTextAlignment = TextAlignment.Center
         };
         var item = new Label
         {
-            Text = name, FontFamily = "PixelUI", FontSize = 34, TextColor = onBg, HorizontalTextAlignment = TextAlignment.Center
+            Text = name, FontFamily = "Display", FontSize = 34, TextColor = onBg, HorizontalTextAlignment = TextAlignment.Center
         };
         var body = new Label
         {
             Text = result.Forged
                 ? $"{result.DaysDone} of {result.DaysTotal} training days. It's yours, and it's on the Armoury rack."
                 : $"{result.DaysDone} of {result.DaysTotal} training days; {result.DaysNeeded} forge it. Every session still counted toward your level and your lifts. The forge is ready when you are.",
-            FontFamily = "PixelUI", FontSize = 21, TextColor = muted, HorizontalTextAlignment = TextAlignment.Center
+            FontFamily = "Body", FontSize = 21, TextColor = muted, HorizontalTextAlignment = TextAlignment.Center
         };
         _reveal.Children.Add(title);
         _reveal.Children.Add(item);
@@ -60,7 +60,7 @@ public sealed class ForgingPage : ContentPage
         var primary = new Button
         {
             Text = result.Forged ? "To the Armoury" : "Try this quest again",
-            HeightRequest = 60, FontFamily = "PixelUI", FontSize = 24, BackgroundColor = accent, TextColor = (Color)res["Bg"]
+            HeightRequest = 60, FontFamily = "Display", FontSize = 24, BackgroundColor = accent, TextColor = (Color)res["Bg"]
         };
         primary.Clicked += async (_, _) =>
         {
@@ -68,7 +68,7 @@ public sealed class ForgingPage : ContentPage
                 await _programs.StartProgramAsync(active.Definition.Id, DateOnly.FromDateTime(DateTime.Today));
             await CloseAsync(result.Forged ? "//hero" : "//today");
         };
-        var secondary = new Button { Text = "Choose the next quest", HeightRequest = 52, FontFamily = "PixelUI", FontSize = 20 };
+        var secondary = new Button { Text = "Choose the next quest", HeightRequest = 52, FontFamily = "Display", FontSize = 20 };
         secondary.Clicked += async (_, _) => await CloseAsync("//quest");
         _reveal.Children.Add(primary);
         _reveal.Children.Add(secondary);

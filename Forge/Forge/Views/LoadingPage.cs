@@ -19,7 +19,7 @@ public sealed class LoadingPage : ContentPage
     private readonly Image _anvil = new() { WidthRequest = 220, HeightRequest = 220, Aspect = Aspect.AspectFit, Source = "forge_0.png" };
     private readonly Label _line = new()
     {
-        FontFamily = "PixelUI", FontSize = 22, HorizontalTextAlignment = TextAlignment.Center,
+        FontFamily = "Body", FontSize = 22, HorizontalTextAlignment = TextAlignment.Center,
         TextColor = (Color)Application.Current!.Resources["Muted"]
     };
     private readonly Action _ready;
@@ -39,7 +39,7 @@ public sealed class LoadingPage : ContentPage
                 _anvil,
                 new Label
                 {
-                    Text = "FITNESS FORGE", FontFamily = "PixelH", FontSize = 24, HorizontalTextAlignment = TextAlignment.Center,
+                    Text = "FITNESS FORGE", FontFamily = "Display", FontSize = 24, HorizontalTextAlignment = TextAlignment.Center,
                     TextColor = (Color)Application.Current.Resources["Accent"]
                 },
                 _line

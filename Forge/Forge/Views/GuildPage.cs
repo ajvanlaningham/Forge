@@ -14,13 +14,14 @@ public sealed class GuildPage : ContentPage
 {
     private readonly IGuildService _guild;
     private readonly VerticalStackLayout _body = new() { Padding = new Thickness(20, 16), Spacing = 14 };
-    private readonly Label _status = new() { FontSize = 13, TextColor = Muted, FontFamily = "PixelUI" };
+    private readonly Label _status = new() { FontSize = 15, TextColor = Muted, FontFamily = "Body" };
     private bool _busy;
 
-    private static Color Accent => Color.FromArgb("#D4AF37");
-    private static Color Muted => Color.FromArgb("#8A8472");
-    private static Color Surface => Color.FromArgb("#161B22");
-    private static Color Rest => Color.FromArgb("#4CAF7A");
+    private static Color Res(string k) => (Color)Application.Current!.Resources[k];
+    private static Color Accent => Res("Accent");
+    private static Color Muted => Res("Muted");
+    private static Color Surface => Res("Surface");
+    private static Color Rest => Res("Leaf");
 
     public GuildPage(IGuildService guild)
     {
@@ -75,7 +76,7 @@ public sealed class GuildPage : ContentPage
     }
 
     private static Label Heading(string text, double size = 22) => new() { Text = text, FontFamily = "FantasyH", FontSize = size, TextColor = Accent };
-    private static Label Text(string text, double size = 15, Color? color = null) => new() { Text = text, FontFamily = "PixelUI", FontSize = size, TextColor = color ?? Color.FromArgb("#E6E1CF") };
+    private static Label Text(string text, double size = 15, Color? color = null) => new() { Text = text, FontFamily = "Body", FontSize = size, TextColor = color ?? Color.FromArgb("#E6E1CF") };
 
     private static Border Card(params IView[] children)
     {
@@ -93,14 +94,14 @@ public sealed class GuildPage : ContentPage
 
     private static Button Primary(string text, Func<Task> act)
     {
-        var b = new Button { Text = text, BackgroundColor = Color.FromArgb("#D4AF37"), TextColor = Color.FromArgb("#101418"), FontFamily = "PixelUI", FontSize = 18 };
+        var b = new Button { Text = text, BackgroundColor = Color.FromArgb("#D4AF37"), TextColor = Color.FromArgb("#101418"), FontFamily = "Display", FontSize = 18 };
         b.Clicked += async (_, _) => await act();
         return b;
     }
 
     private static Button Plain(string text, Func<Task> act)
     {
-        var b = new Button { Text = text, BackgroundColor = Colors.Transparent, BorderColor = Color.FromArgb("#D4AF37"), BorderWidth = 2, TextColor = Color.FromArgb("#E6E1CF"), FontFamily = "PixelUI", FontSize = 16 };
+        var b = new Button { Text = text, BackgroundColor = Colors.Transparent, BorderColor = Color.FromArgb("#D4AF37"), BorderWidth = 2, TextColor = Color.FromArgb("#E6E1CF"), FontFamily = "Display", FontSize = 17 };
         b.Clicked += async (_, _) => await act();
         return b;
     }
@@ -117,7 +118,7 @@ public sealed class GuildPage : ContentPage
             Text = _guild.DisplayName.Length > 0 ? _guild.DisplayName : "",
             Placeholder = UserSettings.HeroTitle,
             MaxLength = GuildLimits.MaxNameLength,
-            FontFamily = "PixelUI",
+            FontFamily = "Body",
         };
         _body.Children.Add(Card(Text("Your name in the guild", 13, Muted), name));
 
@@ -167,7 +168,7 @@ public sealed class GuildPage : ContentPage
         _body.Children.Add(Heading(_guild.GuildName ?? "Your guild", 26));
         var invite = new HorizontalStackLayout { Spacing = 10 };
         invite.Children.Add(Text($"Invite code: {_guild.InviteCode}", 16, Muted));
-        var share = new Button { Text = "Share", FontFamily = "PixelUI", FontSize = 14, Padding = new Thickness(10, 0), HeightRequest = 34, BackgroundColor = Colors.Transparent, BorderColor = Accent, BorderWidth = 1, TextColor = Accent };
+        var share = new Button { Text = "Share", FontFamily = "Display", FontSize = 15, Padding = new Thickness(10, 0), HeightRequest = 34, BackgroundColor = Colors.Transparent, BorderColor = Accent, BorderWidth = 1, TextColor = Accent };
         share.Clicked += async (_, _) => await Share.Default.RequestAsync(new ShareTextRequest
         {
             Title = "Join my Forge guild",
@@ -216,7 +217,7 @@ public sealed class GuildPage : ContentPage
         _body.Children.Add(Plain("Sync now", async () => { _status.Text = "Syncing…"; await SyncAsync(); }));
         _body.Children.Add(new Button
         {
-            Text = "Leave guild", BackgroundColor = Colors.Transparent, TextColor = Muted, FontFamily = "PixelUI", FontSize = 14,
+            Text = "Leave guild", BackgroundColor = Colors.Transparent, TextColor = Muted, FontFamily = "Display", FontSize = 15,
             Command = new Command(async () =>
             {
                 if (!await DisplayAlertAsync("Leave the guild?", "Bonus XP already earned stays yours. You can rejoin with the invite code.", "Leave", "Stay")) return;
@@ -244,11 +245,11 @@ public sealed class GuildPage : ContentPage
                 Spacing = 0,
                 Children =
                 {
-                    new Label { Text = "MTWTFSS"[i].ToString(), FontFamily = "PixelUI", FontSize = 12, TextColor = Muted, HorizontalTextAlignment = TextAlignment.Center },
+                    new Label { Text = "MTWTFSS"[i].ToString(), FontFamily = "Body", FontSize = 15, TextColor = Muted, HorizontalTextAlignment = TextAlignment.Center },
                     new Label
                     {
                         Text = day > today ? "·" : kind switch { GuildDayKind.Trained => "■", GuildDayKind.ActiveRest => "▲", _ => "□" },
-                        FontSize = 16, HorizontalTextAlignment = TextAlignment.Center,
+                        FontSize = 17, HorizontalTextAlignment = TextAlignment.Center,
                         TextColor = kind switch { GuildDayKind.Trained => Accent, GuildDayKind.ActiveRest => Rest, _ => Muted },
                     },
                 },
