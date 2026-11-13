@@ -150,6 +150,10 @@ public sealed partial class MapPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        // Back from a session (whose pages hide the tab bar), the page can keep its tab-less height
+        // and leave a dark band above the returning tab bar: measure again.
+        (Content as IView)?.InvalidateMeasure();
+        Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(250), () => (Content as IView)?.InvalidateMeasure());
         _vm.XpAwarded -= OnXpAwarded;
         _vm.XpAwarded += OnXpAwarded;
         try { await _vm.RefreshAsync(); }
