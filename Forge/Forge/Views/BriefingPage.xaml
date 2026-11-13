@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- The briefing before a guided session: where, what, which weights, what to gather. Nothing is
-     timed or logged until BEGIN. -->
+<!-- The briefing before a guided session (an intro screen since the legibility pass, 2026-11-13):
+     the hero, the day, two tiles, where, what to gather, BEGIN. Per-exercise weights and swaps sit
+     behind one toggle. Nothing is timed or logged until BEGIN. -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Forge.ViewModels"
@@ -10,7 +11,25 @@
     <Grid RowDefinitions="*,Auto">
         <ScrollView>
             <VerticalStackLayout Padding="16,12,16,20" Spacing="14">
-                <Label Text="{Binding Subtitle}" FontFamily="Body" FontSize="20" TextColor="{StaticResource Muted}" />
+                <Image Source="{Binding HeroSprite}" HeightRequest="110" WidthRequest="110" HorizontalOptions="Center" />
+                <Label Text="{Binding Title}" FontFamily="Display" FontSize="32" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding Subtitle}" FontFamily="Body" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+
+                <!-- Two tiles -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="8,10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding ExercisesTile}" FontFamily="GymNum" FontSize="44" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                            <Label Text="EXERCISES" FontFamily="Display" FontSize="18" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Leaf}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="8,10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding MinutesTile}" FontFamily="GymNum" FontSize="44" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center" />
+                            <Label Text="MINUTES" FontFamily="Display" FontSize="18" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
                 <!-- Where -->
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
@@ -41,8 +60,9 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- The plan -->
-                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="10">
+                <!-- The plan, behind one toggle -->
+                <Button Text="{Binding DetailsText}" Command="{Binding ToggleDetailsCommand}" Style="{StaticResource SecondaryButton}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="10" IsVisible="{Binding ShowDetails}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="vm:BriefItem">
                             <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}" StrokeThickness="1"
@@ -77,10 +97,7 @@
 
         <!-- Begin -->
         <VerticalStackLayout Grid.Row="1" Padding="16,8,16,14" Spacing="4" BackgroundColor="{StaticResource Bg}">
-            <Label Text="{Binding EstimateText}" FontFamily="Body" FontSize="18" TextColor="{StaticResource Muted}"
-                   HorizontalTextAlignment="Center" />
-            <Button Text="BEGIN" Command="{Binding BeginCommand}" HeightRequest="68" FontFamily="Display" FontSize="30"
-                    BackgroundColor="{StaticResource Accent}" TextColor="{StaticResource Bg}" />
+            <Button Text="BEGIN" Command="{Binding BeginCommand}" Style="{StaticResource PrimaryButton}" HeightRequest="76" FontSize="34" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

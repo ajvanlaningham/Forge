@@ -41,6 +41,8 @@ public class ContrastTests
     [InlineData("Aether", "Surface")]
     [InlineData("Bg", "Accent")]          // text on the primary button
     [InlineData("Gray300", "Gray600")]    // disabled button
+    [InlineData("Bg", "Aether")]          // the level-up banner
+    [InlineData("Leaf", "Surface")]       // intro and summary tiles
     public void TextColours_PassAA(string fg, string bg)
     {
         var ratio = Contrast.Ratio(Palette[fg], Palette[bg]);

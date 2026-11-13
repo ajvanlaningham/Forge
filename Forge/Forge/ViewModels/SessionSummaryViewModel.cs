@@ -42,6 +42,22 @@ namespace Forge.ViewModels
         private string _stats = "";
         public string Stats { get => _stats; private set => SetProperty(ref _stats, value); }
 
+        // The one celebration after a session (Decision 26): three tiles, the week strip, a level banner.
+        private string _minutesTile = "", _setsTile = "", _xpTile = "", _xpCaption = "XP", _weekStrip = "", _weekText = "", _levelBanner = "";
+        public string MinutesTile { get => _minutesTile; private set => SetProperty(ref _minutesTile, value); }
+        public string SetsTile { get => _setsTile; private set => SetProperty(ref _setsTile, value); }
+        public string XpTile { get => _xpTile; private set => SetProperty(ref _xpTile, value); }
+        public string XpCaption { get => _xpCaption; private set => SetProperty(ref _xpCaption, value); }
+        /// <summary>This week's training days as circles: ● done, ○ to do.</summary>
+        public string WeekStrip { get => _weekStrip; private set => SetProperty(ref _weekStrip, value); }
+        public string WeekText { get => _weekText; private set => SetProperty(ref _weekText, value); }
+        public string LevelBanner { get => _levelBanner; set { if (SetProperty(ref _levelBanner, value)) OnPropertyChanged(nameof(HasLevelBanner)); } }
+        public bool HasLevelBanner => !string.IsNullOrEmpty(LevelBanner);
+        private bool _showDetails;
+        public bool ShowDetails { get => _showDetails; set { if (SetProperty(ref _showDetails, value)) OnPropertyChanged(nameof(DetailsText)); } }
+        public string DetailsText => ShowDetails ? "HIDE DETAILS" : "SEE EVERY SET";
+        public ICommand ToggleDetailsCommand => new Command(() => ShowDetails = !ShowDetails);
+
         public SessionSummaryViewModel(ITrainingService training, IProgramService programs)
         {
             _training = training;
@@ -69,6 +85,18 @@ namespace Forge.ViewModels
                 ? $"Training day {d.DayIndex + 1} complete · +{d.Xp} XP"
                 : null;
             OnPropertyChanged(nameof(HasXp));
+
+            MinutesTile = $"{minutes}";
+            SetsTile = $"{working.Count}";
+            XpTile = day is { } dx ? $"+{dx.Xp}" : "—";
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var multiplier = await _programs.MultiplierForAsync(today);
+            XpCaption = multiplier > 1.0 ? $"XP ×{multiplier:0.0}" : "XP";
+            if (await _programs.GetViewAsync(today) is { } view)
+            {
+                WeekStrip = string.Join("  ", Enumerable.Range(0, view.DayCount).Select(i => view.DoneThisWeek.Contains(i) ? "●" : "○"));
+                WeekText = $"{view.DoneThisWeek.Count} of {view.DayCount} training days this week";
+            }
 
             var records = await _training.GetSessionRecordsAsync(sessionId);
 

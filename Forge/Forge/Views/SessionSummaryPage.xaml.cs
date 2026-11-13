@@ -21,8 +21,10 @@ public partial class SessionSummaryPage : ContentPage
         try
         {
             await _vm.LoadAsync(SessionId);
+            // A level reached in this session shows as a banner here, not as another screen.
             var progress = IPlatformApplication.Current?.Services.GetService<Forge.Services.ProgressService>();
-            if (progress is not null) await progress.CheckLevelUpAsync();
+            if (progress is not null && await progress.ClaimLevelUpAsync() is int level)
+                _vm.LevelBanner = $"LEVEL {level}!";
         }
         catch (Exception ex)
         {

@@ -42,20 +42,7 @@ namespace Forge.Services
         public async Task CheckLevelUpAsync()
         {
             if (_showing) return;
-            await _stats.InitAsync();
-            var level = GameMath.LevelFromXp((await _stats.GetUserStatsAsync()).Xp);
-            var last = Preferences.Get(LastCelebratedKey, 0);
-
-            if (last == 0 || level < last)
-            {
-                // First run, or XP was reclaimed (an undo): track the level quietly. Re-earning a
-                // level after an undo doesn't celebrate twice.
-                Preferences.Set(LastCelebratedKey, Math.Max(level, last == 0 ? level : last));
-                return;
-            }
-            if (level <= last) return;
-
-            Preferences.Set(LastCelebratedKey, level);
+            if (await ClaimLevelUpAsync() is not int level) return;
             _showing = true;
             try
             {
@@ -65,6 +52,29 @@ namespace Forge.Services
             {
                 _showing = false;
             }
+        }
+
+        /// <summary>
+        /// The level just reached, if it hasn't been celebrated yet, marked as celebrated; else null.
+        /// The session summary shows it as a banner (celebration budget, Decision 26) instead of
+        /// the full-screen moment.
+        /// </summary>
+        public async Task<int?> ClaimLevelUpAsync()
+        {
+            await _stats.InitAsync();
+            var level = GameMath.LevelFromXp((await _stats.GetUserStatsAsync()).Xp);
+            var last = Preferences.Get(LastCelebratedKey, 0);
+
+            if (last == 0 || level < last)
+            {
+                // First run, or XP was reclaimed (an undo): track the level quietly. Re-earning a
+                // level after an undo doesn't celebrate twice.
+                Preferences.Set(LastCelebratedKey, Math.Max(level, last == 0 ? level : last));
+                return null;
+            }
+            if (level <= last) return null;
+            Preferences.Set(LastCelebratedKey, level);
+            return level;
         }
     }
 }

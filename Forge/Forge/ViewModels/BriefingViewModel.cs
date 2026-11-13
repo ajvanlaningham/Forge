@@ -96,6 +96,18 @@ namespace Forge.ViewModels
         private string _subtitle = "";
         public string Subtitle { get => _subtitle; private set => SetProperty(ref _subtitle, value); }
 
+        // The intro's two tiles (legibility pass, 2026-11-13).
+        private string _minutesTile = "";
+        public string MinutesTile { get => _minutesTile; private set => SetProperty(ref _minutesTile, value); }
+        private string _exercisesTile = "";
+        public string ExercisesTile { get => _exercisesTile; private set => SetProperty(ref _exercisesTile, value); }
+        private bool _showDetails;
+        /// <summary>The per-exercise list (weights, swaps, warm-ups) sits behind "Adjust weights".</summary>
+        public bool ShowDetails { get => _showDetails; set { if (SetProperty(ref _showDetails, value)) OnPropertyChanged(nameof(DetailsText)); } }
+        public string DetailsText => ShowDetails ? "HIDE DETAILS" : "ADJUST WEIGHTS & DETAILS";
+        public ICommand ToggleDetailsCommand => new Command(() => ShowDetails = !ShowDetails);
+        public string HeroSprite => UserSettings.HeroSpriteFile;
+
         public ICommand HomeCommand { get; }
         public ICommand GymCommand { get; }
         public ICommand BeginCommand { get; }
@@ -191,6 +203,8 @@ namespace Forge.ViewModels
             var steps = Steps();
             var minutes = GuidedSupport.EstimateMinutes(steps, i => (_plan.Exercises[i].PlannedReps, _plan.Exercises[i].PlannedSeconds, GuidedSupport.PerSide(_plan.Exercises[i].Info)));
             EstimateText = $"About {minutes} min · {steps.Count} sets";
+            MinutesTile = $"~{minutes}";
+            ExercisesTile = $"{_plan.Exercises.Count}";
         }
 
         private IReadOnlyList<GuidedStep> Steps()

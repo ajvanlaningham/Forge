@@ -98,6 +98,15 @@ namespace Forge.ViewModels
         public string ClockText { get => _clockText; private set => SetProperty(ref _clockText, value); }
         private double _clockProgress;
         public double ClockProgress { get => _clockProgress; private set => SetProperty(ref _clockProgress, value); }
+
+        // The ring around the countdown and the day's health bar (user, 2026-11-13).
+        private IDrawable _ring = Controls.RingTimer.Empty;
+        public IDrawable Ring { get => _ring; private set => SetProperty(ref _ring, value); }
+        private IDrawable _health = Controls.HealthBar.Empty;
+        public IDrawable Health { get => _health; private set => SetProperty(ref _health, value); }
+        private string _foeText = "";
+        /// <summary>"Upper A — heavy · 62%": the day as a foe and its health left.</summary>
+        public string FoeText { get => _foeText; private set => SetProperty(ref _foeText, value); }
         private bool _isGetReady;
         public bool IsGetReady { get => _isGetReady; private set => SetProperty(ref _isGetReady, value); }
         private bool _isPaused;
@@ -217,6 +226,18 @@ namespace Forge.ViewModels
                 UserSettings.DefaultRestSeconds);
             _pos = GuidedPlan.Position(_steps, i => (_exercises[i].Sets.Count(s => s.IsWarmup), _exercises[i].Sets.Count(s => !s.IsWarmup)));
             StepText = $"Set {Math.Min(_pos + 1, _steps.Count)} of {_steps.Count}";
+            UpdateHealth();
+        }
+
+        private void UpdateHealth()
+        {
+            if (_snap is null) return;
+            var progress = _snap.Exercises.OrderBy(e => e.Row.Position)
+                .Select(e => new ExerciseProgress(e.Row.TargetSets ?? 3, e.Sets.Count(x => !x.IsWarmup), e.Row.Skipped)).ToList();
+            Health = new Controls.HealthBar(SessionProgress.Segments(progress));
+            var left = SessionProgress.Remaining(progress);
+            var foe = (_snap.Session.Title ?? "Session").Split(" · ").Last();
+            FoeText = left <= 0 ? $"{foe} · vanquished!" : $"{foe} · {Math.Ceiling(left * 100):0}%";
         }
 
         // ------------------------------------------------------------------ targets
@@ -408,10 +429,13 @@ namespace Forge.ViewModels
 
         // ------------------------------------------------------------------ the clock
 
+        private static Color Accent => (Color)Application.Current!.Resources["Accent"];
+        private static Color Leaf => (Color)Application.Current!.Resources["Leaf"];
+
         public void StartClock()
         {
             _timer ??= Application.Current!.Dispatcher.CreateTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(250);
+            _timer.Interval = TimeSpan.FromMilliseconds(100); // smooth enough for the draining ring
             _timer.Tick -= OnTick;
             _timer.Tick += OnTick;
             _timer.Start();
@@ -435,6 +459,9 @@ namespace Forge.ViewModels
                 var left = _workPausedSeconds ?? (int)Math.Ceiling(((_workEndsUtc ?? DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds);
                 ClockText = Format(Math.Max(0, left));
                 ClockProgress = 1.0 - (double)Math.Max(0, left) / _workTotal;
+                var exact = _workPausedSeconds ?? Math.Max(0, ((_workEndsUtc ?? DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds);
+                Ring = new Controls.RingTimer(exact / Math.Max(1, _workTotal), Accent,
+                    _sideSeconds > 0 ? (double)_sideSeconds / _workTotal : null);
                 if (_sideSeconds > 0)
                 {
                     var side = GuidedPlan.SideAt(_workTotal - Math.Max(0, left), _sideSeconds);
@@ -457,6 +484,8 @@ namespace Forge.ViewModels
                 var left = _restPausedSeconds ?? (int)Math.Ceiling(((_restEndsUtc ?? DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds);
                 ClockText = Format(Math.Max(0, left));
                 ClockProgress = 1.0 - (double)Math.Max(0, left) / _restTotal;
+                var exactRest = _restPausedSeconds ?? Math.Max(0, ((_restEndsUtc ?? DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds);
+                Ring = new Controls.RingTimer(exactRest / Math.Max(1, _restTotal), left <= 10 ? Accent : Leaf);
                 IsGetReady = left <= GetReadySeconds;
                 Caption = IsGetReady ? "GET READY!" : "REST";
                 // 3-2-1, then go.

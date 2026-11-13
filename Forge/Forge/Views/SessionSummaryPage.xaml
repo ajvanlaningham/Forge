@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- After a session: the one celebration (Decision 26). Three tiles, the week strip, a level-up banner
+     when one happened, and DONE back to the map. Every set and "next time" sit behind one toggle. -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Forge.ViewModels"
@@ -6,38 +8,71 @@
              x:DataType="vm:SessionSummaryViewModel"
              x:Name="Page"
              Title="Session complete">
-    <ScrollView>
-        <VerticalStackLayout Padding="20,16" Spacing="12">
-            <Label Text="SESSION COMPLETE" FontFamily="Display" FontSize="18" TextColor="{StaticResource Accent}" />
-            <Label Text="{Binding Heading}" FontFamily="Display" FontSize="30" TextColor="{StaticResource OnBg}" />
-            <Label Text="{Binding Stats}" FontFamily="Body" FontSize="18" TextColor="{StaticResource Muted}" />
-            <Label Text="{Binding XpText}" IsVisible="{Binding HasXp}" FontFamily="Body" FontSize="20"
-                   TextColor="{StaticResource Accent}" />
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView>
+            <VerticalStackLayout Padding="20,16" Spacing="16">
+                <Label Text="VANQUISHED!" FontFamily="Display" FontSize="40" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding Heading}" FontFamily="Display" FontSize="26" TextColor="{StaticResource OnBg}" HorizontalTextAlignment="Center" />
 
-            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}" Spacing="8" Margin="0,8,0,0">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="vm:SummaryLine">
-                        <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}"
-                                StrokeShape="RoundRectangle 8" Padding="12,8">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.OpenExerciseCommand}"
-                                    CommandParameter="{Binding Name}" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Name}" FontFamily="Display" FontSize="22" TextColor="{StaticResource OnBg}" />
-                                <Label Text="{Binding Detail}" FontFamily="GymNum" FontSize="22" TextColor="{StaticResource Muted}" />
-                                <Label Text="{Binding Records}" IsVisible="{Binding HasRecords}" FontFamily="Body" FontSize="17"
-                                       TextColor="{StaticResource OnBg}" />
-                                <Label Text="{Binding Next}" IsVisible="{Binding HasNext}" FontFamily="Body" FontSize="18"
-                                       TextColor="{StaticResource Accent}" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
+                <!-- Level up, as a banner rather than another screen -->
+                <Border IsVisible="{Binding HasLevelBanner}" BackgroundColor="{StaticResource Aether}" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 14" Padding="14,10">
+                    <Label Text="{Binding LevelBanner}" FontFamily="Display" FontSize="28" TextColor="{StaticResource Bg}" HorizontalTextAlignment="Center" />
+                </Border>
+
+                <!-- Three tiles -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                    <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Leaf}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="6,10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding MinutesTile}" FontFamily="GymNum" FontSize="44" TextColor="{StaticResource Leaf}" HorizontalTextAlignment="Center" />
+                            <Label Text="MINUTES" FontFamily="Display" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Danger}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="6,10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding SetsTile}" FontFamily="GymNum" FontSize="44" TextColor="{StaticResource Danger}" HorizontalTextAlignment="Center" />
+                            <Label Text="SETS" FontFamily="Display" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="2" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Accent}" StrokeThickness="2" StrokeShape="RoundRectangle 14" Padding="6,10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding XpTile}" FontFamily="GymNum" FontSize="44" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding XpCaption}" FontFamily="Display" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- The week -->
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="{Binding WeekStrip}" FontFamily="Body" FontSize="40" TextColor="{StaticResource Accent}" HorizontalTextAlignment="Center" />
+                    <Label Text="{Binding WeekText}" FontFamily="Body" FontSize="17" TextColor="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <Button Text="{Binding DetailsText}" Command="{Binding ToggleDetailsCommand}" Style="{StaticResource SecondaryButton}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}" Spacing="8" IsVisible="{Binding ShowDetails}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SummaryLine">
+                            <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Muted}"
+                                    StrokeShape="RoundRectangle 10" Padding="12,8">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={x:Reference Page}, Path=BindingContext.OpenExerciseCommand}"
+                                        CommandParameter="{Binding Name}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontFamily="Display" FontSize="22" TextColor="{StaticResource OnBg}" />
+                                    <Label Text="{Binding Detail}" FontFamily="GymNum" FontSize="22" TextColor="{StaticResource Muted}" />
+                                    <Label Text="{Binding Records}" IsVisible="{Binding HasRecords}" FontFamily="Body" FontSize="17"
+                                           TextColor="{StaticResource OnBg}" />
+                                    <Label Text="{Binding Next}" IsVisible="{Binding HasNext}" FontFamily="Body" FontSize="17"
+                                           TextColor="{StaticResource Accent}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
             </VerticalStackLayout>
-
-            <Button Text="Done" Clicked="OnDone" HeightRequest="56" Margin="0,12,0,20" />
-        </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+        <Button Grid.Row="1" Text="DONE" Clicked="OnDone" Style="{StaticResource PrimaryButton}" HeightRequest="76" FontSize="34" Margin="16,8,16,16" />
+    </Grid>
 </ContentPage>
