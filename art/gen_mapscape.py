@@ -467,32 +467,43 @@ WEEKS = {  # face, light, dark, fold (the ribbon's underside)
 
 
 BAND_ROWS = 20  # the app draws the band 80 dp tall (4 dp per pixel); the tails are drawn to match
+TAIL_W, TAIL_H = 14, 28
 
 
-def ribbon_tail():
-    """The left tail of the week banner, 14 x 26. The band (drawn in the app) overlaps its inner
-    two columns for the top 20 rows; the tail hangs 6 rows lower, behind the band, joined to it by
-    the dark underside of the fold, and ends in a swallowtail notch."""
-    w, drop = 14, 6
-    h = BAND_ROWS + drop
+def ribbon_tail(drop, lift, notch, curl):
+    """The left tail of the week banner, TAIL_W x TAIL_H. The band (drawn in the app) overlaps
+    the inner two columns for its top BAND_ROWS rows. The tail hangs `drop` rows lower behind the
+    band and slants up by `lift` rows towards its swallowtail (`notch` deep). Where it turns back
+    under the band, its underside shows as a curved fold `curl` pixels wide, rounding away from
+    the band's bottom corner rather than stepping square."""
+    w, h = TAIL_W, TAIL_H
+    depth = BAND_ROWS - 2  # the tail is a little narrower than the band
     g = Grid(w, h)
-    for y in range(drop, h - 1):  # the last row is left for the pen line
-        k = y - drop
-        rows = h - 1 - drop
-        notch = 1 + 5 - abs(k - (rows - 1) / 2) * 5 / ((rows - 1) / 2)
-        for x in range(w):
-            if x < round(notch):
+
+    def top(x):  # the outer end rides higher
+        return drop - lift * (w - 1 - x) / (w - 1)
+
+    for x in range(w):
+        for y in range(h - 1):
+            k = y - top(x)
+            if not 0 <= k < depth:
                 continue
-            c = '2' if k == 0 else '3' if k >= rows - 3 else '1'
-            if x >= w - 3:
-                c = '3'  # the tail darkens as it runs behind the band
+            v = notch * (1 - abs(k - (depth - 1) / 2) / ((depth - 1) / 2))  # the V cut
+            if x < 1 + v:
+                continue
+            c = '2' if k < 1 else '3' if k >= depth - 2 else '1'
+            if x >= w - 3 - (1 if k > depth / 2 else 0):
+                c = '3'  # in the band's shadow
             g.put(x, y, c)
-    # the fold: the ribbon's underside showing where the tail turns up behind the band
-    # under the band's end, widening down and away from it, like ribbon turning back on itself
-    for y in range(BAND_ROWS, h - 1):
-        for x in range(w - 6, w):
-            if x >= (w - 2) - (y - BAND_ROWS):
-                g.put(x, y, '4')
+    # The fold: a quarter-round of the ribbon's underside, from the band's bottom corner down to
+    # the tail's lower edge, lit along its curve so it reads as cloth turning, not a notch.
+    bottom = int(top(w - 1) + depth)
+    for y in range(BAND_ROWS, bottom + 1):
+        t = (y - BAND_ROWS) / max(1, bottom - BAND_ROWS)
+        reach = curl * (1 - (1 - t) ** 2) ** 0.5   # widens fast, then rounds off
+        edge = (w - 2) - round(reach)
+        for x in range(edge, w):
+            g.put(x, y, '2' if x == edge and t < 0.85 else '4')
     out = Grid(w, h)
     out.paste(g, 0, 0)
     for y in range(h):
@@ -548,13 +559,14 @@ def main():
         '    public static readonly IReadOnlyDictionary<string, (int W, int H)> Size = new Dictionary<string, (int W, int H)>\n'
         '    {\n' + sizes + '\n    };\n}\n')
     write('map_paper', paper(), PAPER)
-    tail = ribbon_tail()
+    # Not mirror images: a hand-tied banner never hangs quite evenly.
+    left = ribbon_tail(drop=6, lift=2, notch=5, curl=4)
+    right = ribbon_tail(drop=5, lift=3, notch=4, curl=3)
+    right.g = [row[::-1] for row in right.g]
     for w, (face, light, dark, fold) in WEEKS.items():
         cols = {'1': face, '2': light, '3': dark, '4': fold}
-        write(f'map_ribbon_w{w}_l', tail, cols)
-        flipped = Grid(tail.w, tail.h)
-        flipped.g = [row[::-1] for row in tail.g]
-        write(f'map_ribbon_w{w}_r', flipped, cols)
+        write(f'map_ribbon_w{w}_l', left, cols)
+        write(f'map_ribbon_w{w}_r', right, cols)
     print(f'wrote {len(pieces)} scenery pieces, the paper and 8 ribbon tails')
 
 

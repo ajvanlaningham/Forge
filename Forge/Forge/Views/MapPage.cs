@@ -46,8 +46,8 @@ public sealed partial class MapPage : ContentPage
     private readonly VerticalStackLayout _path = new() { Padding = new Thickness(0, TopPad, 0, 40), Spacing = 0 };
     private readonly GraphicsView _trailView = new() { InputTransparent = true };
     private readonly MapDrawable _trail = new();
-    private readonly Image _ribbonLeft = new() { WidthRequest = 56, HeightRequest = 104, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
-    private readonly Image _ribbonRight = new() { WidthRequest = 56, HeightRequest = 104, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
+    private readonly Image _ribbonLeft = new() { WidthRequest = 56, HeightRequest = 112, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
+    private readonly Image _ribbonRight = new() { WidthRequest = 56, HeightRequest = 112, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
     // The banner floats over the top of the map, so the path starts below it.
     private const double TopPad = 118, DividerHeight = 64, Swing = 88;
     // Fantasy-map dressing: the path is inked on parchment, and each week is a region with its scenery.
@@ -373,10 +373,11 @@ public sealed partial class MapPage : ContentPage
         grid.Add(new Label
         {
             Text = glyph, FontFamily = "FA", FontSize = 30, TranslationY = -10,
-            TextColor = node.State is MapNodeState.Done or MapNodeState.Current ? Cream : Color.FromArgb("#9AA3AF"),
+            // Painted stones carry a cream glyph; the inked sketches of days ahead, an ink one.
+            TextColor = node.State is MapNodeState.Done or MapNodeState.Current ? Cream : InkSoft,
             HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center
         });
-        if (node.State == MapNodeState.Passed) grid.Opacity = 0.6;
+        if (node.State == MapNodeState.Passed) grid.Opacity = 0.7;
         return grid;
     }
 

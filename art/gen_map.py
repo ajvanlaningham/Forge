@@ -18,8 +18,12 @@ STONES = {
     'map_stone_w2': ('#3F7A3A', '#6FA85F', '#28501F'),   # Tempering: moss
     'map_stone_w3': ('#2A6496', '#5A93C4', '#1A4266'),   # Quenching: river
     'map_stone_w4': ('#8A6A12', '#C9A43A', '#5C470B'),   # Honing: gold
-    'map_stone_ahead': ('#3A4350', '#56606E', '#262C35'),
-    'map_stone_passed': ('#2A3038', '#3A424C', '#1C2026'),
+}
+# Days not yet reached (or passed by) are sketched in ink on the map rather than painted: a pale
+# face, an ink pen line, hatching on the side and a parchment shadow (2026-11-13).
+INKED = {
+    'map_stone_ahead': ('#EDE3C8', '#F7F1E0', '#CBB78E'),
+    'map_stone_passed': ('#DDD3BC', '#E8E0CC', '#BBAD90'),
 }
 
 W, H = 34, 30
@@ -219,10 +223,29 @@ def write(name, rows, colours=None):
     (OUT / f'{name}.txt').write_text(head + '\n'.join(rows) + '\n')
 
 
+def inked(rows):
+    """A stone redrawn as a sketch: ink outline, hatched side, a soft parchment shadow."""
+    out = []
+    for y, row in enumerate(rows):
+        line = ''
+        for x, ch in enumerate(row):
+            if ch == 'A':
+                ch = 'w'
+            elif ch == 'E':
+                ch = 'q'
+            elif ch == '3' and (x + y) % 3 == 0:
+                ch = 'w'
+            line += ch
+        out.append(line)
+    return out
+
+
 def main():
     rows = stone()
     for name, (face, light, dark) in STONES.items():
         write(name, rows, {'1': face, '2': light, '3': dark})
+    for name, (face, light, dark) in INKED.items():
+        write(name, inked(rows), {'1': face, '2': light, '3': dark})
     write('map_campfire', CAMPFIRE.splitlines())
     write('map_chest', CHEST_SHUT.splitlines())
     write('map_chest_open', CHEST_OPEN.splitlines())
