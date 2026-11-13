@@ -49,14 +49,14 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     rest). Each consecutive perfect week keeps a ×1.2 multiplier on the following week's XP; a
     miss resets it to ×1.0, nothing is taken away. Possible later: a once-per-block "sick week"
     freeze so the bonus never tempts training while ill.
-17. **Quests: metal × item × discipline** (2026-11-11). A quest is the identity — e.g.
+17. *(Superseded by 25.)* **Quests: metal × item × discipline** (2026-11-11). A quest is the identity — e.g.
     **Copper Helm · Hearth** — and forges that item. Metal = tier (Copper → Bronze → Iron → Steel
     → Damascus → Mithril → Starmetal). Discipline = goal: Hearth (balanced, forges defence),
     Anvil (strength, forges weapons), Bellows (conditioning, forges light gear). Weeks are named
     for the process: Kindling, Tempering, Quenching, Honing (the light/test week). Quests come in
     **versions** — implement (Kettlebell / Dumbbell / Gym) × schedule (3 or 4 days); the board
     shows one notice per quest and asks for the version, sorted by what's in My Gear.
-18. **Forging** (confirmed by the user 2026-11-11): a block forges its item if ≥ 75% of its
+18. *(Superseded by 25.)* **Forging** (confirmed by the user 2026-11-11): a block forges its item if ≥ 75% of its
     training days were completed — judged **at the end of the block**, and the gear unlocks
     only then (hitting 75% early unlocks nothing). Perfect weeks are a bonus, not a requirement.
     Every version (kettlebell, dumbbell, barbell/gym…) forges the same item. Tiers unlock in
@@ -85,7 +85,7 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     - **Chronicle**: looking back — session history, weigh-ins (Check-in), trends.
     - **Settings** is a cog in the top bar, not a tab.
     - **Guild** returns later as the multi-user / friends tab.
-22. **Forged items fit the hero** (agreed with the user 2026-11-11; amends 17 and 18). Each of
+22. *(Superseded by 25; the per-hero art still applies.)* **Forged items fit the hero** (agreed with the user 2026-11-11; amends 17 and 18). Each of
     the 36 heroes has its own three pieces, taken from what it already wears and carries:
     **Anvil** = the weapon in hand (the archmage's staff, the dwarf's axe), **Hearth** = the
     defensive piece (shield, hat, hood, tome, wraps), **Bellows** = light gear (boots by default;
@@ -136,6 +136,21 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     2026-11-12:** `Forge.Server` on nidavellir (tailnet-only until Funnel), Guild tab, guild XP
     via `GuildRewardRow`, Settings → off-phone backup, restore from nidavellir in Settings and
     onboarding.
+25. **One quest, one forging; you choose what** (agreed with the user 2026-11-13; replaces
+    17, 18 and 22). Disciplines carry no penalty or gating: a discipline only describes what a
+    quest trains (Anvil strength, Hearth balanced, Bellows conditioning). **Quests no longer
+    carry a metal or an item**; they are named for the plan ("Four-Day Home Split"), so
+    `ProgramDefinition.Epithet` becomes unnecessary. **Reward:** finishing a quest with ≥ 75%
+    of its training days done (pass/fail, unchanged) earns **one forging**. The player picks
+    one of **five slots** and forges it one metal up (Copper → Bronze → Iron → Steel → Damascus
+    → Mithril → Starmetal); each slot climbs on its own, with no tier gate. 5 slots × 7 metals
+    = 35 forgings to max out. Each slot offers a few **forms** per hero (shield / buckler /
+    tome), chosen at forging and changeable later. Gear becomes a record of quests finished,
+    which fits "levels measure consistency". No gold or shop for now; cosmetic purchases can
+    come later without touching forging. Optional, later: a cosmetic rune or tint marking the
+    discipline a piece was forged in. **Open:** which five slots (likely weapon, off-hand,
+    head, body, feet), and drawing the two extra slots for the 36 heroes (Decision 22 drew
+    three per hero).
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
