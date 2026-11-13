@@ -43,6 +43,8 @@ public class ContrastTests
     [InlineData("Gray300", "Gray600")]    // disabled button
     [InlineData("Bg", "Aether")]          // the level-up banner
     [InlineData("Leaf", "Surface")]       // intro and summary tiles
+    [InlineData("Ink", "Parchment")]      // the map and the quest scrolls
+    [InlineData("InkSoft", "Parchment")]
     public void TextColours_PassAA(string fg, string bg)
     {
         var ratio = Contrast.Ratio(Palette[fg], Palette[bg]);

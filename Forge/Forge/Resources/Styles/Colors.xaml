@@ -8,6 +8,10 @@
 
     <!-- Retro dungeon palette -->
     <Color x:Key="Bg">#101418</Color>
+    <!-- The map and the quest scrolls: parchment with ink on it -->
+    <Color x:Key="Parchment">#D9C9A3</Color>
+    <Color x:Key="Ink">#2B1D14</Color>
+    <Color x:Key="InkSoft">#5A4330</Color>
     <!-- deep dungeon slate -->
     <Color x:Key="Surface">#161B22</Color>
     <!-- panels/cards -->

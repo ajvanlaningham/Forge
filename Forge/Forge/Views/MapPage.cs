@@ -39,12 +39,12 @@ public sealed class MapPage : ContentPage
     private readonly ScrollView _scroll = new();
     private readonly VerticalStackLayout _path = new() { Padding = new Thickness(0, TopPad, 0, 40), Spacing = 0 };
     private readonly GraphicsView _trailView = new() { InputTransparent = true };
-    private readonly TrailDrawable _trail = new();
+    private readonly MapDrawable _trail = new();
     private readonly Image _ribbonLeft = new() { WidthRequest = 36, HeightRequest = 72, Aspect = Aspect.Fill };
     private readonly Image _ribbonRight = new() { WidthRequest = 36, HeightRequest = 72, Aspect = Aspect.Fill };
     private const double TopPad = 16, DividerHeight = 64, Swing = 88;
-    // Fantasy-map dressing: the map is warmer than the app's slate, and each week has its scenery.
-    private static readonly Color MapGround = Color.FromArgb("#15130F");
+    // Fantasy-map dressing: the path is inked on parchment, and each week is a region with its scenery.
+    private static readonly Color MapGround = Color.FromArgb("#D9C9A3"), Ink = Color.FromArgb("#2B1D14"), InkSoft = Color.FromArgb("#5A4330");
     private static readonly string[][] Scenery =
     {
         new[] { "map_embers.png", "map_pine.png" },
@@ -183,26 +183,28 @@ public sealed class MapPage : ContentPage
         _sections.Clear();
         _currentView = null;
         _trail.Points.Clear();
+        _trail.Regions.Clear();
         _y = TopPad;
 
         var quest = _vm.Quest;
         if (quest is null || _vm.Nodes.Count == 0)
         {
             _bannerRow!.IsVisible = false;
-            _path.Children.Add(Centered(new Label { Text = "No quest yet", FontFamily = "Display", FontSize = 30, TextColor = _onBg, HorizontalTextAlignment = TextAlignment.Center }));
-            _path.Children.Add(Centered(Caption("Pick a four-week plan to put a path on this map.")));
+            _path.Children.Add(Centered(new Label { Text = "No quest yet", FontFamily = "Display", FontSize = 30, TextColor = Ink, HorizontalTextAlignment = TextAlignment.Center }));
+            _path.Children.Add(Centered(new Label { Text = "Pick a four-week plan to put a path on this map.", FontFamily = "Body", FontSize = 17, TextColor = InkSoft, HorizontalTextAlignment = TextAlignment.Center }));
             _path.Children.Add(Padded(Primary("CHOOSE A QUEST", async () => await Shell.Current.GoToAsync(nameof(QuestPage)))));
             return;
         }
 
         _bannerRow!.IsVisible = true;
         // A compass rose where the trail begins.
-        _path.Children.Add(new Image { Source = "map_compass.png", WidthRequest = 72, HeightRequest = 72, HorizontalOptions = LayoutOptions.End, Margin = new Thickness(0, 0, 28, -40), Opacity = 0.85 });
+        _path.Children.Add(new Image { Source = "map_compass.png", WidthRequest = 72, HeightRequest = 72, HorizontalOptions = LayoutOptions.End, Margin = new Thickness(0, 0, 28, -40) });
         _y += 72 - 40;
         var index = 0;
         for (var week = 1; week <= ProgramDefinition.WeeksPerBlock; week++)
         {
             var section = new VerticalStackLayout { Spacing = 0 };
+            _trail.Regions.Add(((float)(week == 1 ? 0 : _y), WeekColours[week - 1]));
             if (week > 1)
             {
                 section.Children.Add(Divider($"WEEK {week} · {ProgramDefinition.WeekName(week).ToUpperInvariant()}", WeekColours[week - 1]));
@@ -219,7 +221,6 @@ public sealed class MapPage : ContentPage
             _sections.Add((week, section));
         }
         _path.Children.Add(NodeRow(_vm.Nodes[^1], index));
-        _trailView.HeightRequest = _y + 40;
         _trailView.Invalidate();
         if (_vm.BlockComplete)
             _path.Children.Add(Padded(Primary("CHOOSE YOUR NEXT QUEST", async () => await Shell.Current.GoToAsync(nameof(QuestPage)))));
@@ -295,7 +296,7 @@ public sealed class MapPage : ContentPage
         {
             var bubble = new Border
             {
-                BackgroundColor = _onBg, StrokeThickness = 0, Padding = new Thickness(14, 6),
+                BackgroundColor = Cream, Stroke = Ink, StrokeThickness = 2, Padding = new Thickness(14, 6),
                 StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Start, TranslationX = x,
                 Content = new Label { Text = _vm.InProgressTitle is null ? "START" : "RESUME", FontFamily = "Display", FontSize = 22, TextColor = WeekColours[node.Week - 1] }
@@ -328,7 +329,7 @@ public sealed class MapPage : ContentPage
         var label = new Label
         {
             Text = done ? "REST DONE ✓" : "REST DAY", FontFamily = "Display", FontSize = 20,
-            TextColor = done ? _muted : _accent, HorizontalTextAlignment = TextAlignment.Center
+            TextColor = done ? InkSoft : Ink, HorizontalTextAlignment = TextAlignment.Center
         };
         var stack = new VerticalStackLayout
         {
@@ -351,7 +352,7 @@ public sealed class MapPage : ContentPage
         var side = x > 10 ? -1 : 1;
         row.Add(new Image
         {
-            Source = set[index / 2 % set.Length], WidthRequest = 80, HeightRequest = 70, Opacity = 0.95,
+            Source = set[index / 2 % set.Length], WidthRequest = 80, HeightRequest = 70,
             HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center,
             TranslationX = side * (Swing + 70) * 0.9
         });
@@ -600,11 +601,24 @@ public sealed class MapPage : ContentPage
         Content = new Label { Text = text, FontFamily = "Body", FontSize = 17, TextColor = colour }
     };
 
-    private View Divider(string text, Color colour) => new Border
+    private static Color Blend(Color under, Color over, float alpha) => Color.FromRgb(
+        under.Red + (over.Red - under.Red) * alpha, under.Green + (over.Green - under.Green) * alpha, under.Blue + (over.Blue - under.Blue) * alpha);
+
+    /// <summary>A region's name lettered across the map between two strokes of its colour.</summary>
+    private static View Divider(string text, Color colour)
     {
-        StrokeThickness = 0, BackgroundColor = Colors.Transparent, Padding = new Thickness(0, 18, 0, 6), HeightRequest = DividerHeight,
-        Content = new Label { Text = text, FontFamily = "Display", FontSize = 22, TextColor = Color.FromRgba(colour.Red * 0.5 + 0.5, colour.Green * 0.5 + 0.5, colour.Blue * 0.5 + 0.5, 1), HorizontalTextAlignment = TextAlignment.Center }
-    };
+        var grid = new Grid
+        {
+            HeightRequest = DividerHeight, Padding = new Thickness(28, 18, 28, 6), ColumnSpacing = 12,
+            ColumnDefinitions = { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Star) }
+        };
+        grid.Add(new BoxView { Color = colour, HeightRequest = 3, VerticalOptions = LayoutOptions.Center }, 0);
+        // The lettering sits on its own patch of the region's paper, so the trail passes behind it.
+        var paper = Blend(MapGround, colour, MapDrawable.RegionWash);
+        grid.Add(new Label { Text = text, FontFamily = "Display", FontSize = 24, TextColor = Ink, VerticalOptions = LayoutOptions.Center, BackgroundColor = paper, Padding = new Thickness(8, 2) }, 1);
+        grid.Add(new BoxView { Color = colour, HeightRequest = 3, VerticalOptions = LayoutOptions.Center }, 2);
+        return grid;
+    }
 
     private Button Primary(string text, Func<Task> act)
     {
@@ -678,19 +692,80 @@ public sealed class MapPage : ContentPage
 }
 
 /// <summary>The dashed ink trail between the map's stops, like a route on a treasure map.</summary>
-internal sealed class TrailDrawable : IDrawable
+/// <summary>
+/// The map itself: parchment with age stains, a faint graticule, a wash per week's region, burnt
+/// edges and a ruled frame, with the trail inked over it. Deterministic, so it never shimmers.
+/// </summary>
+internal sealed class MapDrawable : IDrawable
 {
+    private static readonly Color Paper = Color.FromArgb("#D9C9A3"), Stain = Color.FromArgb("#A88E5E"), Ink = Color.FromArgb("#2B1D14"), Burn = Color.FromArgb("#5A3A1C");
+
+    /// <summary>How strongly a week's colour tints its region of the map.</summary>
+    public const float RegionWash = 0.09f;
+
     /// <summary>x is the offset from the centre line; y is from the top of the path.</summary>
     public List<PointF> Points { get; } = new();
 
-    public void Draw(ICanvas canvas, RectF dirtyRect)
+    /// <summary>Where each week's region begins, and its colour.</summary>
+    public List<(float Top, Color Tint)> Regions { get; } = new();
+
+    public void Draw(ICanvas canvas, RectF r)
     {
+        canvas.FillColor = Paper;
+        canvas.FillRectangle(r);
+
+        for (var i = 0; i < Regions.Count; i++)
+        {
+            var top = Regions[i].Top;
+            var bottom = i + 1 < Regions.Count ? Regions[i + 1].Top : r.Height;
+            canvas.FillColor = Regions[i].Tint.WithAlpha(RegionWash);
+            canvas.FillRectangle(0, top, r.Width, bottom - top);
+        }
+
+        var rng = new Random(1729);
+        // Age stains: soft overlapping blots.
+        for (var y = 0f; y < r.Height; y += 90)
+            for (var k = 0; k < 2; k++)
+            {
+                var w = 60 + rng.Next(140);
+                canvas.FillColor = Stain.WithAlpha(0.07f + (float)rng.NextDouble() * 0.06f);
+                canvas.FillEllipse(rng.Next((int)r.Width) - w / 2f, y + rng.Next(90), w, w * (0.5f + (float)rng.NextDouble() * 0.4f));
+            }
+        // Speckles of old ink and grit.
+        canvas.FillColor = Ink.WithAlpha(0.14f);
+        for (var n = 0; n < r.Height * r.Width / 2600; n++)
+            canvas.FillRectangle(rng.Next((int)r.Width), rng.Next((int)Math.Max(1, r.Height)), 1.5f, 1.5f);
+
+        // A faint graticule, as on an old chart.
+        canvas.StrokeColor = Ink.WithAlpha(0.08f);
+        canvas.StrokeSize = 1;
+        canvas.StrokeDashPattern = new float[] { 4, 4 };
+        for (var y = 60f; y < r.Height; y += 160) canvas.DrawLine(0, y, r.Width, y);
+        canvas.DrawLine(r.Width * 0.22f, 0, r.Width * 0.22f, r.Height);
+        canvas.DrawLine(r.Width * 0.78f, 0, r.Width * 0.78f, r.Height);
+        canvas.StrokeDashPattern = null;
+
+        // Burnt edges and a double-ruled frame.
+        for (var k = 0; k < 10; k++)
+        {
+            canvas.FillColor = Burn.WithAlpha(0.05f * (10 - k) / 3);
+            canvas.FillRectangle(k * 2, 0, 2, r.Height);
+            canvas.FillRectangle(r.Width - (k + 1) * 2, 0, 2, r.Height);
+        }
+        canvas.StrokeColor = Ink.WithAlpha(0.55f);
+        canvas.StrokeSize = 2;
+        canvas.DrawLine(10, 0, 10, r.Height);
+        canvas.DrawLine(r.Width - 10, 0, r.Width - 10, r.Height);
+        canvas.StrokeSize = 1;
+        canvas.DrawLine(15, 0, 15, r.Height);
+        canvas.DrawLine(r.Width - 15, 0, r.Width - 15, r.Height);
+
         if (Points.Count < 2) return;
-        var mid = dirtyRect.Width / 2;
-        canvas.StrokeColor = Color.FromArgb("#5A4A33");
-        canvas.StrokeSize = 7;
-        canvas.StrokeLineCap = LineCap.Butt;
-        canvas.StrokeDashPattern = new float[] { 1.6f, 1.4f };
+        var mid = r.Width / 2;
+        canvas.StrokeColor = Color.FromArgb("#5A4330");
+        canvas.StrokeSize = 6;
+        canvas.StrokeLineCap = LineCap.Round;
+        canvas.StrokeDashPattern = new float[] { 1.2f, 1.8f };
         var path = new PathF();
         path.MoveTo(mid + Points[0].X, Points[0].Y);
         for (var i = 1; i < Points.Count; i++)
