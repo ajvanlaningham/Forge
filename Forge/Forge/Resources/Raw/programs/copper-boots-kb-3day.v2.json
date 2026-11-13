@@ -1,0 +1,1028 @@
+{
+  "id": "copper-boots-kb-3day",
+  "version": 2,
+  "name": "Second Wind",
+  "subtitle": "Conditioning circuits for heart and lungs",
+  "quest": "copper-boots",
+  "discipline": "Bellows",
+  "goal": "Conditioning",
+  "implement": "Kettlebell",
+  "difficulty": 1,
+  "minutes": "31–38",
+  "description": "Kettlebell-class circuits: lighter weights, more moves, short rests, and a twenty-on, ten-off finisher. Built to raise your heart rate and keep it there.",
+  "equipment": [
+    "boxStep",
+    "kettlebell",
+    "mat",
+    "wall"
+  ],
+  "days": [
+    {
+      "name": "Engine A",
+      "main": [
+        {
+          "exercise": "Cat-Cow",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "World's Greatest Stretch",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "90/90 Hip Switch",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Air Squat",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Kettlebell Swing",
+          "seconds": 45,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 10,
+          "repsMax": 15,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4,
+          "notes": "Hips snap the bell up; arms just guide it"
+        },
+        {
+          "exercise": "Goblet Squat",
+          "seconds": 45,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 10,
+          "repsMax": 15,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4,
+          "notes": "Bell at the chest, sit between the heels"
+        },
+        {
+          "exercise": "Kettlebell Floor Press",
+          "seconds": 22,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4,
+          "notes": "Elbow touches the floor; press straight up"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Jumping Jacks",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Split Squat",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "High Knees",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Mountain Climbers",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          }
+        ],
+        [
+          {
+            "exercise": "High Knees",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Racked Reverse Lunge",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Mountain Climbers",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Burpee",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          }
+        ],
+        [
+          {
+            "exercise": "Mountain Climbers",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Split Squat",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Hollow Hold",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Squat Jumps",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              5
+            ],
+            "sets": 5
+          },
+          {
+            "exercise": "Shadow Boxing",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              5
+            ],
+            "sets": 5
+          }
+        ],
+        [
+          {
+            "exercise": "Burpee",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Racked Reverse Lunge",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4,
+            "notes": "Low back pressed to the floor"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Engine B",
+      "main": [
+        {
+          "exercise": "World's Greatest Stretch",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "90/90 Hip Switch",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Air Squat",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Glute Bridge",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Kettlebell Swing",
+          "seconds": 45,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 10,
+          "repsMax": 15,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4,
+          "notes": "Hips snap the bell up; arms just guide it"
+        },
+        {
+          "exercise": "Kettlebell Deadlift",
+          "seconds": 45,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 10,
+          "repsMax": 15,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4,
+          "notes": "Hips back, bell between the feet"
+        },
+        {
+          "exercise": "Kettlebell Row",
+          "seconds": 22,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4,
+          "notes": "Free hand on your knee; pull to the hip"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "High Knees",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Kettlebell Press",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Mountain Climbers",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Burpee",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          }
+        ],
+        [
+          {
+            "exercise": "Mountain Climbers",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Kettlebell Press",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Hollow Hold",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Burpee",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Squat Jumps",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          }
+        ],
+        [
+          {
+            "exercise": "Burpee",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Kettlebell Press",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Shadow Boxing",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              5
+            ],
+            "sets": 5
+          },
+          {
+            "exercise": "Jumping Jacks",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              5
+            ],
+            "sets": 5
+          }
+        ],
+        [
+          {
+            "exercise": "Squat Jumps",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Kettlebell Press",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Plank",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4,
+            "notes": "Squeeze glutes, breathe"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Engine C",
+      "main": [
+        {
+          "exercise": "90/90 Hip Switch",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Air Squat",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Glute Bridge",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Lat Wall Slide",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 10,
+          "repsMax": 12,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Kettlebell Clean",
+          "seconds": 22,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4
+        },
+        {
+          "exercise": "Split Squat",
+          "seconds": 22,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4
+        },
+        {
+          "exercise": "Kettlebell Press",
+          "seconds": 22,
+          "restSeconds": 20,
+          "superset": "S",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "sets": 4
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Mountain Climbers",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Hollow Hold",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Burpee",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Squat Jumps",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          }
+        ],
+        [
+          {
+            "exercise": "Burpee",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 7,
+            "repsMax": 11,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Squat Jumps",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Shadow Boxing",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          }
+        ],
+        [
+          {
+            "exercise": "Squat Jumps",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Plank",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4,
+            "notes": "Squeeze glutes, breathe"
+          },
+          {
+            "exercise": "Jumping Jacks",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              5
+            ],
+            "sets": 5
+          },
+          {
+            "exercise": "High Knees",
+            "seconds": 20,
+            "restSeconds": 10,
+            "superset": "F",
+            "setsByWeek": [
+              5
+            ],
+            "sets": 5
+          }
+        ],
+        [
+          {
+            "exercise": "Shadow Boxing",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 12,
+            "repsMax": 20,
+            "setsByWeek": [
+              4
+            ],
+            "sets": 4
+          }
+        ]
+      ]
+    }
+  ],
+  "activeRest": {
+    "name": "Active rest",
+    "flow": [
+      {
+        "exercise": "Cat-Cow",
+        "sets": 1,
+        "repsMin": 8,
+        "repsMax": 8
+      },
+      {
+        "exercise": "World's Greatest Stretch",
+        "sets": 1,
+        "seconds": 30
+      },
+      {
+        "exercise": "90/90 Hip Switch",
+        "sets": 1,
+        "repsMin": 10,
+        "repsMax": 10
+      },
+      {
+        "exercise": "Deep Squat Hold",
+        "sets": 1,
+        "seconds": 60
+      },
+      {
+        "exercise": "Child's Pose",
+        "sets": 1,
+        "seconds": 45
+      },
+      {
+        "exercise": "Dead Hang",
+        "sets": 1,
+        "seconds": 20
+      }
+    ],
+    "alternatives": [
+      "Walk or easy cardio, 20+ minutes"
+    ]
+  }
+}

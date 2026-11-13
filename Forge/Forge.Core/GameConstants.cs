@@ -69,6 +69,20 @@ namespace Forge.Constants
                 "programs/copper-boots-db-3day.v1.json",
                 "programs/copper-boots-kb-4day.v1.json",
                 "programs/copper-boots-kb-3day.v1.json",
+                // Decision 28 (2026-11-13): every quest timed, reps suggested, 30-40 minute days.
+                // Generated from recipes by content/gen_programs.py; edit the recipe, not the JSON.
+                "programs/copper-helm-db-4day.v4.json",
+                "programs/copper-helm-db-3day.v4.json",
+                "programs/copper-helm-kb-4day.v4.json",
+                "programs/copper-helm-kb-3day.v4.json",
+                "programs/copper-hammer-db-4day.v2.json",
+                "programs/copper-hammer-db-3day.v2.json",
+                "programs/copper-hammer-kb-4day.v2.json",
+                "programs/copper-hammer-kb-3day.v2.json",
+                "programs/copper-boots-db-4day.v2.json",
+                "programs/copper-boots-db-3day.v2.json",
+                "programs/copper-boots-kb-4day.v2.json",
+                "programs/copper-boots-kb-3day.v2.json",
                 // A second Hearth quest (2026-11-12): Miche's four-day dumbbell split, as written
                 // by them, with supersets added. Forges the same Copper Hearth piece as Copper Helm.
                 "programs/copper-split-db-4day.v1.json"

@@ -334,6 +334,31 @@ public class ShippedProgramContentTests
     }
 
     [Fact]
+    public void TimedQuests_FitEveryDayIn30To40Minutes()
+    {
+        // Decision 28: the minutes shown come from the timeline, and every day lands in 30-40.
+        // A week-4 test day may run shorter on its own: the stat test is its last block.
+        MoveTraits Traits(string name) => new(
+            Library.Value[name].TryGetProperty("unilateral", out var u) && u.GetBoolean(),
+            Library.Value[name].GetProperty("modality").GetString() is "dumbbell" or "kettlebell" or "barbell" or "cable" or "machine");
+        var latest = GameConstants.Programs.Files.Select(Load)
+            .GroupBy(p => p.Id).Select(g => g.OrderByDescending(p => p.Version).First())
+            .Where(p => p.Days.SelectMany(d => d.Main).All(s => s.IsTimed));
+        var off = new List<string>();
+        foreach (var p in latest)
+            for (var d = 0; d < p.Days.Count; d++)
+                for (var w = 1; w <= ProgramDefinition.WeeksPerBlock; w++)
+                {
+                    var day = p.Resolve(d, w);
+                    var min = day.Test is not null && w == ProgramDefinition.LightWeek ? 25 : 30;
+                    var minutes = DayTiming.Seconds(day, Traits) / 60.0;
+                    if (minutes < min || minutes > 40) off.Add($"{p.Key} {day.Name} week {w}: {minutes:0.0} min");
+                }
+        Assert.True(off.Count == 0, string.Join("\n", off));
+        Assert.NotEmpty(latest);
+    }
+
+    [Fact]
     public void DefaultProgramExists()
         => Assert.Contains(GameConstants.Programs.Files, f => Load(f).Id == GameConstants.Programs.DefaultProgramId);
 

@@ -1,0 +1,1229 @@
+{
+  "id": "copper-hammer-kb-4day",
+  "version": 2,
+  "name": "Iron Will",
+  "subtitle": "Strength-focused lifting: heavier weights, slower circuits",
+  "quest": "copper-hammer",
+  "discipline": "Anvil",
+  "goal": "Strength",
+  "implement": "Kettlebell",
+  "difficulty": 2,
+  "minutes": "31–38",
+  "description": "Heavier weights at a slower pace: a long strength circuit with fuller rests, a short accessory circuit and a carry or core finisher. Reps are suggested; when it feels easy, the weight goes up.",
+  "equipment": [
+    "boxStep",
+    "kettlebell",
+    "mat",
+    "pullUpBar",
+    "wall"
+  ],
+  "days": [
+    {
+      "name": "Upper A",
+      "main": [
+        {
+          "exercise": "Cat-Cow",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "World's Greatest Stretch",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "90/90 Hip Switch",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Air Squat",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Kettlebell Floor Press",
+          "seconds": 25,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3,
+          "notes": "Elbow touches the floor; press straight up"
+        },
+        {
+          "exercise": "Kettlebell Row",
+          "seconds": 25,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3,
+          "notes": "Free hand on your knee; pull to the hip"
+        },
+        {
+          "exercise": "Kettlebell Press",
+          "seconds": 25,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Bench Dip",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Pull-up Negative",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Jump up, lower slowly"
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Kettlebell Clean",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Deficit Push-up",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Dead Hang",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Kettlebell Clean",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Push-up",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Rigid plank from head to heel"
+          },
+          {
+            "exercise": "Pull-up Negative",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Jump up, lower slowly"
+          },
+          {
+            "exercise": "Hollow Hold",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "F",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Kettlebell Clean",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Bench Dip",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Dead Hang",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower A",
+      "main": [
+        {
+          "exercise": "World's Greatest Stretch",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "90/90 Hip Switch",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Air Squat",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Glute Bridge",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Goblet Squat",
+          "seconds": 50,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 8,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3,
+          "notes": "Bell at the chest, sit between the heels"
+        },
+        {
+          "exercise": "Kettlebell Deadlift",
+          "seconds": 50,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 8,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3,
+          "notes": "Hips back, bell between the feet"
+        },
+        {
+          "exercise": "Racked Reverse Lunge",
+          "seconds": 25,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Plank",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "F",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Squeeze glutes, breathe"
+          },
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Upper B",
+      "main": [
+        {
+          "exercise": "90/90 Hip Switch",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Air Squat",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Glute Bridge",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Lat Wall Slide",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Kettlebell Press",
+          "seconds": 25,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3
+        },
+        {
+          "exercise": "Kettlebell Row",
+          "seconds": 25,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3,
+          "notes": "Free hand on your knee; pull to the hip"
+        },
+        {
+          "exercise": "Push-up",
+          "seconds": 50,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 8,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3,
+          "notes": "Rigid plank from head to heel"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Kettlebell Halo",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Pull-up Negative",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Jump up, lower slowly"
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Kettlebell Clean",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Dead Hang",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Hollow Hold",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "F",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Kettlebell Clean",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Kettlebell Halo",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Pull-up Negative",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Jump up, lower slowly"
+          },
+          {
+            "exercise": "Plank",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "F",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Squeeze glutes, breathe"
+          },
+          {
+            "exercise": "Kettlebell Clean",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Dead Hang",
+            "seconds": 45,
+            "restSeconds": 30,
+            "superset": "A",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Kettlebell Clean",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower B",
+      "main": [
+        {
+          "exercise": "Air Squat",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Glute Bridge",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Lat Wall Slide",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 6,
+          "repsMax": 8,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Thread the Needle",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Kettlebell Swing",
+          "seconds": 50,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 8,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3,
+          "notes": "Hips snap the bell up; arms just guide it"
+        },
+        {
+          "exercise": "Kettlebell Front Squat",
+          "seconds": 25,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 4,
+          "repsMax": 5,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3
+        },
+        {
+          "exercise": "Feet-Elevated Hamstring Bridge",
+          "seconds": 50,
+          "restSeconds": 60,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 8,
+          "setsByWeek": [
+            3,
+            4,
+            4,
+            4
+          ],
+          "sets": 3
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Split Squat",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Racked Reverse Lunge",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Split Squat",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 8,
+            "repsMax": 12,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Turkish Get-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "F",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ],
+        [
+          {
+            "exercise": "Racked Reverse Lunge",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 22,
+            "restSeconds": 30,
+            "superset": "A",
+            "repsMin": 5,
+            "repsMax": 7,
+            "setsByWeek": [
+              2
+            ],
+            "sets": 2
+          }
+        ]
+      ]
+    }
+  ],
+  "activeRest": {
+    "name": "Active rest",
+    "flow": [
+      {
+        "exercise": "Cat-Cow",
+        "sets": 1,
+        "repsMin": 8,
+        "repsMax": 8
+      },
+      {
+        "exercise": "World's Greatest Stretch",
+        "sets": 1,
+        "seconds": 30
+      },
+      {
+        "exercise": "90/90 Hip Switch",
+        "sets": 1,
+        "repsMin": 10,
+        "repsMax": 10
+      },
+      {
+        "exercise": "Deep Squat Hold",
+        "sets": 1,
+        "seconds": 60
+      },
+      {
+        "exercise": "Child's Pose",
+        "sets": 1,
+        "seconds": 45
+      },
+      {
+        "exercise": "Dead Hang",
+        "sets": 1,
+        "seconds": 20
+      }
+    ],
+    "alternatives": [
+      "Walk or easy cardio, 20+ minutes"
+    ]
+  }
+}
