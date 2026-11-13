@@ -11,27 +11,34 @@ namespace Forge.Training
 
     /// <summary>
     /// Workout progress as game pictures (user, 2026-11-13). The day is a foe whose health bar has one
-    /// segment per exercise; every working set knocks off its share, so the bar drops set by set and
-    /// an exercise's segment is empty when it's done. A skipped exercise greys out instead of
-    /// draining: no penalty colour. The countdown sits in a ring that drains with the clock.
+    /// section per working set of the whole session; each set done empties the next section from the
+    /// right, so the bar goes down in order however the sets are interleaved (supersets alternate
+    /// exercises, but the bar never shows gaps). A skipped exercise's sets turn grey at the far end
+    /// and leave the fight: no penalty colour. The countdown sits in a ring that drains with the clock.
     /// </summary>
     public static class SessionProgress
     {
         public static IReadOnlyList<HealthSegment> Segments(IReadOnlyList<ExerciseProgress> exercises)
         {
-            if (exercises.Count == 0) return [];
-            var width = 1.0 / exercises.Count;
-            return exercises.Select((e, i) => new HealthSegment(i * width, width,
-                e.Skipped || e.SetsTotal <= 0 ? 0 : 1.0 - Math.Min(e.SetsDone, e.SetsTotal) / (double)e.SetsTotal,
-                e.Skipped)).ToList();
+            var live = exercises.Where(e => !e.Skipped).Sum(e => Math.Max(0, e.SetsTotal));
+            var skipped = exercises.Where(e => e.Skipped).Sum(e => Math.Max(0, e.SetsTotal));
+            var total = live + skipped;
+            if (total == 0) return [];
+            var left = live - Done(exercises);
+            var width = 1.0 / total;
+            return Enumerable.Range(0, total)
+                .Select(i => new HealthSegment(i * width, width, i < left ? 1 : 0, i >= live))
+                .ToList();
         }
 
-        /// <summary>The foe's health left, 0–1, counting only exercises not skipped.</summary>
+        private static int Done(IReadOnlyList<ExerciseProgress> exercises)
+            => exercises.Where(e => !e.Skipped).Sum(e => Math.Clamp(e.SetsDone, 0, Math.Max(0, e.SetsTotal)));
+
+        /// <summary>The foe's health left, 0–1: working sets still to do, out of those not skipped.</summary>
         public static double Remaining(IReadOnlyList<ExerciseProgress> exercises)
         {
-            var live = exercises.Where(e => !e.Skipped && e.SetsTotal > 0).ToList();
-            if (live.Count == 0) return 0;
-            return live.Average(e => 1.0 - Math.Min(e.SetsDone, e.SetsTotal) / (double)e.SetsTotal);
+            var live = exercises.Where(e => !e.Skipped).Sum(e => Math.Max(0, e.SetsTotal));
+            return live == 0 ? 0 : (live - Done(exercises)) / (double)live;
         }
 
         public static bool Vanquished(IReadOnlyList<ExerciseProgress> exercises) => Remaining(exercises) <= 0;
