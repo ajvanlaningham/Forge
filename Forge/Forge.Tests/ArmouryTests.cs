@@ -68,4 +68,22 @@ public class ArmouryTests
         Assert.Null(HeroGear.Sprite("human", "wizard", GearSlot.Body, "Copper"));
         Assert.Equal("Armour", HeroGear.Name("human", "wizard", GearSlot.Body));
     }
+
+    [Theory]
+    [InlineData("human", "wizard", GearSlot.Head, "Starry Hat")]      // headwear
+    [InlineData("dwarf", "cleric", GearSlot.Body, "Smith's Apron")]   // body wear
+    [InlineData("human", "cleric", GearSlot.Trinket, "Holy Tome")]    // a trinket
+    public void DefensivePieces_GoToTheSlotTheyFit(string race, string cls, GearSlot slot, string name)
+    {
+        Assert.Equal(slot, HeroGear.HearthSlotOf(race, cls));
+        Assert.Equal(name, HeroGear.Name(race, cls, slot));
+        Assert.Equal($"gear_{race}_{cls}_hearth_copper.png", HeroGear.Sprite(race, cls, slot, "Copper"));
+    }
+
+    [Fact]
+    public void AShield_IsNeverShownAsAHelm()
+    {
+        Assert.Null(HeroGear.Sprite("human", "warrior", GearSlot.Head, "Copper"));
+        Assert.Equal("Helm", HeroGear.Name("human", "warrior", GearSlot.Head));
+    }
 }
