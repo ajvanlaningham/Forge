@@ -240,7 +240,9 @@ Claude ran a full session on the phone. Settled with the user:
   from where it was last time when that moves on (built; the walk itself shows on the next
   training day).
 
-Settled since as **Decision 28** (timed workouts, suggested reps, Easy / Right / Hard, 30–40 min
+Built 2026-11-13: paced timed slots, rounds by week, circuits, Easy / Right / Hard, minutes from
+the timeline, the content generator, all three Copper quests rewritten, and test days' tests
+as the final block inside the health bar. Settled as **Decision 28** (timed workouts, suggested reps, Easy / Right / Hard, 30–40 min
 days). Next: the engine work for it, then the content pass that fills each day to its time
 (Foundations' days are ~18 min of content today) and puts a test day's test inside the day.
 
