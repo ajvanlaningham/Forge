@@ -243,7 +243,7 @@ def main():
     write('map_pine', PINE.splitlines())
     write('map_peak', PEAK.splitlines())
     write('map_waves', WAVES.splitlines(), {'1': '#2A6496', '2': '#5A93C4', '3': '#9CC4E4'})
-    write('map_embers', EMBERS.splitlines())
+    write('map_embers', EMBERS.splitlines(), {'B': '#7A5A44', 'D': '#A8805C'})  # warm, lit rocks: grey vanished on the map
     write('map_compass', compass())
     write('scroll_knob', KNOB.splitlines())
     write('scroll_knob_r', [r[::-1] for r in KNOB.splitlines()])

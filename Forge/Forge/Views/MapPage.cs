@@ -47,7 +47,7 @@ public sealed class MapPage : ContentPage
     private static readonly Color MapGround = Color.FromArgb("#15130F");
     private static readonly string[][] Scenery =
     {
-        new[] { "map_embers.png", "map_embers.png" },
+        new[] { "map_embers.png", "map_pine.png" },
         new[] { "map_pine.png", "map_peak.png" },
         new[] { "map_waves.png", "map_pine.png" },
         new[] { "map_peak.png", "map_pine.png" }
@@ -351,7 +351,7 @@ public sealed class MapPage : ContentPage
         var side = x > 10 ? -1 : 1;
         row.Add(new Image
         {
-            Source = set[index / 2 % set.Length], WidthRequest = 72, HeightRequest = 64, Opacity = 0.75,
+            Source = set[index / 2 % set.Length], WidthRequest = 80, HeightRequest = 70, Opacity = 0.95,
             HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center,
             TranslationX = side * (Swing + 70) * 0.9, InputTransparent = true
         });
