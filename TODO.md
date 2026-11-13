@@ -11,8 +11,9 @@ Takes Forge from a quest/XP prototype to a personal daily driver. Build/deploy r
 - Protein/calories and resting HR / steps / sleep are visible, manual entry first.
 - Data is backed up daily and restorable; merges to `main` reach the phone via in-app update.
 
-**Scope:** Android only, single user, no accounts/backend/sync. **Deferred:** Guild/social;
-Speed stat; food database; Windows; cloud backup; maintenance mode. **iOS deferred for now** —
+**Scope:** Android first, two users (the developer and Miche, from December). No accounts; the
+one backend is nidavellir (Decision 24): guilds and end-to-end encrypted backups, never health
+data. **Deferred:** Speed stat; food database; Windows; maintenance mode. **iOS deferred for now** —
 a Mac is on the tailnet and the developer account is quick to get once the app is worth a
 second phone. Keep shared code free of Android-only APIs (`#if ANDROID` / `Platforms/`).
 
@@ -73,7 +74,8 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     My Gear; **Gym = everything** (no max, 5 lb / 2.5 kg steps). Machines/cables: 5 lb steps
     anywhere. At the heaviest owned weight, progression switches to reps and says so.
     Pound and kilo weights can be owned side by side (5/10/15 lb bells plus 16/20 kg ones).
-20. **Four tabs: Today · Quest · Hero · Chronicle** (agreed with the user 2026-11-11). A program
+20. **Four tabs: Today · Quest · Hero · Chronicle** (agreed with the user 2026-11-11; *the tabs
+    are now Map · Hero · Chronicle · Guild, see 27*). A program
     *is* a quest; completing quests earns XP, levels and forged gear. The old daily
     Strength/Mobility quests (weekday body-zone map) and the Quests tab are **retired**.
     - **Today**: the one screen a daily user opens. One big action (start / resume today's
@@ -169,8 +171,8 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     earns bonus XP. **UX rule for celebrations:** one summary screen after a session (tiles +
     week strip + Done; level-up is a banner on it), the perfect-week chest on the map, and the
     forging screen at quest end. No login rewards, no post-session prompts, nothing to tap
-    through to get home. **Built 2026-11-13** (rules + Guild page); the map/summary parts ship with
-    the map plan.
+    through to get home. **Built 2026-11-13** (rules, Guild page, the map's chest, the summary
+    screen with its level-up banner).
 
 27. **The map replaces Today and Quest** (user, 2026-11-13; amends 20). Tabs: Map · Hero ·
     Chronicle · Guild. Home is the active quest as a winding path (`QuestMap`): week-coloured
@@ -179,7 +181,11 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     it isn't a Duolingo copy. Details behind taps: stone card, the banner's book, the ＋ sheet. The
     quest board is a pushed page of rolled scrolls (yours under a wax seal). Workout: a draining
     ring timer and the day's foe health bar; one big action per phase. Legibility rules in
-    AGENTS.md.
+    AGENTS.md. **Built 2026-11-13**, then redrawn as a parchment fantasy map (user: "a bit TOO
+    ripped off of Duolingo"): ink-and-watercolour regions per week, rivers with bridges, a lake,
+    a dragon over the Anvil Peaks, place names (`art/gen_mapscape.py`). Days ahead are inked
+    sketches, painted as they're done; the hero stands by today's stone and walks the trail. The
+    health bar is one section per set, emptied in order; session screens hide the tab bar.
 28. **Workouts are timed; reps are suggested** (user, 2026-11-13). Every move is work-on /
     rest-off on the clock, kettlebell-class style (e.g. 60–75 s on / 45 s off), in circuits so
     each muscle still rests two or three minutes between its turns; no 2-minute rests. A move may
@@ -192,7 +198,11 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     Baseline tests are the exception: counted reps, no time limit, protocols frozen.
     The Fourfold Path (Miche's) was converted on the user's go-ahead (2026-11-13): their exercises
     and cues kept, a short warm-up added, mains as a 4-round strength circuit, accessories as one
-    circuit; 32–37 min a day (it was ~50, mostly rests).
+    circuit; 32–37 min a day (it was ~50, mostly rests). **Built 2026-11-13:** `DayTiming`,
+    `Progression.Paced` (Easy +2 reps, past the range the next weight; Hard −2, then a weight
+    down), circuits rest after every move, rounds by week (`setsByWeek`), every quest generated
+    by `content/gen_programs.py`; a test day's test is the session's final block, inside the
+    health bar (week 4's test days drop their finisher to make room).
 
 29. **Side quests: your own training counts** (user, 2026-11-13). "I trained my own way" logs an
     activity (HEMA, a gym class, yoga…), minutes, Easy / Moderate / Hard, and what it counts as.
@@ -204,7 +214,9 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     don't pile up; after a big hard one the next card suggests rest, never enforces it. Rest days
     follow each person's style (onboarding, Settings): **Guided**, a ~10-minute mobility flow on
     the timer with each move's instructions, or **Freestyle**, which just logs your own practice
-    (Miche).
+    (Miche). **Built 2026-11-13:** `SideQuests` (rules), `SideQuestService`, the logging sheet on
+    the map, a crossed-swords stone for HEMA, guided rest via `StartActiveRestAsync`, and a how-to
+    cue for every move a quest uses (`ExerciseCues`).
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per
@@ -258,6 +270,18 @@ the timeline, the content generator, all three Copper quests rewritten, and test
 as the final block inside the health bar. Settled as **Decision 28** (timed workouts, suggested reps, Easy / Right / Hard, 30–40 min
 days). Next: the engine work for it, then the content pass that fills each day to its time
 (Foundations' days are ~18 min of content today) and puts a test day's test inside the day.
+
+## Next up (as of 2026-11-13)
+
+- **Five-slot gear art** (Decision 25): about 72–108 new pieces in `art/gen_gear.py`; contact
+  sheets to the user before installing. Waiting on the user's go-ahead.
+- **Starting weight and its climb**: a view of each lift from its first weight (history already
+  holds it).
+- **Hero vs scenery**: the hero standing by today's stone can overlap that row's scenery.
+- **Tune with real use**: autopilot pacing, the ~3 s-per-rep set times, `MaxTrainingPerWeek`
+  (two, not certain), the Easy / Hard steps.
+- **Miche (December)**: guilds for real (making nidavellir public is a deliberate human step),
+  then iOS. Miche's phone picks Freestyle rest days in onboarding or Settings.
 
 ## Current: Training Push (week of 2026-11-11)
 
@@ -380,6 +404,8 @@ Rework the program format before writing real content:
 - [x] Gym equipment editor (Settings → Gym equipment)
 
 ### 8.5 Progressive overload
+*Still the rule for counted sets (the stat tests, a hand-logged open session). Timed quests
+progress by feel instead: Decision 28.*
 - Default **double progression**: when every working set hits the top of the rep range, next
   load goes up one increment and reps reset low. Missing the bottom holds the load; repeated
   misses hint at a deload, never act on it.

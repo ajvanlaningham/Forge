@@ -1,44 +1,48 @@
 # Forge
 
-Forge is a **.NET MAUI app** that gamifies workouts to build strength, endurance, mobility, and resolve.
-It is both a fitness tracker and an RPG-style progression system: quests completed and milestones hit
-earn XP and level your character.
+Forge is a **.NET MAUI app** that gamifies training to build strength, endurance, mobility, and
+resolve. It is both a fitness tracker and an RPG: you follow four-week quests drawn as a path on a
+fantasy map, finishing training days levels your hero, and finishing a quest earns a forging that
+raises a piece of your gear one metal.
 
-It is a personal, single-user, Android-first app. There are no accounts, no backend, and no sync —
-all data lives in a local SQLite database on the device.
+It is a personal, Android-first app for two people. Training, health and weight data live in a
+local SQLite database on the phone. The one server, nidavellir, holds guilds and end-to-end
+encrypted backups, never health data (see `AGENTS.md`).
 
 ---
 
 ## Status
 
-Forge is mid-build. This section is deliberately honest about what runs today, because the gap
-between the two lists is where the work is. See [`TODO.md`](TODO.md) for the full backlog.
+See [`TODO.md`](TODO.md) for the decisions behind all of this and what's next.
 
 ### Working today
 
-Four tabs (Decision 20 in `TODO.md`):
+Four tabs (Decision 27 in `TODO.md`):
 
-- **Today** — the daily screen: start or resume today's training day, this week's progress,
-  active rest on days off, weekly conditioning minutes, the movement streak and a level strip.
-- **Quest** — the quest underway (a 4-week training block: week, days, forge meter) and the quest
-  board for choosing the next one, in Dumbbell / Kettlebell versions × 3 or 4 days a week.
-- **Hero** — level, XP and STR/DEX/CON; the Armoury (forged items, not built yet); the Pack (your
-  real equipment and the weights you own, lb and kg side by side).
-- **Chronicle** — weigh-ins with a moving-average trend, and every finished session.
-- **Settings** — a cog in each tab's top bar: units, rest timer, gym equipment, backup/restore,
-  in-app updates.
+- **Map**: the active quest as a winding path on a parchment map, one region per week (Kindling,
+  Tempering, Quenching, Honing). Today's stone has one START; days ahead are inked sketches,
+  painted as they're done; a chest per week opens on a perfect week; the anvil ends the quest. The
+  ＋ sheet logs cardio, a weigh-in, a **side quest** (training done your own way: HEMA, a gym
+  class, yoga), an open session, or changes the quest. The quest board is a page of scrolls.
+- **Hero**: level, XP, streak, STR/DEX/CON, the five-slot gear rack (Head, Body, Weapon, Feet,
+  Trinket), and your real equipment and weights.
+- **Chronicle**: weigh-ins as a moving-average trend, and every finished session.
+- **Guild**: a small group (official at three members) with a daily campfire bonus, synced
+  through nidavellir.
+- **Settings**: a cog on each tab: units, rest days (guided or freestyle), equipment, backups
+  (daily local, encrypted offsite), Strava, Health Connect, in-app updates.
 
-Under that: session logging with last-time numbers, double progression snapped to the weights you
-own, swaps by location (Home / Gym), a rest timer with an exact alarm, PRs, XP per training day
-with a ×1.2 perfect-week multiplier, level-ups, and a daily SQLite backup to Download/Forge.
+**Workouts** are timed circuits (Decision 28): a warm-up, a strength circuit, an accessory circuit
+and a finisher, 30–40 minutes a day, with reps shown only as a suggested pace. A started workout
+runs itself: each set ends on the clock, logs itself, rests and moves on, with a draining ring
+timer and the day's foe health bar. After it, one optional Easy / Right / Hard tap tunes the next
+suggested weights and reps. On a test day the stat test is the last block.
 
 ### Not working yet
 
-- **Forging** — the 75% rule is tracked (the forge meter) but nothing is forged or shown in the
-  Armoury yet.
-- **Stat scores** — STR/DEX/CON are seeded at 1; the week-4 stat tests aren't built. (Epic 5)
-- **Condition** — injuries and limitations are designed, not built.
-- **Guild** — returns later as the multi-user / friends tab.
+- **Five-slot gear art**: forging works, but only three of the five slots have drawn pieces.
+- **iOS**: deferred until Miche joins (December).
+- **Condition**: injuries and limitations are designed, not built.
 
 ---
 
@@ -57,7 +61,7 @@ without an emulator. Keep it free of MAUI dependencies.
 
 Within the app project:
 
-- **Controls/** — reusable UI elements (StatCard, QuestCard, WeeklyConditioningCard).
+- **Controls/Cards/** — reusable cards (StatCard, WeeklyConditioningCard, WeightTrendCard).
 - **Converters/** — value converters for UI binding.
 - **Data/** — SQLite abstraction (`IAppDatabase`) and the generic repository.
 - **Models/** — domain models and their SQLite `Row` counterparts.
@@ -70,6 +74,14 @@ Within the app project:
 - **Resources/** — strings (`AppResources.resx`), styles, fonts, images, and the seed JSON
   under `Resources/Raw`.
 - **Platforms/** — platform entry points and manifests.
+
+Beside the solution:
+
+- **`Forge/Forge.Server`**: nidavellir, the guild and encrypted-backup server (`./deploy-server.sh`).
+- **`content/gen_programs.py`**: generates every quest's programs from short recipes and checks
+  each day fits 30–40 minutes. Edit the recipe, not the generated JSON.
+- **`art/`**: the pixel art as text-grid sprites (`gen_*.py`), rendered to PNG by
+  `art/render.py --install`. The map's landscape is `art/gen_mapscape.py`.
 
 ---
 
@@ -122,7 +134,7 @@ deploying.
 
 - **MVVM** — Views bind to ViewModels; ViewModels depend only on service interfaces.
 - **Dependency injection** — everything is registered in `MauiProgram.cs`.
-- **Enums** — defined in `Models/TrainingEnums.cs` and reused across services and UI.
+- **Enums** — defined in `Forge.Core/TrainingEnums.cs` and reused across services and UI.
 - **Persistence** — models that persist have a corresponding `Row` class for SQLite, with
   `ToDomain()` / `FromDomain()` mapping. Enums are stored as ints.
 - **Constants vs settings** — game rules are constants in `Forge.Core`; anything the user can
@@ -143,9 +155,9 @@ logging, never for what the scale says.
 See [`TODO.md`](TODO.md) for the full backlog: target outcome, scope, settled design decisions,
 what is done, the current push, and the remaining work.
 
-Headline items: daily weight tracking with a trend view, a working levelling loop, baseline stat
-testing on a monthly cadence, nutrition read from Health Connect rather than re-implemented, and
-resting heart rate from a wearable.
+Next: the five-slot gear art, a view of each lift's climb from its starting weight, guilds and
+iOS for a second user, and later nutrition from Health Connect and resting heart rate from a
+wearable.
 
 ## License
 

@@ -144,6 +144,13 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
   versions stay listed for history). `TimedQuests_FitEveryDayIn30To40Minutes` re-checks the
   shipped files. The Fourfold Path (Miche's plan) is a recipe too, naming its exact exercises
   instead of roles; keep their choices when tuning it.
+- **MAUI on Android, learned on the device** (none of these show in a build or a test):
+  - Don't set `InputTransparent` on an `Image` that's moved with `TranslationX`: Android wraps it
+    and lays it out wrong, and it never draws (the map's scenery vanished).
+  - Dim with a translucent `BackgroundColor`, not `Opacity` on a `BoxView`: the opacity layer drew
+    over a blank grey instead of the page beneath it.
+  - Pages that hide the tab bar (`Shell.TabBarIsVisible="False"`: the session screens) can leave
+    the previous page at its tab-less height on return; `MapPage` re-measures in `OnAppearing`.
 - **Charts** are MAUI `GraphicsView` drawables: `Sparkline` (weight card, Hero stats) and
   `LineChart` (exercise history) in `ViewModels/Controls`. Microcharts and SkiaSharp were
   removed in the .NET 10 move (Microcharts was unmaintained and pinned SkiaSharp 2.x, which
@@ -278,5 +285,14 @@ the user's experience in ways a build will not catch. Full rationale in [`TODO.m
   new protocol instead of editing one. See [`docs/baseline-tests.md`](docs/baseline-tests.md).
 - **Manual entry ships before every integration.** Health Connect, wearables, and nutrition sync
   are all additive. The app must stay fully usable with every permission denied.
+- **A started workout runs itself** (Decision 28). Every set ends on its clock and logs itself as
+  done; DONE and SKIP REST are optional. Never make a set wait for a tap: the user has the weights
+  in their hands. Reps are a suggested pace, not counted; only the stat tests count reps.
+- **Minutes come from the timeline.** Every duration shown (map, quest board, briefing) is
+  `DayTiming` over what the session will actually run, never a program's notes. Every day of a
+  timed quest fits 30–40 minutes; `content/gen_programs.py` and `ProgramTests` enforce it.
+- **Side quests feed the quest's own records** (Decision 29): a training side quest completes the
+  day "via" its activity, a rest one marks active rest. Never give them a parallel XP path: the
+  day's XP is the cap, and the streak, chest and guild must follow from the same rows.
 - **Three independent progress systems.** Levels measure consistency, stat scores measure
   capability, weight is its own track. They answer different questions — do not collapse them.

@@ -1,7 +1,14 @@
 # Stat Test Protocols
 
-**Protocol version: 2 (approved 2026-11-11). Status: specified, not yet implemented (Epic 5 in
-[`TODO.md`](../TODO.md)).** Version 1 (below the line at the end) was never used and is superseded.
+**Protocol version: 2 (approved 2026-11-11). Status: built (`StatTestPage`, `StatTestService`).**
+Version 1 (below the line at the end) was never used and is superseded.
+
+**How a test is run (2026-11-13, Decision 28; the protocol itself is unchanged).** Workouts are
+timed, but tests are not: they are counted, with no time limit. A test is the **final block of
+its training day**: its parts are the last sections of the session's health bar, and after the
+last set the session shows "The final trial" and opens the test form. Saving the test finishes
+the session; "Finish without it today" skips it. In week 4 (Honing) the test days drop their
+finisher to leave room for the test.
 
 > **Protocols are frozen once a baseline is recorded.** Movements, order and conditions never
 > change under a version; a genuine change ships as a new version with a new baseline. Within v2,
@@ -49,8 +56,8 @@ protocol is what counts.
   lift **3–10 times** (suggested from your training history). The estimate is load-independent,
   so moving up a weight doesn't break comparability.
 - **One all-out set per lift**, after the session's warm-ups, stopping when form breaks. Logged as
-  load × reps → e1RM (Epley). In the guided session this is the one set that asks "How many?"
-  instead of logging the target.
+  load × reps → e1RM (Epley), entered on the test form at the end of the session (the one place
+  reps are counted rather than suggested).
 - **Score input:** mean e1RM ÷ bodyweight at test time (Decision 6), absolute e1RM shown alongside.
 - **Push-ups to failure** are recorded alongside (no gear, strong evidence) as a fourth STR
   measure, at the same incline each time (floor, or a recorded box height).
