@@ -467,40 +467,41 @@ WEEKS = {  # face, light, dark, fold (the ribbon's underside)
 
 
 BAND_ROWS = 20  # the app draws the band 80 dp tall (4 dp per pixel); the tails are drawn to match
+TAIL_OUT, TAIL_UNDER = 12, 6  # the tail's columns outside the band, and those tucked under it
 
 
 def ribbon_tail():
-    """The left tail of the week banner, 14 x 26. The band (drawn in the app) overlaps its inner
-    two columns for the top 20 rows; the tail hangs 6 rows lower, behind the band, joined to it by
-    the dark underside of the fold, and ends in a swallowtail notch."""
-    w, drop = 14, 6
+    """The left tail of the week banner, (TAIL_OUT + TAIL_UNDER) x 26. The band (drawn in the app)
+    covers the last TAIL_UNDER columns for its top 20 rows. The tail hangs 6 rows lower and runs on
+    under the band; just below the band's bottom edge, inside its width, the tail's underside shows
+    as a small dark triangle where the ribbon folds back behind the band. That triangle is what puts
+    the band in front."""
+    w, drop = TAIL_OUT + TAIL_UNDER, 6
     h = BAND_ROWS + drop
+    bottom = h - 2  # the tail's lowest row; the last row is left for the pen line
     g = Grid(w, h)
-    for y in range(drop, h - 1):  # the last row is left for the pen line
+    for y in range(drop, bottom + 1):
         k = y - drop
-        rows = h - 1 - drop
+        rows = bottom + 1 - drop
         notch = 1 + 5 - abs(k - (rows - 1) / 2) * 5 / ((rows - 1) / 2)
         for x in range(w):
             if x < round(notch):
                 continue
-            c = '2' if k == 0 else '3' if k >= rows - 3 else '1'
-            if x >= w - 3:
-                c = '3'  # the tail darkens as it runs behind the band
+            if x >= TAIL_OUT:
+                if y < BAND_ROWS:
+                    g.put(x, y, '3')  # behind the band: never seen, but keeps the outline right
+                continue
+            c = '2' if k == 0 else '3' if k >= rows - 2 else '1'
+            if x >= TAIL_OUT - 2:
+                c = '3'  # in the band's shadow
             g.put(x, y, c)
-    # the fold: the ribbon's underside showing where the tail turns up behind the band
-    # The fold. Below the band the tail's inner corner is cut on the slant, from the band's bottom
-    # corner down to the tail's lower edge: cloth turning back on itself, not a box. The dark
-    # triangle inside the slant is the ribbon's underside showing where it turns.
-    fold = 5
-    rows = (h - 2) - BAND_ROWS + 1
-    for y in range(BAND_ROWS, h - 1):
-        r = y - BAND_ROWS
-        slant = (w - 1) - round((r + 1) * fold / rows)
-        for x in range(w):
-            if x > slant:
-                g.put(x, y, '.')
-            elif x >= (w - 1) - fold:
-                g.put(x, y, '4')
+    # The fold, under the band: square corner at the band's end, top edge along the band's bottom,
+    # slant rising back under the band.
+    fold = TAIL_UNDER - 1
+    for y in range(BAND_ROWS, bottom + 1):
+        reach = round(fold * (bottom - y) / (bottom - BAND_ROWS))
+        for x in range(TAIL_OUT, TAIL_OUT + reach + 1):
+            g.put(x, y, '4')
     out = Grid(w, h)
     out.paste(g, 0, 0)
     for y in range(h):

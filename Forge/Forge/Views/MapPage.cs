@@ -36,7 +36,7 @@ public sealed partial class MapPage : ContentPage
     private readonly Label _streak = new() { FontFamily = "Display", FontSize = 26, VerticalOptions = LayoutOptions.Center };
     private readonly Label _streakFlame = new() { FontFamily = "FA", Text = GlyphFire, FontSize = 24, VerticalOptions = LayoutOptions.Center };
 
-    private readonly Grid _band = new() { HeightRequest = 80, VerticalOptions = LayoutOptions.Start, Margin = new Thickness(-8, 0) };
+    private readonly Grid _band = new() { HeightRequest = 80, VerticalOptions = LayoutOptions.Start, Margin = new Thickness(-24, 0) };
     private readonly BannerDrawable _bandArt = new();
     private readonly GraphicsView _bandView = new() { InputTransparent = true };
     private readonly Label _bannerWeek = new() { FontFamily = "Display", FontSize = 26, TextColor = Cream };
@@ -46,8 +46,8 @@ public sealed partial class MapPage : ContentPage
     private readonly VerticalStackLayout _path = new() { Padding = new Thickness(0, TopPad, 0, 40), Spacing = 0 };
     private readonly GraphicsView _trailView = new() { InputTransparent = true };
     private readonly MapDrawable _trail = new();
-    private readonly Image _ribbonLeft = new() { WidthRequest = 56, HeightRequest = 104, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
-    private readonly Image _ribbonRight = new() { WidthRequest = 56, HeightRequest = 104, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
+    private readonly Image _ribbonLeft = new() { WidthRequest = 72, HeightRequest = 104, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
+    private readonly Image _ribbonRight = new() { WidthRequest = 72, HeightRequest = 104, Aspect = Aspect.Fill, VerticalOptions = LayoutOptions.Start };
     // The banner floats over the top of the map, so the path starts below it.
     private const double TopPad = 118, DividerHeight = 64, Swing = 88;
     // Fantasy-map dressing: the path is inked on parchment, and each week is a region with its scenery.
@@ -106,7 +106,7 @@ public sealed partial class MapPage : ContentPage
         _bandView.Drawable = _bandArt;
         _band.Add(_bandView);
         _band.Add(bannerGrid);
-        // Tails first: they hang behind the band, which overlaps them by two pixels each side.
+        // Tails first: they hang behind the band, which covers the six pixels of each tucked under it.
         var ribbon = new Grid
         {
             Margin = new Thickness(4, 8, 4, 0), ColumnSpacing = 0, VerticalOptions = LayoutOptions.Start,
