@@ -217,13 +217,67 @@ SECOND_WIND = {
     ],
 }
 
-QUESTS = [FOUNDATIONS, IRON_WILL, SECOND_WIND]
+# Miche's own plan (written with their Claude, 2026-11-12), converted to the timed format with
+# their exercises and cues kept exactly: a block entry that names a library exercise is used as
+# is; a role picks from the pools. A short warm-up is added; there's no finisher (a muscle-
+# building split). The talk with Miche happened before this conversion (user, 2026-11-13).
+FOURFOLD_PATH = {
+    'quest': 'copper-split', 'version': 2, 'name': 'The Fourfold Path',
+    'subtitle': 'Four-day upper/lower dumbbell circuits',
+    'discipline': 'Hearth', 'goal': 'Balanced', 'difficulty': 2,
+    'implements': ['db'], 'schedules': [4],
+    'description': 'Upper / lower twice a week at home; every major muscle group twice a week. '
+                   'A short warm-up, the day\'s two main lifts as a strength circuit, then an '
+                   'accessory circuit. Timed sets with suggested reps; when it feels easy, the '
+                   'weight goes up. Dumbbells, a knee-height block, a mat, two yoga blocks and a mini band.',
+    'formats': {
+        'warm': fmt(40, 15, [1, 1, 1, 1], (8, 10)),
+        'strength': fmt(60, 45, [4, 4, 4, 3], (8, 12)),   # their four working sets, three in week 4
+        'accessory': fmt(40, 20, [3, 3, 3, 3], (10, 15)),
+    },
+    'notes': {
+        'Dumbbell Floor Press': 'Elbows touch the floor lightly each rep',
+        'One-arm Row': 'Free hand on the block',
+        'Dumbbell Overhead Press': 'Standing',
+        'Dumbbell Pullover': 'Lying on the mat',
+        'Bench Dip': 'On the block',
+        'Dumbbell Curl': 'Palms up',
+        'Bulgarian Split Squat': 'Back foot on the block',
+        'Heel-Elevated Goblet Squat': 'Heels on a yoga block laid flat',
+        'Banded Lateral Walk': 'Band above the knees or at the ankles',
+        'Single-Leg Calf Raise': 'Off the edge of the block',
+        'Bent-over Row': 'Two dumbbells',
+        'Deficit Push-up': 'Hands on yoga blocks',
+        'Dumbbell Skull Crusher': 'Lying on the mat',
+        'Renegade Row': 'Or plank shoulder taps',
+        'Hip Thrust': 'Upper back on the block, dumbbell on the hips, band above the knees',
+        'Box Step-up': 'Or reverse lunges',
+        'Banded Clamshell': 'Or fire hydrants',
+        'Feet-Elevated Hamstring Bridge': 'Heels on the block, knees only slightly bent',
+    },
+    4: [
+        ('Upper A — push', {'warm': ['Cat-Cow', 'Lat Wall Slide', 'Thread the Needle'],
+                            'strength': ['Dumbbell Floor Press', 'One-arm Row'],
+                            'accessory': ['Dumbbell Overhead Press', 'Dumbbell Pullover', 'Lateral Raise', 'Bench Dip', 'Dumbbell Curl', 'Reverse Crunch']}),
+        ('Lower A — quads', {'warm': ['Cat-Cow', 'World\'s Greatest Stretch', 'Glute Bridge'],
+                             'strength': ['Bulgarian Split Squat', 'Romanian Deadlift'],
+                             'accessory': ['Heel-Elevated Goblet Squat', 'Dead Bug', 'Banded Lateral Walk', 'Single-Leg Calf Raise']}),
+        ('Upper B — pull', {'warm': ['Cat-Cow', 'Lat Wall Slide', 'Thread the Needle'],
+                            'strength': ['Bent-over Row', 'Arnold Press'],
+                            'accessory': ['Deficit Push-up', 'Rear Delt Fly', 'Hammer Curl', 'Dumbbell Skull Crusher', 'Renegade Row']}),
+        ('Lower B — glutes & hamstrings', {'warm': ['Cat-Cow', 'World\'s Greatest Stretch', '90/90 Hip Switch'],
+                                           'strength': ['Hip Thrust', 'Staggered-Stance Romanian Deadlift'],
+                                           'accessory': ['Box Step-up', 'Side Plank', 'Sumo Goblet Squat', 'Banded Clamshell', 'Feet-Elevated Hamstring Bridge']}),
+    ],
+}
+
+QUESTS = [FOUNDATIONS, IRON_WILL, SECOND_WIND, FOURFOLD_PATH]
 IMPLEMENTS = {'db': 'Dumbbell', 'kb': 'Kettlebell'}
 
 # --- building ---------------------------------------------------------------------------------------
 
 
-def slot(name, f, block, rounds_by_week=None):
+def slot(name, f, block, rounds_by_week=None, notes=None):
     """One timed slot. A rep move is paced (seconds + suggested reps); a one-sided move gets
     half the time per side, so it fills the same slot of the circuit."""
     on = f['on'] // 2 if one_sided(name) else f['on']
@@ -236,8 +290,9 @@ def slot(name, f, block, rounds_by_week=None):
     if rounds_by_week:
         s['setsByWeek'] = rounds_by_week
     s['sets'] = (rounds_by_week or [3])[0]
-    if name in CUES:
-        s['notes'] = CUES[name]
+    cue = (notes or {}).get(name) or CUES.get(name)
+    if cue:
+        s['notes'] = cue
     return s
 
 
@@ -248,6 +303,11 @@ class Picker:
         self.imp = imp
 
     def pick(self, role, used, turn=0):
+        if role not in POOLS:  # a named exercise, used exactly as the recipe says
+            if role not in LIBRARY:
+                raise SystemExit(f'"{role}" is neither a role nor a library exercise')
+            used.add(role)
+            return role
         pool = [n for n in POOLS[role][self.imp] if n in LIBRARY]
         options = [n for n in pool[turn % len(pool):] + pool[:turn % len(pool)] if n not in used]
         if not options:
@@ -263,25 +323,26 @@ def has_test(day_index, days_per_week):
 
 def build_day(recipe, name, blocks, imp, day_index, days_per_week):
     f = recipe.get(f'formats_{days_per_week}', recipe['formats'])
+    notes = recipe.get('notes')
     p = Picker(imp)
     used = set()
     main = []
     # Warm-up: one round, fixed for the block; the same moves stay mobility, not loaded work.
     for i, role in enumerate(blocks['warm']):
-        main.append(slot(p.pick(role, used, day_index + i), f['warm'], 'W', f['warm']['rounds']))
+        main.append(slot(p.pick(role, used, day_index + i), f['warm'], 'W', f['warm']['rounds'], notes))
     # Main lifts: the pool's first choice on A days, its second on B days (4-day upper/lower).
     for role in blocks['strength']:
-        main.append(slot(p.pick(role, used, day_index // 2), f['strength'], 'S', f['strength']['rounds']))
+        main.append(slot(p.pick(role, used, day_index // 2), f['strength'], 'S', f['strength']['rounds'], notes))
     fixed = set(used)
     weeks = []
     for w in range(WEEKS):
         week_used = set(fixed)
-        acc = [slot(p.pick(r, week_used, w + day_index + i), f['accessory'], 'A', [f['accessory']['rounds'][w]])
+        acc = [slot(p.pick(r, week_used, w + day_index + i), f['accessory'], 'A', [f['accessory']['rounds'][w]], notes)
                for i, r in enumerate(blocks['accessory'])]
         # Week 4's test days end with the stat test (the day's last block) instead of a finisher.
         fin = [] if w == WEEKS - 1 and has_test(day_index, days_per_week) else [
-            slot(p.pick(r, week_used, w * 2 + day_index + i), f['finisher'], 'F', [f['finisher']['rounds'][w]])
-            for i, r in enumerate(blocks['finisher'])]
+            slot(p.pick(r, week_used, w * 2 + day_index + i), f['finisher'], 'F', [f['finisher']['rounds'][w]], notes)
+            for i, r in enumerate(blocks.get('finisher', []))]
         weeks.append(acc + fin)
     return {'name': name, 'main': main, 'accessories': weeks}
 
@@ -348,8 +409,8 @@ def main():
     bad = []
     files = []
     for recipe in QUESTS:
-        for imp in IMPLEMENTS:
-            for n in (4, 3):
+        for imp in recipe.get('implements', IMPLEMENTS):
+            for n in recipe.get('schedules', (4, 3)):
                 pid, program, days = build(recipe, imp, n)
                 row = []
                 for d in days:

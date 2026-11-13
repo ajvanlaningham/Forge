@@ -190,8 +190,9 @@ Settled. Changing one means revisiting the PBIs that depend on it.
     day lands in **30–40 minutes** (warm-up, strength circuit, accessory circuit, finisher), and
     the minutes shown anywhere are computed from that timeline, never from a program's notes.
     Baseline tests are the exception: counted reps, no time limit, protocols frozen.
-    The Fourfold Path (Miche's) is converted only after the user talks it over with Miche: in
-    this format its work fits in ~30–35 min, where today it reaches ~50 mostly through rests.
+    The Fourfold Path (Miche's) was converted on the user's go-ahead (2026-11-13): their exercises
+    and cues kept, a short warm-up added, mains as a 4-round strength circuit, accessories as one
+    circuit; 32–37 min a day (it was ~50, mostly rests).
 
 **Assumptions:** user starts ~230 lb, milestone 218 lb, goal 200 lb (settings, not constants).
 Equipment on hand: dumbbells, kettlebells, bike, mat, wall. Level pacing must give ~1 level per

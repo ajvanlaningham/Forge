@@ -1,0 +1,1433 @@
+{
+  "id": "copper-split-db-4day",
+  "version": 2,
+  "name": "The Fourfold Path",
+  "subtitle": "Four-day upper/lower dumbbell circuits",
+  "quest": "copper-split",
+  "discipline": "Hearth",
+  "goal": "Balanced",
+  "implement": "Dumbbell",
+  "difficulty": 2,
+  "minutes": "28–37",
+  "description": "Upper / lower twice a week at home; every major muscle group twice a week. A short warm-up, the day's two main lifts as a strength circuit, then an accessory circuit. Timed sets with suggested reps; when it feels easy, the weight goes up. Dumbbells, a knee-height block, a mat, two yoga blocks and a mini band.",
+  "equipment": [
+    "bands",
+    "boxStep",
+    "dumbbell",
+    "mat",
+    "wall"
+  ],
+  "days": [
+    {
+      "name": "Upper A — push",
+      "main": [
+        {
+          "exercise": "Cat-Cow",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Lat Wall Slide",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Thread the Needle",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 5,
+          "repsMax": 6,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Dumbbell Floor Press",
+          "seconds": 60,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 8,
+          "repsMax": 12,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4,
+          "notes": "Elbows touch the floor lightly each rep"
+        },
+        {
+          "exercise": "One-arm Row",
+          "seconds": 30,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 7,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4,
+          "notes": "Free hand on the block"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Dumbbell Overhead Press",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Standing"
+          },
+          {
+            "exercise": "Dumbbell Pullover",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Lateral Raise",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Bench Dip",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "On the block"
+          },
+          {
+            "exercise": "Dumbbell Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Palms up"
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          }
+        ],
+        [
+          {
+            "exercise": "Dumbbell Overhead Press",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Standing"
+          },
+          {
+            "exercise": "Dumbbell Pullover",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Lateral Raise",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Bench Dip",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "On the block"
+          },
+          {
+            "exercise": "Dumbbell Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Palms up"
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          }
+        ],
+        [
+          {
+            "exercise": "Dumbbell Overhead Press",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Standing"
+          },
+          {
+            "exercise": "Dumbbell Pullover",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Lateral Raise",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Bench Dip",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "On the block"
+          },
+          {
+            "exercise": "Dumbbell Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Palms up"
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          }
+        ],
+        [
+          {
+            "exercise": "Dumbbell Overhead Press",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Standing"
+          },
+          {
+            "exercise": "Dumbbell Pullover",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Lateral Raise",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Bench Dip",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "On the block"
+          },
+          {
+            "exercise": "Dumbbell Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Palms up"
+          },
+          {
+            "exercise": "Reverse Crunch",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower A — quads",
+      "main": [
+        {
+          "exercise": "Cat-Cow",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "World's Greatest Stretch",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Glute Bridge",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Bulgarian Split Squat",
+          "seconds": 30,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 7,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4,
+          "notes": "Back foot on the block"
+        },
+        {
+          "exercise": "Romanian Deadlift",
+          "seconds": 60,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 8,
+          "repsMax": 12,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4,
+          "notes": "Soft knees, hips back, flat back"
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Heel-Elevated Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on a yoga block laid flat"
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Banded Lateral Walk",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Band above the knees or at the ankles"
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Off the edge of the block"
+          }
+        ],
+        [
+          {
+            "exercise": "Heel-Elevated Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on a yoga block laid flat"
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Banded Lateral Walk",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Band above the knees or at the ankles"
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Off the edge of the block"
+          }
+        ],
+        [
+          {
+            "exercise": "Heel-Elevated Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on a yoga block laid flat"
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Banded Lateral Walk",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Band above the knees or at the ankles"
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Off the edge of the block"
+          }
+        ],
+        [
+          {
+            "exercise": "Heel-Elevated Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on a yoga block laid flat"
+          },
+          {
+            "exercise": "Dead Bug",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Low back pressed to the floor"
+          },
+          {
+            "exercise": "Banded Lateral Walk",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Band above the knees or at the ankles"
+          },
+          {
+            "exercise": "Single-Leg Calf Raise",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Off the edge of the block"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Upper B — pull",
+      "main": [
+        {
+          "exercise": "Cat-Cow",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Lat Wall Slide",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Thread the Needle",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 5,
+          "repsMax": 6,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Bent-over Row",
+          "seconds": 60,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 8,
+          "repsMax": 12,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4,
+          "notes": "Two dumbbells"
+        },
+        {
+          "exercise": "Arnold Press",
+          "seconds": 60,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 8,
+          "repsMax": 12,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Deficit Push-up",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Hands on yoga blocks"
+          },
+          {
+            "exercise": "Rear Delt Fly",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Hammer Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Dumbbell Skull Crusher",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Renegade Row",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or plank shoulder taps"
+          }
+        ],
+        [
+          {
+            "exercise": "Deficit Push-up",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Hands on yoga blocks"
+          },
+          {
+            "exercise": "Rear Delt Fly",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Hammer Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Dumbbell Skull Crusher",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Renegade Row",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or plank shoulder taps"
+          }
+        ],
+        [
+          {
+            "exercise": "Deficit Push-up",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Hands on yoga blocks"
+          },
+          {
+            "exercise": "Rear Delt Fly",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Hammer Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Dumbbell Skull Crusher",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Renegade Row",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or plank shoulder taps"
+          }
+        ],
+        [
+          {
+            "exercise": "Deficit Push-up",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Hands on yoga blocks"
+          },
+          {
+            "exercise": "Rear Delt Fly",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Hammer Curl",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Dumbbell Skull Crusher",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Lying on the mat"
+          },
+          {
+            "exercise": "Renegade Row",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or plank shoulder taps"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Lower B — glutes & hamstrings",
+      "main": [
+        {
+          "exercise": "Cat-Cow",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "World's Greatest Stretch",
+          "seconds": 20,
+          "restSeconds": 15,
+          "superset": "W",
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "90/90 Hip Switch",
+          "seconds": 40,
+          "restSeconds": 15,
+          "superset": "W",
+          "repsMin": 8,
+          "repsMax": 10,
+          "setsByWeek": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "sets": 1
+        },
+        {
+          "exercise": "Hip Thrust",
+          "seconds": 60,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 8,
+          "repsMax": 12,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4,
+          "notes": "Upper back on the block, dumbbell on the hips, band above the knees"
+        },
+        {
+          "exercise": "Staggered-Stance Romanian Deadlift",
+          "seconds": 30,
+          "restSeconds": 45,
+          "superset": "S",
+          "repsMin": 5,
+          "repsMax": 7,
+          "setsByWeek": [
+            4,
+            4,
+            4,
+            3
+          ],
+          "sets": 4
+        }
+      ],
+      "accessories": [
+        [
+          {
+            "exercise": "Box Step-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or reverse lunges"
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Sumo Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Banded Clamshell",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or fire hydrants"
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on the block, knees only slightly bent"
+          }
+        ],
+        [
+          {
+            "exercise": "Box Step-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or reverse lunges"
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Sumo Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Banded Clamshell",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or fire hydrants"
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on the block, knees only slightly bent"
+          }
+        ],
+        [
+          {
+            "exercise": "Box Step-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or reverse lunges"
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Sumo Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Banded Clamshell",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or fire hydrants"
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on the block, knees only slightly bent"
+          }
+        ],
+        [
+          {
+            "exercise": "Box Step-up",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or reverse lunges"
+          },
+          {
+            "exercise": "Side Plank",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Sumo Goblet Squat",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3
+          },
+          {
+            "exercise": "Banded Clamshell",
+            "seconds": 20,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 6,
+            "repsMax": 8,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Or fire hydrants"
+          },
+          {
+            "exercise": "Feet-Elevated Hamstring Bridge",
+            "seconds": 40,
+            "restSeconds": 20,
+            "superset": "A",
+            "repsMin": 10,
+            "repsMax": 15,
+            "setsByWeek": [
+              3
+            ],
+            "sets": 3,
+            "notes": "Heels on the block, knees only slightly bent"
+          }
+        ]
+      ]
+    }
+  ],
+  "activeRest": {
+    "name": "Active rest",
+    "flow": [
+      {
+        "exercise": "Cat-Cow",
+        "sets": 1,
+        "repsMin": 8,
+        "repsMax": 8
+      },
+      {
+        "exercise": "World's Greatest Stretch",
+        "sets": 1,
+        "seconds": 30
+      },
+      {
+        "exercise": "90/90 Hip Switch",
+        "sets": 1,
+        "repsMin": 10,
+        "repsMax": 10
+      },
+      {
+        "exercise": "Deep Squat Hold",
+        "sets": 1,
+        "seconds": 60
+      },
+      {
+        "exercise": "Downward Dog",
+        "sets": 1,
+        "seconds": 30
+      },
+      {
+        "exercise": "Child's Pose",
+        "sets": 1,
+        "seconds": 45
+      }
+    ],
+    "alternatives": [
+      "Yoga, 20+ minutes",
+      "Walk or easy cardio, 20+ minutes"
+    ]
+  }
+}

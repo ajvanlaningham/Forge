@@ -142,7 +142,8 @@ Non-obvious facts the script encodes — **do not relearn these the hard way:**
   refuses anything outside 30–40 minutes. Change the recipe and re-run it; don't hand-edit the
   generated JSON. A new version is a new file listed in `GameConstants.Programs.Files` (old
   versions stay listed for history). `TimedQuests_FitEveryDayIn30To40Minutes` re-checks the
-  shipped files. The Fourfold Path is still hand-written (Miche's plan).
+  shipped files. The Fourfold Path (Miche's plan) is a recipe too, naming its exact exercises
+  instead of roles; keep their choices when tuning it.
 - **Charts** are MAUI `GraphicsView` drawables: `Sparkline` (weight card, Hero stats) and
   `LineChart` (exercise history) in `ViewModels/Controls`. Microcharts and SkiaSharp were
   removed in the .NET 10 move (Microcharts was unmaintained and pinned SkiaSharp 2.x, which
