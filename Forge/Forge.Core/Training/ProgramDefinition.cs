@@ -89,7 +89,10 @@ namespace Forge.Training
         {
             var day = Days[dayIndex];
             var light = week >= LightWeek;
-            ProgramSlot Adjust(ProgramSlot s) => light ? s with { Sets = Math.Max(1, s.Sets - 1) } : s;
+            // Rounds can rise week by week (Decision 28); without that, week 4 drops a set (min 1).
+            ProgramSlot Adjust(ProgramSlot s)
+                => s.SetsByWeek is { Count: > 0 } byWeek ? s with { Sets = byWeek[Math.Min(week, byWeek.Count) - 1] }
+                 : light ? s with { Sets = Math.Max(1, s.Sets - 1) } : s;
 
             var accessories = day.Accessories.Count == 0
                 ? Array.Empty<ProgramSlot>()
@@ -138,6 +141,15 @@ namespace Forge.Training
         /// <summary>Exercise name, matching the exercise library.</summary>
         public string Exercise { get; init; } = "";
         public int Sets { get; init; } = 3;
+        /// <summary>
+        /// Rounds per week, e.g. <c>[3, 3, 4, 3]</c> (Decision 28): the block builds by adding a round.
+        /// Overrides <see cref="Sets"/> and week 4's dropped set; a shorter list repeats its last entry.
+        /// </summary>
+        public IReadOnlyList<int>? SetsByWeek { get; init; }
+        /// <summary>
+        /// The rep range. On a timed slot (<see cref="Seconds"/> also set) it is only a suggested
+        /// pace, never counted: "60 s · aim for ~10" (Decision 28).
+        /// </summary>
         public int? RepsMin { get; init; }
         public int? RepsMax { get; init; }
         /// <summary>Target seconds for timed/hold exercises.</summary>
@@ -150,6 +162,8 @@ namespace Forge.Training
         /// </summary>
         public string? Superset { get; init; }
         [JsonIgnore] public bool IsTimed => Seconds is not null;
+        /// <summary>Timed with a suggested rep target: the clock runs the set, the reps set the pace.</summary>
+        [JsonIgnore] public bool IsPaced => Seconds is not null && RepsMin is not null;
     }
 
     public sealed record ResolvedSlot(ProgramSlot Slot, bool IsMain);
@@ -239,7 +253,10 @@ namespace Forge.Training
             if (string.IsNullOrWhiteSpace(slot.Exercise)) errors.Add($"{at}: missing exercise");
             if (slot.Sets < 1) errors.Add($"{at}: sets must be >= 1");
             var hasReps = slot.RepsMin is not null || slot.RepsMax is not null;
-            if (hasReps == slot.IsTimed) errors.Add($"{at}: give either a rep range or seconds, not both or neither");
+            // Seconds alone (a hold), reps alone (a counted set), or both (timed, reps suggested).
+            if (!hasReps && !slot.IsTimed) errors.Add($"{at}: give a rep range, seconds, or both");
+            if (slot.SetsByWeek is { } byWeek && (byWeek.Count > ProgramDefinition.WeeksPerBlock || byWeek.Any(n => n < 1)))
+                errors.Add($"{at}: setsByWeek needs 1–{ProgramDefinition.WeeksPerBlock} entries, each >= 1");
             if (hasReps && (slot.RepsMin is null || slot.RepsMax is null || slot.RepsMin < 1 || slot.RepsMax < slot.RepsMin))
                 errors.Add($"{at}: rep range must be 1 <= repsMin <= repsMax");
             if (slot.IsTimed && slot.Seconds < 1) errors.Add($"{at}: seconds must be >= 1");

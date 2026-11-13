@@ -250,8 +250,15 @@ public class ShippedProgramContentTests
         foreach (var slot in AllSlots(Load(file)))
         {
             var action = Library.Value[slot.Exercise].GetProperty("action").GetString();
-            Assert.True(slot.IsTimed == action is "hold" or "time",
-                $"{file}: '{slot.Exercise}' is a '{action}' exercise but the slot is {(slot.IsTimed ? "timed" : "rep-based")}");
+            // Holds and timed work run on the clock; a rep exercise is counted, or timed with its
+            // reps as a suggested pace (Decision 28); a carry goes for time.
+            var ok = action switch
+            {
+                "hold" or "time" => slot.IsTimed && !slot.IsPaced,
+                "reps" => !slot.IsTimed || slot.IsPaced,
+                _ => slot.IsTimed
+            };
+            Assert.True(ok, $"{file}: '{slot.Exercise}' is a '{action}' exercise but the slot is {(slot.IsPaced ? "paced" : slot.IsTimed ? "timed" : "counted")}");
         }
     }
 

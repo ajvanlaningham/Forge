@@ -6,7 +6,9 @@ namespace Forge.Training
     /// <param name="Sets">Working sets.</param>
     /// <param name="RestSeconds">Rest after a working set (after a whole round, in a superset).</param>
     /// <param name="Warmups">Built-in warm-up sets before the first working set (0, 1 or 2).</param>
-    public sealed record GuidedExercise(int Index, string? Superset, int Sets, int? RestSeconds, int Warmups);
+    /// <param name="Timed">Runs on the clock (Decision 28). A block of timed moves is a circuit:
+    /// each move is followed by its own rest, kettlebell-class style, not a short transition.</param>
+    public sealed record GuidedExercise(int Index, string? Superset, int Sets, int? RestSeconds, int Warmups, bool Timed = false);
 
     /// <summary>The phase of a per-side set: work the right, switch, work the left.</summary>
     public enum SetSide { Right, Switch, Left }
@@ -66,7 +68,8 @@ namespace Forge.Training
                     {
                         var e = members[m];
                         var last = m == members.Count - 1;
-                        var rest = last ? (block.Count == 1 ? e.RestSeconds ?? defaultRestSeconds : roundRest) : TransitionSeconds;
+                        var rest = block.All(b => b.Timed) ? e.RestSeconds ?? defaultRestSeconds
+                            : last ? (block.Count == 1 ? e.RestSeconds ?? defaultRestSeconds : roundRest) : TransitionSeconds;
                         steps.Add((new GuidedStep(e.Index, false, r, e.Sets, rest), last, rest));
                     }
                 }

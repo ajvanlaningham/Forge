@@ -9,7 +9,15 @@ namespace Forge.Training
     public readonly record struct Prescription(int Sets, int? RepsMin, int? RepsMax, int? Seconds)
     {
         public bool IsTimed => Seconds is not null && RepsMin is null;
+        /// <summary>Timed, with a suggested rep target (Decision 28).</summary>
+        public bool IsPaced => Seconds is not null && RepsMin is not null;
     }
+
+    /// <summary>The one optional tap after a workout (Decision 28).</summary>
+    public enum Feel { Easy, Right, Hard }
+
+    /// <summary>What a paced move was set to last time, and how the workout felt.</summary>
+    public readonly record struct PacedLast(double LoadLb, int Reps, Feel? Feel);
 
     public enum SuggestionKind
     {
@@ -120,6 +128,47 @@ namespace Forge.Training
             return new Suggestion(SuggestionKind.AddTime, load, null, next,
                 allHit ? $"Held {held}s on every set — go for {next}s." : $"Aim for {next}s on every set.");
         }
+
+        /// <summary>
+        /// Progression for a paced move (Decision 28): nothing is counted, so the signal is the
+        /// workout's feel. <b>Easy</b> adds two reps to the target; once that passes the top of the
+        /// range, the next weight you own replaces it and the target goes back to the bottom (with no
+        /// heavier weight, or bodyweight, the reps keep climbing, up to what fits the clock).
+        /// <b>Hard</b> takes two reps off; at the bottom of the range it steps down a weight instead.
+        /// <b>Right</b>, or no answer, holds everything.
+        /// </summary>
+        /// <returns>Null the first time: the briefing asks for the weight.</returns>
+        public static Suggestion? Paced(Prescription rx, PacedLast? last, LoadSet loads, WeightUnit unit, bool perSide = false)
+        {
+            if (last is not { } l || rx.Seconds is not int secs || rx.RepsMin is not int lo) return null;
+            var hi = rx.RepsMax ?? lo;
+            var cap = Math.Max(lo, MaxPacedReps(secs));
+            var reps = Math.Clamp(l.Reps, lo, cap);
+            var load = l.LoadLb;
+            switch (l.Feel)
+            {
+                case Feel.Easy when reps + 2 > hi && load > 0 && loads.Next(load) is double up:
+                    return new Suggestion(SuggestionKind.IncreaseLoad, up, lo, secs,
+                        $"Easy last time: up to {Show(up, unit)}, aim for ~{lo}.");
+                case Feel.Easy:
+                    var more = Math.Min(cap, reps + 2);
+                    return new Suggestion(SuggestionKind.AddReps, load, more, secs,
+                        more > reps ? $"Easy last time: aim for ~{more}." : "Easy last time, and that's all the clock allows: try a heavier weight.");
+                case Feel.Hard when reps - 2 < lo && load > 0 && loads.Prev(load) is double down && down > 0:
+                    return new Suggestion(SuggestionKind.Hold, down, lo, secs,
+                        $"Hard last time: down to {Show(down, unit)}, aim for ~{lo}.");
+                case Feel.Hard:
+                    var fewer = Math.Max(lo, reps - 2);
+                    return new Suggestion(SuggestionKind.Hold, load, fewer, secs, $"Hard last time: aim for ~{fewer}.");
+                default:
+                    return new Suggestion(SuggestionKind.Hold, load, reps, secs, $"Same as last time: aim for ~{reps}.");
+            }
+        }
+
+        private static string Show(double lb, WeightUnit unit) => $"{WeightMath.ToDisplay(lb, unit):0.#} {WeightMath.UnitLabel(unit)}";
+
+        /// <summary>The most reps a steady pace fits into a timed set: about one every two seconds.</summary>
+        public static int MaxPacedReps(int seconds) => Math.Max(1, seconds / 2);
 
         private static bool MissedAt(IReadOnlyList<WorkSet> session, double load, int repsMin)
             => session.Any(s => s.LoadLb == load && s.Reps < repsMin);
